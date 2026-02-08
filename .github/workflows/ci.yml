@@ -63,6 +63,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build shared package
+        run: pnpm --filter @obelus/shared build
+
       - name: Run typecheck
         run: pnpm typecheck
 
