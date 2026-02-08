@@ -7,7 +7,12 @@ import { and, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "../db/client.js";
 import { readingEntries, toReadEntries, users } from "../db/schema.js";
-import { protectedProcedure, publicProcedure, router } from "../lib/trpc.js";
+import {
+  csrfProtectedProcedure,
+  protectedProcedure,
+  publicProcedure,
+  router,
+} from "../lib/trpc.js";
 
 export const libraryRouter = router({
   listReading: protectedProcedure.query(async ({ ctx }) => {
@@ -30,7 +35,7 @@ export const libraryRouter = router({
     }));
   }),
 
-  upsertReading: protectedProcedure
+  upsertReading: csrfProtectedProcedure
     .input(upsertReadingEntryInputSchema)
     .mutation(async ({ ctx, input }) => {
       const existing = await db
@@ -80,7 +85,7 @@ export const libraryRouter = router({
       return { id: created.id };
     }),
 
-  removeReading: protectedProcedure
+  removeReading: csrfProtectedProcedure
     .input(z.object({ id: z.string().uuid() }))
     .mutation(async ({ ctx, input }) => {
       await db
@@ -105,7 +110,7 @@ export const libraryRouter = router({
     }));
   }),
 
-  addToRead: protectedProcedure.input(addToReadInputSchema).mutation(async ({ ctx, input }) => {
+  addToRead: csrfProtectedProcedure.input(addToReadInputSchema).mutation(async ({ ctx, input }) => {
     const [entry] = await db
       .insert(toReadEntries)
       .values({
@@ -130,7 +135,7 @@ export const libraryRouter = router({
     return { id: entry.id };
   }),
 
-  removeFromToRead: protectedProcedure
+  removeFromToRead: csrfProtectedProcedure
     .input(z.object({ id: z.string().uuid() }))
     .mutation(async ({ ctx, input }) => {
       await db
@@ -139,7 +144,7 @@ export const libraryRouter = router({
       return { ok: true };
     }),
 
-  updateProfile: protectedProcedure
+  updateProfile: csrfProtectedProcedure
     .input(updateProfileInputSchema)
     .mutation(async ({ ctx, input }) => {
       const [updated] = await db

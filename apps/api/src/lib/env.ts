@@ -24,6 +24,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string().default("postgres://postgres:postgres@localhost:5432/obelus"),
   REDIS_URL: z.string().default("redis://localhost:6379"),
   SESSION_COOKIE_NAME: z.string().default("obelus_session"),
+  CSRF_COOKIE_NAME: z.string().default("obelus_csrf"),
   SESSION_SECRET: z.string().min(16).default("change-this-development-secret"),
   OAUTH_CLIENT_ID: z.string().optional(),
   OAUTH_CLIENT_SECRET: z.string().optional(),

@@ -18,3 +18,24 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
     },
   });
 });
+
+const csrfProtected = t.middleware(({ ctx, next, type }) => {
+  if (type === "mutation" && ctx.requestCsrfToken !== ctx.csrfToken) {
+    throw new TRPCError({ code: "FORBIDDEN", message: "Invalid CSRF token." });
+  }
+  return next();
+});
+
+export const csrfPublicProcedure = t.procedure.use(csrfProtected);
+export const csrfProtectedProcedure = t.procedure.use(csrfProtected).use(({ ctx, next }) => {
+  if (!ctx.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return next({
+    ctx: {
+      ...ctx,
+      user: ctx.user,
+    },
+  });
+});

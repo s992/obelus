@@ -1,5 +1,6 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { resolveCurrentUser } from "./auth.js";
+import { ensureCsrfToken } from "./csrf.js";
 import { env } from "./env.js";
 import type { Context } from "./types.js";
 
@@ -9,9 +10,14 @@ export const createContext = async (
 ): Promise<Context> => {
   const token = request.cookies[env.SESSION_COOKIE_NAME];
   const user = await resolveCurrentUser(token);
+  const csrfToken = ensureCsrfToken(request, reply);
+  const requestCsrfToken =
+    typeof request.headers["x-csrf-token"] === "string" ? request.headers["x-csrf-token"] : null;
 
   return {
     user,
+    csrfToken,
+    requestCsrfToken,
     setCookie: (sessionToken: string) => {
       reply.setCookie(env.SESSION_COOKIE_NAME, sessionToken, {
         path: "/",

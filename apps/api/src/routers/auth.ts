@@ -7,7 +7,13 @@ import { passwords, sessions, users } from "../db/schema.js";
 import { issueSessionToken } from "../lib/auth.js";
 import { env } from "../lib/env.js";
 import { hashPassword, verifyPassword } from "../lib/password.js";
-import { protectedProcedure, publicProcedure, router } from "../lib/trpc.js";
+import {
+  csrfProtectedProcedure,
+  csrfPublicProcedure,
+  protectedProcedure,
+  publicProcedure,
+  router,
+} from "../lib/trpc.js";
 
 export const authRouter = router({
   me: protectedProcedure.query(async ({ ctx }) => {
@@ -20,7 +26,9 @@ export const authRouter = router({
     };
   }),
 
-  registerWithPassword: publicProcedure
+  csrfToken: publicProcedure.query(({ ctx }) => ({ token: ctx.csrfToken })),
+
+  registerWithPassword: csrfPublicProcedure
     .input(
       z.object({
         email: z.string().email(),
@@ -69,7 +77,7 @@ export const authRouter = router({
       return { userId: createdUser.id };
     }),
 
-  loginWithPassword: publicProcedure
+  loginWithPassword: csrfPublicProcedure
     .input(
       z.object({
         email: z.string().email(),
@@ -115,7 +123,7 @@ export const authRouter = router({
       return { userId: userRecord.id };
     }),
 
-  logout: protectedProcedure.mutation(async ({ ctx }) => {
+  logout: csrfProtectedProcedure.mutation(async ({ ctx }) => {
     const cookie = ctx.user;
     if (cookie) {
       await db
@@ -127,7 +135,7 @@ export const authRouter = router({
     return { ok: true };
   }),
 
-  changePassword: protectedProcedure
+  changePassword: csrfProtectedProcedure
     .input(
       z.object({
         currentPassword: z.string().min(8),

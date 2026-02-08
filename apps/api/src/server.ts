@@ -3,6 +3,7 @@ import cors from "@fastify/cors";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import { type FastifyReply, type FastifyRequest, fastify } from "fastify";
 import { createContext } from "./lib/context.js";
+import { ensureCsrfToken } from "./lib/csrf.js";
 import { env } from "./lib/env.js";
 import { appRouter } from "./routers/index.js";
 
@@ -83,6 +84,11 @@ await app.register(cors, {
 });
 
 await app.register(cookie);
+
+app.get("/csrf", async (request, reply) => {
+  const token = ensureCsrfToken(request, reply);
+  return { token };
+});
 
 await app.register(fastifyTRPCPlugin, {
   prefix: "/trpc",

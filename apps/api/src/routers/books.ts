@@ -23,6 +23,23 @@ export const booksRouter = router({
       return getBookDetail(input.key);
     }),
 
+  detailsByKeys: publicProcedure
+    .input(
+      z.object({
+        keys: z.array(z.string().min(1)).max(200),
+      }),
+    )
+    .query(async ({ input }) => {
+      const uniqueKeys = [...new Set(input.keys)];
+      const entries = await Promise.all(
+        uniqueKeys.map(async (key) => {
+          const detail = await getBookDetail(key);
+          return [key, detail] as const;
+        }),
+      );
+      return Object.fromEntries(entries);
+    }),
+
   coverUrl: publicProcedure
     .input(
       z.object({

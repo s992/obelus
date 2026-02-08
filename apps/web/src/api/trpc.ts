@@ -16,14 +16,54 @@ const resolveApiBaseUrl = (): string => {
   return "http://localhost:4000";
 };
 
+let csrfToken: string | null = null;
+let csrfTokenPromise: Promise<string> | null = null;
+
+const resolveCsrfToken = async (): Promise<string> => {
+  if (csrfToken) {
+    return csrfToken;
+  }
+  if (csrfTokenPromise) {
+    return csrfTokenPromise;
+  }
+
+  csrfTokenPromise = fetch(`${resolveApiBaseUrl()}/csrf`, {
+    credentials: "include",
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error("Failed to initialize CSRF token.");
+      }
+      const payload = (await response.json()) as { token?: unknown };
+      if (typeof payload.token !== "string" || payload.token.length === 0) {
+        throw new Error("Invalid CSRF token payload.");
+      }
+      csrfToken = payload.token;
+      return csrfToken;
+    })
+    .finally(() => {
+      csrfTokenPromise = null;
+    });
+
+  return csrfTokenPromise;
+};
+
 export const trpc = createTRPCProxyClient<AppRouter>({
   links: [
     httpBatchLink({
       url: `${resolveApiBaseUrl()}/trpc`,
       transformer: superjson,
-      fetch(url, options) {
+      async fetch(url, options) {
+        const headers = new Headers(options?.headers);
+        try {
+          headers.set("x-csrf-token", await resolveCsrfToken());
+        } catch {
+          // Server will reject protected mutations if token initialization failed.
+        }
+
         return fetch(url, {
           ...options,
+          headers,
           credentials: "include",
         });
       },
