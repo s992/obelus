@@ -75,6 +75,14 @@ if ! gh auth status >/dev/null 2>&1; then
   exit 1
 fi
 
+previous_run_id="$(gh run list \
+  --workflow release.yml \
+  --event workflow_dispatch \
+  --branch main \
+  --limit 1 \
+  --json databaseId \
+  --jq '.[0].databaseId')"
+
 gh workflow run release.yml --ref main -f version="$VERSION" -f prerelease="$PRERELEASE"
 echo "Dispatched release workflow for $VERSION (prerelease=$PRERELEASE)."
 
@@ -92,7 +100,7 @@ for _ in $(seq 1 15); do
     --json databaseId \
     --jq '.[0].databaseId')"
 
-  if [[ -n "$run_id" && "$run_id" != "null" ]]; then
+  if [[ -n "$run_id" && "$run_id" != "null" && "$run_id" != "$previous_run_id" ]]; then
     break
   fi
 
