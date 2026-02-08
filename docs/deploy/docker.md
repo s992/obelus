@@ -18,6 +18,7 @@ Set required values in `.env.docker`:
 - `DATABASE_URL`
 - `REDIS_URL`
 - `SESSION_SECRET`
+- `OPENLIBRARY_CONTACT_EMAIL`
 
 ## 2. Build images
 

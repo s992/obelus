@@ -47,6 +47,7 @@
             "APP_ORIGINS": { "type": "string" },
             "SESSION_COOKIE_NAME": { "type": "string" },
             "CSRF_COOKIE_NAME": { "type": "string" },
+            "OPENLIBRARY_CONTACT_EMAIL": { "type": "string", "format": "email" },
             "OAUTH_PROVIDER": { "type": "string" },
             "OAUTH_ISSUER": { "type": "string" },
             "OAUTH_JWKS_URL": { "type": "string" },

@@ -14,6 +14,7 @@
 | `SESSION_COOKIE_NAME` | No | `obelus_session` | No | Session cookie name. |
 | `CSRF_COOKIE_NAME` | No | `obelus_csrf` | No | CSRF cookie name. |
 | `SESSION_SECRET` | Yes in production | `change-this-development-secret` | Yes | JWT/session signing secret (min 16 chars). |
+| `OPENLIBRARY_CONTACT_EMAIL` | Yes | none | No | Administrator contact email used in the OpenLibrary `User-Agent` header (`Obelus (<email>)`). |
 | `OAUTH_PROVIDER` | No | `oidc` | No | OAuth provider type (`oidc` or `oauth2`). |
 | `OAUTH_ISSUER` | Conditionally | empty | No | OIDC issuer URL. |
 | `OAUTH_JWKS_URL` | Conditionally | empty | No | JWKS endpoint URL. |
@@ -53,6 +54,7 @@
 | `DATABASE_URL` | Yes | External Postgres DSN. |
 | `REDIS_URL` | Yes | External Redis DSN. |
 | `SESSION_SECRET` | Yes | API signing secret. |
+| `OPENLIBRARY_CONTACT_EMAIL` | Yes | Contact email included in OpenLibrary API `User-Agent` requests. |
 | `APP_ORIGIN` | No | Browser URL for CORS/cookies (default `http://localhost:8080`). |
 | `APP_ORIGINS` | No | Additional allowed origins. |
 | `TRUST_PROXY` | No | Proxy trust toggle. |

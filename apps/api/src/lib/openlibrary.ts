@@ -3,11 +3,13 @@ import { TRPCError } from "@trpc/server";
 import { and, eq, gt } from "drizzle-orm";
 import { db, redis } from "../db/client.js";
 import { openLibraryCache } from "../db/schema.js";
+import { env } from "./env.js";
 
 const SEARCH_TTL_SECONDS = 60 * 60 * 6;
 const DETAIL_TTL_SECONDS = 60 * 60 * 24;
 const FETCH_TIMEOUT_MS = 5000;
 const AUTHOR_FETCH_CONCURRENCY = 8;
+const OPENLIBRARY_USER_AGENT = `Obelus (${env.OPENLIBRARY_CONTACT_EMAIL})`;
 
 const getCache = async <T>(key: string): Promise<T | null> => {
   try {
@@ -61,7 +63,12 @@ const fetchWithTimeout = async (url: string): Promise<Response> => {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
-    return await fetch(url, { signal: controller.signal });
+    return await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        "User-Agent": OPENLIBRARY_USER_AGENT,
+      },
+    });
   } finally {
     clearTimeout(timeout);
   }

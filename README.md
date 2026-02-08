@@ -46,6 +46,8 @@ cp apps/api/.env.example apps/api/.env
 cp apps/web/.env.example apps/web/.env
 ```
 
+Set `OPENLIBRARY_CONTACT_EMAIL` in your API env (`.env` or `apps/api/.env`) to an administrator contact email before starting services.
+
 2. Install dependencies:
 
 ```bash

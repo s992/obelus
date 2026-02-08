@@ -89,6 +89,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   value: {{ .Values.api.env.SESSION_COOKIE_NAME | quote }}
 - name: CSRF_COOKIE_NAME
   value: {{ .Values.api.env.CSRF_COOKIE_NAME | quote }}
+- name: OPENLIBRARY_CONTACT_EMAIL
+  value: {{ required "Set api.env.OPENLIBRARY_CONTACT_EMAIL to an administrator contact email for OpenLibrary API User-Agent." .Values.api.env.OPENLIBRARY_CONTACT_EMAIL | quote }}
 - name: OAUTH_PROVIDER
   value: {{ .Values.api.env.OAUTH_PROVIDER | quote }}
 - name: OAUTH_ISSUER

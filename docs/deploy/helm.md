@@ -39,6 +39,7 @@ api:
   env:
     APP_ORIGIN: https://obelus.example.com
     TRUST_PROXY: "true"
+    OPENLIBRARY_CONTACT_EMAIL: ops@example.com
   secretRefs:
     DATABASE_URL:
       existingSecret: obelus-app-secrets

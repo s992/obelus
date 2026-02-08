@@ -54,6 +54,7 @@ api:
     APP_ORIGINS: ""
     SESSION_COOKIE_NAME: obelus_session
     CSRF_COOKIE_NAME: obelus_csrf
+    OPENLIBRARY_CONTACT_EMAIL: "admin@example.com"
     OAUTH_PROVIDER: oidc
     OAUTH_ISSUER: ""
     OAUTH_JWKS_URL: ""

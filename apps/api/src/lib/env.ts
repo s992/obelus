@@ -27,6 +27,7 @@ const envSchema = z.object({
   SESSION_COOKIE_NAME: z.string().default("obelus_session"),
   CSRF_COOKIE_NAME: z.string().default("obelus_csrf"),
   SESSION_SECRET: z.string().min(16).default("change-this-development-secret"),
+  OPENLIBRARY_CONTACT_EMAIL: z.string().email(),
   OAUTH_PROVIDER: z.enum(["oidc", "oauth2"]).default("oidc"),
   OAUTH_ISSUER: optionalUrl,
   OAUTH_JWKS_URL: optionalUrl,
@@ -39,17 +40,33 @@ const envSchema = z.object({
   OAUTH_SCOPES: z.string().default("openid email profile"),
 });
 
-const parsed = envSchema.parse(process.env);
+const parsed = envSchema.safeParse(process.env);
+if (!parsed.success) {
+  const openLibraryContactIssue = parsed.error.issues.find(
+    (issue) => issue.path[0] === "OPENLIBRARY_CONTACT_EMAIL",
+  );
+
+  if (openLibraryContactIssue) {
+    throw new Error(
+      "OPENLIBRARY_CONTACT_EMAIL is required and must be a valid email address. " +
+        "Set OPENLIBRARY_CONTACT_EMAIL in your environment so Obelus can identify itself to the OpenLibrary API.",
+    );
+  }
+
+  throw parsed.error;
+}
+
+const envValues = parsed.data;
 
 const oauthFields = {
-  issuer: parsed.OAUTH_ISSUER,
-  jwksUrl: parsed.OAUTH_JWKS_URL,
-  clientId: parsed.OAUTH_CLIENT_ID,
-  clientSecret: parsed.OAUTH_CLIENT_SECRET,
-  authorizeUrl: parsed.OAUTH_AUTHORIZE_URL,
-  tokenUrl: parsed.OAUTH_TOKEN_URL,
-  userInfoUrl: parsed.OAUTH_USERINFO_URL,
-  redirectUri: parsed.OAUTH_REDIRECT_URI,
+  issuer: envValues.OAUTH_ISSUER,
+  jwksUrl: envValues.OAUTH_JWKS_URL,
+  clientId: envValues.OAUTH_CLIENT_ID,
+  clientSecret: envValues.OAUTH_CLIENT_SECRET,
+  authorizeUrl: envValues.OAUTH_AUTHORIZE_URL,
+  tokenUrl: envValues.OAUTH_TOKEN_URL,
+  userInfoUrl: envValues.OAUTH_USERINFO_URL,
+  redirectUri: envValues.OAUTH_REDIRECT_URI,
 };
 
 const oauthValues = Object.values(oauthFields);
@@ -62,15 +79,15 @@ if (oauthPartiallyConfigured) {
   );
 }
 
-if (parsed.NODE_ENV === "production") {
-  if (parsed.SESSION_SECRET === "change-this-development-secret") {
+if (envValues.NODE_ENV === "production") {
+  if (envValues.SESSION_SECRET === "change-this-development-secret") {
     throw new Error("SESSION_SECRET must be set to a strong non-default value in production.");
   }
-  if (parsed.DATABASE_URL === "postgres://postgres:postgres@localhost:5432/obelus") {
+  if (envValues.DATABASE_URL === "postgres://postgres:postgres@localhost:5432/obelus") {
     throw new Error("DATABASE_URL must be explicitly set in production.");
   }
 }
 
-export const env = parsed;
+export const env = envValues;
 
 export const isSsoEnabled = oauthConfigured;
