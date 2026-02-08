@@ -6,6 +6,7 @@ import { SettingsView } from "@/features/settings/components/SettingsView/Settin
 import { LoadingObelus } from "@/features/shared/components/LoadingObelus/LoadingObelus";
 import { getErrorMessage } from "@/lib/errors";
 import { queryKeys } from "@/lib/query-keys";
+import * as a11yStyles from "@/styles/a11y.css";
 import { Button } from "@/ui/Button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
@@ -66,16 +67,24 @@ export const AuthenticatedApp = () => {
   const readingCount = (reading.data ?? []).filter((entry) => !entry.finishedAt).length;
   const toReadCount = (toRead.data ?? []).length;
   const readCount = (reading.data ?? []).filter((entry) => Boolean(entry.finishedAt)).length;
+  const currentRouteLabel = location.pathname.startsWith("/analytics")
+    ? "Reports"
+    : location.pathname.startsWith("/settings")
+      ? "Settings"
+      : location.pathname.startsWith("/books/")
+        ? "Book details"
+        : "Reading";
 
   return (
-    <main className={styles.page}>
+    <main className={styles.page} id="main-content" tabIndex={-1}>
       <div className={styles.container}>
+        <h1 className={a11yStyles.srOnly}>{currentRouteLabel}</h1>
         <header className={styles.navigation}>
           <button className={styles.logoButton} onClick={() => navigate("/")} type="button">
             <span className={styles.logoSymbol}>÷</span>
             <span className={styles.logoText}>Obelus</span>
           </button>
-          <nav className={styles.navLinks}>
+          <nav className={styles.navLinks} aria-label="Primary">
             {navLinks.map((link) => {
               const isActive =
                 link.path === "/"
@@ -87,6 +96,7 @@ export const AuthenticatedApp = () => {
                   type="button"
                   key={link.path}
                   color="tertiary"
+                  aria-current={isActive ? "page" : undefined}
                   onClick={() => navigate(link.path)}
                 >
                   {link.label}
@@ -105,7 +115,11 @@ export const AuthenticatedApp = () => {
           </nav>
         </header>
 
-        {logout.error ? <p className={styles.errorText}>{getErrorMessage(logout.error)}</p> : null}
+        {logout.error ? (
+          <p className={styles.errorText} role="alert">
+            {getErrorMessage(logout.error)}
+          </p>
+        ) : null}
 
         <section className={styles.profileBar}>
           <p className={styles.metaText}>{me.data.email}</p>

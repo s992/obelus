@@ -1,6 +1,7 @@
 import { AuthPage } from "@/features/auth/components/AuthPage/AuthPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { axe } from "jest-axe";
 import type { ButtonHTMLAttributes } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -61,7 +62,7 @@ vi.mock("@/ui/InputBase", () => ({
 
 const renderAuthPage = () => {
   const queryClient = new QueryClient();
-  render(
+  return render(
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AuthPage />
@@ -85,6 +86,12 @@ describe("AuthPage integration", () => {
     fireEvent.click(screen.getByRole("button", { name: "Create account" }));
 
     expect(await screen.findAllByText("Required")).toHaveLength(2);
+  });
+
+  it("has no accessibility violations on initial render", async () => {
+    const { container } = renderAuthPage();
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
   it("submits register form with displayName fallback", async () => {

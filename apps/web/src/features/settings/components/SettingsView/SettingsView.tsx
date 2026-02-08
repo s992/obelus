@@ -89,6 +89,12 @@ export const SettingsView = ({
     }
     setIsCopyingPublicUrl(false);
   };
+  const displayNameError = profileForm.formState.errors.displayName?.message;
+  const currentPasswordError = passwordForm.formState.errors.currentPassword?.message;
+  const newPasswordError = passwordForm.formState.errors.newPassword?.message;
+  const confirmPasswordError = passwordForm.formState.errors.confirmPassword?.message;
+  const saveProfileError = saveProfile.error ? getErrorMessage(saveProfile.error) : null;
+  const changePasswordError = changePassword.error ? getErrorMessage(changePassword.error) : null;
 
   return (
     <section className={styles.analyticsView}>
@@ -119,6 +125,8 @@ export const SettingsView = ({
               wrapperClassName={styles.inputWrapper}
               inputClassName={styles.inputField}
               id="settings-display-name"
+              aria-invalid={Boolean(displayNameError)}
+              aria-describedby={displayNameError ? "settings-display-name-error" : undefined}
               value={profileForm.watch("displayName") ?? ""}
               onChange={(value) => {
                 setProfileSaveMessage(null);
@@ -127,8 +135,10 @@ export const SettingsView = ({
                 });
               }}
             />
-            {profileForm.formState.errors.displayName ? (
-              <p className={styles.errorText}>{profileForm.formState.errors.displayName.message}</p>
+            {displayNameError ? (
+              <p id="settings-display-name-error" className={styles.errorText} role="alert">
+                {displayNameError}
+              </p>
             ) : null}
           </div>
 
@@ -171,13 +181,15 @@ export const SettingsView = ({
             </div>
           </div>
 
-          {saveProfile.error ? (
-            <p className={styles.errorText}>{getErrorMessage(saveProfile.error)}</p>
+          {saveProfileError ? (
+            <p className={styles.errorText} role="alert">
+              {saveProfileError}
+            </p>
           ) : null}
           {profileSaveMessage ? (
-            <p className={styles.successText} aria-live="polite">
+            <output className={styles.successText} aria-live="polite">
               {profileSaveMessage}
-            </p>
+            </output>
           ) : null}
           <div className={styles.actionRow}>
             <Button
@@ -208,6 +220,10 @@ export const SettingsView = ({
               id="current-password"
               type="password"
               autoComplete="current-password"
+              aria-invalid={Boolean(currentPasswordError)}
+              aria-describedby={
+                currentPasswordError ? "settings-current-password-error" : undefined
+              }
               value={passwordForm.watch("currentPassword") ?? ""}
               onChange={(value) => {
                 setPasswordSaveMessage(null);
@@ -216,9 +232,9 @@ export const SettingsView = ({
                 });
               }}
             />
-            {passwordForm.formState.errors.currentPassword ? (
-              <p className={styles.errorText}>
-                {passwordForm.formState.errors.currentPassword.message}
+            {currentPasswordError ? (
+              <p id="settings-current-password-error" className={styles.errorText} role="alert">
+                {currentPasswordError}
               </p>
             ) : null}
           </div>
@@ -233,6 +249,8 @@ export const SettingsView = ({
               id="new-password"
               type="password"
               autoComplete="new-password"
+              aria-invalid={Boolean(newPasswordError)}
+              aria-describedby={newPasswordError ? "settings-new-password-error" : undefined}
               value={passwordForm.watch("newPassword") ?? ""}
               onChange={(value) => {
                 setPasswordSaveMessage(null);
@@ -241,9 +259,9 @@ export const SettingsView = ({
                 });
               }}
             />
-            {passwordForm.formState.errors.newPassword ? (
-              <p className={styles.errorText}>
-                {passwordForm.formState.errors.newPassword.message}
+            {newPasswordError ? (
+              <p id="settings-new-password-error" className={styles.errorText} role="alert">
+                {newPasswordError}
               </p>
             ) : null}
           </div>
@@ -258,6 +276,10 @@ export const SettingsView = ({
               id="confirm-password"
               type="password"
               autoComplete="new-password"
+              aria-invalid={Boolean(confirmPasswordError)}
+              aria-describedby={
+                confirmPasswordError ? "settings-confirm-password-error" : undefined
+              }
               value={passwordForm.watch("confirmPassword") ?? ""}
               onChange={(value) => {
                 setPasswordSaveMessage(null);
@@ -266,20 +288,22 @@ export const SettingsView = ({
                 });
               }}
             />
-            {passwordForm.formState.errors.confirmPassword ? (
-              <p className={styles.errorText}>
-                {passwordForm.formState.errors.confirmPassword.message}
+            {confirmPasswordError ? (
+              <p id="settings-confirm-password-error" className={styles.errorText} role="alert">
+                {confirmPasswordError}
               </p>
             ) : null}
           </div>
 
-          {changePassword.error ? (
-            <p className={styles.errorText}>{getErrorMessage(changePassword.error)}</p>
+          {changePasswordError ? (
+            <p className={styles.errorText} role="alert">
+              {changePasswordError}
+            </p>
           ) : null}
           {passwordSaveMessage ? (
-            <p className={styles.successText} aria-live="polite">
+            <output className={styles.successText} aria-live="polite">
               {passwordSaveMessage}
-            </p>
+            </output>
           ) : null}
 
           <div className={styles.actionRow}>
@@ -294,7 +318,11 @@ export const SettingsView = ({
           </div>
         </form>
       </article>
-      {copyToastMessage ? <div className={styles.toast}>{copyToastMessage}</div> : null}
+      {copyToastMessage ? (
+        <output className={styles.toast} aria-live="polite" aria-atomic="true">
+          {copyToastMessage}
+        </output>
+      ) : null}
     </section>
   );
 };

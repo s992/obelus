@@ -1,6 +1,7 @@
 import { SettingsView } from "@/features/settings/components/SettingsView/SettingsView";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { axe } from "jest-axe";
 import type { ButtonHTMLAttributes } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -66,7 +67,7 @@ const me = {
 
 const renderSettingsView = () => {
   const queryClient = new QueryClient();
-  render(
+  return render(
     <QueryClientProvider client={queryClient}>
       <SettingsView me={me} />
     </QueryClientProvider>,
@@ -124,5 +125,11 @@ describe("SettingsView integration", () => {
     expect(
       await screen.findByText("New password and confirmation must match."),
     ).toBeInTheDocument();
+  });
+
+  it("has no accessibility violations on initial render", async () => {
+    const { container } = renderSettingsView();
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 });

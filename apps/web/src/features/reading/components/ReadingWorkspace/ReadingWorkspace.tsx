@@ -33,7 +33,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SearchLg } from "@untitledui/icons/SearchLg";
 import { XClose } from "@untitledui/icons/XClose";
-import { useEffect, useMemo, useState } from "react";
+import { type KeyboardEvent, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import * as styles from "./ReadingWorkspace.css";
@@ -347,6 +347,38 @@ export const ReadingWorkspace = () => {
     { id: "planned", label: "Planned" },
     { id: "finished", label: "Finished" },
   ];
+  const readingPanelId = "reading-list-panel";
+  const readingErrorStartedAt = readingForm.formState.errors.startedAt?.message;
+  const readingErrorProgress = readingForm.formState.errors.progressPercent?.message;
+  const readingSaveError = addReading.error ? getErrorMessage(addReading.error) : null;
+  const queueErrorPriority = toReadForm.formState.errors.priority?.message;
+  const queueSaveError = addQueue.error ? getErrorMessage(addQueue.error) : null;
+  const actionReadingError = toggleReading.error ? getErrorMessage(toggleReading.error) : null;
+  const actionQueueError = toggleQueue.error ? getErrorMessage(toggleQueue.error) : null;
+
+  const onTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const key = event.key;
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(key)) {
+      return;
+    }
+    event.preventDefault();
+    const lastIndex = listTabs.length - 1;
+    const nextIndex =
+      key === "Home"
+        ? 0
+        : key === "End"
+          ? lastIndex
+          : key === "ArrowRight"
+            ? (index + 1) % listTabs.length
+            : (index - 1 + listTabs.length) % listTabs.length;
+    const nextTabId = listTabs[nextIndex]?.id;
+    if (!nextTabId) {
+      return;
+    }
+    setReadingTab(nextTabId);
+    const nextTabElement = document.getElementById(`reading-tab-${nextTabId}`);
+    nextTabElement?.focus();
+  };
 
   return (
     <section className={styles.readingWorkspace}>
@@ -358,6 +390,7 @@ export const ReadingWorkspace = () => {
               wrapperClassName={styles.searchInputWrapper}
               inputClassName={styles.searchInputField}
               id="book-search"
+              aria-label="Search books"
               value={searchInput}
               onChange={(value) => setSearchInput(normalizeInputValue(value))}
               placeholder="Search for books..."
@@ -378,14 +411,20 @@ export const ReadingWorkspace = () => {
           </div>
         </div>
         {!isSearchMode ? (
-          <div className={styles.tabRow}>
-            {listTabs.map((tab) => (
+          <div className={styles.tabRow} role="tablist" aria-label="Reading sections">
+            {listTabs.map((tab, index) => (
               <Button
                 key={tab.id}
                 type="button"
                 color="tertiary"
+                id={`reading-tab-${tab.id}`}
+                role="tab"
+                aria-selected={readingTab === tab.id}
+                aria-controls={readingPanelId}
+                tabIndex={readingTab === tab.id ? 0 : -1}
                 className={readingTab === tab.id ? styles.tabButtonActive : styles.tabButton}
                 onClick={() => setReadingTab(tab.id)}
+                onKeyDown={(event) => onTabKeyDown(event, index)}
               >
                 {tab.label}
               </Button>
@@ -393,7 +432,14 @@ export const ReadingWorkspace = () => {
           </div>
         ) : null}
 
-        <div className={styles.listContainer}>
+        <div
+          className={styles.listContainer}
+          id={!isSearchMode ? readingPanelId : undefined}
+          role={!isSearchMode ? "tabpanel" : undefined}
+          aria-labelledby={!isSearchMode ? `reading-tab-${readingTab}` : undefined}
+          aria-live="polite"
+          aria-busy={isSearchLoading || isLibraryLoading}
+        >
           {isSearchLoading ? <LoadingObelus label="Searching catalog..." compact /> : null}
 
           {isSearchMode
@@ -659,6 +705,7 @@ export const ReadingWorkspace = () => {
                   className={selectedEntry ? styles.actionToggleActive : styles.actionToggle}
                   color="tertiary"
                   type="button"
+                  aria-pressed={Boolean(selectedEntry) && !selectedEntry?.finishedAt}
                   isDisabled={Boolean(selectedEntry?.finishedAt) || isQuickActionPending}
                   onClick={() => toggleReading.mutate()}
                 >
@@ -674,17 +721,22 @@ export const ReadingWorkspace = () => {
                   className={selectedQueueEntry ? styles.actionToggleActive : styles.actionToggle}
                   color="tertiary"
                   type="button"
+                  aria-pressed={Boolean(selectedQueueEntry)}
                   isDisabled={isQuickActionPending}
                   onClick={() => toggleQueue.mutate()}
                 >
                   {toggleQueue.isPending ? "Updating..." : "Planned"}
                 </Button>
               </div>
-              {toggleReading.error ? (
-                <p className={styles.errorText}>{getErrorMessage(toggleReading.error)}</p>
+              {actionReadingError ? (
+                <p className={styles.errorText} role="alert">
+                  {actionReadingError}
+                </p>
               ) : null}
-              {toggleQueue.error ? (
-                <p className={styles.errorText}>{getErrorMessage(toggleQueue.error)}</p>
+              {actionQueueError ? (
+                <p className={styles.errorText} role="alert">
+                  {actionQueueError}
+                </p>
               ) : null}
             </section>
 
@@ -713,6 +765,7 @@ export const ReadingWorkspace = () => {
                       }
                       type="button"
                       color="tertiary"
+                      aria-pressed={readingForm.watch("judgment") === "Accepted"}
                       onClick={() => readingForm.setValue("judgment", "Accepted")}
                     >
                       Accepted
@@ -725,6 +778,7 @@ export const ReadingWorkspace = () => {
                       }
                       type="button"
                       color="tertiary"
+                      aria-pressed={readingForm.watch("judgment") === "Rejected"}
                       onClick={() => readingForm.setValue("judgment", "Rejected")}
                     >
                       Rejected
@@ -737,6 +791,7 @@ export const ReadingWorkspace = () => {
                       }
                       type="button"
                       color="tertiary"
+                      aria-pressed={!readingForm.watch("judgment")}
                       onClick={() =>
                         readingForm.setValue("judgment", undefined, { shouldDirty: true })
                       }
@@ -756,6 +811,10 @@ export const ReadingWorkspace = () => {
                       inputClassName={styles.inputField}
                       id="reading-started-at"
                       type="date"
+                      aria-invalid={Boolean(readingErrorStartedAt)}
+                      aria-describedby={
+                        readingErrorStartedAt ? "reading-started-at-error" : undefined
+                      }
                       value={readingForm.watch("startedAt") ?? ""}
                       onChange={(value) =>
                         readingForm.setValue("startedAt", normalizeInputValue(value), {
@@ -792,6 +851,8 @@ export const ReadingWorkspace = () => {
                       inputClassName={styles.inputField}
                       id="reading-progress"
                       type="number"
+                      aria-invalid={Boolean(readingErrorProgress)}
+                      aria-describedby={readingErrorProgress ? "reading-progress-error" : undefined}
                       inputMode="numeric"
                       min={0}
                       max={100}
@@ -829,18 +890,20 @@ export const ReadingWorkspace = () => {
                   />
                 </section>
 
-                {readingForm.formState.errors.startedAt ? (
-                  <p className={styles.errorText}>
-                    {readingForm.formState.errors.startedAt.message}
+                {readingErrorStartedAt ? (
+                  <p id="reading-started-at-error" className={styles.errorText} role="alert">
+                    {readingErrorStartedAt}
                   </p>
                 ) : null}
-                {readingForm.formState.errors.progressPercent ? (
-                  <p className={styles.errorText}>
-                    {readingForm.formState.errors.progressPercent.message}
+                {readingErrorProgress ? (
+                  <p id="reading-progress-error" className={styles.errorText} role="alert">
+                    {readingErrorProgress}
                   </p>
                 ) : null}
-                {addReading.error ? (
-                  <p className={styles.errorText}>{getErrorMessage(addReading.error)}</p>
+                {readingSaveError ? (
+                  <p className={styles.errorText} role="alert">
+                    {readingSaveError}
+                  </p>
                 ) : null}
 
                 <div className={styles.actionRow}>
@@ -880,6 +943,8 @@ export const ReadingWorkspace = () => {
                       inputClassName={styles.inputField}
                       id="queue-priority"
                       type="number"
+                      aria-invalid={Boolean(queueErrorPriority)}
+                      aria-describedby={queueErrorPriority ? "queue-priority-error" : undefined}
                       inputMode="numeric"
                       min={1}
                       max={5}
@@ -916,24 +981,26 @@ export const ReadingWorkspace = () => {
                       }}
                     />
                   </div>
-                  {toReadForm.formState.errors.priority ? (
-                    <p className={styles.errorText}>
-                      {toReadForm.formState.errors.priority.message}
+                  {queueErrorPriority ? (
+                    <p id="queue-priority-error" className={styles.errorText} role="alert">
+                      {queueErrorPriority}
                     </p>
                   ) : null}
-                  {addQueue.error ? (
-                    <p className={styles.errorText}>{getErrorMessage(addQueue.error)}</p>
+                  {queueSaveError ? (
+                    <p className={styles.errorText} role="alert">
+                      {queueSaveError}
+                    </p>
                   ) : null}
                   {queueSaveState === "success" ? (
-                    <p className={styles.successText} aria-live="polite">
+                    <output className={styles.successText} aria-live="polite">
                       Planned record saved.
-                    </p>
+                    </output>
                   ) : null}
                   {queueSaveState === "warning" ? (
-                    <p className={styles.warningText} aria-live="polite">
+                    <output className={styles.warningText} aria-live="polite">
                       Planned record saved, but the refreshed values did not match exactly. Re-open
                       this book to confirm saved details.
-                    </p>
+                    </output>
                   ) : null}
                   <div className={styles.actionRow}>
                     <Button

@@ -2,6 +2,7 @@ import { trpc } from "@/api/trpc";
 import { useBookDetailsByKeys } from "@/features/books/hooks/useBookDetailsByKeys";
 import { LoadingObelus } from "@/features/shared/components/LoadingObelus/LoadingObelus";
 import { queryKeys } from "@/lib/query-keys";
+import * as a11yStyles from "@/styles/a11y.css";
 import type { DashboardReport } from "@obelus/shared";
 import { useQuery } from "@tanstack/react-query";
 import * as styles from "./AnalyticsView.css";
@@ -45,6 +46,7 @@ export const AnalyticsView = () => {
   if (reading.isLoading || report.isLoading) {
     return <LoadingObelus label="Compiling reports..." />;
   }
+  const monthly = report.data?.monthly ?? [];
 
   return (
     <section className={styles.analyticsView}>
@@ -65,8 +67,8 @@ export const AnalyticsView = () => {
 
       <article className={styles.card}>
         <h3 className={styles.sectionTitle}>Reading timeline</h3>
-        <div className={styles.chartArea}>
-          {(report.data?.monthly ?? []).map((point) => (
+        <div className={styles.chartArea} aria-hidden="true">
+          {monthly.map((point) => (
             <div className={styles.chartColumn} key={point.month}>
               <div className={styles.chartBars}>
                 {point.startedBooks === 0 ? (
@@ -94,6 +96,25 @@ export const AnalyticsView = () => {
             </div>
           ))}
         </div>
+        <table className={a11yStyles.srOnly}>
+          <caption className={a11yStyles.srOnly}>Reading timeline by month</caption>
+          <thead>
+            <tr>
+              <th scope="col">Month</th>
+              <th scope="col">Started</th>
+              <th scope="col">Finished</th>
+            </tr>
+          </thead>
+          <tbody>
+            {monthly.map((point) => (
+              <tr key={`${point.month}-row`}>
+                <th scope="row">{point.month}</th>
+                <td>{point.startedBooks}</td>
+                <td>{point.finishedBooks}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </article>
 
       <article className={styles.card}>

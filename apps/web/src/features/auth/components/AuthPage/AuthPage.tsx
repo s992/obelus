@@ -3,6 +3,7 @@ import { type AuthInput, authSchema } from "@/features/shared/lib/schemas";
 import { getErrorMessage } from "@/lib/errors";
 import { normalizeInputValue } from "@/lib/normalize";
 import { queryKeys } from "@/lib/query-keys";
+import * as a11yStyles from "@/styles/a11y.css";
 import { Button } from "@/ui/Button";
 import { InputBase } from "@/ui/InputBase";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -50,10 +51,16 @@ export const AuthPage = () => {
       : login.error
         ? getErrorMessage(login.error)
         : null;
+  const registerEmailError = registerForm.formState.errors.email?.message;
+  const registerPasswordError = registerForm.formState.errors.password?.message;
+  const registerErrorMessage = register.error ? getErrorMessage(register.error) : null;
+  const loginEmailError = loginForm.formState.errors.email?.message;
+  const loginPasswordError = loginForm.formState.errors.password?.message;
 
   return (
-    <main className={styles.page}>
+    <main className={styles.page} id="main-content" tabIndex={-1}>
       <div className={styles.container}>
+        <h1 className={a11yStyles.srOnly}>Obelus authentication</h1>
         <header className={styles.authHeader}>
           <div className={styles.logo}>
             <span className={styles.logoSymbol}>÷</span>
@@ -78,6 +85,8 @@ export const AuthPage = () => {
                 inputClassName={styles.inputField}
                 id="register-email"
                 autoComplete="email"
+                aria-invalid={Boolean(registerEmailError)}
+                aria-describedby={registerEmailError ? "register-email-error" : undefined}
                 value={registerForm.watch("email") ?? ""}
                 onChange={(value) =>
                   registerForm.setValue("email", normalizeInputValue(value), {
@@ -85,8 +94,10 @@ export const AuthPage = () => {
                   })
                 }
               />
-              {registerForm.formState.errors.email ? (
-                <p className={styles.errorText}>{registerForm.formState.errors.email.message}</p>
+              {registerEmailError ? (
+                <p id="register-email-error" className={styles.errorText} role="alert">
+                  {registerEmailError}
+                </p>
               ) : null}
 
               <label className={styles.fieldLabel} htmlFor="register-display-name">
@@ -114,6 +125,8 @@ export const AuthPage = () => {
                 id="register-password"
                 type="password"
                 autoComplete="new-password"
+                aria-invalid={Boolean(registerPasswordError)}
+                aria-describedby={registerPasswordError ? "register-password-error" : undefined}
                 value={registerForm.watch("password") ?? ""}
                 onChange={(value) =>
                   registerForm.setValue("password", normalizeInputValue(value), {
@@ -121,11 +134,15 @@ export const AuthPage = () => {
                   })
                 }
               />
-              {registerForm.formState.errors.password ? (
-                <p className={styles.errorText}>{registerForm.formState.errors.password.message}</p>
+              {registerPasswordError ? (
+                <p id="register-password-error" className={styles.errorText} role="alert">
+                  {registerPasswordError}
+                </p>
               ) : null}
-              {register.error ? (
-                <p className={styles.errorText}>{getErrorMessage(register.error)}</p>
+              {registerErrorMessage ? (
+                <p className={styles.errorText} role="alert">
+                  {registerErrorMessage}
+                </p>
               ) : null}
 
               <Button
@@ -154,6 +171,8 @@ export const AuthPage = () => {
                 inputClassName={styles.inputField}
                 id="login-email"
                 autoComplete="email"
+                aria-invalid={Boolean(loginEmailError)}
+                aria-describedby={loginEmailError ? "login-email-error" : undefined}
                 value={loginForm.watch("email") ?? ""}
                 onChange={(value) =>
                   loginForm.setValue("email", normalizeInputValue(value), {
@@ -161,8 +180,10 @@ export const AuthPage = () => {
                   })
                 }
               />
-              {loginForm.formState.errors.email ? (
-                <p className={styles.errorText}>{loginForm.formState.errors.email.message}</p>
+              {loginEmailError ? (
+                <p id="login-email-error" className={styles.errorText} role="alert">
+                  {loginEmailError}
+                </p>
               ) : null}
 
               <label className={styles.fieldLabel} htmlFor="login-password">
@@ -174,6 +195,8 @@ export const AuthPage = () => {
                 id="login-password"
                 type="password"
                 autoComplete="current-password"
+                aria-invalid={Boolean(loginPasswordError)}
+                aria-describedby={loginPasswordError ? "login-password-error" : undefined}
                 value={loginForm.watch("password") ?? ""}
                 onChange={(value) =>
                   loginForm.setValue("password", normalizeInputValue(value), {
@@ -181,10 +204,16 @@ export const AuthPage = () => {
                   })
                 }
               />
-              {loginForm.formState.errors.password ? (
-                <p className={styles.errorText}>{loginForm.formState.errors.password.message}</p>
+              {loginPasswordError ? (
+                <p id="login-password-error" className={styles.errorText} role="alert">
+                  {loginPasswordError}
+                </p>
               ) : null}
-              {loginErrorMessage ? <p className={styles.errorText}>{loginErrorMessage}</p> : null}
+              {loginErrorMessage ? (
+                <p className={styles.errorText} role="alert">
+                  {loginErrorMessage}
+                </p>
+              ) : null}
 
               <Button
                 className={styles.primaryButton}

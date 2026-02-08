@@ -6,6 +6,7 @@ import { statusLabel } from "@/features/shared/lib/book-metadata";
 import { statusClassName } from "@/features/shared/lib/status-class";
 import { fallbackTitle, toDate, toPublishedLabel } from "@/lib/format";
 import { queryKeys } from "@/lib/query-keys";
+import * as a11yStyles from "@/styles/a11y.css";
 import { Button } from "@/ui/Button";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -47,8 +48,9 @@ export const PublicCollectionView = () => {
 
   if (collection.isLoading) {
     return (
-      <main className={styles.page}>
+      <main className={styles.page} id="main-content" tabIndex={-1}>
         <div className={styles.container}>
+          <h1 className={a11yStyles.srOnly}>Public collection</h1>
           <LoadingObelus label="Loading public collection..." />
         </div>
       </main>
@@ -61,8 +63,9 @@ export const PublicCollectionView = () => {
         ? "No account was found for this public URL."
         : "This reader keeps their collection private.";
     return (
-      <main className={styles.page}>
+      <main className={styles.page} id="main-content" tabIndex={-1}>
         <div className={styles.container}>
+          <h1 className={a11yStyles.srOnly}>Public collection</h1>
           <article className={styles.card}>
             <h2 className={styles.pageTitle}>Public collection not available</h2>
             <p className={styles.mutedBody}>{unavailableMessage}</p>
@@ -87,8 +90,9 @@ export const PublicCollectionView = () => {
   }
 
   return (
-    <main className={styles.page}>
+    <main className={styles.page} id="main-content" tabIndex={-1}>
       <div className={styles.container}>
+        <h1 className={a11yStyles.srOnly}>Public collection</h1>
         <header className={styles.navigation}>
           <button className={styles.logoButton} onClick={() => navigate("/")} type="button">
             <span className={styles.logoSymbol}>÷</span>

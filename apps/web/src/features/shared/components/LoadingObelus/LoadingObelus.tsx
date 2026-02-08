@@ -8,7 +8,11 @@ export const LoadingObelus = ({
   compact?: boolean;
 }) => (
   <div className={compact ? loadingStateCompact : loadingState}>
-    <p className={loadingObelus}>÷</p>
-    <p className={loadingText}>{label}</p>
+    <p className={loadingObelus} aria-hidden="true">
+      ÷
+    </p>
+    <output className={loadingText} aria-live="polite">
+      {label}
+    </output>
   </div>
 );
