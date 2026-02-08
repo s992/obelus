@@ -1,10 +1,13 @@
 import type { BookDetail, BookSearchResult } from "@obelus/shared";
+import { TRPCError } from "@trpc/server";
 import { and, eq, gt } from "drizzle-orm";
 import { db, redis } from "../db/client.js";
 import { openLibraryCache } from "../db/schema.js";
 
 const SEARCH_TTL_SECONDS = 60 * 60 * 6;
 const DETAIL_TTL_SECONDS = 60 * 60 * 24;
+const FETCH_TIMEOUT_MS = 5000;
+const AUTHOR_FETCH_CONCURRENCY = 8;
 
 const getCache = async <T>(key: string): Promise<T | null> => {
   try {
@@ -54,6 +57,36 @@ const setCache = async (key: string, value: unknown, ttlSeconds: number) => {
     });
 };
 
+const fetchWithTimeout = async (url: string): Promise<Response> => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    return await fetch(url, { signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
+const mapWithConcurrency = async <T, R>(
+  values: T[],
+  concurrency: number,
+  mapper: (value: T) => Promise<R>,
+): Promise<R[]> => {
+  const output: R[] = [];
+  let nextIndex = 0;
+
+  const worker = async () => {
+    while (nextIndex < values.length) {
+      const current = nextIndex;
+      nextIndex += 1;
+      output[current] = await mapper(values[current] as T);
+    }
+  };
+
+  await Promise.all(Array.from({ length: Math.min(concurrency, values.length) }, () => worker()));
+  return output;
+};
+
 export const searchBooks = async (query: string): Promise<BookSearchResult[]> => {
   const key = `openlibrary:search:${query.toLowerCase().trim()}`;
   const cached = await getCache<BookSearchResult[]>(key);
@@ -61,12 +94,15 @@ export const searchBooks = async (query: string): Promise<BookSearchResult[]> =>
     return cached;
   }
 
-  const response = await fetch(
+  const response = await fetchWithTimeout(
     `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=25`,
   );
 
   if (!response.ok) {
-    throw new Error(`OpenLibrary search failed: ${response.status}`);
+    throw new TRPCError({
+      code: "BAD_GATEWAY",
+      message: `OpenLibrary search failed: ${response.status}`,
+    });
   }
 
   const payload = (await response.json()) as {
@@ -116,9 +152,12 @@ export const getBookDetail = async (bookKey: string): Promise<BookDetail> => {
     return cached;
   }
 
-  const response = await fetch(`https://openlibrary.org${normalizedKey}.json`);
+  const response = await fetchWithTimeout(`https://openlibrary.org${normalizedKey}.json`);
   if (!response.ok) {
-    throw new Error(`OpenLibrary detail failed: ${response.status}`);
+    throw new TRPCError({
+      code: "BAD_GATEWAY",
+      message: `OpenLibrary detail failed: ${response.status}`,
+    });
   }
 
   const payload = (await response.json()) as {
@@ -133,19 +172,17 @@ export const getBookDetail = async (bookKey: string): Promise<BookDetail> => {
   const authorNames: string[] = [];
 
   if (Array.isArray(payload.authors)) {
-    const authorFetches = payload.authors
+    const authorKeys = payload.authors
       .map((author) => author.author?.key)
-      .filter((value): value is string => Boolean(value))
-      .map(async (authorKey) => {
-        const authorResponse = await fetch(`https://openlibrary.org${authorKey}.json`);
-        if (!authorResponse.ok) {
-          return null;
-        }
-        const authorPayload = (await authorResponse.json()) as { name?: string };
-        return authorPayload.name ?? null;
-      });
-
-    const resolved = await Promise.all(authorFetches);
+      .filter((value): value is string => Boolean(value));
+    const resolved = await mapWithConcurrency(authorKeys, AUTHOR_FETCH_CONCURRENCY, async (authorKey) => {
+      const authorResponse = await fetchWithTimeout(`https://openlibrary.org${authorKey}.json`);
+      if (!authorResponse.ok) {
+        return null;
+      }
+      const authorPayload = (await authorResponse.json()) as { name?: string };
+      return authorPayload.name ?? null;
+    });
     for (const name of resolved) {
       if (name) {
         authorNames.push(name);

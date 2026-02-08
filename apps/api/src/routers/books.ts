@@ -26,7 +26,7 @@ export const booksRouter = router({
   detailsByKeys: publicProcedure
     .input(
       z.object({
-        keys: z.array(z.string().min(1)).max(200),
+        keys: z.array(z.string().min(1)).max(50),
       }),
     )
     .query(async ({ input }) => {

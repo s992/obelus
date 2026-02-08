@@ -9,13 +9,15 @@ export const createContext = async (
   reply: FastifyReply,
 ): Promise<Context> => {
   const token = request.cookies[env.SESSION_COOKIE_NAME];
-  const user = await resolveCurrentUser(token);
+  const { user, sessionId } = await resolveCurrentUser(token);
   const csrfToken = ensureCsrfToken(request, reply);
   const requestCsrfToken =
     typeof request.headers["x-csrf-token"] === "string" ? request.headers["x-csrf-token"] : null;
 
   return {
+    ip: request.ip,
     user,
+    sessionId,
     csrfToken,
     requestCsrfToken,
     setCookie: (sessionToken: string) => {

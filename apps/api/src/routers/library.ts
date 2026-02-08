@@ -3,6 +3,7 @@ import {
   updateProfileInputSchema,
   upsertReadingEntryInputSchema,
 } from "@obelus/shared";
+import { TRPCError } from "@trpc/server";
 import { and, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "../db/client.js";
@@ -60,7 +61,10 @@ export const libraryRouter = router({
           .where(eq(readingEntries.id, existing[0].id))
           .returning();
         if (!updated) {
-          throw new Error("Failed to update reading entry.");
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to update reading entry.",
+          });
         }
 
         return { id: updated.id };
@@ -79,7 +83,10 @@ export const libraryRouter = router({
         })
         .returning();
       if (!created) {
-        throw new Error("Failed to create reading entry.");
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create reading entry.",
+        });
       }
 
       return { id: created.id };
@@ -129,7 +136,10 @@ export const libraryRouter = router({
       })
       .returning();
     if (!entry) {
-      throw new Error("Failed to add to-read entry.");
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to add to-read entry.",
+      });
     }
 
     return { id: entry.id };
@@ -157,7 +167,10 @@ export const libraryRouter = router({
         .where(eq(users.id, ctx.user.id))
         .returning();
       if (!updated) {
-        throw new Error("Failed to update profile.");
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to update profile.",
+        });
       }
 
       return {

@@ -5,6 +5,7 @@ import { type FastifyReply, type FastifyRequest, fastify } from "fastify";
 import { createContext } from "./lib/context.js";
 import { ensureCsrfToken } from "./lib/csrf.js";
 import { env } from "./lib/env.js";
+import { enforceCsrfRateLimit } from "./lib/rate-limit.js";
 import { appRouter } from "./routers/index.js";
 
 const app = fastify({ logger: true });
@@ -86,6 +87,7 @@ await app.register(cors, {
 await app.register(cookie);
 
 app.get("/csrf", async (request, reply) => {
+  enforceCsrfRateLimit(request.ip);
   const token = ensureCsrfToken(request, reply);
   return { token };
 });

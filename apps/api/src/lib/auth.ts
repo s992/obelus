@@ -30,14 +30,16 @@ export const verifySessionToken = async (
   }
 };
 
-export const resolveCurrentUser = async (token: string | undefined) => {
+export const resolveCurrentUser = async (
+  token: string | undefined,
+): Promise<{ user: typeof users.$inferSelect | null; sessionId: string | null }> => {
   if (!token) {
-    return null;
+    return { user: null, sessionId: null };
   }
 
   const parsed = await verifySessionToken(token);
   if (!parsed) {
-    return null;
+    return { user: null, sessionId: null };
   }
 
   const [sessionRecord] = await db
@@ -54,9 +56,12 @@ export const resolveCurrentUser = async (token: string | undefined) => {
     .limit(1);
 
   if (!sessionRecord) {
-    return null;
+    return { user: null, sessionId: null };
   }
 
   const [userRecord] = await db.select().from(users).where(eq(users.id, parsed.sub)).limit(1);
-  return userRecord ?? null;
+  return {
+    user: userRecord ?? null,
+    sessionId: userRecord ? sessionRecord.id : null,
+  };
 };

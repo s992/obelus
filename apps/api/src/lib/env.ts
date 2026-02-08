@@ -26,6 +26,9 @@ const envSchema = z.object({
   SESSION_COOKIE_NAME: z.string().default("obelus_session"),
   CSRF_COOKIE_NAME: z.string().default("obelus_csrf"),
   SESSION_SECRET: z.string().min(16).default("change-this-development-secret"),
+  OAUTH_PROVIDER: z.enum(["oidc", "oauth2"]).default("oidc"),
+  OAUTH_ISSUER: optionalUrl,
+  OAUTH_JWKS_URL: optionalUrl,
   OAUTH_CLIENT_ID: z.string().optional(),
   OAUTH_CLIENT_SECRET: z.string().optional(),
   OAUTH_AUTHORIZE_URL: optionalUrl,
@@ -35,4 +38,38 @@ const envSchema = z.object({
   OAUTH_SCOPES: z.string().default("openid email profile"),
 });
 
-export const env = envSchema.parse(process.env);
+const parsed = envSchema.parse(process.env);
+
+const oauthFields = {
+  issuer: parsed.OAUTH_ISSUER,
+  jwksUrl: parsed.OAUTH_JWKS_URL,
+  clientId: parsed.OAUTH_CLIENT_ID,
+  clientSecret: parsed.OAUTH_CLIENT_SECRET,
+  authorizeUrl: parsed.OAUTH_AUTHORIZE_URL,
+  tokenUrl: parsed.OAUTH_TOKEN_URL,
+  userInfoUrl: parsed.OAUTH_USERINFO_URL,
+  redirectUri: parsed.OAUTH_REDIRECT_URI,
+};
+
+const oauthValues = Object.values(oauthFields);
+const oauthConfigured = oauthValues.every((value) => Boolean(value));
+const oauthPartiallyConfigured = oauthValues.some((value) => Boolean(value)) && !oauthConfigured;
+
+if (oauthPartiallyConfigured) {
+  throw new Error(
+    "OAuth/OIDC env is partially configured. Set all required OAUTH_* values or leave all unset.",
+  );
+}
+
+if (parsed.NODE_ENV === "production") {
+  if (parsed.SESSION_SECRET === "change-this-development-secret") {
+    throw new Error("SESSION_SECRET must be set to a strong non-default value in production.");
+  }
+  if (parsed.DATABASE_URL === "postgres://postgres:postgres@localhost:5432/obelus") {
+    throw new Error("DATABASE_URL must be explicitly set in production.");
+  }
+}
+
+export const env = parsed;
+
+export const isSsoEnabled = oauthConfigured;

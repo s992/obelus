@@ -1,12 +1,14 @@
-import { randomUUID } from "node:crypto";
 import { TRPCError } from "@trpc/server";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, gt, isNull, lt } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "../db/client.js";
-import { passwords, sessions, users } from "../db/schema.js";
+import { oauthAccounts, oauthLoginStates, passwords, sessions, users } from "../db/schema.js";
 import { issueSessionToken } from "../lib/auth.js";
-import { env } from "../lib/env.js";
+import { normalizeEmail } from "../lib/email.js";
+import { env, isSsoEnabled } from "../lib/env.js";
+import { createSsoBeginPayload, resolveSsoIdentity } from "../lib/oidc.js";
 import { hashPassword, verifyPassword } from "../lib/password.js";
+import { enforceAuthRateLimit } from "../lib/rate-limit.js";
 import {
   csrfProtectedProcedure,
   csrfPublicProcedure,
@@ -14,6 +16,37 @@ import {
   publicProcedure,
   router,
 } from "../lib/trpc.js";
+
+const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 30;
+
+const createSession = async (userId: string) => {
+  const [session] = await db
+    .insert(sessions)
+    .values({
+      userId,
+      expiresAt: new Date(Date.now() + SESSION_TTL_MS),
+    })
+    .returning();
+
+  if (!session) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Failed to create session.",
+    });
+  }
+
+  return session;
+};
+
+const isUniqueViolation = (error: unknown): boolean => {
+  return Boolean(
+    error &&
+      typeof error === "object" &&
+      "code" in error &&
+      typeof error.code === "string" &&
+      error.code === "23505",
+  );
+};
 
 export const authRouter = router({
   me: protectedProcedure.query(async ({ ctx }) => {
@@ -32,49 +65,67 @@ export const authRouter = router({
     .input(
       z.object({
         email: z.string().email(),
-        displayName: z.string().min(1),
+        displayName: z.string().min(1).max(120),
         password: z.string().min(8),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const existing = await db.select().from(users).where(eq(users.email, input.email)).limit(1);
-      if (existing.length > 0) {
-        throw new TRPCError({ code: "CONFLICT", message: "Email already in use." });
-      }
+      const email = normalizeEmail(input.email);
+      const displayName = input.displayName.trim();
+      enforceAuthRateLimit(`${ctx.ip}:register:${email}`);
 
-      const [createdUser] = await db
-        .insert(users)
-        .values({
-          email: input.email,
-          displayName: input.displayName,
-        })
-        .returning();
-      if (!createdUser) {
-        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to create user." });
-      }
+      let createdUserId: string;
+      let createdSessionId: string;
+      try {
+        const passwordHash = await hashPassword(input.password);
+        const created = await db.transaction(async (tx) => {
+          const [createdUser] = await tx
+            .insert(users)
+            .values({
+              email,
+              displayName,
+            })
+            .returning();
 
-      await db.insert(passwords).values({
-        userId: createdUser.id,
-        passwordHash: hashPassword(input.password),
-      });
+          if (!createdUser) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Failed to create user.",
+            });
+          }
 
-      const [session] = await db
-        .insert(sessions)
-        .values({
-          userId: createdUser.id,
-          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-        })
-        .returning();
-      if (!session) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to create session.",
+          await tx.insert(passwords).values({
+            userId: createdUser.id,
+            passwordHash,
+          });
+
+          const [session] = await tx
+            .insert(sessions)
+            .values({
+              userId: createdUser.id,
+              expiresAt: new Date(Date.now() + SESSION_TTL_MS),
+            })
+            .returning();
+          if (!session) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Failed to create session.",
+            });
+          }
+
+          return { userId: createdUser.id, sessionId: session.id };
         });
+        createdUserId = created.userId;
+        createdSessionId = created.sessionId;
+      } catch (error) {
+        if (isUniqueViolation(error)) {
+          throw new TRPCError({ code: "CONFLICT", message: "Email already in use." });
+        }
+        throw error;
       }
 
-      ctx.setCookie(await issueSessionToken(session.id, createdUser.id));
-
-      return { userId: createdUser.id };
+      ctx.setCookie(await issueSessionToken(createdSessionId, createdUserId));
+      return { userId: createdUserId };
     }),
 
   loginWithPassword: csrfPublicProcedure
@@ -85,11 +136,10 @@ export const authRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const [userRecord] = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, input.email))
-        .limit(1);
+      const email = normalizeEmail(input.email);
+      enforceAuthRateLimit(`${ctx.ip}:login:${email}`);
+
+      const [userRecord] = await db.select().from(users).where(eq(users.email, email)).limit(1);
       if (!userRecord) {
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid credentials." });
       }
@@ -100,40 +150,40 @@ export const authRouter = router({
         .where(eq(passwords.userId, userRecord.id))
         .limit(1);
 
-      if (!passwordRecord || !verifyPassword(input.password, passwordRecord.passwordHash)) {
+      if (!passwordRecord || !(await verifyPassword(input.password, passwordRecord.passwordHash))) {
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid credentials." });
       }
 
-      const [session] = await db
-        .insert(sessions)
-        .values({
-          userId: userRecord.id,
-          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-        })
-        .returning();
-      if (!session) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to create session.",
-        });
-      }
-
+      const session = await createSession(userRecord.id);
       ctx.setCookie(await issueSessionToken(session.id, userRecord.id));
-
       return { userId: userRecord.id };
     }),
 
-  logout: csrfProtectedProcedure.mutation(async ({ ctx }) => {
-    const cookie = ctx.user;
-    if (cookie) {
-      await db
-        .update(sessions)
-        .set({ revokedAt: new Date() })
-        .where(and(eq(sessions.userId, cookie.id), isNull(sessions.revokedAt)));
-    }
-    ctx.clearCookie();
-    return { ok: true };
-  }),
+  logout: csrfProtectedProcedure
+    .input(
+      z
+        .object({
+          allSessions: z.boolean().optional(),
+        })
+        .optional(),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const allSessions = Boolean(input?.allSessions);
+      if (allSessions) {
+        await db
+          .update(sessions)
+          .set({ revokedAt: new Date() })
+          .where(and(eq(sessions.userId, ctx.user.id), isNull(sessions.revokedAt)));
+      } else if (ctx.sessionId) {
+        await db
+          .update(sessions)
+          .set({ revokedAt: new Date() })
+          .where(and(eq(sessions.id, ctx.sessionId), eq(sessions.userId, ctx.user.id)));
+      }
+
+      ctx.clearCookie();
+      return { ok: true };
+    }),
 
   changePassword: csrfProtectedProcedure
     .input(
@@ -143,51 +193,170 @@ export const authRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      enforceAuthRateLimit(`${ctx.ip}:change-password:${ctx.user.id}`);
+
       const [passwordRecord] = await db
         .select()
         .from(passwords)
         .where(eq(passwords.userId, ctx.user.id))
         .limit(1);
 
-      if (!passwordRecord || !verifyPassword(input.currentPassword, passwordRecord.passwordHash)) {
+      if (!passwordRecord || !(await verifyPassword(input.currentPassword, passwordRecord.passwordHash))) {
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Current password is incorrect." });
       }
 
-      await db
-        .update(passwords)
-        .set({ passwordHash: hashPassword(input.newPassword) })
-        .where(eq(passwords.userId, ctx.user.id));
+      const nextHash = await hashPassword(input.newPassword);
+      const [newSession] = await db.transaction(async (tx) => {
+        await tx
+          .update(passwords)
+          .set({ passwordHash: nextHash, updatedAt: new Date() })
+          .where(eq(passwords.userId, ctx.user.id));
 
+        await tx
+          .update(sessions)
+          .set({ revokedAt: new Date() })
+          .where(and(eq(sessions.userId, ctx.user.id), isNull(sessions.revokedAt)));
+
+        return tx
+          .insert(sessions)
+          .values({
+            userId: ctx.user.id,
+            expiresAt: new Date(Date.now() + SESSION_TTL_MS),
+          })
+          .returning();
+      });
+
+      if (!newSession) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to create session.",
+        });
+      }
+
+      ctx.setCookie(await issueSessionToken(newSession.id, ctx.user.id));
       return { ok: true };
     }),
 
   ssoConfig: publicProcedure.query(async () => {
     return {
-      enabled: Boolean(env.OAUTH_CLIENT_ID && env.OAUTH_AUTHORIZE_URL && env.OAUTH_REDIRECT_URI),
+      enabled: isSsoEnabled,
       authorizeUrl: env.OAUTH_AUTHORIZE_URL ?? null,
       tokenUrl: env.OAUTH_TOKEN_URL ?? null,
       userInfoUrl: env.OAUTH_USERINFO_URL ?? null,
       clientId: env.OAUTH_CLIENT_ID ?? null,
-      note: "Set OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, OAUTH_AUTHORIZE_URL, OAUTH_TOKEN_URL, OAUTH_USERINFO_URL, OAUTH_REDIRECT_URI to enable OAuth2/OIDC login.",
+      note: "Set all required OAUTH_* variables to enable OAuth2/OIDC login.",
     };
   }),
 
-  ssoBegin: publicProcedure.query(async () => {
-    if (!env.OAUTH_CLIENT_ID || !env.OAUTH_AUTHORIZE_URL || !env.OAUTH_REDIRECT_URI) {
-      throw new TRPCError({
-        code: "PRECONDITION_FAILED",
-        message: "OAuth2/OIDC is not configured in environment variables.",
-      });
-    }
+  ssoBegin: publicProcedure.query(async ({ ctx }) => {
+    enforceAuthRateLimit(`${ctx.ip}:sso-begin`);
+    await db.delete(oauthLoginStates).where(lt(oauthLoginStates.expiresAt, new Date()));
 
-    const state = randomUUID();
-    const authorizeUrl = new URL(env.OAUTH_AUTHORIZE_URL);
-    authorizeUrl.searchParams.set("client_id", env.OAUTH_CLIENT_ID);
-    authorizeUrl.searchParams.set("redirect_uri", env.OAUTH_REDIRECT_URI);
-    authorizeUrl.searchParams.set("response_type", "code");
-    authorizeUrl.searchParams.set("scope", env.OAUTH_SCOPES);
-    authorizeUrl.searchParams.set("state", state);
+    const payload = createSsoBeginPayload();
+    await db.insert(oauthLoginStates).values({
+      state: payload.state,
+      nonce: payload.nonce,
+      codeVerifier: payload.codeVerifier,
+      expiresAt: payload.expiresAt,
+    });
 
-    return { authorizeUrl: authorizeUrl.toString(), state };
+    return {
+      authorizeUrl: payload.authorizeUrl,
+      state: payload.state,
+    };
   }),
+
+  ssoCallback: csrfPublicProcedure
+    .input(
+      z.object({
+        code: z.string().min(1),
+        state: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      enforceAuthRateLimit(`${ctx.ip}:sso-callback`);
+      await db.delete(oauthLoginStates).where(lt(oauthLoginStates.expiresAt, new Date()));
+
+      const [stateRecord] = await db
+        .select()
+        .from(oauthLoginStates)
+        .where(
+          and(
+            eq(oauthLoginStates.state, input.state),
+            isNull(oauthLoginStates.usedAt),
+            gt(oauthLoginStates.expiresAt, new Date()),
+          ),
+        )
+        .limit(1);
+
+      if (!stateRecord) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Invalid or expired SSO state." });
+      }
+
+      await db
+        .update(oauthLoginStates)
+        .set({ usedAt: new Date() })
+        .where(eq(oauthLoginStates.state, stateRecord.state));
+
+      const identity = await resolveSsoIdentity({
+        code: input.code,
+        codeVerifier: stateRecord.codeVerifier,
+        nonce: stateRecord.nonce,
+      });
+      const email = normalizeEmail(identity.email);
+      const displayName = identity.displayName.trim();
+
+      const [linked] = await db
+        .select()
+        .from(oauthAccounts)
+        .where(
+          and(
+            eq(oauthAccounts.provider, identity.provider),
+            eq(oauthAccounts.providerSubject, identity.providerSubject),
+          ),
+        )
+        .limit(1);
+
+      const userId =
+        linked?.userId ??
+        (await db.transaction(async (tx) => {
+          const [existingUser] = await tx.select().from(users).where(eq(users.email, email)).limit(1);
+          const user =
+            existingUser ??
+            (
+              await tx
+                .insert(users)
+                .values({
+                  email,
+                  displayName,
+                })
+                .returning()
+            )[0];
+
+          if (!user) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Failed to resolve SSO user.",
+            });
+          }
+
+          try {
+            await tx.insert(oauthAccounts).values({
+              userId: user.id,
+              provider: identity.provider,
+              providerSubject: identity.providerSubject,
+            });
+          } catch (error) {
+            if (!isUniqueViolation(error)) {
+              throw error;
+            }
+          }
+
+          return user.id;
+        }));
+
+      const session = await createSession(userId);
+      ctx.setCookie(await issueSessionToken(session.id, userId));
+      return { userId };
+    }),
 });
