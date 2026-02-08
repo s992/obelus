@@ -95,6 +95,13 @@ export const chartBarFinished = style({
   backgroundColor: vars.color.textPrimary,
 });
 
+export const chartZeroTick = style({
+  width: "14px",
+  height: "2px",
+  borderRadius: "2px",
+  backgroundColor: vars.color.borderPrimary,
+});
+
 export const chartLabel = style({
   fontSize: "0.75rem",
   color: vars.color.textSecondary,

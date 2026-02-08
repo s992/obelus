@@ -77,6 +77,25 @@ export const dashboardReportSchema = z.object({
   monthly: z.array(reportPointSchema),
 });
 
+export const publicCollectionResponseSchema = z.union([
+  z.object({
+    status: z.literal("available"),
+    profile: z.object({
+      id: z.string().uuid(),
+      displayName: z.string().min(1),
+      createdAt: z.string(),
+    }),
+    reading: z.array(readingEntrySchema),
+    toRead: z.array(toReadEntrySchema),
+  }),
+  z.object({
+    status: z.literal("private"),
+  }),
+  z.object({
+    status: z.literal("not_found"),
+  }),
+]);
+
 export const upsertReadingEntryInputSchema = z.object({
   bookKey: z.string().min(1),
   startedAt: z.string(),
@@ -105,6 +124,7 @@ export type UserProfile = z.infer<typeof userProfileSchema>;
 export type BookSearchResult = z.infer<typeof bookSearchResultSchema>;
 export type BookDetail = z.infer<typeof bookDetailSchema>;
 export type DashboardReport = z.infer<typeof dashboardReportSchema>;
+export type PublicCollectionResponse = z.infer<typeof publicCollectionResponseSchema>;
 export type UpsertReadingEntryInput = z.infer<typeof upsertReadingEntryInputSchema>;
 export type AddToReadInput = z.infer<typeof addToReadInputSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileInputSchema>;

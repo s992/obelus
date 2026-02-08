@@ -51,6 +51,8 @@ export const SettingsView = ({
     mutationFn: (input: ProfileInput) => trpc.library.updateProfile.mutate(input),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.me });
+      setProfileSaveMessage("Profile saved.");
+      window.setTimeout(() => setProfileSaveMessage(null), 1800);
     },
   });
 
@@ -62,6 +64,8 @@ export const SettingsView = ({
       }),
     onSuccess: () => {
       passwordForm.reset();
+      setPasswordSaveMessage("Password updated.");
+      window.setTimeout(() => setPasswordSaveMessage(null), 1800);
     },
   });
 
@@ -69,6 +73,8 @@ export const SettingsView = ({
   const [copiedPublicUrl, setCopiedPublicUrl] = useState(false);
   const [copyToastMessage, setCopyToastMessage] = useState<string | null>(null);
   const [isCopyingPublicUrl, setIsCopyingPublicUrl] = useState(false);
+  const [profileSaveMessage, setProfileSaveMessage] = useState<string | null>(null);
+  const [passwordSaveMessage, setPasswordSaveMessage] = useState<string | null>(null);
 
   const copyPublicUrl = async () => {
     setIsCopyingPublicUrl(true);
@@ -101,7 +107,7 @@ export const SettingsView = ({
               inputClassName={styles.inputField}
               id="settings-email"
               value={me.email}
-              isDisabled
+              readOnly
             />
           </div>
 
@@ -114,11 +120,12 @@ export const SettingsView = ({
               inputClassName={styles.inputField}
               id="settings-display-name"
               value={profileForm.watch("displayName") ?? ""}
-              onChange={(value) =>
+              onChange={(value) => {
+                setProfileSaveMessage(null);
                 profileForm.setValue("displayName", normalizeInputValue(value), {
                   shouldDirty: true,
-                })
-              }
+                });
+              }}
             />
             {profileForm.formState.errors.displayName ? (
               <p className={styles.errorText}>{profileForm.formState.errors.displayName.message}</p>
@@ -133,15 +140,16 @@ export const SettingsView = ({
               id="settings-visibility"
               className={styles.nativeSelect}
               value={profileForm.watch("collectionVisibility")}
-              onChange={(event) =>
+              onChange={(event) => {
+                setProfileSaveMessage(null);
                 profileForm.setValue(
                   "collectionVisibility",
                   event.target.value as "private" | "public",
                   {
                     shouldDirty: true,
                   },
-                )
-              }
+                );
+              }}
             >
               <option value="private">Private</option>
               <option value="public">Public</option>
@@ -165,6 +173,11 @@ export const SettingsView = ({
 
           {saveProfile.error ? (
             <p className={styles.errorText}>{getErrorMessage(saveProfile.error)}</p>
+          ) : null}
+          {profileSaveMessage ? (
+            <p className={styles.successText} aria-live="polite">
+              {profileSaveMessage}
+            </p>
           ) : null}
           <div className={styles.actionRow}>
             <Button
@@ -194,12 +207,14 @@ export const SettingsView = ({
               inputClassName={styles.inputField}
               id="current-password"
               type="password"
+              autoComplete="current-password"
               value={passwordForm.watch("currentPassword") ?? ""}
-              onChange={(value) =>
+              onChange={(value) => {
+                setPasswordSaveMessage(null);
                 passwordForm.setValue("currentPassword", normalizeInputValue(value), {
                   shouldDirty: true,
-                })
-              }
+                });
+              }}
             />
             {passwordForm.formState.errors.currentPassword ? (
               <p className={styles.errorText}>
@@ -217,12 +232,14 @@ export const SettingsView = ({
               inputClassName={styles.inputField}
               id="new-password"
               type="password"
+              autoComplete="new-password"
               value={passwordForm.watch("newPassword") ?? ""}
-              onChange={(value) =>
+              onChange={(value) => {
+                setPasswordSaveMessage(null);
                 passwordForm.setValue("newPassword", normalizeInputValue(value), {
                   shouldDirty: true,
-                })
-              }
+                });
+              }}
             />
             {passwordForm.formState.errors.newPassword ? (
               <p className={styles.errorText}>
@@ -240,12 +257,14 @@ export const SettingsView = ({
               inputClassName={styles.inputField}
               id="confirm-password"
               type="password"
+              autoComplete="new-password"
               value={passwordForm.watch("confirmPassword") ?? ""}
-              onChange={(value) =>
+              onChange={(value) => {
+                setPasswordSaveMessage(null);
                 passwordForm.setValue("confirmPassword", normalizeInputValue(value), {
                   shouldDirty: true,
-                })
-              }
+                });
+              }}
             />
             {passwordForm.formState.errors.confirmPassword ? (
               <p className={styles.errorText}>
@@ -256,6 +275,11 @@ export const SettingsView = ({
 
           {changePassword.error ? (
             <p className={styles.errorText}>{getErrorMessage(changePassword.error)}</p>
+          ) : null}
+          {passwordSaveMessage ? (
+            <p className={styles.successText} aria-live="polite">
+              {passwordSaveMessage}
+            </p>
           ) : null}
 
           <div className={styles.actionRow}>

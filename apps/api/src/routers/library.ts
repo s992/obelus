@@ -186,8 +186,11 @@ export const libraryRouter = router({
     .input(z.object({ userId: z.string().uuid() }))
     .query(async ({ input }) => {
       const [profile] = await db.select().from(users).where(eq(users.id, input.userId)).limit(1);
-      if (!profile || profile.collectionVisibility !== "public") {
-        return null;
+      if (!profile) {
+        return { status: "not_found" as const };
+      }
+      if (profile.collectionVisibility !== "public") {
+        return { status: "private" as const };
       }
 
       const [reading, queue] = await Promise.all([
@@ -204,6 +207,7 @@ export const libraryRouter = router({
       ]);
 
       return {
+        status: "available" as const,
         profile: {
           id: profile.id,
           displayName: profile.displayName,

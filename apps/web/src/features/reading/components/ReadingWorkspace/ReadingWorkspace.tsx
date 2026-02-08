@@ -20,6 +20,7 @@ import {
   fallbackTitle,
   toDate,
   toDateInputValue,
+  toIsoFromLocalDateInput,
   toPublishedLabel,
   toPublishedYearLabel,
 } from "@/lib/format";
@@ -48,7 +49,9 @@ export const ReadingWorkspace = () => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [readingTab, setReadingTab] = useState<ReadingTab>("currently-reading");
   const [expandedMetadataBookKey, setExpandedMetadataBookKey] = useState<string | null>(null);
+  const [queueSaveState, setQueueSaveState] = useState<"idle" | "success" | "warning">("idle");
   const isSearchMode = searchInput.trim().length > 0;
+  const normalizeOptionalText = (value: string | null | undefined) => (value ?? "").trim();
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -110,8 +113,8 @@ export const ReadingWorkspace = () => {
       }
       await trpc.library.upsertReading.mutate({
         bookKey: selectedBookKey,
-        startedAt: new Date(input.startedAt).toISOString(),
-        finishedAt: input.finishedAt ? new Date(input.finishedAt).toISOString() : null,
+        startedAt: toIsoFromLocalDateInput(input.startedAt),
+        finishedAt: input.finishedAt ? toIsoFromLocalDateInput(input.finishedAt) : null,
         progressPercent: Number.isFinite(input.progressPercent)
           ? (input.progressPercent ?? null)
           : null,
@@ -135,19 +138,34 @@ export const ReadingWorkspace = () => {
       if (!selectedBookKey) {
         throw new Error("Select a book before adding to planned.");
       }
+      const normalizedPriority = Number.isFinite(input.priority) ? (input.priority ?? null) : null;
+      const normalizedNotes = normalizeOptionalText(input.notes) || null;
       await trpc.library.addToRead.mutate({
         bookKey: selectedBookKey,
-        priority: Number.isFinite(input.priority) ? (input.priority ?? null) : null,
-        notes: input.notes ?? null,
+        priority: normalizedPriority,
+        notes: normalizedNotes,
       });
       if (selectedEntry?.id) {
         await trpc.library.removeReading.mutate({ id: selectedEntry.id });
       }
+      return { bookKey: selectedBookKey, priority: normalizedPriority, notes: normalizedNotes };
     },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: queryKeys.reading });
-      qc.invalidateQueries({ queryKey: queryKeys.toRead });
-      qc.invalidateQueries({ queryKey: queryKeys.report });
+    onSuccess: async (payload) => {
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: queryKeys.reading }),
+        qc.invalidateQueries({ queryKey: queryKeys.toRead }),
+        qc.invalidateQueries({ queryKey: queryKeys.report }),
+      ]);
+      const latestQueue = await qc.fetchQuery({
+        queryKey: queryKeys.toRead,
+        queryFn: () => trpc.library.listToRead.query(),
+      });
+      const saved = latestQueue.find((entry) => entry.bookKey === payload.bookKey);
+      const matches =
+        Boolean(saved) &&
+        (saved?.priority ?? null) === payload.priority &&
+        normalizeOptionalText(saved?.notes) === normalizeOptionalText(payload.notes);
+      setQueueSaveState(matches ? "success" : "warning");
     },
   });
 
@@ -183,17 +201,17 @@ export const ReadingWorkspace = () => {
       }
       if (selectedEntry?.id) {
         if (selectedEntry.finishedAt) {
-          return;
+          return { action: "noop" as const };
         }
         await trpc.library.upsertReading.mutate({
           bookKey: selectedBookKey,
           startedAt: selectedEntry.startedAt,
           finishedAt: new Date().toISOString(),
           progressPercent: selectedEntry.progressPercent ?? 100,
-          judgment: selectedEntry.judgment,
+          judgment: readingForm.getValues("judgment") ?? selectedEntry.judgment,
           notes: selectedEntry.notes,
         });
-        return;
+        return { action: "finished" as const };
       }
       const now = new Date().toISOString();
       await trpc.library.upsertReading.mutate({
@@ -207,11 +225,15 @@ export const ReadingWorkspace = () => {
       if (selectedQueueEntry?.id) {
         await trpc.library.removeFromToRead.mutate({ id: selectedQueueEntry.id });
       }
+      return { action: "started" as const };
     },
-    onSuccess: () => {
+    onSuccess: (payload) => {
       qc.invalidateQueries({ queryKey: queryKeys.reading });
       qc.invalidateQueries({ queryKey: queryKeys.toRead });
       qc.invalidateQueries({ queryKey: queryKeys.report });
+      if (payload?.action === "finished" && readingTab === "currently-reading") {
+        setReadingTab("finished");
+      }
     },
   });
 
@@ -317,6 +339,7 @@ export const ReadingWorkspace = () => {
       priority: selectedQueueEntry?.priority ?? undefined,
       notes: selectedQueueEntry?.notes ?? "",
     });
+    setQueueSaveState("idle");
   }, [readingForm, selectedBookKey, selectedEntry, selectedQueueEntry, toReadForm]);
 
   const listTabs: { id: ReadingTab; label: string }[] = [
@@ -552,7 +575,13 @@ export const ReadingWorkspace = () => {
 
       <article className={styles.detailCard}>
         {!selectedBookKey ? (
-          <p className={styles.mutedBody}>Select a book to view and update record details.</p>
+          <section className={styles.emptyDetailState}>
+            <h3 className={styles.sectionTitle}>Choose a title to begin</h3>
+            <p className={styles.mutedBody}>
+              Select any book in Reading, Planned, Finished, or Search to edit dates, judgment,
+              notes, and queue details.
+            </p>
+          </section>
         ) : isBookDetailLoading ? (
           <LoadingObelus label="Loading book record..." />
         ) : detail.data ? (
@@ -763,6 +792,10 @@ export const ReadingWorkspace = () => {
                       inputClassName={styles.inputField}
                       id="reading-progress"
                       type="number"
+                      inputMode="numeric"
+                      min={0}
+                      max={100}
+                      step={1}
                       placeholder="Progress %"
                       value={readingForm.watch("progressPercent")?.toString() ?? ""}
                       onChange={(value) =>
@@ -799,6 +832,11 @@ export const ReadingWorkspace = () => {
                 {readingForm.formState.errors.startedAt ? (
                   <p className={styles.errorText}>
                     {readingForm.formState.errors.startedAt.message}
+                  </p>
+                ) : null}
+                {readingForm.formState.errors.progressPercent ? (
+                  <p className={styles.errorText}>
+                    {readingForm.formState.errors.progressPercent.message}
                   </p>
                 ) : null}
                 {addReading.error ? (
@@ -842,17 +880,22 @@ export const ReadingWorkspace = () => {
                       inputClassName={styles.inputField}
                       id="queue-priority"
                       type="number"
+                      inputMode="numeric"
+                      min={1}
+                      max={5}
+                      step={1}
                       placeholder="1-5"
                       value={toReadForm.watch("priority")?.toString() ?? ""}
-                      onChange={(value) =>
+                      onChange={(value) => {
+                        setQueueSaveState("idle");
                         toReadForm.setValue(
                           "priority",
                           normalizeInputValue(value) === ""
                             ? undefined
                             : Number(normalizeInputValue(value)),
                           { shouldDirty: true },
-                        )
-                      }
+                        );
+                      }}
                     />
                   </div>
                   <div className={styles.fieldStack}>
@@ -865,15 +908,32 @@ export const ReadingWorkspace = () => {
                       rows={3}
                       placeholder="Reason for planning"
                       value={toReadForm.watch("notes") ?? ""}
-                      onChange={(value: unknown) =>
+                      onChange={(value: unknown) => {
+                        setQueueSaveState("idle");
                         toReadForm.setValue("notes", normalizeInputValue(value), {
                           shouldDirty: true,
-                        })
-                      }
+                        });
+                      }}
                     />
                   </div>
+                  {toReadForm.formState.errors.priority ? (
+                    <p className={styles.errorText}>
+                      {toReadForm.formState.errors.priority.message}
+                    </p>
+                  ) : null}
                   {addQueue.error ? (
                     <p className={styles.errorText}>{getErrorMessage(addQueue.error)}</p>
+                  ) : null}
+                  {queueSaveState === "success" ? (
+                    <p className={styles.successText} aria-live="polite">
+                      Planned record saved.
+                    </p>
+                  ) : null}
+                  {queueSaveState === "warning" ? (
+                    <p className={styles.warningText} aria-live="polite">
+                      Planned record saved, but the refreshed values did not match exactly. Re-open
+                      this book to confirm saved details.
+                    </p>
                   ) : null}
                   <div className={styles.actionRow}>
                     <Button

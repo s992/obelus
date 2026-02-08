@@ -39,6 +39,18 @@ export const AuthPage = () => {
     },
   });
 
+  const loginErrorMessage =
+    login.error &&
+    "data" in login.error &&
+    login.error.data &&
+    typeof login.error.data === "object" &&
+    "code" in login.error.data &&
+    login.error.data.code === "UNAUTHORIZED"
+      ? "Invalid email or password."
+      : login.error
+        ? getErrorMessage(login.error)
+        : null;
+
   return (
     <main className={styles.page}>
       <div className={styles.container}>
@@ -65,6 +77,7 @@ export const AuthPage = () => {
                 wrapperClassName={styles.inputWrapper}
                 inputClassName={styles.inputField}
                 id="register-email"
+                autoComplete="email"
                 value={registerForm.watch("email") ?? ""}
                 onChange={(value) =>
                   registerForm.setValue("email", normalizeInputValue(value), {
@@ -83,6 +96,7 @@ export const AuthPage = () => {
                 wrapperClassName={styles.inputWrapper}
                 inputClassName={styles.inputField}
                 id="register-display-name"
+                autoComplete="name"
                 value={registerForm.watch("displayName") ?? ""}
                 onChange={(value) =>
                   registerForm.setValue("displayName", normalizeInputValue(value), {
@@ -99,6 +113,7 @@ export const AuthPage = () => {
                 inputClassName={styles.inputField}
                 id="register-password"
                 type="password"
+                autoComplete="new-password"
                 value={registerForm.watch("password") ?? ""}
                 onChange={(value) =>
                   registerForm.setValue("password", normalizeInputValue(value), {
@@ -138,6 +153,7 @@ export const AuthPage = () => {
                 wrapperClassName={styles.inputWrapper}
                 inputClassName={styles.inputField}
                 id="login-email"
+                autoComplete="email"
                 value={loginForm.watch("email") ?? ""}
                 onChange={(value) =>
                   loginForm.setValue("email", normalizeInputValue(value), {
@@ -157,6 +173,7 @@ export const AuthPage = () => {
                 inputClassName={styles.inputField}
                 id="login-password"
                 type="password"
+                autoComplete="current-password"
                 value={loginForm.watch("password") ?? ""}
                 onChange={(value) =>
                   loginForm.setValue("password", normalizeInputValue(value), {
@@ -167,9 +184,7 @@ export const AuthPage = () => {
               {loginForm.formState.errors.password ? (
                 <p className={styles.errorText}>{loginForm.formState.errors.password.message}</p>
               ) : null}
-              {login.error ? (
-                <p className={styles.errorText}>{getErrorMessage(login.error)}</p>
-              ) : null}
+              {loginErrorMessage ? <p className={styles.errorText}>{loginErrorMessage}</p> : null}
 
               <Button
                 className={styles.primaryButton}

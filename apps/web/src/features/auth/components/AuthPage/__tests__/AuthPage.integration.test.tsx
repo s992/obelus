@@ -38,12 +38,25 @@ vi.mock("@/ui/InputBase", () => ({
     value,
     id,
     type = "text",
+    autoComplete,
+    readOnly,
   }: {
     onChange?: (value: unknown) => void;
     value?: string;
     id?: string;
     type?: string;
-  }) => <input id={id} type={type} value={value ?? ""} onChange={(event) => onChange?.(event)} />,
+    autoComplete?: string;
+    readOnly?: boolean;
+  }) => (
+    <input
+      id={id}
+      type={type}
+      autoComplete={autoComplete}
+      readOnly={readOnly}
+      value={value ?? ""}
+      onChange={(event) => onChange?.(event)}
+    />
+  ),
 }));
 
 const renderAuthPage = () => {
@@ -100,5 +113,26 @@ describe("AuthPage integration", () => {
         displayName: "reader@example.com",
       });
     });
+  });
+
+  it("shows a user-friendly error for unauthorized sign-in", async () => {
+    loginMutate.mockRejectedValue({ data: { code: "UNAUTHORIZED" } });
+
+    renderAuthPage();
+
+    const loginCard = screen.getByRole("heading", { name: "Sign in" }).closest("article");
+    if (!loginCard) {
+      throw new Error("Login card not found");
+    }
+
+    fireEvent.change(within(loginCard).getByLabelText("Email"), {
+      target: { value: "reader@example.com" },
+    });
+    fireEvent.change(within(loginCard).getByLabelText("Password"), {
+      target: { value: "password123" },
+    });
+    fireEvent.click(within(loginCard).getByRole("button", { name: "Sign in" }));
+
+    expect(await within(loginCard).findByText("Invalid email or password.")).toBeInTheDocument();
   });
 });

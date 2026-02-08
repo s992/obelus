@@ -69,18 +69,26 @@ export const AnalyticsView = () => {
           {(report.data?.monthly ?? []).map((point) => (
             <div className={styles.chartColumn} key={point.month}>
               <div className={styles.chartBars}>
-                <span
-                  className={styles.chartBarStarted}
-                  style={{
-                    height: `${Math.max(8, (point.startedBooks / monthlyMax) * 120)}px`,
-                  }}
-                />
-                <span
-                  className={styles.chartBarFinished}
-                  style={{
-                    height: `${Math.max(8, (point.finishedBooks / monthlyMax) * 120)}px`,
-                  }}
-                />
+                {point.startedBooks === 0 ? (
+                  <span className={styles.chartZeroTick} />
+                ) : (
+                  <span
+                    className={styles.chartBarStarted}
+                    style={{
+                      height: `${Math.max(8, (point.startedBooks / monthlyMax) * 120)}px`,
+                    }}
+                  />
+                )}
+                {point.finishedBooks === 0 ? (
+                  <span className={styles.chartZeroTick} />
+                ) : (
+                  <span
+                    className={styles.chartBarFinished}
+                    style={{
+                      height: `${Math.max(8, (point.finishedBooks / monthlyMax) * 120)}px`,
+                    }}
+                  />
+                )}
               </div>
               <span className={styles.chartLabel}>{point.month.slice(5)}</span>
             </div>

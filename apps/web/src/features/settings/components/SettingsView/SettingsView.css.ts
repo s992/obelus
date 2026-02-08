@@ -150,6 +150,12 @@ export const errorText = style({
   fontSize: "0.75rem",
 });
 
+export const successText = style({
+  margin: 0,
+  color: vars.color.success,
+  fontSize: "0.75rem",
+});
+
 export const actionRow = style({
   display: "flex",
   gap: "0.75rem",

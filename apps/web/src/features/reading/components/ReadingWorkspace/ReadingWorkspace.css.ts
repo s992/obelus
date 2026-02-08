@@ -267,6 +267,20 @@ export const mutedBody = style({
   lineHeight: 1.6,
 });
 
+export const successText = style({
+  margin: 0,
+  color: vars.color.success,
+  fontSize: "0.75rem",
+  lineHeight: 1.4,
+});
+
+export const warningText = style({
+  margin: 0,
+  color: vars.color.textSecondary,
+  fontSize: "0.75rem",
+  lineHeight: 1.4,
+});
+
 export const bookHeader = style({
   display: "grid",
   gap: "0.25rem",
@@ -387,6 +401,12 @@ export const sectionBlock = style({
   gap: "0.75rem",
   paddingTop: "1.5rem",
   borderTop: `1px solid ${vars.color.borderSecondary}`,
+});
+
+export const emptyDetailState = style({
+  display: "grid",
+  gap: "0.75rem",
+  alignContent: "start",
 });
 
 export const fieldLabel = style({

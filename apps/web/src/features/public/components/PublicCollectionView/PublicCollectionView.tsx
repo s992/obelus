@@ -18,48 +18,54 @@ export const PublicCollectionView = () => {
   const userId = params.userId ?? "";
 
   const collection = useQuery({
-    queryKey: queryKeys.publicCollection(userId),
     queryFn: () => trpc.library.publicCollection.query({ userId }),
-    enabled: userId.length > 0,
+    queryKey: queryKeys.publicCollection(userId),
+    // Keep stale unavailable states deterministic across retries.
     retry: false,
+    enabled: userId.length > 0,
   });
+  const availableCollection = collection.data?.status === "available" ? collection.data : null;
 
   const allBookKeys = useMemo(() => {
     const keys = new Set<string>();
-    for (const entry of collection.data?.reading ?? []) keys.add(entry.bookKey);
-    for (const entry of collection.data?.toRead ?? []) keys.add(entry.bookKey);
+    for (const entry of availableCollection?.reading ?? []) keys.add(entry.bookKey);
+    for (const entry of availableCollection?.toRead ?? []) keys.add(entry.bookKey);
     return [...keys];
-  }, [collection.data]);
+  }, [availableCollection]);
 
   const detailLookups = useBookDetailsByKeys(allBookKeys);
   const detailIndex = detailLookups.data ?? {};
 
   const publicReading = useMemo(
-    () => (collection.data?.reading ?? []).filter((entry) => !entry.finishedAt),
-    [collection.data?.reading],
+    () => (availableCollection?.reading ?? []).filter((entry) => !entry.finishedAt),
+    [availableCollection],
   );
   const publicFinished = useMemo(
-    () => (collection.data?.reading ?? []).filter((entry) => Boolean(entry.finishedAt)),
-    [collection.data?.reading],
+    () => (availableCollection?.reading ?? []).filter((entry) => Boolean(entry.finishedAt)),
+    [availableCollection],
   );
 
-  if (!collection.data) {
-    if (collection.isLoading) {
-      return (
-        <main className={styles.page}>
-          <div className={styles.container}>
-            <LoadingObelus label="Loading public collection..." />
-          </div>
-        </main>
-      );
-    }
+  if (collection.isLoading) {
+    return (
+      <main className={styles.page}>
+        <div className={styles.container}>
+          <LoadingObelus label="Loading public collection..." />
+        </div>
+      </main>
+    );
+  }
 
+  if (!collection.data || collection.data.status !== "available") {
+    const unavailableMessage =
+      !collection.data || collection.data.status === "not_found"
+        ? "No account was found for this public URL."
+        : "This reader keeps their collection private.";
     return (
       <main className={styles.page}>
         <div className={styles.container}>
           <article className={styles.card}>
             <h2 className={styles.pageTitle}>Public collection not available</h2>
-            <p className={styles.mutedBody}>This collection is private or does not exist.</p>
+            <p className={styles.mutedBody}>{unavailableMessage}</p>
             <div className={styles.actionRow}>
               <Button
                 className={styles.ghostButton}
@@ -76,6 +82,10 @@ export const PublicCollectionView = () => {
     );
   }
 
+  if (!availableCollection) {
+    return null;
+  }
+
   return (
     <main className={styles.page}>
       <div className={styles.container}>
@@ -87,7 +97,7 @@ export const PublicCollectionView = () => {
         </header>
 
         <article className={styles.card}>
-          <h2 className={styles.pageTitle}>{collection.data.profile.displayName}</h2>
+          <h2 className={styles.pageTitle}>{availableCollection.profile.displayName}</h2>
           <p className={styles.mutedBody}>Public reading collection (read only)</p>
 
           <section className={styles.sectionBlock}>
@@ -180,8 +190,8 @@ export const PublicCollectionView = () => {
           <section className={styles.sectionBlock}>
             <h3 className={styles.sectionTitle}>Planned</h3>
             <div className={styles.listContainer}>
-              {collection.data.toRead.length ? (
-                collection.data.toRead.map((entry) => {
+              {availableCollection.toRead.length ? (
+                availableCollection.toRead.map((entry) => {
                   const meta = detailIndex[entry.bookKey];
                   return (
                     <div key={entry.id} className={styles.bookListRowReadOnly}>
