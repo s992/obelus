@@ -10,7 +10,10 @@ test("enforceAuthRateLimit rejects after threshold", () => {
     enforceAuthRateLimit(key);
   }
 
-  assert.throws(() => enforceAuthRateLimit(key), (error: unknown) => {
-    return error instanceof TRPCError && error.code === "TOO_MANY_REQUESTS";
-  });
+  assert.throws(
+    () => enforceAuthRateLimit(key),
+    (error: unknown) => {
+      return error instanceof TRPCError && error.code === "TOO_MANY_REQUESTS";
+    },
+  );
 });

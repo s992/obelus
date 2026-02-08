@@ -201,7 +201,10 @@ export const authRouter = router({
         .where(eq(passwords.userId, ctx.user.id))
         .limit(1);
 
-      if (!passwordRecord || !(await verifyPassword(input.currentPassword, passwordRecord.passwordHash))) {
+      if (
+        !passwordRecord ||
+        !(await verifyPassword(input.currentPassword, passwordRecord.passwordHash))
+      ) {
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Current password is incorrect." });
       }
 
@@ -320,7 +323,11 @@ export const authRouter = router({
       const userId =
         linked?.userId ??
         (await db.transaction(async (tx) => {
-          const [existingUser] = await tx.select().from(users).where(eq(users.email, email)).limit(1);
+          const [existingUser] = await tx
+            .select()
+            .from(users)
+            .where(eq(users.email, email))
+            .limit(1);
           const user =
             existingUser ??
             (

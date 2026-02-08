@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
-import { jwtVerify, createRemoteJWKSet } from "jose";
 import { TRPCError } from "@trpc/server";
+import { createRemoteJWKSet, jwtVerify } from "jose";
 import { env, isSsoEnabled } from "./env.js";
 
 const OAUTH_TXN_TTL_MS = 10 * 60 * 1000;
@@ -42,17 +42,70 @@ const assertSsoEnabled = () => {
   }
 };
 
-export const createSsoBeginPayload = () => {
+type SsoConfig = {
+  authorizeUrl: string;
+  clientId: string;
+  clientSecret: string;
+  issuer: string;
+  jwksUrl: string;
+  redirectUri: string;
+  tokenUrl: string;
+  userInfoUrl: string;
+};
+
+const getSsoConfig = (): SsoConfig => {
   assertSsoEnabled();
+
+  const {
+    OAUTH_AUTHORIZE_URL: authorizeUrl,
+    OAUTH_CLIENT_ID: clientId,
+    OAUTH_CLIENT_SECRET: clientSecret,
+    OAUTH_ISSUER: issuer,
+    OAUTH_JWKS_URL: jwksUrl,
+    OAUTH_REDIRECT_URI: redirectUri,
+    OAUTH_TOKEN_URL: tokenUrl,
+    OAUTH_USERINFO_URL: userInfoUrl,
+  } = env;
+
+  if (
+    !authorizeUrl ||
+    !clientId ||
+    !clientSecret ||
+    !issuer ||
+    !jwksUrl ||
+    !redirectUri ||
+    !tokenUrl ||
+    !userInfoUrl
+  ) {
+    throw new TRPCError({
+      code: "PRECONDITION_FAILED",
+      message: "OAuth2/OIDC is not configured in environment variables.",
+    });
+  }
+
+  return {
+    authorizeUrl,
+    clientId,
+    clientSecret,
+    issuer,
+    jwksUrl,
+    redirectUri,
+    tokenUrl,
+    userInfoUrl,
+  };
+};
+
+export const createSsoBeginPayload = () => {
+  const sso = getSsoConfig();
 
   const state = randomBase64Url(24);
   const nonce = randomBase64Url(24);
   const codeVerifier = randomBase64Url(48);
   const codeChallenge = sha256Base64Url(codeVerifier);
 
-  const authorizeUrl = new URL(env.OAUTH_AUTHORIZE_URL!);
-  authorizeUrl.searchParams.set("client_id", env.OAUTH_CLIENT_ID!);
-  authorizeUrl.searchParams.set("redirect_uri", env.OAUTH_REDIRECT_URI!);
+  const authorizeUrl = new URL(sso.authorizeUrl);
+  authorizeUrl.searchParams.set("client_id", sso.clientId);
+  authorizeUrl.searchParams.set("redirect_uri", sso.redirectUri);
   authorizeUrl.searchParams.set("response_type", "code");
   authorizeUrl.searchParams.set("scope", env.OAUTH_SCOPES);
   authorizeUrl.searchParams.set("state", state);
@@ -86,18 +139,18 @@ export const resolveSsoIdentity = async (input: {
   codeVerifier: string;
   nonce: string;
 }) => {
-  assertSsoEnabled();
+  const sso = getSsoConfig();
 
   const body = new URLSearchParams({
     grant_type: "authorization_code",
     code: input.code,
-    redirect_uri: env.OAUTH_REDIRECT_URI!,
-    client_id: env.OAUTH_CLIENT_ID!,
-    client_secret: env.OAUTH_CLIENT_SECRET!,
+    redirect_uri: sso.redirectUri,
+    client_id: sso.clientId,
+    client_secret: sso.clientSecret,
     code_verifier: input.codeVerifier,
   });
 
-  const tokenPayload = await fetchJson<TokenResponse>(env.OAUTH_TOKEN_URL!, {
+  const tokenPayload = await fetchJson<TokenResponse>(sso.tokenUrl, {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
     body: body.toString(),
@@ -110,10 +163,10 @@ export const resolveSsoIdentity = async (input: {
     });
   }
 
-  const jwks = createRemoteJWKSet(new URL(env.OAUTH_JWKS_URL!));
+  const jwks = createRemoteJWKSet(new URL(sso.jwksUrl));
   const { payload } = await jwtVerify(tokenPayload.id_token, jwks, {
-    issuer: env.OAUTH_ISSUER!,
-    audience: env.OAUTH_CLIENT_ID!,
+    issuer: sso.issuer,
+    audience: sso.clientId,
   });
 
   if (payload.nonce !== input.nonce) {
@@ -132,7 +185,7 @@ export const resolveSsoIdentity = async (input: {
         : undefined;
 
   if (!email || !name) {
-    const userInfo = await fetchJson<UserInfoResponse>(env.OAUTH_USERINFO_URL!, {
+    const userInfo = await fetchJson<UserInfoResponse>(sso.userInfoUrl, {
       headers: { authorization: `Bearer ${tokenPayload.access_token}` },
     });
     email = email ?? userInfo.email;

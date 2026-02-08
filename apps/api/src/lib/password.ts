@@ -45,7 +45,13 @@ const parseStoredHash = (storedHash: string): ParsedHash | null => {
     const n = Number(paramMap.get("N"));
     const r = Number(paramMap.get("r"));
     const p = Number(paramMap.get("p"));
-    if (!parts[2] || !parts[3] || !Number.isInteger(n) || !Number.isInteger(r) || !Number.isInteger(p)) {
+    if (
+      !parts[2] ||
+      !parts[3] ||
+      !Number.isInteger(n) ||
+      !Number.isInteger(r) ||
+      !Number.isInteger(p)
+    ) {
       return null;
     }
     return {

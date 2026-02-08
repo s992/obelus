@@ -9,6 +9,7 @@ test("hashPassword produces a verifiable hash", async () => {
 });
 
 test("verifyPassword supports legacy salt:hash format", async () => {
-  const legacy = "b57b0ac5f8d7b1f4aa8974f8876d74ee:e3254d8db0f3612a05cc0b06657df7e90f9b8a4854f2082f3df43e26d3df7fdb2d5f8f85b2fbdb94e44d1d0c3f3a9b6d0d0d7e4d03f8b4ea0a6cc7ceca0562a8";
+  const legacy =
+    "b57b0ac5f8d7b1f4aa8974f8876d74ee:e3254d8db0f3612a05cc0b06657df7e90f9b8a4854f2082f3df43e26d3df7fdb2d5f8f85b2fbdb94e44d1d0c3f3a9b6d0d0d7e4d03f8b4ea0a6cc7ceca0562a8";
   assert.equal(await verifyPassword("wrong", legacy), false);
 });

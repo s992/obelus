@@ -175,14 +175,18 @@ export const getBookDetail = async (bookKey: string): Promise<BookDetail> => {
     const authorKeys = payload.authors
       .map((author) => author.author?.key)
       .filter((value): value is string => Boolean(value));
-    const resolved = await mapWithConcurrency(authorKeys, AUTHOR_FETCH_CONCURRENCY, async (authorKey) => {
-      const authorResponse = await fetchWithTimeout(`https://openlibrary.org${authorKey}.json`);
-      if (!authorResponse.ok) {
-        return null;
-      }
-      const authorPayload = (await authorResponse.json()) as { name?: string };
-      return authorPayload.name ?? null;
-    });
+    const resolved = await mapWithConcurrency(
+      authorKeys,
+      AUTHOR_FETCH_CONCURRENCY,
+      async (authorKey) => {
+        const authorResponse = await fetchWithTimeout(`https://openlibrary.org${authorKey}.json`);
+        if (!authorResponse.ok) {
+          return null;
+        }
+        const authorPayload = (await authorResponse.json()) as { name?: string };
+        return authorPayload.name ?? null;
+      },
+    );
     for (const name of resolved) {
       if (name) {
         authorNames.push(name);
