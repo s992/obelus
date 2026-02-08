@@ -199,12 +199,42 @@ jobs:
       VERSION: ${{ needs.prepare.outputs.version }}
       IS_PRERELEASE: ${{ needs.prepare.outputs.is_prerelease }}
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build release notes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git fetch --tags --force
+
+          previous_tag="$(git tag --list 'v*' --sort=-v:refname | awk -v target="$VERSION" '$0 != target {print; exit}')"
+          notes_file="release-notes.md"
+
+          {
+            echo "## Changelog"
+            echo
+            if [[ -n "$previous_tag" ]]; then
+              echo "Changes since \`$previous_tag\`:"
+              echo
+              git log --pretty=format:'- %h %s (%an)' "${previous_tag}..${VERSION}"
+            else
+              echo "Initial release changes:"
+              echo
+              git log --pretty=format:'- %h %s (%an)' "${VERSION}"
+            fi
+            echo
+          } > "$notes_file"
+
       - name: Create GitHub release
         shell: bash
         run: |
           set -euo pipefail
 
-          args=("$VERSION" "--repo" "$GITHUB_REPOSITORY" "--generate-notes" "--verify-tag")
+          args=("$VERSION" "--repo" "$GITHUB_REPOSITORY" "--verify-tag" "--notes-file" "release-notes.md")
           if [[ "$IS_PRERELEASE" == "true" ]]; then
             args+=("--prerelease")
           fi
