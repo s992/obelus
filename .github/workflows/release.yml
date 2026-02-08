@@ -134,7 +134,6 @@ jobs:
 
           git add "$chart_file"
           git commit -m "chore(release): sync chart versions for ${VERSION}"
-          git push origin HEAD:main
 
       - name: Create and push git tag
         run: |
