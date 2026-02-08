@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   analyze:
-    name: analyze
+    name: CodeQL / analyze
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

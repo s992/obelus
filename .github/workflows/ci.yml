@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   lint:
-    name: lint
+    name: CI / lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -45,7 +45,7 @@ jobs:
         run: pnpm lint
 
   typecheck:
-    name: typecheck
+    name: CI / typecheck
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -70,7 +70,7 @@ jobs:
         run: pnpm typecheck
 
   build:
-    name: build
+    name: CI / build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -92,7 +92,7 @@ jobs:
         run: pnpm build
 
   test-api:
-    name: test-api
+    name: CI / test-api
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -114,7 +114,7 @@ jobs:
         run: pnpm --filter @obelus/api test
 
   test-web:
-    name: test-web
+    name: CI / test-web
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -136,7 +136,7 @@ jobs:
         run: pnpm --filter @obelus/web test
 
   dependency-review:
-    name: dependency-review
+    name: CI / dependency-review
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
