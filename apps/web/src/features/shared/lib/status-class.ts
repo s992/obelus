@@ -1,4 +1,4 @@
-import * as styles from "@/styles/app.css";
+import * as styles from "./status.css";
 
 export const statusClassName = (status: "Accepted" | "Rejected" | "Reading" | "Unjudged") => {
   if (status === "Accepted") return styles.acceptedBadge;
