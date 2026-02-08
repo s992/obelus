@@ -3,5 +3,5 @@ export default {
     "biome check --write --files-ignore-unknown=true --no-errors-on-unmatched",
   ],
   "*.{js,jsx,ts,tsx}": ["oxlint --fix"],
-  "*": () => "npm run typecheck",
+  "*": () => "pnpm typecheck",
 };

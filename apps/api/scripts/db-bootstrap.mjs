@@ -96,7 +96,7 @@ const ensureRoleAndDatabase = async () => {
 const run = async () => {
   await ensureRoleAndDatabase();
 
-  execSync("npm run db:migrate -w @obelus/api", {
+  execSync("pnpm --filter @obelus/api db:migrate", {
     stdio: "inherit",
     env: {
       ...process.env,

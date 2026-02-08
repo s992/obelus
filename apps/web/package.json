@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "3.10.0",
-    "@obelus/api": "0.1.0",
-    "@obelus/shared": "0.1.0",
+    "@obelus/api": "workspace:*",
+    "@obelus/shared": "workspace:*",
     "@react-stately/utils": "^3.11.0",
     "@tanstack/react-query": "5.66.8",
     "@trpc/client": "11.9.0",

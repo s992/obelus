@@ -2,17 +2,18 @@
   "name": "obelus",
   "private": true,
   "version": "0.1.0",
-  "workspaces": ["apps/*", "packages/*"],
+  "packageManager": "pnpm@10.29.1",
   "scripts": {
-    "dev": "npm run dev -w @obelus/api & npm run dev -w @obelus/web",
-    "dev:api": "npm run dev -w @obelus/api",
-    "dev:web": "npm run dev -w @obelus/web",
-    "db:bootstrap": "npm run db:bootstrap -w @obelus/api",
-    "build": "npm run build -w @obelus/shared && npm run build -w @obelus/api && npm run build -w @obelus/web",
-    "typecheck": "npm run typecheck -ws",
+    "dev": "pnpm --filter @obelus/api dev & pnpm --filter @obelus/web dev",
+    "dev:api": "pnpm --filter @obelus/api dev",
+    "dev:web": "pnpm --filter @obelus/web dev",
+    "db:bootstrap": "pnpm --filter @obelus/api db:bootstrap",
+    "build": "pnpm --filter @obelus/shared build && pnpm --filter @obelus/api build && pnpm --filter @obelus/web build",
+    "typecheck": "pnpm -r typecheck",
     "lint": "oxlint . && biome check .",
     "format": "biome format --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint-staged": "lint-staged"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

@@ -45,19 +45,19 @@ cp apps/web/.env.example apps/web/.env
 2. Install dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
 3. Generate DB migration (already generated, rerun if schema changes):
 
 ```bash
-npm run db:generate -w @obelus/api
+pnpm --filter @obelus/api db:generate
 ```
 
 4. Bootstrap Postgres role/database and apply migrations:
 
 ```bash
-npm run db:bootstrap
+pnpm db:bootstrap
 ```
 
 `db:bootstrap` uses `DATABASE_URL` as the app connection and `ADMIN_DATABASE_URL` for admin-level creation/grants.
@@ -65,7 +65,7 @@ npm run db:bootstrap
 5. Start apps:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 - Web: `http://localhost:5173`
@@ -82,6 +82,6 @@ If you open the web app via a WSL host IP (for example `http://172.25.71.27:5173
 ## Quality checks
 
 ```bash
-npm run typecheck
-npm run lint
+pnpm typecheck
+pnpm lint
 ```
