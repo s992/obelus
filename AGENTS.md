@@ -8,6 +8,21 @@
 - do not do "whatever it takes" to complete your task. if there's an issue with the design, you don't know how to do it, etc.: stop and ask for guidance. consider the *intent* of the request rather than striving to get a green checkmark (or whatever)
 - prefer third party libraries (if a feasible one is available) over writing something from scratch
 
-## commit message instructions
+## testing strategy
 
-all commit messages must be prefixed with "ai slop: "
+- tests must be relevant and useful
+- you may only skip writing tests if there are not any relevant/useful tests that can be written for your changes
+
+## commit instructions
+
+- all commit messages must be prefixed with "ai slop: "
+- *never* bypass pre-commit hooks
+
+## validation
+
+prior to any commit, verify that each of the following passes:
+
+- `pnpm run typecheck`
+- `pnpm run lint`
+- `pnpm run test`
+- `pnpm run build`

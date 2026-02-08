@@ -14,7 +14,8 @@
     "release": "bash ./scripts/release-dispatch.sh",
     "format": "biome format --write .",
     "prepare": "husky",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "test": "pnpm -r test"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
