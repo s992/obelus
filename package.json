@@ -11,6 +11,7 @@
     "build": "pnpm --filter @obelus/shared build && pnpm --filter @obelus/api build && pnpm --filter @obelus/web build",
     "typecheck": "pnpm -r typecheck",
     "lint": "oxlint . && biome check .",
+    "release": "bash ./scripts/release-dispatch.sh",
     "format": "biome format --write .",
     "prepare": "husky",
     "lint-staged": "lint-staged"

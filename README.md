@@ -94,4 +94,5 @@ pnpm lint
 
 - Docker: see `docs/deploy/docker.md`
 - Helm/Kubernetes: see `docs/deploy/helm.md`
+- Releases: see `docs/deploy/release.md`
 - Configuration reference: `docs/configuration.md`

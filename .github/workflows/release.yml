@@ -1,0 +1,212 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version tag (for example, v1.2.3 or v1.2.3-rc.1)
+        required: true
+        type: string
+      prerelease:
+        description: Mark release as prerelease
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: release-${{ inputs.version }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  prepare:
+    name: prepare-release
+    if: github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSION: ${{ inputs.version }}
+      IS_PRERELEASE: ${{ inputs.prerelease }}
+    outputs:
+      version: ${{ steps.validate.outputs.version }}
+      is_prerelease: ${{ steps.validate.outputs.is_prerelease }}
+      image_tag_rules: ${{ steps.tags.outputs.rules }}
+      owner: ${{ steps.owner.outputs.value }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate release inputs
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid version '$VERSION'. Expected vX.Y.Z or vX.Y.Z-prerelease."
+            exit 1
+          fi
+
+          if [[ "$IS_PRERELEASE" == "true" && ! "$VERSION" =~ - ]]; then
+            echo "prerelease=true requires a prerelease version (for example v1.2.3-rc.1)."
+            exit 1
+          fi
+
+          if [[ "$IS_PRERELEASE" != "true" && "$VERSION" =~ - ]]; then
+            echo "Versions with prerelease suffix require prerelease=true."
+            exit 1
+          fi
+
+          if git rev-parse "$VERSION" >/dev/null 2>&1 || git ls-remote --exit-code --tags origin "refs/tags/$VERSION" >/dev/null 2>&1; then
+            echo "Tag '$VERSION' already exists."
+            exit 1
+          fi
+
+          if gh release view "$VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release '$VERSION' already exists."
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "is_prerelease=$IS_PRERELEASE" >> "$GITHUB_OUTPUT"
+
+      - name: Compute image owner
+        id: owner
+        run: echo "value=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_OUTPUT"
+
+      - name: Compute image tag rules
+        id: tags
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "$IS_PRERELEASE" == "true" ]]; then
+            {
+              echo "rules<<EOF"
+              echo "type=raw,value=${VERSION}"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [[ "$VERSION" =~ ^v([0-9]+)\.([0-9]+)\.[0-9]+$ ]]; then
+            major="${BASH_REMATCH[1]}"
+            minor="${BASH_REMATCH[2]}"
+          else
+            echo "Unexpected stable version format: $VERSION"
+            exit 1
+          fi
+
+          {
+            echo "rules<<EOF"
+            echo "type=raw,value=${VERSION}"
+            echo "type=raw,value=v${major}.${minor}"
+            echo "type=raw,value=v${major}"
+            echo "type=raw,value=latest"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync chart version metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version_no_v="${VERSION#v}"
+          chart_file="charts/obelus/Chart.yaml"
+
+          sed -i -E "s/^version: .*/version: ${version_no_v}/" "$chart_file"
+          sed -i -E "s/^appVersion: .*/appVersion: \"${version_no_v}\"/" "$chart_file"
+
+          if git diff --quiet -- "$chart_file"; then
+            echo "Chart already matches release version."
+            exit 0
+          fi
+
+          git add "$chart_file"
+          git commit -m "chore(release): sync chart versions for ${VERSION}"
+          git push origin HEAD:main
+
+      - name: Create and push git tag
+        run: |
+          git tag -a "$VERSION" -m "Release $VERSION"
+          git push origin "$VERSION"
+
+  publish-images:
+    name: publish-${{ matrix.component }}
+    needs:
+      - prepare
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - component: api
+            dockerfile: apps/api/Dockerfile
+          - component: web
+            dockerfile: apps/web/Dockerfile
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.version }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ needs.prepare.outputs.owner }}/obelus-${{ matrix.component }}
+          tags: |
+            ${{ needs.prepare.outputs.image_tag_rules }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ matrix.component }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.component }}
+
+  create-release:
+    name: create-github-release
+    needs:
+      - prepare
+      - publish-images
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSION: ${{ needs.prepare.outputs.version }}
+      IS_PRERELEASE: ${{ needs.prepare.outputs.is_prerelease }}
+    steps:
+      - name: Create GitHub release
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          args=("$VERSION" "--repo" "$GITHUB_REPOSITORY" "--generate-notes" "--verify-tag")
+          if [[ "$IS_PRERELEASE" == "true" ]]; then
+            args+=("--prerelease")
+          fi
+          gh release create "${args[@]}"
