@@ -1,0 +1,18 @@
+import { URL, fileURLToPath } from "node:url";
+import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
+import react from "@vitejs/plugin-react-swc";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [react(), vanillaExtractPlugin()],
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+    },
+    dedupe: ["react", "react-dom"],
+  },
+  server: {
+    host: true,
+    port: 5173,
+  },
+});

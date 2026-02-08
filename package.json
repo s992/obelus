@@ -1,0 +1,21 @@
+{
+  "name": "obelus",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "npm run dev -w @obelus/api & npm run dev -w @obelus/web",
+    "dev:api": "npm run dev -w @obelus/api",
+    "dev:web": "npm run dev -w @obelus/web",
+    "db:bootstrap": "npm run db:bootstrap -w @obelus/api",
+    "build": "npm run build -w @obelus/shared && npm run build -w @obelus/api && npm run build -w @obelus/web",
+    "typecheck": "npm run typecheck -ws",
+    "lint": "oxlint . && biome check .",
+    "format": "biome format --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "oxlint": "1.27.0",
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,12 @@
+node_modules
+.env
+.env.*
+!.env.example
+coverage
+dist
+build
+.tmp
+.DS_Store
+LEDGER.md
+*.log
+npm-debug.log*

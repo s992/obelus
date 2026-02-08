@@ -1,0 +1,11 @@
+{
+  "ignorePatterns": [
+    "**/apps/web/src/generated/**",
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/node_modules.upstream/**",
+    "**/.git.upstream/**",
+    "**/*.upstream",
+    "**/*.upstream.*"
+  ]
+}
