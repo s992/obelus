@@ -371,31 +371,6 @@ export const metadataDescriptionTitle = style({
   letterSpacing: "0.08em",
 });
 
-export const metadataBody = style({
-  margin: 0,
-  color: vars.color.textSecondary,
-  fontSize: "0.8125rem",
-  lineHeight: 1.65,
-});
-
-export const metadataExpandButton = style({
-  justifySelf: "start",
-  border: "none",
-  background: "transparent",
-  color: vars.color.textSecondary,
-  fontSize: "0.75rem",
-  padding: 0,
-  cursor: "pointer",
-  textDecoration: "underline",
-  selectors: {
-    "&:focus-visible": {
-      outline: "none",
-      boxShadow: `0 0 0 2px ${vars.color.textPrimary}`,
-      borderRadius: "2px",
-    },
-  },
-});
-
 export const sectionBlock = style({
   display: "grid",
   gap: "0.75rem",

@@ -1,5 +1,6 @@
 import { trpc } from "@/api/trpc";
 import { useBookDetailsByKeys } from "@/features/books/hooks/useBookDetailsByKeys";
+import { BookMetadataDescription } from "@/features/reading/components/BookMetadataDescription/BookMetadataDescription";
 import { BookCover } from "@/features/shared/components/BookCover/BookCover";
 import { LoadingObelus } from "@/features/shared/components/LoadingObelus/LoadingObelus";
 import {
@@ -295,31 +296,13 @@ export const ReadingWorkspace = () => {
     });
   }, [detail.data]);
 
-  const metadataDescriptionPreview = useMemo(() => {
-    const description = detailMetadata.descriptionText;
-    if (!description) {
-      return {
-        value: null as string | null,
-        isLong: false,
-      };
-    }
-    const isLong = description.length > METADATA_DESCRIPTION_COLLAPSE_LENGTH;
-    if (!isLong || isMetadataDescriptionExpanded) {
-      return {
-        value: description,
-        isLong,
-      };
-    }
-    return {
-      value: `${description.slice(0, METADATA_DESCRIPTION_COLLAPSE_LENGTH).trimEnd()}...`,
-      isLong,
-    };
-  }, [detailMetadata.descriptionText, isMetadataDescriptionExpanded]);
-
   const hasMetadataRows = Boolean(
     detailMetadata.firstPublished || detailMetadata.pages || detailMetadata.isbn,
   );
-  const hasMetadataDescription = Boolean(metadataDescriptionPreview.value);
+  const metadataDescription = detailMetadata.descriptionText;
+  const hasMetadataDescription = Boolean(metadataDescription);
+  const isMetadataDescriptionLong =
+    (metadataDescription?.length ?? 0) > METADATA_DESCRIPTION_COLLAPSE_LENGTH;
   const hasRenderableMetadata = hasMetadataRows || hasMetadataDescription;
 
   useEffect(() => {
@@ -675,21 +658,17 @@ export const ReadingWorkspace = () => {
                       {hasMetadataDescription ? (
                         <div className={styles.metadataDescriptionGroup}>
                           <p className={styles.metadataDescriptionTitle}>Description</p>
-                          <p className={styles.metadataBody}>{metadataDescriptionPreview.value}</p>
-                          {metadataDescriptionPreview.isLong ? (
-                            <button
-                              className={styles.metadataExpandButton}
-                              type="button"
-                              onClick={() => {
-                                if (!selectedBookKey) return;
-                                setExpandedMetadataBookKey((currentValue) =>
-                                  currentValue === selectedBookKey ? null : selectedBookKey,
-                                );
-                              }}
-                            >
-                              {isMetadataDescriptionExpanded ? "Show less" : "Show more"}
-                            </button>
-                          ) : null}
+                          <BookMetadataDescription
+                            description={metadataDescription ?? ""}
+                            isExpanded={isMetadataDescriptionExpanded}
+                            isLong={isMetadataDescriptionLong}
+                            onToggleExpanded={() => {
+                              if (!selectedBookKey) return;
+                              setExpandedMetadataBookKey((currentValue) =>
+                                currentValue === selectedBookKey ? null : selectedBookKey,
+                              );
+                            }}
+                          />
                         </div>
                       ) : null}
                     </section>
