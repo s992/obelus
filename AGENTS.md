@@ -2,7 +2,8 @@
 
 ## general instructions
 
-- do not do "whatever it takes" to complete your task. if there's an issue with the design, you don't know how to do it, etc.: stop and ask for guidance
+- unless otherwise instructed: after making changes, do not give me a command to run to test your changes. run the command yourself and verify it works
+- do not do "whatever it takes" to complete your task. if there's an issue with the design, you don't know how to do it, etc.: stop and ask for guidance. consider the *intent* of the request rather than striving to get a green checkmark (or whatever)
 - prefer third party libraries (if a feasible one is available) over writing something from scratch
 
 ## commit message instructions
