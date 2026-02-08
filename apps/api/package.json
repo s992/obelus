@@ -3,14 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "files": ["dist", "drizzle", "package.json"],
   "exports": {
     ".": "./src/index.ts"
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
+    "start": "node dist/apps/api/src/server.js",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "tsx --test src/**/*.test.ts",
+    "migrate": "node dist/apps/api/src/db/migrate.js",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:bootstrap": "node ./scripts/db-bootstrap.mjs"

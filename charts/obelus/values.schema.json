@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "secrets": {
+      "type": "object",
+      "properties": {
+        "create": { "type": "boolean" },
+        "name": { "type": "string" },
+        "data": {
+          "type": "object",
+          "properties": {
+            "DATABASE_URL": { "type": "string" },
+            "REDIS_URL": { "type": "string" },
+            "SESSION_SECRET": { "type": "string" },
+            "OAUTH_CLIENT_SECRET": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "api": {
+      "type": "object",
+      "properties": {
+        "replicaCount": { "type": "integer", "minimum": 1 },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": { "type": "string", "minLength": 1 },
+            "tag": { "type": "string" },
+            "pullPolicy": {
+              "type": "string",
+              "enum": ["Always", "IfNotPresent", "Never"]
+            }
+          },
+          "required": ["repository", "pullPolicy"],
+          "additionalProperties": false
+        },
+        "env": {
+          "type": "object",
+          "properties": {
+            "NODE_ENV": { "type": "string" },
+            "API_PORT": { "type": "string" },
+            "TRUST_PROXY": { "type": "string" },
+            "APP_ORIGIN": { "type": "string" },
+            "APP_ORIGINS": { "type": "string" },
+            "SESSION_COOKIE_NAME": { "type": "string" },
+            "CSRF_COOKIE_NAME": { "type": "string" },
+            "OAUTH_PROVIDER": { "type": "string" },
+            "OAUTH_ISSUER": { "type": "string" },
+            "OAUTH_JWKS_URL": { "type": "string" },
+            "OAUTH_CLIENT_ID": { "type": "string" },
+            "OAUTH_CLIENT_SECRET": { "type": "string" },
+            "OAUTH_AUTHORIZE_URL": { "type": "string" },
+            "OAUTH_TOKEN_URL": { "type": "string" },
+            "OAUTH_USERINFO_URL": { "type": "string" },
+            "OAUTH_REDIRECT_URI": { "type": "string" },
+            "OAUTH_SCOPES": { "type": "string" },
+            "DATABASE_URL": { "type": "string" },
+            "REDIS_URL": { "type": "string" },
+            "SESSION_SECRET": { "type": "string" }
+          },
+          "additionalProperties": true
+        }
+      },
+      "required": ["image", "env"],
+      "additionalProperties": true
+    },
+    "web": {
+      "type": "object",
+      "properties": {
+        "replicaCount": { "type": "integer", "minimum": 1 },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": { "type": "string", "minLength": 1 },
+            "tag": { "type": "string" },
+            "pullPolicy": {
+              "type": "string",
+              "enum": ["Always", "IfNotPresent", "Never"]
+            }
+          },
+          "required": ["repository", "pullPolicy"],
+          "additionalProperties": false
+        },
+        "env": {
+          "type": "object",
+          "properties": {
+            "API_BASE_URL": { "type": "string" }
+          },
+          "required": ["API_BASE_URL"],
+          "additionalProperties": true
+        }
+      },
+      "required": ["image", "env"],
+      "additionalProperties": true
+    },
+    "ingress": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "className": { "type": "string" },
+        "host": { "type": "string" },
+        "apiPaths": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "webPath": { "type": "string" }
+      },
+      "required": ["enabled", "host", "apiPaths", "webPath"],
+      "additionalProperties": true
+    }
+  },
+  "required": ["api", "web", "ingress", "secrets"],
+  "additionalProperties": true
+}

@@ -1,0 +1,5 @@
+1. Obelus has been deployed.
+2. Confirm API and web pods are ready:
+   kubectl get pods -l app.kubernetes.io/instance={{ .Release.Name }}
+3. If ingress is enabled, access Obelus at:
+   http{{ if .Values.ingress.tls }}s{{ end }}://{{ .Values.ingress.host }}

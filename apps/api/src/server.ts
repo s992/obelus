@@ -2,13 +2,14 @@ import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import { type FastifyReply, type FastifyRequest, fastify } from "fastify";
+import { checkDatabaseReadiness } from "./db/client.js";
 import { createContext } from "./lib/context.js";
 import { ensureCsrfToken } from "./lib/csrf.js";
 import { env } from "./lib/env.js";
 import { enforceCsrfRateLimit } from "./lib/rate-limit.js";
 import { appRouter } from "./routers/index.js";
 
-const app = fastify({ logger: true });
+const app = fastify({ logger: true, trustProxy: env.TRUST_PROXY });
 
 const configuredOrigins = (env.APP_ORIGINS ?? "")
   .split(",")
@@ -102,6 +103,15 @@ await app.register(fastifyTRPCPlugin, {
 });
 
 app.get("/health", async () => ({ ok: true }));
+app.get("/livez", async () => ({ ok: true }));
+app.get("/readyz", async (_, reply) => {
+  const dbReady = await checkDatabaseReadiness();
+  if (!dbReady) {
+    reply.code(503);
+    return { ok: false };
+  }
+  return { ok: true };
+});
 
 app.listen({ port: env.API_PORT, host: "::" }).catch((error) => {
   app.log.error(error);

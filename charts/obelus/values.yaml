@@ -1,0 +1,163 @@
+nameOverride: ""
+fullnameOverride: ""
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  name: ""
+
+secrets:
+  create: false
+  name: ""
+  data:
+    DATABASE_URL: ""
+    REDIS_URL: ""
+    SESSION_SECRET: ""
+    OAUTH_CLIENT_SECRET: ""
+
+api:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/your-org/obelus-api
+    tag: ""
+    pullPolicy: IfNotPresent
+  containerPort: 4000
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext:
+    fsGroup: 10001
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    runAsGroup: 10001
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: false
+  service:
+    type: ClusterIP
+    port: 4000
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  env:
+    NODE_ENV: production
+    API_PORT: "4000"
+    TRUST_PROXY: "true"
+    APP_ORIGIN: "https://obelus.example.com"
+    APP_ORIGINS: ""
+    SESSION_COOKIE_NAME: obelus_session
+    CSRF_COOKIE_NAME: obelus_csrf
+    OAUTH_PROVIDER: oidc
+    OAUTH_ISSUER: ""
+    OAUTH_JWKS_URL: ""
+    OAUTH_CLIENT_ID: ""
+    OAUTH_AUTHORIZE_URL: ""
+    OAUTH_TOKEN_URL: ""
+    OAUTH_USERINFO_URL: ""
+    OAUTH_REDIRECT_URI: ""
+    OAUTH_SCOPES: openid email profile
+  secretRefs:
+    DATABASE_URL:
+      existingSecret: obelus-app-secrets
+      key: DATABASE_URL
+    REDIS_URL:
+      existingSecret: obelus-app-secrets
+      key: REDIS_URL
+    SESSION_SECRET:
+      existingSecret: obelus-app-secrets
+      key: SESSION_SECRET
+    OAUTH_CLIENT_SECRET:
+      existingSecret: obelus-app-secrets
+      key: OAUTH_CLIENT_SECRET
+  extraEnv: []
+  livenessProbe:
+    path: /livez
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readinessProbe:
+    path: /readyz
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  migrationInitContainer:
+    enabled: true
+    command:
+      - node
+      - dist/apps/api/src/db/migrate.js
+    extraEnv: []
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+web:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/your-org/obelus-web
+    tag: ""
+    pullPolicy: IfNotPresent
+  containerPort: 8080
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext:
+    fsGroup: 101
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 101
+    runAsGroup: 101
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: false
+  service:
+    type: ClusterIP
+    port: 8080
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+  env:
+    API_BASE_URL: ""
+  extraEnv: []
+  livenessProbe:
+    path: /healthz
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  readinessProbe:
+    path: /healthz
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+ingress:
+  enabled: true
+  className: ""
+  annotations: {}
+  host: obelus.example.com
+  tls: []
+  apiPaths:
+    - /trpc
+    - /csrf
+    - /health
+    - /livez
+    - /readyz
+  webPath: /

@@ -31,6 +31,10 @@ Obelus is a private, multi-user reading record app focused on judgment and notes
 - `apps/web` - Vite SPA frontend
 - `apps/api` - Fastify+tRPC backend
 - `packages/shared` - shared zod schemas/types
+- `charts/obelus` - Helm chart for Kubernetes deployment
+- `docs/deploy/docker.md` - Docker deployment guide
+- `docs/deploy/helm.md` - Helm deployment guide
+- `docs/configuration.md` - full configuration reference
 
 ## Setup
 
@@ -85,3 +89,9 @@ If you open the web app via a WSL host IP (for example `http://172.25.71.27:5173
 pnpm typecheck
 pnpm lint
 ```
+
+## Deployment
+
+- Docker: see `docs/deploy/docker.md`
+- Helm/Kubernetes: see `docs/deploy/helm.md`
+- Configuration reference: `docs/configuration.md`

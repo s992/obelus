@@ -3,6 +3,12 @@ import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
 import superjson from "superjson";
 
 const resolveApiBaseUrl = (): string => {
+  const runtimeConfigured =
+    typeof window !== "undefined" ? window.__OBELUS_CONFIG__?.API_BASE_URL : undefined;
+  if (runtimeConfigured && runtimeConfigured.trim().length > 0) {
+    return runtimeConfigured;
+  }
+
   const configured = import.meta.env.VITE_API_URL;
   if (configured && configured.trim().length > 0) {
     return configured;

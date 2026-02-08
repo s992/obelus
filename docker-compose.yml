@@ -1,0 +1,54 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    image: ghcr.io/your-org/obelus-api:local
+    environment:
+      NODE_ENV: production
+      API_PORT: 4000
+      TRUST_PROXY: ${TRUST_PROXY:-false}
+      APP_ORIGIN: ${APP_ORIGIN:-http://localhost:8080}
+      APP_ORIGINS: ${APP_ORIGINS:-}
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+      REDIS_URL: ${REDIS_URL:?REDIS_URL is required}
+      SESSION_COOKIE_NAME: ${SESSION_COOKIE_NAME:-obelus_session}
+      CSRF_COOKIE_NAME: ${CSRF_COOKIE_NAME:-obelus_csrf}
+      SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET is required}
+      OAUTH_PROVIDER: ${OAUTH_PROVIDER:-oidc}
+      OAUTH_ISSUER: ${OAUTH_ISSUER:-}
+      OAUTH_JWKS_URL: ${OAUTH_JWKS_URL:-}
+      OAUTH_CLIENT_ID: ${OAUTH_CLIENT_ID:-}
+      OAUTH_CLIENT_SECRET: ${OAUTH_CLIENT_SECRET:-}
+      OAUTH_AUTHORIZE_URL: ${OAUTH_AUTHORIZE_URL:-}
+      OAUTH_TOKEN_URL: ${OAUTH_TOKEN_URL:-}
+      OAUTH_USERINFO_URL: ${OAUTH_USERINFO_URL:-}
+      OAUTH_REDIRECT_URI: ${OAUTH_REDIRECT_URI:-}
+      OAUTH_SCOPES: ${OAUTH_SCOPES:-openid email profile}
+    ports:
+      - "4000:4000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4000/readyz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    image: ghcr.io/your-org/obelus-web:local
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      API_BASE_URL: ${WEB_API_BASE_URL:-http://localhost:4000}
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s

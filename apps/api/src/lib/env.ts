@@ -19,6 +19,7 @@ const optionalUrl = z.preprocess(
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   API_PORT: z.coerce.number().default(4000),
+  TRUST_PROXY: z.coerce.boolean().default(false),
   APP_ORIGIN: z.string().default("http://localhost:5173"),
   APP_ORIGINS: z.string().optional(),
   DATABASE_URL: z.string().default("postgres://postgres:postgres@localhost:5432/obelus"),

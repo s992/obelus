@@ -1,0 +1,11 @@
+.git
+.gitignore
+.github
+node_modules
+**/node_modules
+**/dist
+coverage
+.tmp
+.DS_Store
+LEDGER.md
+*.log
