@@ -1,6 +1,7 @@
 import { trpc } from "@/api/trpc";
 import { useBookDetailsByKeys } from "@/features/books/hooks/useBookDetailsByKeys";
 import { BookMetadataDescription } from "@/features/reading/components/BookMetadataDescription/BookMetadataDescription";
+import { ReadingSearchDropdown } from "@/features/reading/components/ReadingWorkspace/ReadingSearchDropdown";
 import { BookCover } from "@/features/shared/components/BookCover/BookCover";
 import { LoadingObelus } from "@/features/shared/components/LoadingObelus/LoadingObelus";
 import {
@@ -23,7 +24,6 @@ import {
   toDateInputValue,
   toIsoFromLocalDateInput,
   toPublishedLabel,
-  toPublishedYearLabel,
 } from "@/lib/format";
 import { normalizeBookKeyFromParam, normalizeInputValue } from "@/lib/normalize";
 import { queryKeys } from "@/lib/query-keys";
@@ -34,25 +34,48 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SearchLg } from "@untitledui/icons/SearchLg";
 import { XClose } from "@untitledui/icons/XClose";
-import { type KeyboardEvent, useEffect, useMemo, useState } from "react";
+import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import * as styles from "./ReadingWorkspace.css";
+import {
+  type OpenLibrarySearchItem,
+  REMOTE_SEARCH_MIN_QUERY_LENGTH,
+  type SearchFocusableItem,
+  buildMyBookSearchItems,
+  createAbortableCachedSearch,
+  filterMyBookSearchItems,
+  shouldShowRemoteSection,
+  toFocusableItems,
+} from "./readingSearch";
 
 export const ReadingWorkspace = () => {
   const qc = useQueryClient();
   const navigate = useNavigate();
   const params = useParams();
+  const searchRootRef = useRef<HTMLDivElement | null>(null);
+  const listboxId = "reading-search-listbox";
 
   const selectedBookKey = useMemo(() => normalizeBookKeyFromParam(params["*"]), [params]);
 
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
+  const [focusedSearchIndex, setFocusedSearchIndex] = useState(-1);
+  const [remoteSearchResults, setRemoteSearchResults] = useState<OpenLibrarySearchItem[]>([]);
+  const [isRemoteSearchLoading, setIsRemoteSearchLoading] = useState(false);
+  const [hasRemoteSearchError, setHasRemoteSearchError] = useState(false);
   const [readingTab, setReadingTab] = useState<ReadingTab>("currently-reading");
   const [expandedMetadataBookKey, setExpandedMetadataBookKey] = useState<string | null>(null);
   const [queueSaveState, setQueueSaveState] = useState<"idle" | "success" | "warning">("idle");
   const isSearchMode = searchInput.trim().length > 0;
+  const isSearchDropdownVisible = isSearchMode && isSearchDropdownOpen;
   const normalizeOptionalText = (value: string | null | undefined) => (value ?? "").trim();
+  const remoteSearcherRef = useRef(
+    createAbortableCachedSearch<OpenLibrarySearchItem>((query, signal) =>
+      trpc.books.search.query({ query }, { signal }),
+    ),
+  );
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -60,13 +83,6 @@ export const ReadingWorkspace = () => {
     }, 300);
     return () => window.clearTimeout(timer);
   }, [searchInput]);
-
-  const searchResults = useQuery({
-    queryKey: queryKeys.bookSearch(debouncedSearch),
-    queryFn: () => trpc.books.search.query({ query: debouncedSearch }),
-    enabled: debouncedSearch.length > 1,
-    staleTime: 5 * 60 * 1000,
-  });
 
   const detail = useQuery({
     queryKey: queryKeys.bookDetail(selectedBookKey),
@@ -238,11 +254,6 @@ export const ReadingWorkspace = () => {
     },
   });
 
-  const normalizedSearch = useMemo(
-    () => searchResults.data?.slice(0, 16) ?? [],
-    [searchResults.data],
-  );
-  const isSearchLoading = isSearchMode && debouncedSearch.length > 1 && searchResults.isFetching;
   const isLibraryLoading = reading.isLoading || toRead.isLoading;
   const isBookDetailLoading = Boolean(selectedBookKey) && detail.isLoading;
 
@@ -266,21 +277,34 @@ export const ReadingWorkspace = () => {
     [reading.data],
   );
 
-  const readingIndex = useMemo(() => {
-    const index = new Map<
-      string,
-      { finishedAt: string | null; judgment: "Accepted" | "Rejected" | null }
-    >();
-    for (const entry of reading.data ?? []) {
-      index.set(entry.bookKey, { finishedAt: entry.finishedAt, judgment: entry.judgment });
-    }
-    return index;
-  }, [reading.data]);
-
-  const plannedSet = useMemo(
-    () => new Set((toRead.data ?? []).map((entry) => entry.bookKey)),
-    [toRead.data],
+  const libraryBookKeySet = useMemo(
+    () =>
+      new Set([
+        ...(reading.data ?? []).map((entry) => entry.bookKey),
+        ...(toRead.data ?? []).map((entry) => entry.bookKey),
+      ]),
+    [reading.data, toRead.data],
   );
+  const myBookSearchItems = useMemo(
+    () => buildMyBookSearchItems(reading.data ?? [], toRead.data ?? [], detailIndex),
+    [reading.data, toRead.data, detailIndex],
+  );
+  const myBookMatches = useMemo(
+    () => filterMyBookSearchItems(myBookSearchItems, searchInput, 8),
+    [myBookSearchItems, searchInput],
+  );
+  const addBookMatches = useMemo(
+    () => remoteSearchResults.filter((book) => !libraryBookKeySet.has(book.key)).slice(0, 8),
+    [remoteSearchResults, libraryBookKeySet],
+  );
+  const focusableSearchItems = useMemo(
+    () => toFocusableItems(myBookMatches, addBookMatches),
+    [myBookMatches, addBookMatches],
+  );
+  const focusedSearchItem: SearchFocusableItem | null =
+    focusableSearchItems[focusedSearchIndex] ?? null;
+  const focusedSearchItemId = focusedSearchItem?.id ?? null;
+  const showAddSection = shouldShowRemoteSection(searchInput);
   const isQuickActionPending = toggleReading.isPending || toggleQueue.isPending;
   const isMetadataDescriptionExpanded = expandedMetadataBookKey === selectedBookKey;
   const detailMetadata = useMemo(() => {
@@ -363,20 +387,188 @@ export const ReadingWorkspace = () => {
     nextTabElement?.focus();
   };
 
+  useEffect(() => {
+    if (!isSearchMode) {
+      remoteSearcherRef.current.abort();
+      setRemoteSearchResults([]);
+      setHasRemoteSearchError(false);
+      setIsRemoteSearchLoading(false);
+      setIsSearchDropdownOpen(false);
+      setFocusedSearchIndex(-1);
+      return;
+    }
+    setIsSearchDropdownOpen(true);
+  }, [isSearchMode]);
+
+  useEffect(() => {
+    if (!showAddSection) {
+      remoteSearcherRef.current.abort();
+      setRemoteSearchResults([]);
+      setHasRemoteSearchError(false);
+      setIsRemoteSearchLoading(false);
+      return;
+    }
+    if (debouncedSearch.trim().length < REMOTE_SEARCH_MIN_QUERY_LENGTH) {
+      setRemoteSearchResults([]);
+      setHasRemoteSearchError(false);
+      setIsRemoteSearchLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setHasRemoteSearchError(false);
+    setIsRemoteSearchLoading(true);
+
+    remoteSearcherRef.current
+      .search(debouncedSearch)
+      .then((results) => {
+        if (cancelled) {
+          return;
+        }
+        setRemoteSearchResults(results);
+      })
+      .catch((error: unknown) => {
+        if (cancelled) {
+          return;
+        }
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
+        setRemoteSearchResults([]);
+        setHasRemoteSearchError(true);
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsRemoteSearchLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [debouncedSearch, showAddSection]);
+
+  useEffect(() => {
+    if (!isSearchDropdownVisible || focusableSearchItems.length === 0) {
+      setFocusedSearchIndex(-1);
+      return;
+    }
+
+    if (focusedSearchIndex >= focusableSearchItems.length) {
+      setFocusedSearchIndex(0);
+    }
+  }, [focusedSearchIndex, focusableSearchItems.length, isSearchDropdownVisible]);
+
+  useEffect(() => {
+    const onMouseDown = (event: MouseEvent) => {
+      const root = searchRootRef.current;
+      if (!root) {
+        return;
+      }
+      if (root.contains(event.target as Node)) {
+        return;
+      }
+      setIsSearchDropdownOpen(false);
+      setFocusedSearchIndex(-1);
+    };
+
+    document.addEventListener("mousedown", onMouseDown);
+    return () => document.removeEventListener("mousedown", onMouseDown);
+  }, []);
+
+  const selectMyBookFromSearch = (bookKey: string) => {
+    navigate(`/books/${encodeURIComponent(bookKey)}`);
+    setIsSearchDropdownOpen(false);
+    setFocusedSearchIndex(-1);
+  };
+
+  const selectAddBookFromSearch = (book: OpenLibrarySearchItem) => {
+    navigate(`/books/${encodeURIComponent(book.key)}`);
+    setIsSearchDropdownOpen(false);
+    setFocusedSearchIndex(-1);
+  };
+
+  const onSearchInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (!isSearchMode) {
+      return;
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      setIsSearchDropdownOpen(false);
+      setFocusedSearchIndex(-1);
+      return;
+    }
+
+    if (focusableSearchItems.length === 0) {
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setIsSearchDropdownOpen(true);
+      setFocusedSearchIndex((current) =>
+        current < 0 ? 0 : (current + 1) % focusableSearchItems.length,
+      );
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setIsSearchDropdownOpen(true);
+      setFocusedSearchIndex((current) =>
+        current < 0
+          ? focusableSearchItems.length - 1
+          : (current - 1 + focusableSearchItems.length) % focusableSearchItems.length,
+      );
+      return;
+    }
+
+    if (event.key === "Enter" && focusedSearchItem) {
+      event.preventDefault();
+      if (focusedSearchItem.type === "my-book") {
+        selectMyBookFromSearch(focusedSearchItem.item.bookKey);
+      } else {
+        selectAddBookFromSearch(focusedSearchItem.item);
+      }
+    }
+  };
+
+  const onSearchItemHover = (id: string) => {
+    const nextIndex = focusableSearchItems.findIndex((item) => item.id === id);
+    if (nextIndex >= 0) {
+      setFocusedSearchIndex(nextIndex);
+    }
+  };
+
   return (
     <section className={styles.readingWorkspace}>
       <article className={styles.card}>
         <div className={styles.headerActionRow}>
-          <div className={styles.searchInputWrap}>
+          <div className={styles.searchInputWrap} ref={searchRootRef}>
             <SearchLg size={18} className={styles.searchIcon} />
             <InputBase
               wrapperClassName={styles.searchInputWrapper}
               inputClassName={styles.searchInputField}
               id="book-search"
-              aria-label="Search books"
+              role="combobox"
+              aria-label="Search your books or add new"
+              aria-expanded={isSearchDropdownVisible}
+              aria-controls={listboxId}
+              aria-activedescendant={focusedSearchItemId ?? undefined}
+              aria-autocomplete="list"
               value={searchInput}
-              onChange={(value) => setSearchInput(normalizeInputValue(value))}
-              placeholder="Search for books..."
+              onChange={(value) => {
+                setSearchInput(normalizeInputValue(value));
+                setIsSearchDropdownOpen(true);
+              }}
+              onFocus={() => {
+                if (isSearchMode) {
+                  setIsSearchDropdownOpen(true);
+                }
+              }}
+              onKeyDown={onSearchInputKeyDown}
+              placeholder="Search your books or add new..."
             />
             {isSearchMode ? (
               <button
@@ -386,10 +578,29 @@ export const ReadingWorkspace = () => {
                 onClick={() => {
                   setSearchInput("");
                   setDebouncedSearch("");
+                  setRemoteSearchResults([]);
+                  setHasRemoteSearchError(false);
+                  setIsSearchDropdownOpen(false);
+                  setFocusedSearchIndex(-1);
                 }}
               >
                 <XClose size={16} />
               </button>
+            ) : null}
+            {isSearchDropdownVisible ? (
+              <ReadingSearchDropdown
+                query={searchInput.trim()}
+                listboxId={listboxId}
+                myBooks={myBookMatches}
+                addBooks={addBookMatches}
+                focusedItemId={focusedSearchItemId}
+                showRemoteSection={showAddSection}
+                isRemoteLoading={isRemoteSearchLoading}
+                remoteError={hasRemoteSearchError}
+                onSelectMyBook={selectMyBookFromSearch}
+                onSelectAddBook={selectAddBookFromSearch}
+                onHoverItem={onSearchItemHover}
+              />
             ) : null}
           </div>
         </div>
@@ -421,55 +632,8 @@ export const ReadingWorkspace = () => {
           role={!isSearchMode ? "tabpanel" : undefined}
           aria-labelledby={!isSearchMode ? `reading-tab-${readingTab}` : undefined}
           aria-live="polite"
-          aria-busy={isSearchLoading || isLibraryLoading}
+          aria-busy={isLibraryLoading}
         >
-          {isSearchLoading ? <LoadingObelus label="Searching catalog..." compact /> : null}
-
-          {isSearchMode
-            ? normalizedSearch.map((book) => {
-                const tracked = readingIndex.get(book.key);
-                const status = tracked
-                  ? statusLabel(tracked)
-                  : plannedSet.has(book.key)
-                    ? "Planned"
-                    : null;
-                return (
-                  <button
-                    className={styles.bookListRow}
-                    type="button"
-                    key={book.key}
-                    onClick={() => navigate(`/books/${encodeURIComponent(book.key)}`)}
-                  >
-                    <div className={styles.bookRowContent}>
-                      <BookCover title={book.title} coverId={book.coverId} />
-                      <div className={styles.bookRowMain}>
-                        <h3 className={styles.bookListTitle}>{book.title}</h3>
-                        <p className={styles.bookListAuthor}>
-                          {book.authorName.join(", ") || "Unknown author"}
-                        </p>
-                      </div>
-                    </div>
-                    <div className={styles.bookMetaRow}>
-                      {toPublishedYearLabel(book.firstPublishYear) ? (
-                        <span>{toPublishedYearLabel(book.firstPublishYear)}</span>
-                      ) : null}
-                      {status ? (
-                        <span
-                          className={
-                            status === "Planned" ? styles.readingBadge : statusClassName(status)
-                          }
-                        >
-                          {status}
-                        </span>
-                      ) : (
-                        <span className={styles.readingBadge}>Search</span>
-                      )}
-                    </div>
-                  </button>
-                );
-              })
-            : null}
-
           {!isSearchMode && readingTab === "currently-reading"
             ? currentlyReading.map((entry) => {
                 const bookMeta = detailIndex[entry.bookKey];
@@ -578,16 +742,6 @@ export const ReadingWorkspace = () => {
                 );
               })
             : null}
-
-          {isSearchMode && !isSearchLoading && debouncedSearch.length <= 1 ? (
-            <p className={styles.mutedBody}>Type at least 2 characters to search.</p>
-          ) : null}
-          {isSearchMode &&
-          !isSearchLoading &&
-          debouncedSearch.length > 1 &&
-          normalizedSearch.length === 0 ? (
-            <p className={styles.mutedBody}>No matching books.</p>
-          ) : null}
 
           {!isSearchMode &&
           !isLibraryLoading &&
