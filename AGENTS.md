@@ -18,6 +18,10 @@
 - all commit messages must be prefixed with "ai slop: "
 - *never* bypass pre-commit hooks
 
+## logs
+
+- both client and server logs are written to tmp/logs/latest
+
 ## validation
 
 prior to any commit, verify that each of the following passes:

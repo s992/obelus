@@ -2,9 +2,10 @@ import { URL, fileURLToPath } from "node:url";
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
+import { agentTail } from "vite-plugin-agent-tail";
 
 export default defineConfig({
-  plugins: [react(), vanillaExtractPlugin()],
+  plugins: [react(), vanillaExtractPlugin(), agentTail()],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
