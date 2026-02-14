@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const judgmentSchema = z.enum(["Accepted", "Rejected"]);
+export const judgmentWithUnjudgedSchema = z.enum(["Accepted", "Rejected", "Unjudged"]);
 
 export const privacySchema = z.enum(["private", "public"]);
 
@@ -116,7 +117,69 @@ export const updateProfileInputSchema = z.object({
   collectionVisibility: privacySchema.optional(),
 });
 
+export const goodreadsImportStatusSchema = z.enum([
+  "queued",
+  "processing",
+  "completed",
+  "completed_with_errors",
+  "failed",
+]);
+
+export const goodreadsIssueSeveritySchema = z.enum(["warning", "error"]);
+
+export const goodreadsIssueSchema = z.object({
+  id: z.string().uuid(),
+  rowNumber: z.number().int().positive(),
+  bookTitle: z.string(),
+  author: z.string(),
+  severity: goodreadsIssueSeveritySchema,
+  code: z.string(),
+  message: z.string(),
+  inference: z.string().nullable(),
+  rawRow: z.string().nullable(),
+  createdAt: z.string(),
+});
+
+export const goodreadsImportSummarySchema = z.object({
+  totalRows: z.number().int().nonnegative(),
+  processedRows: z.number().int().nonnegative(),
+  importedRows: z.number().int().nonnegative(),
+  failedRows: z.number().int().nonnegative(),
+  warningRows: z.number().int().nonnegative(),
+});
+
+export const goodreadsImportRecordSchema = z.object({
+  id: z.string().uuid(),
+  status: goodreadsImportStatusSchema,
+  filename: z.string(),
+  optionsJson: z.string(),
+  summary: goodreadsImportSummarySchema,
+  startedAt: z.string().nullable(),
+  finishedAt: z.string().nullable(),
+  createdAt: z.string(),
+});
+
+export const ratingPerStarMappingSchema = z.object({
+  star1: judgmentWithUnjudgedSchema,
+  star2: judgmentWithUnjudgedSchema,
+  star3: judgmentWithUnjudgedSchema,
+  star4: judgmentWithUnjudgedSchema,
+  star5: judgmentWithUnjudgedSchema,
+});
+
+export const goodreadsImportOptionsSchema = z.object({
+  mapRatings: z.boolean(),
+  ratings: ratingPerStarMappingSchema.default({
+    star1: "Rejected",
+    star2: "Rejected",
+    star3: "Unjudged",
+    star4: "Accepted",
+    star5: "Accepted",
+  }),
+});
+
 export type Judgment = z.infer<typeof judgmentSchema>;
+export type JudgmentWithUnjudged = z.infer<typeof judgmentWithUnjudgedSchema>;
 export type CollectionVisibility = z.infer<typeof privacySchema>;
 export type ReadingEntry = z.infer<typeof readingEntrySchema>;
 export type ToReadEntry = z.infer<typeof toReadEntrySchema>;
@@ -128,3 +191,10 @@ export type PublicCollectionResponse = z.infer<typeof publicCollectionResponseSc
 export type UpsertReadingEntryInput = z.infer<typeof upsertReadingEntryInputSchema>;
 export type AddToReadInput = z.infer<typeof addToReadInputSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileInputSchema>;
+export type GoodreadsImportStatus = z.infer<typeof goodreadsImportStatusSchema>;
+export type GoodreadsIssueSeverity = z.infer<typeof goodreadsIssueSeveritySchema>;
+export type GoodreadsIssue = z.infer<typeof goodreadsIssueSchema>;
+export type GoodreadsImportSummary = z.infer<typeof goodreadsImportSummarySchema>;
+export type GoodreadsImportRecord = z.infer<typeof goodreadsImportRecordSchema>;
+export type GoodreadsImportOptions = z.infer<typeof goodreadsImportOptionsSchema>;
+export type RatingPerStarMapping = z.infer<typeof ratingPerStarMappingSchema>;

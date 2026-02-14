@@ -2,7 +2,7 @@ import type { AppRouter } from "@obelus/api";
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
 import superjson from "superjson";
 
-const resolveApiBaseUrl = (): string => {
+export const resolveApiBaseUrl = (): string => {
   const runtimeConfigured =
     typeof window !== "undefined" ? window.__OBELUS_CONFIG__?.API_BASE_URL : undefined;
   if (runtimeConfigured && runtimeConfigured.trim().length > 0) {
@@ -53,6 +53,8 @@ const resolveCsrfToken = async (): Promise<string> => {
 
   return csrfTokenPromise;
 };
+
+export const getCsrfToken = async (): Promise<string> => resolveCsrfToken();
 
 export const trpc = createTRPCProxyClient<AppRouter>({
   links: [

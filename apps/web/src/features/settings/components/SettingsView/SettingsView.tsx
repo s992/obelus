@@ -1,5 +1,13 @@
 import { trpc } from "@/api/trpc";
 import {
+  type GoodreadsImportLiveConnectionState,
+  type GoodreadsImportSnapshot,
+  createGoodreadsImport,
+  getGoodreadsImport,
+  listGoodreadsImports,
+  subscribeToGoodreadsImportEvents,
+} from "@/features/settings/lib/goodreads-import-client";
+import {
   type PasswordInput,
   type ProfileInput,
   passwordSchema,
@@ -12,10 +20,31 @@ import { queryKeys } from "@/lib/query-keys";
 import { Button } from "@/ui/Button";
 import { InputBase } from "@/ui/InputBase";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { GoodreadsImportRecord, JudgmentWithUnjudged } from "@obelus/shared";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as styles from "./SettingsView.css";
+
+const isImportActive = (status: string | undefined): boolean => {
+  return status === "queued" || status === "processing";
+};
+
+const upsertImportRecord = (
+  records: GoodreadsImportRecord[] | undefined,
+  incoming: GoodreadsImportSnapshot,
+) => {
+  const next = [...(records ?? [])];
+  const index = next.findIndex((entry) => entry.id === incoming.id);
+  if (index >= 0) {
+    next[index] = incoming;
+  } else {
+    next.unshift(incoming);
+  }
+
+  next.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+  return next;
+};
 
 export const SettingsView = ({
   me,
@@ -69,6 +98,120 @@ export const SettingsView = ({
     },
   });
 
+  const [selectedImportFile, setSelectedImportFile] = useState<File | null>(null);
+  const [mapRatings, setMapRatings] = useState(true);
+  const [ratingStar1, setRatingStar1] = useState<JudgmentWithUnjudged>("Rejected");
+  const [ratingStar2, setRatingStar2] = useState<JudgmentWithUnjudged>("Rejected");
+  const [ratingStar3, setRatingStar3] = useState<JudgmentWithUnjudged>("Unjudged");
+  const [ratingStar4, setRatingStar4] = useState<JudgmentWithUnjudged>("Accepted");
+  const [ratingStar5, setRatingStar5] = useState<JudgmentWithUnjudged>("Accepted");
+  const [importMessage, setImportMessage] = useState<string | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
+  const [selectedImportId, setSelectedImportId] = useState<string | null>(null);
+  const [importLiveConnectionState, setImportLiveConnectionState] =
+    useState<GoodreadsImportLiveConnectionState>("idle");
+
+  const importsQuery = useQuery({
+    queryKey: queryKeys.goodreadsImports,
+    queryFn: () => listGoodreadsImports(),
+  });
+
+  useEffect(() => {
+    if (!selectedImportId && importsQuery.data && importsQuery.data.length > 0) {
+      setSelectedImportId(importsQuery.data[0]?.id ?? null);
+    }
+  }, [selectedImportId, importsQuery.data]);
+
+  const selectedImportQuery = useQuery({
+    queryKey: queryKeys.goodreadsImport(selectedImportId),
+    queryFn: () => {
+      if (!selectedImportId) {
+        throw new Error("No import selected.");
+      }
+      return getGoodreadsImport(selectedImportId);
+    },
+    enabled: Boolean(selectedImportId),
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      if (!data) {
+        return selectedImportId ? 2500 : false;
+      }
+
+      if (!isImportActive(data.status)) {
+        return false;
+      }
+
+      return importLiveConnectionState === "connected" ? 15_000 : 2_500;
+    },
+  });
+
+  useEffect(() => {
+    if (!selectedImportId) {
+      setImportLiveConnectionState("idle");
+      return;
+    }
+
+    const status = selectedImportQuery.data?.status;
+    if (status && !isImportActive(status)) {
+      setImportLiveConnectionState("idle");
+      return;
+    }
+
+    return subscribeToGoodreadsImportEvents({
+      importId: selectedImportId,
+      onConnectionStateChange: (state) => {
+        setImportLiveConnectionState(state);
+      },
+      onSnapshot: (snapshot) => {
+        qc.setQueryData(queryKeys.goodreadsImport(snapshot.id), snapshot);
+        qc.setQueryData(
+          queryKeys.goodreadsImports,
+          (existing: GoodreadsImportRecord[] | undefined) => upsertImportRecord(existing, snapshot),
+        );
+      },
+      onError: () => {
+        // Polling remains active while stream is degraded.
+      },
+    });
+  }, [qc, selectedImportId, selectedImportQuery.data?.status]);
+
+  const uploadImport = useMutation({
+    mutationFn: async () => {
+      if (!selectedImportFile) {
+        throw new Error("Choose a Goodreads CSV file before importing.");
+      }
+
+      const { importId } = await createGoodreadsImport({
+        file: selectedImportFile,
+        options: {
+          mapRatings,
+          ratings: {
+            star1: ratingStar1,
+            star2: ratingStar2,
+            star3: ratingStar3,
+            star4: ratingStar4,
+            star5: ratingStar5,
+          },
+        },
+      });
+
+      return importId;
+    },
+    onSuccess: async (importId) => {
+      setImportError(null);
+      setImportMessage("Import queued. You can leave this page and return to review results.");
+      setSelectedImportId(importId);
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: queryKeys.goodreadsImports }),
+        qc.invalidateQueries({ queryKey: queryKeys.goodreadsImport(importId) }),
+      ]);
+    },
+    onError: (error) => {
+      setImportMessage(null);
+      setImportError(getErrorMessage(error));
+    },
+  });
+
   const publicUrl = `${window.location.origin}/public/${me.id}`;
   const [copiedPublicUrl, setCopiedPublicUrl] = useState(false);
   const [copyToastMessage, setCopyToastMessage] = useState<string | null>(null);
@@ -95,6 +238,11 @@ export const SettingsView = ({
   const confirmPasswordError = passwordForm.formState.errors.confirmPassword?.message;
   const saveProfileError = saveProfile.error ? getErrorMessage(saveProfile.error) : null;
   const changePasswordError = changePassword.error ? getErrorMessage(changePassword.error) : null;
+
+  const currentImport = selectedImportQuery.data ?? null;
+  const allIssues = currentImport?.issues ?? [];
+  const warningIssues = allIssues.filter((issue) => issue.severity === "warning");
+  const errorIssues = allIssues.filter((issue) => issue.severity === "error");
 
   return (
     <section className={styles.analyticsView}>
@@ -317,6 +465,227 @@ export const SettingsView = ({
             </Button>
           </div>
         </form>
+      </article>
+
+      <article className={styles.card}>
+        <h3 className={styles.sectionTitle}>Import Goodreads Library</h3>
+        <p className={styles.hintText}>
+          Upload your Goodreads CSV export. Import progress and history are tracked below.
+        </p>
+        <div className={styles.noticeBox}>
+          <p className={styles.noticeTitle}>Import limitations and assumptions</p>
+          <ul className={styles.noticeList}>
+            <li>Books are matched using OpenLibrary metadata and may not always resolve.</li>
+            <li>
+              When dates or shelf data are incomplete, inferred values are used and logged as
+              warnings.
+            </li>
+            <li>Import continues even if some books fail.</li>
+          </ul>
+        </div>
+
+        <div className={styles.formStack}>
+          <div className={styles.fieldStack}>
+            <label className={styles.fieldLabel} htmlFor="goodreads-csv-upload">
+              Goodreads CSV File
+            </label>
+            <input
+              id="goodreads-csv-upload"
+              className={styles.fileInput}
+              type="file"
+              accept=".csv,text/csv"
+              onChange={(event) => {
+                const file = event.target.files?.[0] ?? null;
+                setSelectedImportFile(file);
+                setImportError(null);
+                setImportMessage(null);
+              }}
+            />
+          </div>
+
+          <div className={styles.fieldStack}>
+            <label className={styles.checkboxRow} htmlFor="goodreads-map-ratings">
+              <input
+                id="goodreads-map-ratings"
+                type="checkbox"
+                checked={mapRatings}
+                onChange={(event) => setMapRatings(event.target.checked)}
+              />
+              <span>Map Goodreads star ratings to Obelus judgment</span>
+            </label>
+          </div>
+
+          <div className={styles.ratingGrid}>
+            {[
+              { star: 1, value: ratingStar1, set: setRatingStar1 },
+              { star: 2, value: ratingStar2, set: setRatingStar2 },
+              { star: 3, value: ratingStar3, set: setRatingStar3 },
+              { star: 4, value: ratingStar4, set: setRatingStar4 },
+              { star: 5, value: ratingStar5, set: setRatingStar5 },
+            ].map((entry) => (
+              <div className={styles.fieldStack} key={entry.star}>
+                <label className={styles.fieldLabel} htmlFor={`rating-map-${entry.star}`}>
+                  {entry.star} star{entry.star > 1 ? "s" : ""}
+                </label>
+                <select
+                  id={`rating-map-${entry.star}`}
+                  className={styles.nativeSelect}
+                  disabled={!mapRatings}
+                  value={entry.value}
+                  onChange={(event) => entry.set(event.target.value as JudgmentWithUnjudged)}
+                >
+                  <option value="Rejected">Rejected</option>
+                  <option value="Unjudged">Unjudged</option>
+                  <option value="Accepted">Accepted</option>
+                </select>
+              </div>
+            ))}
+          </div>
+
+          <p className={styles.hintText}>Unrated books (0 stars) always import as Unjudged.</p>
+
+          {importError ? (
+            <p className={styles.errorText} role="alert">
+              {importError}
+            </p>
+          ) : null}
+          {importMessage ? (
+            <output className={styles.successText} aria-live="polite">
+              {importMessage}
+            </output>
+          ) : null}
+
+          <div className={styles.actionRow}>
+            <Button
+              className={styles.primaryButton}
+              color="tertiary"
+              type="button"
+              isDisabled={!selectedImportFile || uploadImport.isPending}
+              onClick={() => uploadImport.mutate()}
+            >
+              {uploadImport.isPending ? "Queueing import..." : "Import Goodreads CSV"}
+            </Button>
+          </div>
+        </div>
+
+        <section className={styles.importHistory}>
+          <h4 className={styles.sectionSubTitle}>Import history</h4>
+          {importsQuery.data && importsQuery.data.length > 0 ? (
+            <table className={styles.issueTable}>
+              <thead>
+                <tr>
+                  <th scope="col">Created</th>
+                  <th scope="col">File</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {importsQuery.data.map((entry) => (
+                  <tr key={entry.id}>
+                    <td>{new Date(entry.createdAt).toLocaleString()}</td>
+                    <td>{entry.filename}</td>
+                    <td>{entry.status.replaceAll("_", " ")}</td>
+                    <td>
+                      <Button
+                        className={styles.ghostButton}
+                        color="tertiary"
+                        type="button"
+                        onClick={() => {
+                          setSelectedImportId(entry.id);
+                          setImportMessage(null);
+                          setImportError(null);
+                        }}
+                      >
+                        View
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className={styles.hintText}>No imports yet.</p>
+          )}
+        </section>
+
+        {currentImport ? (
+          <section className={styles.importSummary}>
+            <h4 className={styles.sectionSubTitle}>Selected import details</h4>
+            <p className={styles.hintText}>Status: {currentImport.status.replaceAll("_", " ")}</p>
+            {isImportActive(currentImport.status) ? (
+              <p className={styles.hintText}>
+                Live updates:{" "}
+                {importLiveConnectionState === "connected"
+                  ? "connected"
+                  : importLiveConnectionState === "connecting"
+                    ? "connecting..."
+                    : importLiveConnectionState === "degraded"
+                      ? "reconnecting (polling fallback active)"
+                      : "idle"}
+              </p>
+            ) : null}
+            <div className={styles.summaryGrid}>
+              <p className={styles.summaryChip}>Total: {currentImport.summary.totalRows}</p>
+              <p className={styles.summaryChip}>Processed: {currentImport.summary.processedRows}</p>
+              <p className={styles.summaryChip}>Imported: {currentImport.summary.importedRows}</p>
+              <p className={styles.summaryChip}>Failed: {currentImport.summary.failedRows}</p>
+              <p className={styles.summaryChip}>Warnings: {currentImport.summary.warningRows}</p>
+            </div>
+
+            {warningIssues.length > 0 ? (
+              <div className={styles.issueTableWrap}>
+                <p className={styles.noticeTitle}>Warnings</p>
+                <table className={styles.issueTable}>
+                  <thead>
+                    <tr>
+                      <th scope="col">Row</th>
+                      <th scope="col">Book</th>
+                      <th scope="col">Message</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {warningIssues.map((issue) => (
+                      <tr key={issue.id}>
+                        <td>{issue.rowNumber}</td>
+                        <td>
+                          {issue.bookTitle} - {issue.author}
+                        </td>
+                        <td>{issue.message}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : null}
+
+            {errorIssues.length > 0 ? (
+              <div className={styles.issueTableWrap}>
+                <p className={styles.noticeTitle}>Failed rows</p>
+                <table className={styles.issueTable}>
+                  <thead>
+                    <tr>
+                      <th scope="col">Row</th>
+                      <th scope="col">Book</th>
+                      <th scope="col">Reason</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {errorIssues.map((issue) => (
+                      <tr key={issue.id}>
+                        <td>{issue.rowNumber}</td>
+                        <td>
+                          {issue.bookTitle} - {issue.author}
+                        </td>
+                        <td>{issue.message}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : null}
+          </section>
+        ) : null}
       </article>
       {copyToastMessage ? (
         <output className={styles.toast} aria-live="polite" aria-atomic="true">

@@ -13,6 +13,14 @@ import {
 export const collectionVisibilityEnum = pgEnum("collection_visibility", ["private", "public"]);
 export const judgmentEnum = pgEnum("judgment", ["Accepted", "Rejected"]);
 export const authProviderEnum = pgEnum("auth_provider", ["local", "oauth2", "oidc"]);
+export const goodreadsImportStatusEnum = pgEnum("goodreads_import_status", [
+  "queued",
+  "processing",
+  "completed",
+  "completed_with_errors",
+  "failed",
+]);
+export const goodreadsIssueSeverityEnum = pgEnum("goodreads_issue_severity", ["warning", "error"]);
 
 export const users = pgTable(
   "users",
@@ -139,5 +147,54 @@ export const openLibraryCache = pgTable(
   },
   (table) => ({
     expiresIdx: index("open_library_cache_expires_idx").on(table.expiresAt),
+  }),
+);
+
+export const goodreadsImports = pgTable(
+  "goodreads_imports",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    status: goodreadsImportStatusEnum("status").notNull().default("queued"),
+    filename: text("filename").notNull(),
+    optionsJson: text("options_json").notNull(),
+    csvPayload: text("csv_payload").notNull(),
+    totalRows: integer("total_rows").notNull().default(0),
+    processedRows: integer("processed_rows").notNull().default(0),
+    importedRows: integer("imported_rows").notNull().default(0),
+    failedRows: integer("failed_rows").notNull().default(0),
+    warningRows: integer("warning_rows").notNull().default(0),
+    summaryJson: text("summary_json").notNull().default("{}"),
+    startedAt: timestamp("started_at", { withTimezone: true }),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    userCreatedIdx: index("goodreads_imports_user_created_idx").on(table.userId, table.createdAt),
+  }),
+);
+
+export const goodreadsImportIssues = pgTable(
+  "goodreads_import_issues",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    importId: uuid("import_id")
+      .notNull()
+      .references(() => goodreadsImports.id, { onDelete: "cascade" }),
+    rowNumber: integer("row_number").notNull(),
+    bookTitle: text("book_title").notNull(),
+    author: text("author").notNull(),
+    severity: goodreadsIssueSeverityEnum("severity").notNull(),
+    code: text("code").notNull(),
+    message: text("message").notNull(),
+    inference: text("inference"),
+    rawRow: text("raw_row"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    importIdx: index("goodreads_import_issues_import_idx").on(table.importId, table.rowNumber),
   }),
 );

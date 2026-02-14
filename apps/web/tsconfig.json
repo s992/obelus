@@ -5,7 +5,9 @@
     "types": ["vite/client"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@obelus/shared": ["../../packages/shared/src/index.ts"],
+      "@obelus/shared/*": ["../../packages/shared/src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],

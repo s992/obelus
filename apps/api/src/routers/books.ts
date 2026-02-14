@@ -20,7 +20,7 @@ export const booksRouter = router({
       }),
     )
     .query(async ({ input }) => {
-      return getBookDetail(input.key);
+      return getBookDetail(input.key, { allowRemoteFetch: false });
     }),
 
   detailsByKeys: publicProcedure
@@ -31,13 +31,18 @@ export const booksRouter = router({
     )
     .query(async ({ input }) => {
       const uniqueKeys = [...new Set(input.keys)];
-      const entries = await Promise.all(
+      const entries = await Promise.allSettled(
         uniqueKeys.map(async (key) => {
-          const detail = await getBookDetail(key);
+          const detail = await getBookDetail(key, { allowRemoteFetch: false });
           return [key, detail] as const;
         }),
       );
-      return Object.fromEntries(entries);
+
+      return Object.fromEntries(
+        entries
+          .flatMap((entry) => (entry.status === "fulfilled" ? [entry.value] : []))
+          .map(([key, detail]) => [key, detail]),
+      );
     }),
 
   coverUrl: publicProcedure

@@ -1,5 +1,5 @@
 import { vars } from "@/styles/theme.ve.css";
-import { style } from "@vanilla-extract/css";
+import { globalStyle, style } from "@vanilla-extract/css";
 
 export const analyticsView = style({
   display: "grid",
@@ -20,6 +20,14 @@ export const sectionTitle = style({
   margin: 0,
   fontSize: "1.25rem",
   lineHeight: 1.3,
+  fontWeight: 600,
+  fontFamily: vars.font.content,
+});
+
+export const sectionSubTitle = style({
+  margin: 0,
+  fontSize: "1rem",
+  lineHeight: 1.4,
   fontWeight: 600,
   fontFamily: vars.font.content,
 });
@@ -88,6 +96,9 @@ export const nativeSelect = style({
       outline: "none",
       boxShadow: `0 0 0 2px ${vars.color.textPrimary}`,
       borderColor: "transparent",
+    },
+    "&:disabled": {
+      opacity: 0.6,
     },
   },
 });
@@ -174,4 +185,115 @@ export const toast = style({
   borderRadius: "8px",
   boxShadow: vars.shadow.card,
   zIndex: 40,
+});
+
+export const hintText = style({
+  margin: 0,
+  fontSize: "0.8125rem",
+  color: vars.color.textSecondary,
+});
+
+export const noticeBox = style({
+  border: `1px solid ${vars.color.borderPrimary}`,
+  backgroundColor: vars.color.bgSecondary,
+  borderRadius: "10px",
+  padding: "0.85rem 1rem",
+  display: "grid",
+  gap: "0.5rem",
+});
+
+export const noticeTitle = style({
+  margin: 0,
+  fontSize: "0.8125rem",
+  fontWeight: 600,
+  color: vars.color.textPrimary,
+});
+
+export const noticeList = style({
+  margin: 0,
+  paddingInlineStart: "1.2rem",
+  display: "grid",
+  gap: "0.35rem",
+  color: vars.color.textSecondary,
+  fontSize: "0.8125rem",
+});
+
+export const fileInput = style({
+  width: "100%",
+  padding: "10px 12px",
+  borderRadius: "8px",
+  border: `1px solid ${vars.color.borderTertiary}`,
+  backgroundColor: vars.color.bgPrimary,
+  color: vars.color.textPrimary,
+  fontFamily: vars.font.interface,
+  fontSize: "0.875rem",
+});
+
+export const checkboxRow = style({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "0.55rem",
+  fontSize: "0.875rem",
+  color: vars.color.textPrimary,
+});
+
+export const ratingGrid = style({
+  display: "grid",
+  gap: "0.75rem",
+  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+});
+
+export const importSummary = style({
+  borderTop: `1px solid ${vars.color.borderPrimary}`,
+  paddingTop: "1rem",
+  display: "grid",
+  gap: "0.65rem",
+});
+
+export const summaryGrid = style({
+  display: "grid",
+  gap: "0.5rem",
+  gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+});
+
+export const summaryChip = style({
+  margin: 0,
+  border: `1px solid ${vars.color.borderPrimary}`,
+  borderRadius: "8px",
+  padding: "0.4rem 0.55rem",
+  fontSize: "0.8125rem",
+  color: vars.color.textPrimary,
+  backgroundColor: vars.color.bgSecondary,
+});
+
+export const issueTableWrap = style({
+  overflowX: "auto",
+  display: "grid",
+  gap: "0.5rem",
+});
+
+export const issueTable = style({
+  width: "100%",
+  borderCollapse: "collapse",
+  fontSize: "0.8125rem",
+});
+
+globalStyle(`${issueTable} th`, {
+  textAlign: "left",
+  borderBottom: `1px solid ${vars.color.borderPrimary}`,
+  padding: "0.5rem",
+  color: vars.color.textSecondary,
+  fontWeight: 600,
+});
+
+globalStyle(`${issueTable} td`, {
+  borderBottom: `1px solid ${vars.color.borderPrimary}`,
+  padding: "0.5rem",
+  color: vars.color.textPrimary,
+  verticalAlign: "top",
+});
+
+export const importHistory = style({
+  display: "grid",
+  gap: "0.6rem",
 });

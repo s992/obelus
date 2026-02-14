@@ -10,6 +10,12 @@ const { updateProfileMutate, changePasswordMutate } = vi.hoisted(() => ({
   changePasswordMutate: vi.fn(),
 }));
 
+vi.mock("@/features/settings/lib/goodreads-import-client", () => ({
+  createGoodreadsImport: vi.fn(),
+  getGoodreadsImport: vi.fn(),
+  listGoodreadsImports: vi.fn().mockResolvedValue([]),
+}));
+
 vi.mock("@/api/trpc", () => ({
   trpc: {
     library: {

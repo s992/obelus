@@ -7,4 +7,6 @@ export const queryKeys = {
   bookDetail: (key: string | null) => ["book-detail", key] as const,
   bookDetailsByKeys: (keys: string[]) => ["book-details-by-keys", ...keys] as const,
   publicCollection: (userId: string) => ["public-collection", userId] as const,
+  goodreadsImports: ["goodreads-imports"] as const,
+  goodreadsImport: (importId: string | null) => ["goodreads-import", importId] as const,
 };

@@ -10,7 +10,7 @@
 | `APP_ORIGIN` | No | `http://localhost:5173` | No | Primary allowed browser origin for CORS/cookies. |
 | `APP_ORIGINS` | No | empty | No | Comma-separated extra allowed origins. |
 | `DATABASE_URL` | Yes in production | local postgres URL | Yes | Postgres connection string. |
-| `REDIS_URL` | Yes for production cache | `redis://localhost:6379` | Yes | Redis connection string (cache layer). |
+| `REDIS_URL` | Yes | `redis://localhost:6379` | Yes | Redis connection string (required for cache + Goodreads import queue). |
 | `SESSION_COOKIE_NAME` | No | `obelus_session` | No | Session cookie name. |
 | `CSRF_COOKIE_NAME` | No | `obelus_csrf` | No | CSRF cookie name. |
 | `SESSION_SECRET` | Yes in production | `change-this-development-secret` | Yes | JWT/session signing secret (min 16 chars). |

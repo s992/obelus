@@ -1,77 +1,18 @@
 import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
+import multipart from "@fastify/multipart";
 import { fastifyTRPCPlugin } from "@trpc/server/adapters/fastify";
 import { type FastifyReply, type FastifyRequest, fastify } from "fastify";
-import { checkDatabaseReadiness } from "./db/client.js";
+import { checkDatabaseReadiness, checkRedisReadiness } from "./db/client.js";
 import { createContext } from "./lib/context.js";
+import { isAllowedOrigin } from "./lib/cors.js";
 import { ensureCsrfToken } from "./lib/csrf.js";
 import { env } from "./lib/env.js";
 import { enforceCsrfRateLimit } from "./lib/rate-limit.js";
 import { appRouter } from "./routers/index.js";
+import { registerGoodreadsImportRoutes } from "./routes/goodreads-imports.js";
 
 const app = fastify({ logger: true, trustProxy: env.TRUST_PROXY });
-
-const configuredOrigins = (env.APP_ORIGINS ?? "")
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter((origin) => origin.length > 0);
-
-const allowedOrigins = new Set([
-  env.APP_ORIGIN,
-  ...configuredOrigins,
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
-  "http://[::1]:5173",
-]);
-
-const isPrivateNetworkHostname = (hostname: string): boolean => {
-  const segments = hostname.split(".").map((part) => Number(part));
-  if (
-    segments.length !== 4 ||
-    segments.some((part) => !Number.isInteger(part) || part < 0 || part > 255)
-  ) {
-    return false;
-  }
-
-  const a = segments[0];
-  const b = segments[1];
-  if (a === undefined || b === undefined) {
-    return false;
-  }
-
-  return (
-    a === 10 ||
-    (a === 172 && b >= 16 && b <= 31) ||
-    (a === 192 && b === 168) ||
-    (a === 169 && b === 254)
-  );
-};
-
-const isAllowedOrigin = (origin: string): boolean => {
-  if (allowedOrigins.has(origin)) {
-    return true;
-  }
-
-  if (env.NODE_ENV !== "development") {
-    return false;
-  }
-
-  try {
-    const parsed = new URL(origin);
-    if (!["http:", "https:"].includes(parsed.protocol)) {
-      return false;
-    }
-
-    return (
-      parsed.hostname === "localhost" ||
-      parsed.hostname === "127.0.0.1" ||
-      parsed.hostname === "[::1]" ||
-      isPrivateNetworkHostname(parsed.hostname)
-    );
-  } catch {
-    return false;
-  }
-};
 
 await app.register(cors, {
   origin: (origin, callback) => {
@@ -86,6 +27,12 @@ await app.register(cors, {
 });
 
 await app.register(cookie);
+await app.register(multipart, {
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+    files: 1,
+  },
+});
 
 app.get("/csrf", async (request, reply) => {
   enforceCsrfRateLimit(request.ip);
@@ -102,16 +49,30 @@ await app.register(fastifyTRPCPlugin, {
   },
 });
 
+await registerGoodreadsImportRoutes(app);
+
 app.get("/health", async () => ({ ok: true }));
 app.get("/livez", async () => ({ ok: true }));
 app.get("/readyz", async (_, reply) => {
-  const dbReady = await checkDatabaseReadiness();
-  if (!dbReady) {
+  const [dbReady, redisReady] = await Promise.all([
+    checkDatabaseReadiness(),
+    checkRedisReadiness(),
+  ]);
+  if (!dbReady || !redisReady) {
     reply.code(503);
-    return { ok: false };
+    return { ok: false, dbReady, redisReady };
   }
-  return { ok: true };
+  return { ok: true, dbReady, redisReady };
 });
+
+const [dbReady, redisReady] = await Promise.all([checkDatabaseReadiness(), checkRedisReadiness()]);
+if (!dbReady || !redisReady) {
+  app.log.error(
+    { dbReady, redisReady },
+    "Database or Redis readiness check failed during startup.",
+  );
+  process.exit(1);
+}
 
 app.listen({ port: env.API_PORT, host: "::" }).catch((error) => {
   app.log.error(error);

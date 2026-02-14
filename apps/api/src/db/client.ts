@@ -16,12 +16,21 @@ export const redis = new Redis(env.REDIS_URL, {
 });
 
 redis.on("error", () => {
-  // Redis is optional in local/dev; cache falls back to Postgres-backed storage.
+  // Redis is required for import queue processing and cache performance.
 });
 
 export const checkDatabaseReadiness = async (): Promise<boolean> => {
   try {
     await pool.query("select 1");
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export const checkRedisReadiness = async (): Promise<boolean> => {
+  try {
+    await redis.ping();
     return true;
   } catch {
     return false;

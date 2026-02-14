@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "packageManager": "pnpm@10.29.1",
   "scripts": {
-    "dev": "pnpm --filter @obelus/api dev & pnpm --filter @obelus/web dev",
+    "dev": "pnpm --filter @obelus/api dev & pnpm --filter @obelus/api dev:worker & pnpm --filter @obelus/web dev",
     "dev:api": "pnpm --filter @obelus/api dev",
     "dev:web": "pnpm --filter @obelus/web dev",
     "db:bootstrap": "pnpm --filter @obelus/api db:bootstrap",
@@ -15,7 +15,8 @@
     "format": "biome format --write .",
     "prepare": "husky",
     "lint-staged": "lint-staged",
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "dev:worker": "pnpm --filter @obelus/api dev:worker"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

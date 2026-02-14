@@ -10,7 +10,7 @@ Obelus is a private, multi-user reading record app focused on judgment and notes
 - Data fetching: TanStack Query
 - Backend: Fastify + tRPC + Drizzle ORM
 - Database: Postgres
-- Cache: Redis (OpenLibrary API caching)
+- Cache/Queue: Redis (OpenLibrary API caching + Goodreads import queue)
 
 ## Features implemented
 
@@ -76,6 +76,7 @@ pnpm dev
 
 - Web: `http://localhost:5173`
 - API: `http://localhost:4000`
+- Import worker: started via `pnpm dev` (`@obelus/api dev:worker`)
 
 ### WSL / host-IP access
 

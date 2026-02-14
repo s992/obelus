@@ -7,9 +7,52 @@ import { env } from "./env.js";
 
 const SEARCH_TTL_SECONDS = 60 * 60 * 6;
 const DETAIL_TTL_SECONDS = 60 * 60 * 24;
+const BOOK_META_TTL_SECONDS = 60 * 60 * 24 * 365;
 const FETCH_TIMEOUT_MS = 5000;
 const AUTHOR_FETCH_CONCURRENCY = 8;
 const OPENLIBRARY_USER_AGENT = `Obelus (${env.OPENLIBRARY_CONTACT_EMAIL})`;
+
+type CachedBookMetadata = {
+  key: string;
+  title: string;
+  authors: string[];
+  covers: number[];
+  publishDate: string | null;
+};
+
+const toBookMetaCacheKey = (bookKey: string): string => {
+  const normalizedKey = bookKey.startsWith("/") ? bookKey : `/works/${bookKey}`;
+  return `openlibrary:book-meta:${normalizedKey}`;
+};
+
+const fallbackDetail = (bookKey: string): BookDetail => {
+  const normalizedKey = bookKey.startsWith("/") ? bookKey : `/works/${bookKey}`;
+  const fallbackTitle = normalizedKey.split("/").filter(Boolean).pop() ?? normalizedKey;
+
+  return {
+    key: normalizedKey,
+    title: fallbackTitle,
+    description: null,
+    authors: [],
+    publishDate: null,
+    covers: [],
+    seriesName: null,
+    seriesPosition: null,
+    seriesBooks: [],
+  };
+};
+
+const toDetailFromMetadata = (metadata: CachedBookMetadata): BookDetail => ({
+  key: metadata.key,
+  title: metadata.title,
+  description: null,
+  authors: metadata.authors,
+  publishDate: metadata.publishDate,
+  covers: metadata.covers,
+  seriesName: null,
+  seriesPosition: null,
+  seriesBooks: [],
+});
 
 const getCache = async <T>(key: string): Promise<T | null> => {
   try {
@@ -18,7 +61,7 @@ const getCache = async <T>(key: string): Promise<T | null> => {
       return JSON.parse(redisValue) as T;
     }
   } catch {
-    // Redis cache is optional; continue to Postgres cache fallback.
+    // Redis cache miss/failure falls back to Postgres cache table.
   }
 
   const [cached] = await db
@@ -94,6 +137,39 @@ const mapWithConcurrency = async <T, R>(
   return output;
 };
 
+export const seedBookMetadataEntries = async (
+  entries: Array<{
+    key: string;
+    title: string;
+    authors?: string[];
+    covers?: number[];
+    publishDate?: string | null;
+  }>,
+) => {
+  const deduped = new Map<string, CachedBookMetadata>();
+
+  for (const entry of entries) {
+    const normalizedKey = entry.key.startsWith("/") ? entry.key : `/works/${entry.key}`;
+    deduped.set(normalizedKey, {
+      key: normalizedKey,
+      title: entry.title,
+      authors: entry.authors ?? [],
+      covers: entry.covers ?? [],
+      publishDate: entry.publishDate ?? null,
+    });
+  }
+
+  await Promise.all(
+    [...deduped.values()].map((entry) =>
+      setCache(toBookMetaCacheKey(entry.key), entry, BOOK_META_TTL_SECONDS),
+    ),
+  );
+};
+
+const getCachedBookMetadata = async (bookKey: string): Promise<CachedBookMetadata | null> => {
+  return getCache<CachedBookMetadata>(toBookMetaCacheKey(bookKey));
+};
+
 export const searchBooks = async (query: string): Promise<BookSearchResult[]> => {
   const key = `openlibrary:search:${query.toLowerCase().trim()}`;
   const cached = await getCache<BookSearchResult[]>(key);
@@ -132,7 +208,19 @@ export const searchBooks = async (query: string): Promise<BookSearchResult[]> =>
     series: doc.series ?? [],
   }));
 
-  await setCache(key, results, SEARCH_TTL_SECONDS);
+  await Promise.all([
+    setCache(key, results, SEARCH_TTL_SECONDS),
+    seedBookMetadataEntries(
+      results.map((entry) => ({
+        key: entry.key,
+        title: entry.title,
+        authors: entry.authorName,
+        covers: entry.coverId ? [entry.coverId] : [],
+        publishDate: entry.firstPublishYear ? String(entry.firstPublishYear) : null,
+      })),
+    ),
+  ]);
+
   return results;
 };
 
@@ -151,12 +239,28 @@ const parseDescription = (description: unknown): string | null => {
   return null;
 };
 
-export const getBookDetail = async (bookKey: string): Promise<BookDetail> => {
+export const getBookDetail = async (
+  bookKey: string,
+  options?: {
+    allowRemoteFetch?: boolean;
+  },
+): Promise<BookDetail> => {
+  const allowRemoteFetch = options?.allowRemoteFetch ?? true;
   const normalizedKey = bookKey.startsWith("/") ? bookKey : `/works/${bookKey}`;
-  const key = `openlibrary:detail:${normalizedKey}`;
-  const cached = await getCache<BookDetail>(key);
-  if (cached) {
-    return cached;
+  const detailCacheKey = `openlibrary:detail:${normalizedKey}`;
+
+  const cachedDetail = await getCache<BookDetail>(detailCacheKey);
+  if (cachedDetail) {
+    return cachedDetail;
+  }
+
+  const cachedMetadata = await getCachedBookMetadata(normalizedKey);
+  if (cachedMetadata) {
+    return toDetailFromMetadata(cachedMetadata);
+  }
+
+  if (!allowRemoteFetch) {
+    return fallbackDetail(normalizedKey);
   }
 
   const response = await fetchWithTimeout(`https://openlibrary.org${normalizedKey}.json`);
@@ -213,7 +317,19 @@ export const getBookDetail = async (bookKey: string): Promise<BookDetail> => {
     seriesBooks: [],
   };
 
-  await setCache(key, detail, DETAIL_TTL_SECONDS);
+  await Promise.all([
+    setCache(detailCacheKey, detail, DETAIL_TTL_SECONDS),
+    seedBookMetadataEntries([
+      {
+        key: detail.key,
+        title: detail.title,
+        authors: detail.authors,
+        covers: detail.covers,
+        publishDate: detail.publishDate,
+      },
+    ]),
+  ]);
+
   return detail;
 };
 
