@@ -38,7 +38,7 @@ export const bookSearchResultSchema = z.object({
   title: z.string(),
   authorName: z.array(z.string()).default([]),
   firstPublishYear: z.number().nullable(),
-  coverId: z.number().nullable(),
+  coverUrl: z.string().url().nullable().default(null),
   series: z.array(z.string()).default([]),
 });
 
@@ -48,9 +48,12 @@ export const bookDetailSchema = z.object({
   description: z.string().nullable(),
   authors: z.array(z.string()),
   publishDate: z.string().nullable(),
-  covers: z.array(z.number()),
+  covers: z.array(z.string().url()),
+  coverUrl: z.string().url().nullable().default(null),
   seriesName: z.string().nullable(),
   seriesPosition: z.number().nullable(),
+  isbn_13: z.array(z.string()).default([]),
+  number_of_pages: z.number().int().nullable().default(null),
   seriesBooks: z
     .array(
       z.object({

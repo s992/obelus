@@ -119,7 +119,7 @@ export const PublicCollectionView = () => {
                       <div className={styles.bookRowContent}>
                         <BookCover
                           title={meta?.title ?? fallbackTitle(entry.bookKey)}
-                          coverId={meta?.covers?.[0] ?? null}
+                          coverUrl={meta?.coverUrl ?? meta?.covers?.[0] ?? null}
                         />
                         <div className={styles.bookRowMain}>
                           <h3 className={styles.bookListTitle}>
@@ -163,7 +163,7 @@ export const PublicCollectionView = () => {
                       <div className={styles.bookRowContent}>
                         <BookCover
                           title={meta?.title ?? fallbackTitle(entry.bookKey)}
-                          coverId={meta?.covers?.[0] ?? null}
+                          coverUrl={meta?.coverUrl ?? meta?.covers?.[0] ?? null}
                         />
                         <div className={styles.bookRowMain}>
                           <h3 className={styles.bookListTitle}>
@@ -202,7 +202,7 @@ export const PublicCollectionView = () => {
                       <div className={styles.bookRowContent}>
                         <BookCover
                           title={meta?.title ?? fallbackTitle(entry.bookKey)}
-                          coverId={meta?.covers?.[0] ?? null}
+                          coverUrl={meta?.coverUrl ?? meta?.covers?.[0] ?? null}
                         />
                         <div className={styles.bookRowMain}>
                           <h3 className={styles.bookListTitle}>

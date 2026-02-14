@@ -2,19 +2,19 @@ import { BookCover } from "@/features/shared/components/BookCover/BookCover";
 import { cx } from "@/generated/utils/cx";
 import { toPublishedYearLabel } from "@/lib/format";
 import * as styles from "./ReadingSearchDropdown.css";
-import type { MyBookSearchItem, OpenLibrarySearchItem } from "./readingSearch";
+import type { MyBookSearchItem, RemoteSearchItem } from "./readingSearch";
 
 type Props = {
   query: string;
   listboxId: string;
   myBooks: MyBookSearchItem[];
-  addBooks: OpenLibrarySearchItem[];
+  addBooks: RemoteSearchItem[];
   focusedItemId: string | null;
   showRemoteSection: boolean;
   isRemoteLoading: boolean;
   remoteError: boolean;
   onSelectMyBook: (bookKey: string) => void;
-  onSelectAddBook: (book: OpenLibrarySearchItem) => void;
+  onSelectAddBook: (book: RemoteSearchItem) => void;
   onHoverItem: (id: string) => void;
 };
 
@@ -71,8 +71,8 @@ export const ReadingSearchDropdown = ({
               onMouseEnter={() => onHoverItem(optionId)}
               onClick={() => onSelectMyBook(book.bookKey)}
             >
-              {book.coverId ? (
-                <BookCover title={book.title} coverId={book.coverId} size="S" />
+              {book.coverUrl ? (
+                <BookCover title={book.title} coverUrl={book.coverUrl} size="S" />
               ) : (
                 <div className={styles.placeholderCover} aria-hidden="true" />
               )}
@@ -96,7 +96,7 @@ export const ReadingSearchDropdown = ({
           <p className={styles.sectionHeader}>Add new books</p>
           {!remoteError && (isRemoteLoading || addBooks.length === 0) ? (
             <div className={styles.collapsedRemoteRow} role="note">
-              Search Open Library for “{query}” -&gt;
+              Search Hardcover for “{query}” -&gt;
               <span className={styles.collapsedRemoteHint}>
                 {isRemoteLoading ? "Searching..." : "Keep typing to find titles"}
               </span>
@@ -104,7 +104,7 @@ export const ReadingSearchDropdown = ({
           ) : null}
           {remoteError ? (
             <p className={styles.statusRow} role="note">
-              Unable to search Open Library right now
+              Unable to search Hardcover right now
             </p>
           ) : null}
           {!isRemoteLoading && !remoteError
@@ -124,8 +124,8 @@ export const ReadingSearchDropdown = ({
                     onMouseEnter={() => onHoverItem(optionId)}
                     onClick={() => onSelectAddBook(book)}
                   >
-                    {book.coverId ? (
-                      <BookCover title={book.title} coverId={book.coverId} size="S" />
+                    {book.coverUrl ? (
+                      <BookCover title={book.title} coverUrl={book.coverUrl} size="S" />
                     ) : (
                       <div className={styles.placeholderCover} aria-hidden="true" />
                     )}

@@ -1,6 +1,41 @@
 import { z } from "zod";
-import { coverImageUrl, getBookDetail, searchBooks } from "../lib/openlibrary.js";
+import { getBookDetail, searchBooks } from "../lib/hardcover.js";
 import { publicProcedure, router } from "../lib/trpc.js";
+
+const DETAILS_BY_KEYS_BATCH_SIZE = 50;
+const DETAILS_BY_KEYS_MAX_KEYS = 500;
+
+type ResolveDetail<TDetail> = (key: string) => Promise<TDetail>;
+
+const chunkKeys = (keys: string[], chunkSize: number): string[][] => {
+  const chunks: string[][] = [];
+  for (let index = 0; index < keys.length; index += chunkSize) {
+    chunks.push(keys.slice(index, index + chunkSize));
+  }
+  return chunks;
+};
+
+const resolveDetailsByKeysInBatches = async <TDetail>(
+  keys: string[],
+  resolveDetail: ResolveDetail<TDetail>,
+) => {
+  const uniqueKeys = [...new Set(keys)];
+  const detailEntries: Array<readonly [string, TDetail]> = [];
+
+  for (const keyBatch of chunkKeys(uniqueKeys, DETAILS_BY_KEYS_BATCH_SIZE)) {
+    const settledBatch = await Promise.allSettled(
+      keyBatch.map(async (key) => [key, await resolveDetail(key)] as const),
+    );
+
+    for (const settledEntry of settledBatch) {
+      if (settledEntry.status === "fulfilled") {
+        detailEntries.push(settledEntry.value);
+      }
+    }
+  }
+
+  return Object.fromEntries(detailEntries);
+};
 
 export const booksRouter = router({
   search: publicProcedure
@@ -26,31 +61,27 @@ export const booksRouter = router({
   detailsByKeys: publicProcedure
     .input(
       z.object({
-        keys: z.array(z.string().min(1)).max(50),
+        keys: z.array(z.string().min(1)).max(DETAILS_BY_KEYS_MAX_KEYS),
       }),
     )
-    .query(async ({ input }) => {
-      const uniqueKeys = [...new Set(input.keys)];
-      const entries = await Promise.allSettled(
-        uniqueKeys.map(async (key) => {
-          const detail = await getBookDetail(key, { allowRemoteFetch: false });
-          return [key, detail] as const;
-        }),
-      );
-
-      return Object.fromEntries(
-        entries
-          .flatMap((entry) => (entry.status === "fulfilled" ? [entry.value] : []))
-          .map(([key, detail]) => [key, detail]),
+    .mutation(async ({ input }) => {
+      return resolveDetailsByKeysInBatches(input.keys, (key) =>
+        getBookDetail(key, { allowRemoteFetch: false }),
       );
     }),
 
   coverUrl: publicProcedure
     .input(
       z.object({
-        coverId: z.number(),
-        size: z.enum(["S", "M", "L"]).optional(),
+        url: z.string().url(),
       }),
     )
-    .query(({ input }) => coverImageUrl(input.coverId, input.size ?? "M")),
+    .query(({ input }) => input.url),
 });
+
+export const __testables = {
+  chunkKeys,
+  resolveDetailsByKeysInBatches,
+  DETAILS_BY_KEYS_BATCH_SIZE,
+  DETAILS_BY_KEYS_MAX_KEYS,
+};

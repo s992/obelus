@@ -39,7 +39,7 @@ api:
   env:
     APP_ORIGIN: https://obelus.example.com
     TRUST_PROXY: "true"
-    OPENLIBRARY_CONTACT_EMAIL: ops@example.com
+    HARDCOVER_API_URL: https://api.hardcover.app/v1/graphql
   secretRefs:
     DATABASE_URL:
       existingSecret: obelus-app-secrets
@@ -50,6 +50,9 @@ api:
     SESSION_SECRET:
       existingSecret: obelus-app-secrets
       key: SESSION_SECRET
+    HARDCOVER_API_TOKEN:
+      existingSecret: obelus-app-secrets
+      key: HARDCOVER_API_TOKEN
     OAUTH_CLIENT_SECRET:
       existingSecret: obelus-app-secrets
       key: OAUTH_CLIENT_SECRET

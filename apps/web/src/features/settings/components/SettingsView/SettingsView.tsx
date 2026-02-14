@@ -475,7 +475,7 @@ export const SettingsView = ({
         <div className={styles.noticeBox}>
           <p className={styles.noticeTitle}>Import limitations and assumptions</p>
           <ul className={styles.noticeList}>
-            <li>Books are matched using OpenLibrary metadata and may not always resolve.</li>
+            <li>Books are matched using Hardcover metadata and may not always resolve.</li>
             <li>
               When dates or shelf data are incomplete, inferred values are used and logged as
               warnings.

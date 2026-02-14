@@ -74,5 +74,5 @@ export const normalizeBookKeyFromParam = (value: string | undefined): string | n
     return null;
   }
 
-  return decoded.startsWith("/") ? decoded : `/${decoded}`;
+  return decoded.trim();
 };

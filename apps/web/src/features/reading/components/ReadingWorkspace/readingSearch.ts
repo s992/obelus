@@ -8,16 +8,16 @@ export type MyBookSearchItem = {
   bookKey: string;
   title: string;
   authors: string[];
-  coverId: number | null;
+  coverUrl: string | null;
   status: MyBookStatus;
 };
 
-export type OpenLibrarySearchItem = {
+export type RemoteSearchItem = {
   key: string;
   title: string;
   authorName: string[];
   firstPublishYear: number | null;
-  coverId: number | null;
+  coverUrl: string | null;
 };
 
 export type SearchFocusableItem =
@@ -29,13 +29,14 @@ export type SearchFocusableItem =
   | {
       id: string;
       type: "add-book";
-      item: OpenLibrarySearchItem;
+      item: RemoteSearchItem;
     };
 
 type LibraryDetail = {
   title?: string;
   authors?: string[];
-  covers?: number[];
+  covers?: string[];
+  coverUrl?: string | null;
 };
 
 const normalizeQuery = (value: string) => value.trim().toLowerCase();
@@ -81,7 +82,7 @@ export const buildMyBookSearchItems = (
       bookKey,
       title: detail?.title?.trim() || titleFromKey(bookKey),
       authors: detail?.authors ?? [],
-      coverId: detail?.covers?.[0] ?? null,
+      coverUrl: detail?.coverUrl ?? detail?.covers?.[0] ?? null,
       status,
     });
   }
@@ -113,7 +114,7 @@ export const filterMyBookSearchItems = (
 
 export const toFocusableItems = (
   myBooks: MyBookSearchItem[],
-  remoteBooks: OpenLibrarySearchItem[],
+  remoteBooks: RemoteSearchItem[],
 ): SearchFocusableItem[] => {
   const myBookItems: SearchFocusableItem[] = myBooks.map((item) => ({
     id: `my-book-${encodeURIComponent(item.bookKey)}`,

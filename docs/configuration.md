@@ -14,7 +14,8 @@
 | `SESSION_COOKIE_NAME` | No | `obelus_session` | No | Session cookie name. |
 | `CSRF_COOKIE_NAME` | No | `obelus_csrf` | No | CSRF cookie name. |
 | `SESSION_SECRET` | Yes in production | `change-this-development-secret` | Yes | JWT/session signing secret (min 16 chars). |
-| `OPENLIBRARY_CONTACT_EMAIL` | Yes | none | No | Administrator contact email used in the OpenLibrary `User-Agent` header (`Obelus (<email>)`). |
+| `HARDCOVER_API_TOKEN` | Yes | none | Yes | Bearer token used for Hardcover GraphQL API authentication. |
+| `HARDCOVER_API_URL` | No | `https://api.hardcover.app/v1/graphql` | No | Hardcover GraphQL API endpoint. |
 | `OAUTH_PROVIDER` | No | `oidc` | No | OAuth provider type (`oidc` or `oauth2`). |
 | `OAUTH_ISSUER` | Conditionally | empty | No | OIDC issuer URL. |
 | `OAUTH_JWKS_URL` | Conditionally | empty | No | JWKS endpoint URL. |
@@ -54,7 +55,8 @@
 | `DATABASE_URL` | Yes | External Postgres DSN. |
 | `REDIS_URL` | Yes | External Redis DSN. |
 | `SESSION_SECRET` | Yes | API signing secret. |
-| `OPENLIBRARY_CONTACT_EMAIL` | Yes | Contact email included in OpenLibrary API `User-Agent` requests. |
+| `HARDCOVER_API_TOKEN` | Yes | Hardcover API token for metadata/search/import lookups. |
+| `HARDCOVER_API_URL` | No | Hardcover GraphQL endpoint override. |
 | `APP_ORIGIN` | No | Browser URL for CORS/cookies (default `http://localhost:8080`). |
 | `APP_ORIGINS` | No | Additional allowed origins. |
 | `TRUST_PROXY` | No | Proxy trust toggle. |

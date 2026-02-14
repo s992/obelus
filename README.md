@@ -10,7 +10,7 @@ Obelus is a private, multi-user reading record app focused on judgment and notes
 - Data fetching: TanStack Query
 - Backend: Fastify + tRPC + Drizzle ORM
 - Database: Postgres
-- Cache/Queue: Redis (OpenLibrary API caching + Goodreads import queue)
+- Cache/Queue: Redis (Hardcover API caching + Goodreads import queue)
 
 ## Features implemented
 
@@ -22,9 +22,9 @@ Obelus is a private, multi-user reading record app focused on judgment and notes
 - Collection privacy toggle (private/public)
 - Public read-only collection endpoint
 - Reading reports dashboard (totals + monthly trend)
-- OpenLibrary book search
+- Hardcover book search
 - Book detail with series context and related books in the series
-- Cached OpenLibrary metadata (Redis + Postgres cache table)
+- Cached Hardcover metadata (Redis + Postgres cache table)
 
 ## Project layout
 
@@ -46,7 +46,7 @@ cp apps/api/.env.example apps/api/.env
 cp apps/web/.env.example apps/web/.env
 ```
 
-Set `OPENLIBRARY_CONTACT_EMAIL` in your API env (`.env` or `apps/api/.env`) to an administrator contact email before starting services.
+Set `HARDCOVER_API_TOKEN` in your API env (`.env` or `apps/api/.env`) before starting services.
 
 2. Install dependencies:
 

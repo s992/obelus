@@ -14,6 +14,7 @@ secrets:
     DATABASE_URL: ""
     REDIS_URL: ""
     SESSION_SECRET: ""
+    HARDCOVER_API_TOKEN: ""
     OAUTH_CLIENT_SECRET: ""
 
 api:
@@ -54,7 +55,7 @@ api:
     APP_ORIGINS: ""
     SESSION_COOKIE_NAME: obelus_session
     CSRF_COOKIE_NAME: obelus_csrf
-    OPENLIBRARY_CONTACT_EMAIL: "admin@example.com"
+    HARDCOVER_API_URL: "https://api.hardcover.app/v1/graphql"
     OAUTH_PROVIDER: oidc
     OAUTH_ISSUER: ""
     OAUTH_JWKS_URL: ""
@@ -74,6 +75,9 @@ api:
     SESSION_SECRET:
       existingSecret: obelus-app-secrets
       key: SESSION_SECRET
+    HARDCOVER_API_TOKEN:
+      existingSecret: obelus-app-secrets
+      key: HARDCOVER_API_TOKEN
     OAUTH_CLIENT_SECRET:
       existingSecret: obelus-app-secrets
       key: OAUTH_CLIENT_SECRET

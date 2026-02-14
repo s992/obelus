@@ -42,9 +42,21 @@ describe("readingSearch", () => {
       ],
       [queueEntry({ bookKey: "/works/OL2W" })],
       {
-        "/works/OL1W": { title: "Dune", authors: ["Frank Herbert"], covers: [1] },
-        "/works/OL2W": { title: "Hyperion", authors: ["Dan Simmons"], covers: [2] },
-        "/works/OL3W": { title: "Foundation", authors: ["Isaac Asimov"], covers: [3] },
+        "/works/OL1W": {
+          title: "Dune",
+          authors: ["Frank Herbert"],
+          covers: ["https://example.com/1.jpg"],
+        },
+        "/works/OL2W": {
+          title: "Hyperion",
+          authors: ["Dan Simmons"],
+          covers: ["https://example.com/2.jpg"],
+        },
+        "/works/OL3W": {
+          title: "Foundation",
+          authors: ["Isaac Asimov"],
+          covers: ["https://example.com/3.jpg"],
+        },
       },
     );
 
@@ -64,17 +76,17 @@ describe("readingSearch", () => {
           bookKey: "/works/OL1W",
           title: "Dune",
           authors: ["Frank Herbert"],
-          coverId: 1,
+          coverUrl: "https://example.com/1.jpg",
           status: "currently-reading",
         },
       ],
       [
         {
           key: "/works/OL9W",
-          title: "Book from Open Library",
+          title: "Book from Hardcover",
           authorName: ["Author"],
           firstPublishYear: 2001,
-          coverId: null,
+          coverUrl: null,
         },
       ],
     );

@@ -9,7 +9,7 @@ export const useBookDetailsByKeys = (keys: string[]) => {
 
   return useQuery({
     queryKey: queryKeys.bookDetailsByKeys(normalizedKeys),
-    queryFn: () => trpc.books.detailsByKeys.query({ keys: normalizedKeys }),
+    queryFn: () => trpc.books.detailsByKeys.mutate({ keys: normalizedKeys }),
     enabled: normalizedKeys.length > 0,
     staleTime: 5 * 60 * 1000,
   });

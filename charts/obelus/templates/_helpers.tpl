@@ -71,6 +71,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if and (not $sessionSecretName) .Values.secrets.create -}}
 {{- $sessionSecretName = include "obelus.secretName" . -}}
 {{- end -}}
+{{- $hardcoverTokenName := .Values.api.secretRefs.HARDCOVER_API_TOKEN.existingSecret -}}
+{{- if and (not $hardcoverTokenName) .Values.secrets.create -}}
+{{- $hardcoverTokenName = include "obelus.secretName" . -}}
+{{- end -}}
 {{- $oauthClientSecretName := .Values.api.secretRefs.OAUTH_CLIENT_SECRET.existingSecret -}}
 {{- if and (not $oauthClientSecretName) .Values.secrets.create -}}
 {{- $oauthClientSecretName = include "obelus.secretName" . -}}
@@ -89,8 +93,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   value: {{ .Values.api.env.SESSION_COOKIE_NAME | quote }}
 - name: CSRF_COOKIE_NAME
   value: {{ .Values.api.env.CSRF_COOKIE_NAME | quote }}
-- name: OPENLIBRARY_CONTACT_EMAIL
-  value: {{ required "Set api.env.OPENLIBRARY_CONTACT_EMAIL to an administrator contact email for OpenLibrary API User-Agent." .Values.api.env.OPENLIBRARY_CONTACT_EMAIL | quote }}
+- name: HARDCOVER_API_URL
+  value: {{ .Values.api.env.HARDCOVER_API_URL | quote }}
 - name: OAUTH_PROVIDER
   value: {{ .Values.api.env.OAUTH_PROVIDER | quote }}
 - name: OAUTH_ISSUER
@@ -135,6 +139,15 @@ app.kubernetes.io/instance: {{ .Release.Name }}
       key: {{ .Values.api.secretRefs.SESSION_SECRET.key | quote }}
   {{- else }}
   value: {{ required "Set api.secretRefs.SESSION_SECRET.existingSecret or enable secrets.create or provide api.env.SESSION_SECRET." .Values.api.env.SESSION_SECRET | quote }}
+  {{- end }}
+- name: HARDCOVER_API_TOKEN
+  {{- if $hardcoverTokenName }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ $hardcoverTokenName | quote }}
+      key: {{ .Values.api.secretRefs.HARDCOVER_API_TOKEN.key | quote }}
+  {{- else }}
+  value: {{ required "Set api.secretRefs.HARDCOVER_API_TOKEN.existingSecret or enable secrets.create or provide api.env.HARDCOVER_API_TOKEN." .Values.api.env.HARDCOVER_API_TOKEN | quote }}
   {{- end }}
 - name: OAUTH_CLIENT_SECRET
   {{- if $oauthClientSecretName }}

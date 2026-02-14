@@ -1,22 +1,15 @@
 import { coverFallback, coverLarge, coverThumb } from "./BookCover.css";
 
-const coverUrl = (coverId: number | null | undefined, size: "S" | "M" | "L" = "M") => {
-  if (!coverId) {
-    return null;
-  }
-  return `https://covers.openlibrary.org/b/id/${coverId}-${size}.jpg`;
-};
-
 export const BookCover = ({
-  coverId,
+  coverUrl,
   title,
   size = "S",
 }: {
-  coverId: number | null | undefined;
+  coverUrl?: string | null;
   title: string;
   size?: "S" | "M" | "L";
 }) => {
-  const src = coverUrl(coverId, size);
+  const src = coverUrl ?? null;
   if (!src) {
     return <div className={coverFallback}>No cover</div>;
   }

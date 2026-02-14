@@ -14,8 +14,14 @@ import {
   readingEntries,
   toReadEntries,
 } from "../db/schema.js";
-import { env } from "./env.js";
-import { seedBookMetadataEntries } from "./openlibrary.js";
+import {
+  type BookLookupOutcome,
+  type LookupFailureReason,
+  getBookDetail,
+  resolveBookKeyByIsbn,
+  searchBookKeyByTitleAndAuthor,
+  seedBookMetadataEntries as seedHardcoverBookMetadataEntries,
+} from "./hardcover.js";
 
 const REQUIRED_HEADERS = [
   "Title",
@@ -56,17 +62,6 @@ type RowPlan = {
   judgment: Judgment | null;
   warnings: Array<{ code: string; message: string; inference?: string }>;
 };
-
-type LookupFailureReason = "not_found" | "rate_limited" | "upstream_error";
-
-type BookLookupOutcome = {
-  bookKey: string | null;
-  reason: "matched" | LookupFailureReason;
-};
-
-const FETCH_TIMEOUT_MS = 6000;
-const MIN_REQUEST_INTERVAL_MS = 1200;
-const MAX_BACKOFF_MS = 12000;
 
 const normalizeIsbn = (input: string | undefined): string | null => {
   if (!input) {
@@ -264,229 +259,6 @@ const buildRowPlan = (row: GoodreadsRow, options: GoodreadsImportOptions): RowPl
   };
 };
 
-class OpenLibraryImportClient {
-  private lastRequestAt = 0;
-  private isbnCache = new Map<string, Promise<BookLookupOutcome>>();
-  private queryCache = new Map<string, Promise<BookLookupOutcome>>();
-
-  private async sleep(ms: number): Promise<void> {
-    await new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
-  private async throttledFetch(url: string): Promise<Response> {
-    const elapsed = Date.now() - this.lastRequestAt;
-    if (elapsed < MIN_REQUEST_INTERVAL_MS) {
-      await this.sleep(MIN_REQUEST_INTERVAL_MS - elapsed);
-    }
-
-    let attempt = 0;
-    while (true) {
-      attempt += 1;
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-
-      try {
-        this.lastRequestAt = Date.now();
-        const response = await fetch(url, {
-          signal: controller.signal,
-          headers: {
-            "User-Agent": `Obelus (${env.OPENLIBRARY_CONTACT_EMAIL})`,
-          },
-        });
-
-        if (response.status === 429 || response.status >= 500) {
-          if (attempt < 5) {
-            const retryAfterHeader = response.headers.get("retry-after");
-            const retryAfterSeconds = retryAfterHeader
-              ? Number.parseInt(retryAfterHeader, 10)
-              : Number.NaN;
-            const computedBackoff = Math.min(MAX_BACKOFF_MS, 1000 * 2 ** (attempt - 1));
-            const retryAfter = Number.isFinite(retryAfterSeconds)
-              ? Math.min(MAX_BACKOFF_MS, retryAfterSeconds * 1000)
-              : computedBackoff;
-            const jitter = Math.floor(Math.random() * 200);
-            await this.sleep(retryAfter + jitter);
-            continue;
-          }
-        }
-
-        return response;
-      } catch {
-        if (attempt >= 5) {
-          throw new TRPCError({
-            code: "BAD_GATEWAY",
-            message: "OpenLibrary request failed repeatedly during Goodreads import.",
-          });
-        }
-
-        const backoff = Math.min(MAX_BACKOFF_MS, 1000 * 2 ** (attempt - 1));
-        const jitter = Math.floor(Math.random() * 200);
-        await this.sleep(backoff + jitter);
-      } finally {
-        clearTimeout(timeout);
-      }
-    }
-  }
-
-  private normalizeWorkKey(input: string | null | undefined): string | null {
-    if (!input) {
-      return null;
-    }
-    if (input.startsWith("/works/")) {
-      return input;
-    }
-    return null;
-  }
-
-  private classifyLookupFailureStatus(response: Response): LookupFailureReason {
-    if (response.status === 404) {
-      return "not_found";
-    }
-    if (response.status === 429) {
-      return "rate_limited";
-    }
-    return "upstream_error";
-  }
-
-  async resolveBookKeyByIsbn(isbn: string): Promise<BookLookupOutcome> {
-    const cached = this.isbnCache.get(isbn);
-    if (cached) {
-      return cached;
-    }
-
-    const request: Promise<BookLookupOutcome> = (async (): Promise<BookLookupOutcome> => {
-      const response = await this.throttledFetch(
-        `https://openlibrary.org/isbn/${encodeURIComponent(isbn)}.json`,
-      );
-
-      if (!response.ok) {
-        return {
-          bookKey: null,
-          reason: this.classifyLookupFailureStatus(response),
-        };
-      }
-
-      const payload = (await response.json()) as {
-        works?: Array<{ key?: string }>;
-        key?: string;
-      };
-
-      const workKey = this.normalizeWorkKey(payload.works?.[0]?.key);
-      if (workKey) {
-        return {
-          bookKey: workKey,
-          reason: "matched",
-        };
-      }
-
-      const fallbackKey = this.normalizeWorkKey(payload.key ?? null);
-      if (fallbackKey) {
-        return {
-          bookKey: fallbackKey,
-          reason: "matched",
-        };
-      }
-
-      return {
-        bookKey: null,
-        reason: "not_found",
-      };
-    })();
-
-    this.isbnCache.set(isbn, request);
-    return request;
-  }
-
-  async searchBookKeyByTitleAndAuthor(title: string, author: string): Promise<BookLookupOutcome> {
-    const query = `${title} ${author}`.trim();
-    if (query.length < 2) {
-      return {
-        bookKey: null,
-        reason: "not_found",
-      };
-    }
-
-    const normalizedQuery = query.toLowerCase();
-    const cached = this.queryCache.get(normalizedQuery);
-    if (cached) {
-      return cached;
-    }
-
-    const request: Promise<BookLookupOutcome> = (async (): Promise<BookLookupOutcome> => {
-      const response = await this.throttledFetch(
-        `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=5`,
-      );
-
-      if (!response.ok) {
-        return {
-          bookKey: null,
-          reason: this.classifyLookupFailureStatus(response),
-        };
-      }
-
-      const payload = (await response.json()) as {
-        docs?: Array<{ key?: string; title?: string; author_name?: string[] }>;
-      };
-
-      const docs = payload.docs ?? [];
-      if (docs.length === 0) {
-        return {
-          bookKey: null,
-          reason: "not_found",
-        };
-      }
-
-      const normalizedTitle = title.trim().toLowerCase();
-      const normalizedAuthor = author.trim().toLowerCase();
-
-      const scored = docs
-        .map((doc) => {
-          const docTitle = (doc.title ?? "").trim().toLowerCase();
-          const docAuthors = (doc.author_name ?? []).map((name) => name.trim().toLowerCase());
-
-          let score = 0;
-          if (docTitle === normalizedTitle) {
-            score += 4;
-          } else if (docTitle.includes(normalizedTitle) || normalizedTitle.includes(docTitle)) {
-            score += 2;
-          }
-
-          if (normalizedAuthor.length > 0) {
-            const authorHit = docAuthors.some(
-              (name) => name.includes(normalizedAuthor) || normalizedAuthor.includes(name),
-            );
-            if (authorHit) {
-              score += 3;
-            }
-          }
-
-          return {
-            key: this.normalizeWorkKey(doc.key ?? null),
-            score,
-          };
-        })
-        .filter((entry): entry is { key: string; score: number } => Boolean(entry.key))
-        .sort((a, b) => b.score - a.score);
-
-      const top = scored[0];
-      if (!top || top.score < 3) {
-        return {
-          bookKey: null,
-          reason: "not_found",
-        };
-      }
-
-      return {
-        bookKey: top.key,
-        reason: "matched",
-      };
-    })();
-
-    this.queryCache.set(normalizedQuery, request);
-    return request;
-  }
-}
-
 const pickLookupFailureReason = (outcomes: BookLookupOutcome[]): LookupFailureReason => {
   if (outcomes.some((outcome) => outcome.reason === "rate_limited")) {
     return "rate_limited";
@@ -499,24 +271,46 @@ const pickLookupFailureReason = (outcomes: BookLookupOutcome[]): LookupFailureRe
   return "not_found";
 };
 
+const resolveBookKeyWithFallback = async (
+  attempts: Array<() => Promise<BookLookupOutcome>>,
+): Promise<{ resolvedBookKey: string | null; lookupOutcomes: BookLookupOutcome[] }> => {
+  const lookupOutcomes: BookLookupOutcome[] = [];
+
+  for (const attempt of attempts) {
+    const outcome = await attempt();
+    lookupOutcomes.push(outcome);
+    if (outcome.reason === "matched" && outcome.bookKey) {
+      return {
+        resolvedBookKey: outcome.bookKey,
+        lookupOutcomes,
+      };
+    }
+  }
+
+  return {
+    resolvedBookKey: null,
+    lookupOutcomes,
+  };
+};
+
 const lookupFailureToIssue = (reason: LookupFailureReason): { code: string; message: string } => {
   if (reason === "rate_limited") {
     return {
-      code: "OPENLIBRARY_RATE_LIMITED",
-      message: "Could not import this book because OpenLibrary rate-limited lookup requests.",
+      code: "HARDCOVER_RATE_LIMITED",
+      message: "Could not import this book because Hardcover rate-limited lookup requests.",
     };
   }
 
   if (reason === "upstream_error") {
     return {
-      code: "OPENLIBRARY_UNAVAILABLE",
-      message: "Could not import this book because OpenLibrary was temporarily unavailable.",
+      code: "HARDCOVER_UNAVAILABLE",
+      message: "Could not import this book because Hardcover was temporarily unavailable.",
     };
   }
 
   return {
     code: "BOOK_NOT_FOUND",
-    message: "Could not match this book to OpenLibrary.",
+    message: "Could not match this book to Hardcover.",
   };
 };
 
@@ -532,6 +326,37 @@ const addIssue = async (input: AddIssueInput) => {
     inference: input.inference ?? null,
     rawRow: input.rawRow ?? null,
   });
+};
+
+const hydrateMatchedBookMetadata = async (
+  input: {
+    bookKey: string;
+    title: string;
+    author: string;
+  },
+  deps: {
+    fetchFreshDetail: typeof getBookDetail;
+    seedFallbackMetadata: typeof seedHardcoverBookMetadataEntries;
+  } = {
+    fetchFreshDetail: getBookDetail,
+    seedFallbackMetadata: seedHardcoverBookMetadataEntries,
+  },
+): Promise<"hydrated" | "fallback_seeded"> => {
+  try {
+    await deps.fetchFreshDetail(input.bookKey, { forceRemoteFetch: true });
+    return "hydrated";
+  } catch {
+    await deps.seedFallbackMetadata([
+      {
+        key: input.bookKey,
+        title: input.title,
+        authors: input.author ? [input.author] : [],
+        publishDate: null,
+        coverUrls: [],
+      },
+    ]);
+    return "fallback_seeded";
+  }
 };
 
 export const createQueuedGoodreadsImport = async (input: {
@@ -617,8 +442,6 @@ export const processGoodreadsImport = async (importId: string, userId: string): 
   const readingByBook = new Map(existingReading.map((entry) => [entry.bookKey, entry]));
   const toReadByBook = new Map(existingToRead.map((entry) => [entry.bookKey, entry]));
 
-  const resolver = new OpenLibraryImportClient();
-
   let processedRows = 0;
   let importedRows = 0;
   let failedRows = 0;
@@ -635,17 +458,15 @@ export const processGoodreadsImport = async (importId: string, userId: string): 
       const isbn13 = normalizeIsbn(rowWithMeta.row.ISBN13);
       const isbn10 = normalizeIsbn(rowWithMeta.row.ISBN);
 
-      const lookupOutcomes: BookLookupOutcome[] = [];
+      const lookupAttempts: Array<() => Promise<BookLookupOutcome>> = [];
       if (isbn13) {
-        lookupOutcomes.push(await resolver.resolveBookKeyByIsbn(isbn13));
+        lookupAttempts.push(() => resolveBookKeyByIsbn(isbn13));
       }
       if (isbn10) {
-        lookupOutcomes.push(await resolver.resolveBookKeyByIsbn(isbn10));
+        lookupAttempts.push(() => resolveBookKeyByIsbn(isbn10));
       }
-      lookupOutcomes.push(await resolver.searchBookKeyByTitleAndAuthor(title, author));
-
-      const resolvedBookKey =
-        lookupOutcomes.find((outcome) => outcome.reason === "matched")?.bookKey ?? null;
+      lookupAttempts.push(() => searchBookKeyByTitleAndAuthor(title, author));
+      const { resolvedBookKey, lookupOutcomes } = await resolveBookKeyWithFallback(lookupAttempts);
 
       for (const warning of plan.warnings) {
         warningRows += 1;
@@ -678,15 +499,24 @@ export const processGoodreadsImport = async (importId: string, userId: string): 
           rawRow,
         });
       } else {
-        await seedBookMetadataEntries([
-          {
-            key: resolvedBookKey,
-            title,
-            authors: author ? [author] : [],
-            publishDate: null,
-            covers: [],
-          },
-        ]);
+        const metadataHydrationResult = await hydrateMatchedBookMetadata({
+          bookKey: resolvedBookKey,
+          title,
+          author,
+        });
+        if (metadataHydrationResult === "fallback_seeded") {
+          warningRows += 1;
+          await addIssue({
+            importId,
+            rowNumber: rowWithMeta.rowNumber,
+            bookTitle: title,
+            author,
+            severity: "warning",
+            code: "HARDCOVER_METADATA_UNAVAILABLE",
+            message: "Matched book, but fresh Hardcover metadata could not be fetched.",
+            rawRow,
+          });
+        }
 
         if (plan.target === "reading") {
           const existing = readingByBook.get(resolvedBookKey);
@@ -962,4 +792,6 @@ export const __testables = {
   parseGoodreadsDate,
   normalizeIsbn,
   buildRowPlan,
+  resolveBookKeyWithFallback,
+  hydrateMatchedBookMetadata,
 };

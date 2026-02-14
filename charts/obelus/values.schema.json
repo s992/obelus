@@ -13,6 +13,7 @@
             "DATABASE_URL": { "type": "string" },
             "REDIS_URL": { "type": "string" },
             "SESSION_SECRET": { "type": "string" },
+            "HARDCOVER_API_TOKEN": { "type": "string" },
             "OAUTH_CLIENT_SECRET": { "type": "string" }
           },
           "additionalProperties": false
@@ -47,7 +48,7 @@
             "APP_ORIGINS": { "type": "string" },
             "SESSION_COOKIE_NAME": { "type": "string" },
             "CSRF_COOKIE_NAME": { "type": "string" },
-            "OPENLIBRARY_CONTACT_EMAIL": { "type": "string", "format": "email" },
+            "HARDCOVER_API_URL": { "type": "string" },
             "OAUTH_PROVIDER": { "type": "string" },
             "OAUTH_ISSUER": { "type": "string" },
             "OAUTH_JWKS_URL": { "type": "string" },
@@ -60,6 +61,7 @@
             "OAUTH_SCOPES": { "type": "string" },
             "DATABASE_URL": { "type": "string" },
             "REDIS_URL": { "type": "string" },
+            "HARDCOVER_API_TOKEN": { "type": "string" },
             "SESSION_SECRET": { "type": "string" }
           },
           "additionalProperties": true

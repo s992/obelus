@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 const markdownDescription =
-  "[The Dark Tower][1] II Part II of an epic saga. Roland, the last gunslinger, encounters three mysterious doorways on the beach. Each one enters into a different person living in New York. Through these doorways, Roland draws the companions who will assist him on his quest to save the Dark Tower. ([source][2]) [1]: https://openlibrary.org/works/OL81600W/The_Dark_Tower_1-7 [2]: https://stephenking.com/library/novel/dark_tower_the_drawing_of_the_three_the.html";
+  "[The Dark Tower][1] II Part II of an epic saga. Roland, the last gunslinger, encounters three mysterious doorways on the beach. Each one enters into a different person living in New York. Through these doorways, Roland draws the companions who will assist him on his quest to save the Dark Tower. ([source][2]) [1]: https://hardcover.app/books/the-dark-tower-the-drawing-of-the-three [2]: https://stephenking.com/library/novel/dark_tower_the_drawing_of_the_three_the.html";
 
 describe("BookMetadataDescription", () => {
   it("renders markdown links with safe external link attributes", () => {
@@ -20,7 +20,7 @@ describe("BookMetadataDescription", () => {
     const primaryLink = screen.getByRole("link", { name: "The Dark Tower" });
     expect(primaryLink).toHaveAttribute(
       "href",
-      "https://openlibrary.org/works/OL81600W/The_Dark_Tower_1-7",
+      "https://hardcover.app/books/the-dark-tower-the-drawing-of-the-three",
     );
     expect(primaryLink).toHaveAttribute("target", "_blank");
     expect(primaryLink).toHaveAttribute("rel", "noreferrer noopener");

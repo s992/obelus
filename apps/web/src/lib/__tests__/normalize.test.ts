@@ -24,8 +24,8 @@ describe("normalize utilities", () => {
 
   it("normalizes isbn and route params", () => {
     expect(normalizeOptionalIsbn13(["", "9781234567890"])).toBe("9781234567890");
-    expect(normalizeBookKeyFromParam("%2Fworks%2FOL1W")).toBe("/works/OL1W");
-    expect(normalizeBookKeyFromParam("works/OL1W")).toBe("/works/OL1W");
+    expect(normalizeBookKeyFromParam("hc%3A123")).toBe("hc:123");
+    expect(normalizeBookKeyFromParam("hc:456")).toBe("hc:456");
     expect(normalizeBookKeyFromParam("")).toBeNull();
   });
 });

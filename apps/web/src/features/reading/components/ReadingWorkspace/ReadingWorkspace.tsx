@@ -39,8 +39,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import * as styles from "./ReadingWorkspace.css";
 import {
-  type OpenLibrarySearchItem,
   REMOTE_SEARCH_MIN_QUERY_LENGTH,
+  type RemoteSearchItem,
   type SearchFocusableItem,
   buildMyBookSearchItems,
   createAbortableCachedSearch,
@@ -62,7 +62,7 @@ export const ReadingWorkspace = () => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const [focusedSearchIndex, setFocusedSearchIndex] = useState(-1);
-  const [remoteSearchResults, setRemoteSearchResults] = useState<OpenLibrarySearchItem[]>([]);
+  const [remoteSearchResults, setRemoteSearchResults] = useState<RemoteSearchItem[]>([]);
   const [isRemoteSearchLoading, setIsRemoteSearchLoading] = useState(false);
   const [hasRemoteSearchError, setHasRemoteSearchError] = useState(false);
   const [readingTab, setReadingTab] = useState<ReadingTab>("currently-reading");
@@ -72,7 +72,7 @@ export const ReadingWorkspace = () => {
   const isSearchDropdownVisible = isSearchMode && isSearchDropdownOpen;
   const normalizeOptionalText = (value: string | null | undefined) => (value ?? "").trim();
   const remoteSearcherRef = useRef(
-    createAbortableCachedSearch<OpenLibrarySearchItem>((query, signal) =>
+    createAbortableCachedSearch<RemoteSearchItem>((query, signal) =>
       trpc.books.search.query({ query }, { signal }),
     ),
   );
@@ -482,7 +482,7 @@ export const ReadingWorkspace = () => {
     setFocusedSearchIndex(-1);
   };
 
-  const selectAddBookFromSearch = (book: OpenLibrarySearchItem) => {
+  const selectAddBookFromSearch = (book: RemoteSearchItem) => {
     navigate(`/books/${encodeURIComponent(book.key)}`);
     setIsSearchDropdownOpen(false);
     setFocusedSearchIndex(-1);
@@ -647,7 +647,7 @@ export const ReadingWorkspace = () => {
                     <div className={styles.bookRowContent}>
                       <BookCover
                         title={bookMeta?.title ?? fallbackTitle(entry.bookKey)}
-                        coverId={bookMeta?.covers?.[0] ?? null}
+                        coverUrl={bookMeta?.coverUrl ?? bookMeta?.covers?.[0] ?? null}
                       />
                       <div className={styles.bookRowMain}>
                         <h3 className={styles.bookListTitle}>
@@ -683,7 +683,7 @@ export const ReadingWorkspace = () => {
                     <div className={styles.bookRowContent}>
                       <BookCover
                         title={bookMeta?.title ?? fallbackTitle(entry.bookKey)}
-                        coverId={bookMeta?.covers?.[0] ?? null}
+                        coverUrl={bookMeta?.coverUrl ?? bookMeta?.covers?.[0] ?? null}
                       />
                       <div className={styles.bookRowMain}>
                         <h3 className={styles.bookListTitle}>
@@ -720,7 +720,7 @@ export const ReadingWorkspace = () => {
                     <div className={styles.bookRowContent}>
                       <BookCover
                         title={bookMeta?.title ?? fallbackTitle(entry.bookKey)}
-                        coverId={bookMeta?.covers?.[0] ?? null}
+                        coverUrl={bookMeta?.coverUrl ?? bookMeta?.covers?.[0] ?? null}
                       />
                       <div className={styles.bookRowMain}>
                         <h3 className={styles.bookListTitle}>
@@ -773,7 +773,7 @@ export const ReadingWorkspace = () => {
               <div className={styles.bookHeaderTop}>
                 <BookCover
                   title={detail.data.title}
-                  coverId={detail.data.covers[0] ?? null}
+                  coverUrl={detail.data.coverUrl ?? detail.data.covers[0] ?? null}
                   size="L"
                 />
                 <div className={styles.bookHeaderContent}>

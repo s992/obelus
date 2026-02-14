@@ -27,7 +27,8 @@ const envSchema = z.object({
   SESSION_COOKIE_NAME: z.string().default("obelus_session"),
   CSRF_COOKIE_NAME: z.string().default("obelus_csrf"),
   SESSION_SECRET: z.string().min(16).default("change-this-development-secret"),
-  OPENLIBRARY_CONTACT_EMAIL: z.string().email(),
+  HARDCOVER_API_TOKEN: z.string().min(1).default("test-hardcover-token"),
+  HARDCOVER_API_URL: z.string().url().default("https://api.hardcover.app/v1/graphql"),
   OAUTH_PROVIDER: z.enum(["oidc", "oauth2"]).default("oidc"),
   OAUTH_ISSUER: optionalUrl,
   OAUTH_JWKS_URL: optionalUrl,
@@ -42,14 +43,13 @@ const envSchema = z.object({
 
 const parsed = envSchema.safeParse(process.env);
 if (!parsed.success) {
-  const openLibraryContactIssue = parsed.error.issues.find(
-    (issue) => issue.path[0] === "OPENLIBRARY_CONTACT_EMAIL",
+  const hardcoverTokenIssue = parsed.error.issues.find(
+    (issue) => issue.path[0] === "HARDCOVER_API_TOKEN",
   );
 
-  if (openLibraryContactIssue) {
+  if (hardcoverTokenIssue) {
     throw new Error(
-      "OPENLIBRARY_CONTACT_EMAIL is required and must be a valid email address. " +
-        "Set OPENLIBRARY_CONTACT_EMAIL in your environment so Obelus can identify itself to the OpenLibrary API.",
+      "HARDCOVER_API_TOKEN is required. Set HARDCOVER_API_TOKEN in your environment so Obelus can access Hardcover API.",
     );
   }
 
@@ -85,6 +85,9 @@ if (envValues.NODE_ENV === "production") {
   }
   if (envValues.DATABASE_URL === "postgres://postgres:postgres@localhost:5432/obelus") {
     throw new Error("DATABASE_URL must be explicitly set in production.");
+  }
+  if (envValues.HARDCOVER_API_TOKEN === "test-hardcover-token") {
+    throw new Error("HARDCOVER_API_TOKEN must be explicitly set in production.");
   }
 }
 
