@@ -448,6 +448,28 @@ export const errorText = style({
   fontSize: "0.75rem",
 });
 
+export const deleteConfirmBox = style({
+  display: "grid",
+  gap: "0.75rem",
+  padding: "0.875rem",
+  border: `1px solid ${vars.color.borderTertiary}`,
+  borderRadius: "8px",
+  backgroundColor: vars.color.bgSecondary,
+});
+
+export const deleteConfirmBody = style({
+  margin: 0,
+  color: vars.color.textSecondary,
+  fontSize: "0.8125rem",
+  lineHeight: 1.6,
+});
+
+export const deleteConfirmActions = style({
+  display: "flex",
+  gap: "0.625rem",
+  flexWrap: "wrap",
+});
+
 export const queueSection = style({
   display: "grid",
   gap: "1rem",

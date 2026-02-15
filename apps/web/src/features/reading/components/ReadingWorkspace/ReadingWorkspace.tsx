@@ -86,6 +86,7 @@ export const ReadingWorkspace = () => {
   const [readingTab, setReadingTab] = useState<ReadingTab>("currently-reading");
   const [expandedMetadataBookKey, setExpandedMetadataBookKey] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [pendingDeleteTarget, setPendingDeleteTarget] = useState<"reading" | "queue" | null>(null);
   const isSearchMode = searchInput.trim().length > 0;
   const isSearchDropdownVisible = isSearchMode && isSearchDropdownOpen;
   const normalizeOptionalText = (value: string | null | undefined) => (value ?? "").trim();
@@ -599,6 +600,23 @@ export const ReadingWorkspace = () => {
   const readingNotesValue = useWatch({ control: readingForm.control, name: "notes" });
   const queuePriorityValue = useWatch({ control: toReadForm.control, name: "priority" });
   const queueNotesValue = useWatch({ control: toReadForm.control, name: "notes" });
+  const onDeleteReadingRecord = () => {
+    setPendingDeleteTarget("reading");
+  };
+  const onConfirmDeleteReadingRecord = () => {
+    setPendingDeleteTarget(null);
+    deleteReadingRecord.mutate();
+  };
+  const onDeleteQueueRecord = () => {
+    setPendingDeleteTarget("queue");
+  };
+  const onConfirmDeleteQueueRecord = () => {
+    setPendingDeleteTarget(null);
+    deleteQueueRecord.mutate();
+  };
+  const onCancelDeleteRecord = () => {
+    setPendingDeleteTarget(null);
+  };
 
   return (
     <section className={styles.readingWorkspace}>
@@ -965,12 +983,39 @@ export const ReadingWorkspace = () => {
                       color="tertiary"
                       type="button"
                       isDisabled={deleteReadingRecord.isPending}
-                      onClick={() => deleteReadingRecord.mutate()}
+                      onClick={onDeleteReadingRecord}
                     >
                       {deleteReadingRecord.isPending ? "Deleting..." : "Delete record"}
                     </Button>
                   ) : null}
                 </div>
+                {selectedEntry && pendingDeleteTarget === "reading" ? (
+                  <section className={styles.deleteConfirmBox} aria-live="polite">
+                    <p className={styles.deleteConfirmBody}>
+                      Delete this reading record? This will remove reading dates, judgment, and
+                      notes for this title.
+                    </p>
+                    <div className={styles.deleteConfirmActions}>
+                      <Button
+                        className={styles.ghostButton}
+                        color="tertiary"
+                        type="button"
+                        onClick={onCancelDeleteRecord}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        className={styles.dangerButton}
+                        color="tertiary"
+                        type="button"
+                        isDisabled={deleteReadingRecord.isPending}
+                        onClick={onConfirmDeleteReadingRecord}
+                      >
+                        {deleteReadingRecord.isPending ? "Deleting..." : "Delete record"}
+                      </Button>
+                    </div>
+                  </section>
+                ) : null}
                 {readingDeleteError ? (
                   <p className={styles.errorText} role="alert">
                     {readingDeleteError}
@@ -1073,11 +1118,38 @@ export const ReadingWorkspace = () => {
                       color="tertiary"
                       type="button"
                       isDisabled={deleteQueueRecord.isPending}
-                      onClick={() => deleteQueueRecord.mutate()}
+                      onClick={onDeleteQueueRecord}
                     >
                       {deleteQueueRecord.isPending ? "Deleting..." : "Delete record"}
                     </Button>
                   </div>
+                  {pendingDeleteTarget === "queue" ? (
+                    <section className={styles.deleteConfirmBox} aria-live="polite">
+                      <p className={styles.deleteConfirmBody}>
+                        Delete this queue record? This will remove priority and queue notes for this
+                        title.
+                      </p>
+                      <div className={styles.deleteConfirmActions}>
+                        <Button
+                          className={styles.ghostButton}
+                          color="tertiary"
+                          type="button"
+                          onClick={onCancelDeleteRecord}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          className={styles.dangerButton}
+                          color="tertiary"
+                          type="button"
+                          isDisabled={deleteQueueRecord.isPending}
+                          onClick={onConfirmDeleteQueueRecord}
+                        >
+                          {deleteQueueRecord.isPending ? "Deleting..." : "Delete record"}
+                        </Button>
+                      </div>
+                    </section>
+                  ) : null}
                 </form>
               </section>
             ) : null}
