@@ -1,3 +1,4 @@
+import { toPublishedYear } from "@/lib/format";
 import {
   normalizeOptionalIsbn13,
   normalizeOptionalNumber,
@@ -26,10 +27,11 @@ export const detailMetadataFromRaw = (detail: Record<string, unknown> | null) =>
     };
   }
 
-  const firstPublished =
+  const firstPublished = toPublishedYear(
     normalizeOptionalString(detail.first_publish_date) ??
-    normalizeOptionalString(detail.first_publish_year) ??
-    normalizeOptionalString(detail.publishDate);
+      normalizeOptionalString(detail.first_publish_year) ??
+      normalizeOptionalString(detail.publishDate),
+  );
   const pagesNumber = normalizeOptionalNumber(detail.number_of_pages);
   const pages = pagesNumber ? `${pagesNumber}` : null;
   const isbn = normalizeOptionalIsbn13(detail.isbn_13);

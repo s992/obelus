@@ -1,4 +1,4 @@
-import { toDate, toDateInputValue, toIsoFromLocalDateInput } from "@/lib/format";
+import { toDate, toDateInputValue, toIsoFromLocalDateInput, toPublishedLabel } from "@/lib/format";
 import { describe, expect, it } from "vitest";
 
 describe("format helpers", () => {
@@ -15,8 +15,11 @@ describe("format helpers", () => {
   it("keeps legacy UTC-midnight date-only records on the intended calendar day", () => {
     const legacy = "2026-02-08T00:00:00.000Z";
     expect(toDateInputValue(legacy)).toBe("2026-02-08");
-    expect(toDate(legacy)).toBe(
-      new Intl.DateTimeFormat(undefined, { timeZone: "UTC" }).format(new Date(legacy)),
-    );
+    expect(toDate(legacy)).toBe("2026-02-08");
+  });
+
+  it("formats publish dates as year-only labels", () => {
+    expect(toPublishedLabel("2021-11-03")).toBe("Published 2021");
+    expect(toPublishedLabel("November 1998")).toBe("Published 1998");
   });
 });

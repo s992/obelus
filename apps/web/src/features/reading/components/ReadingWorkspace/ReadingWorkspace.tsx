@@ -1,6 +1,7 @@
 import { trpc } from "@/api/trpc";
 import { useBookDetailsByKeys } from "@/features/books/hooks/useBookDetailsByKeys";
 import { BookMetadataDescription } from "@/features/reading/components/BookMetadataDescription/BookMetadataDescription";
+import { ProgressSliderField } from "@/features/reading/components/ReadingWorkspace/ProgressSliderField";
 import { ReadingSearchDropdown } from "@/features/reading/components/ReadingWorkspace/ReadingSearchDropdown";
 import { BookCover } from "@/features/shared/components/BookCover/BookCover";
 import { LoadingObelus } from "@/features/shared/components/LoadingObelus/LoadingObelus";
@@ -36,7 +37,7 @@ import { SearchLg } from "@untitledui/icons/SearchLg";
 import { XClose } from "@untitledui/icons/XClose";
 import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import * as styles from "./ReadingWorkspace.css";
 import {
   REMOTE_SEARCH_MIN_QUERY_LENGTH,
@@ -49,8 +50,32 @@ import {
   toFocusableItems,
 } from "./readingSearch";
 
+const toTimestamp = (value: string | null | undefined) => {
+  if (!value) return 0;
+  const timestamp = new Date(value).getTime();
+  return Number.isFinite(timestamp) ? timestamp : 0;
+};
+
+const compareByNewestDate = (left: string | null | undefined, right: string | null | undefined) =>
+  toTimestamp(right) - toTimestamp(left);
+
+const comparePlannedEntries = (
+  left: { priority: number | null; addedAt: string },
+  right: { priority: number | null; addedAt: string },
+) => {
+  const leftPriority = left.priority ?? Number.POSITIVE_INFINITY;
+  const rightPriority = right.priority ?? Number.POSITIVE_INFINITY;
+  if (leftPriority !== rightPriority) {
+    return leftPriority - rightPriority;
+  }
+  return compareByNewestDate(left.addedAt, right.addedAt);
+};
+
+const saveToastStorageKey = "obelus:save-success-toast";
+
 export const ReadingWorkspace = () => {
   const qc = useQueryClient();
+  const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();
   const searchRootRef = useRef<HTMLDivElement | null>(null);
@@ -67,7 +92,7 @@ export const ReadingWorkspace = () => {
   const [hasRemoteSearchError, setHasRemoteSearchError] = useState(false);
   const [readingTab, setReadingTab] = useState<ReadingTab>("currently-reading");
   const [expandedMetadataBookKey, setExpandedMetadataBookKey] = useState<string | null>(null);
-  const [queueSaveState, setQueueSaveState] = useState<"idle" | "success" | "warning">("idle");
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const isSearchMode = searchInput.trim().length > 0;
   const isSearchDropdownVisible = isSearchMode && isSearchDropdownOpen;
   const normalizeOptionalText = (value: string | null | undefined) => (value ?? "").trim();
@@ -146,6 +171,7 @@ export const ReadingWorkspace = () => {
       qc.invalidateQueries({ queryKey: queryKeys.reading });
       qc.invalidateQueries({ queryKey: queryKeys.toRead });
       qc.invalidateQueries({ queryKey: queryKeys.report });
+      window.sessionStorage.setItem(saveToastStorageKey, "Book record saved.");
       navigate("/");
     },
   });
@@ -167,22 +193,42 @@ export const ReadingWorkspace = () => {
       }
       return { bookKey: selectedBookKey, priority: normalizedPriority, notes: normalizedNotes };
     },
-    onSuccess: async (payload) => {
+    onSuccess: async () => {
       await Promise.all([
         qc.invalidateQueries({ queryKey: queryKeys.reading }),
         qc.invalidateQueries({ queryKey: queryKeys.toRead }),
         qc.invalidateQueries({ queryKey: queryKeys.report }),
       ]);
-      const latestQueue = await qc.fetchQuery({
-        queryKey: queryKeys.toRead,
-        queryFn: () => trpc.library.listToRead.query(),
-      });
-      const saved = latestQueue.find((entry) => entry.bookKey === payload.bookKey);
-      const matches =
-        Boolean(saved) &&
-        (saved?.priority ?? null) === payload.priority &&
-        normalizeOptionalText(saved?.notes) === normalizeOptionalText(payload.notes);
-      setQueueSaveState(matches ? "success" : "warning");
+      window.sessionStorage.setItem(saveToastStorageKey, "Queue record saved.");
+      navigate("/");
+    },
+  });
+
+  const deleteReadingRecord = useMutation({
+    mutationFn: async () => {
+      if (!selectedEntry?.id) {
+        throw new Error("No reading record selected.");
+      }
+      await trpc.library.removeReading.mutate({ id: selectedEntry.id });
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.reading });
+      qc.invalidateQueries({ queryKey: queryKeys.report });
+      navigate("/");
+    },
+  });
+
+  const deleteQueueRecord = useMutation({
+    mutationFn: async () => {
+      if (!selectedQueueEntry?.id) {
+        throw new Error("No queue record selected.");
+      }
+      await trpc.library.removeFromToRead.mutate({ id: selectedQueueEntry.id });
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.toRead });
+      qc.invalidateQueries({ queryKey: queryKeys.report });
+      navigate("/");
     },
   });
 
@@ -268,13 +314,24 @@ export const ReadingWorkspace = () => {
   const detailIndex = detailLookups.data ?? {};
 
   const currentlyReading = useMemo(
-    () => (reading.data ?? []).filter((entry) => !entry.finishedAt),
+    () =>
+      [...(reading.data ?? [])]
+        .filter((entry) => !entry.finishedAt)
+        .sort((left, right) => compareByNewestDate(left.startedAt, right.startedAt)),
     [reading.data],
   );
 
   const archiveReading = useMemo(
-    () => (reading.data ?? []).filter((entry) => Boolean(entry.finishedAt)),
+    () =>
+      [...(reading.data ?? [])]
+        .filter((entry) => Boolean(entry.finishedAt))
+        .sort((left, right) => compareByNewestDate(left.finishedAt, right.finishedAt)),
     [reading.data],
+  );
+
+  const plannedReading = useMemo(
+    () => [...(toRead.data ?? [])].sort(comparePlannedEntries),
+    [toRead.data],
   );
 
   const libraryBookKeySet = useMemo(
@@ -337,7 +394,7 @@ export const ReadingWorkspace = () => {
     readingForm.reset({
       startedAt: toDateInputValue(selectedEntry?.startedAt ?? null),
       finishedAt: toDateInputValue(selectedEntry?.finishedAt ?? null),
-      progressPercent: selectedEntry?.progressPercent ?? undefined,
+      progressPercent: selectedEntry?.progressPercent ?? 0,
       judgment: selectedEntry?.judgment ?? undefined,
       notes: selectedEntry?.notes ?? "",
     });
@@ -346,7 +403,6 @@ export const ReadingWorkspace = () => {
       priority: selectedQueueEntry?.priority ?? undefined,
       notes: selectedQueueEntry?.notes ?? "",
     });
-    setQueueSaveState("idle");
   }, [readingForm, selectedBookKey, selectedEntry, selectedQueueEntry, toReadForm]);
 
   const listTabs: { id: ReadingTab; label: string }[] = [
@@ -360,6 +416,12 @@ export const ReadingWorkspace = () => {
   const readingSaveError = addReading.error ? getErrorMessage(addReading.error) : null;
   const queueErrorPriority = toReadForm.formState.errors.priority?.message;
   const queueSaveError = addQueue.error ? getErrorMessage(addQueue.error) : null;
+  const readingDeleteError = deleteReadingRecord.error
+    ? getErrorMessage(deleteReadingRecord.error)
+    : null;
+  const queueDeleteError = deleteQueueRecord.error
+    ? getErrorMessage(deleteQueueRecord.error)
+    : null;
   const actionReadingError = toggleReading.error ? getErrorMessage(toggleReading.error) : null;
   const actionQueueError = toggleQueue.error ? getErrorMessage(toggleQueue.error) : null;
 
@@ -399,6 +461,26 @@ export const ReadingWorkspace = () => {
     }
     setIsSearchDropdownOpen(true);
   }, [isSearchMode]);
+
+  useEffect(() => {
+    if (selectedBookKey || location.pathname !== "/") {
+      return;
+    }
+    const toast = window.sessionStorage.getItem(saveToastStorageKey);
+    if (!toast) {
+      return;
+    }
+    window.sessionStorage.removeItem(saveToastStorageKey);
+    setToastMessage(toast);
+  }, [location.pathname, selectedBookKey]);
+
+  useEffect(() => {
+    if (!toastMessage) {
+      return;
+    }
+    const timer = window.setTimeout(() => setToastMessage(null), 2500);
+    return () => window.clearTimeout(timer);
+  }, [toastMessage]);
 
   useEffect(() => {
     if (!showAddSection) {
@@ -476,14 +558,19 @@ export const ReadingWorkspace = () => {
     return () => document.removeEventListener("mousedown", onMouseDown);
   }, []);
 
-  const selectMyBookFromSearch = (bookKey: string) => {
+  const navigateToBook = (bookKey: string) => {
+    window.scrollTo({ top: 0 });
     navigate(`/books/${encodeURIComponent(bookKey)}`);
+  };
+
+  const selectMyBookFromSearch = (bookKey: string) => {
+    navigateToBook(bookKey);
     setIsSearchDropdownOpen(false);
     setFocusedSearchIndex(-1);
   };
 
   const selectAddBookFromSearch = (book: RemoteSearchItem) => {
-    navigate(`/books/${encodeURIComponent(book.key)}`);
+    navigateToBook(book.key);
     setIsSearchDropdownOpen(false);
     setFocusedSearchIndex(-1);
   };
@@ -642,7 +729,7 @@ export const ReadingWorkspace = () => {
                     className={styles.bookListRow}
                     type="button"
                     key={entry.id}
-                    onClick={() => navigate(`/books/${encodeURIComponent(entry.bookKey)}`)}
+                    onClick={() => navigateToBook(entry.bookKey)}
                   >
                     <div className={styles.bookRowContent}>
                       <BookCover
@@ -671,14 +758,14 @@ export const ReadingWorkspace = () => {
             : null}
 
           {!isSearchMode && readingTab === "planned"
-            ? (toRead.data ?? []).map((entry) => {
+            ? plannedReading.map((entry) => {
                 const bookMeta = detailIndex[entry.bookKey];
                 return (
                   <button
                     className={styles.bookListRow}
                     type="button"
                     key={entry.id}
-                    onClick={() => navigate(`/books/${encodeURIComponent(entry.bookKey)}`)}
+                    onClick={() => navigateToBook(entry.bookKey)}
                   >
                     <div className={styles.bookRowContent}>
                       <BookCover
@@ -715,7 +802,7 @@ export const ReadingWorkspace = () => {
                     className={styles.bookListRow}
                     type="button"
                     key={entry.id}
-                    onClick={() => navigate(`/books/${encodeURIComponent(entry.bookKey)}`)}
+                    onClick={() => navigateToBook(entry.bookKey)}
                   >
                     <div className={styles.bookRowContent}>
                       <BookCover
@@ -746,7 +833,7 @@ export const ReadingWorkspace = () => {
           {!isSearchMode &&
           !isLibraryLoading &&
           ((readingTab === "currently-reading" && currentlyReading.length === 0) ||
-            (readingTab === "planned" && (toRead.data?.length ?? 0) === 0) ||
+            (readingTab === "planned" && plannedReading.length === 0) ||
             (readingTab === "finished" && archiveReading.length === 0)) ? (
             <p className={styles.mutedBody}>No entries in this section.</p>
           ) : null}
@@ -975,34 +1062,17 @@ export const ReadingWorkspace = () => {
                     />
                   </div>
 
-                  <div className={styles.fieldStack}>
-                    <label className={styles.fieldLabel} htmlFor="reading-progress">
-                      Progress
-                    </label>
-                    <InputBase
-                      wrapperClassName={styles.inputWrapper}
-                      inputClassName={styles.inputField}
-                      id="reading-progress"
-                      type="number"
-                      aria-invalid={Boolean(readingErrorProgress)}
-                      aria-describedby={readingErrorProgress ? "reading-progress-error" : undefined}
-                      inputMode="numeric"
-                      min={0}
-                      max={100}
-                      step={1}
-                      placeholder="Progress %"
-                      value={readingForm.watch("progressPercent")?.toString() ?? ""}
-                      onChange={(value) =>
-                        readingForm.setValue(
-                          "progressPercent",
-                          normalizeInputValue(value) === ""
-                            ? undefined
-                            : Number(normalizeInputValue(value)),
-                          { shouldDirty: true },
-                        )
-                      }
-                    />
-                  </div>
+                  <ProgressSliderField
+                    id="reading-progress"
+                    initialValue={selectedEntry?.progressPercent ?? 0}
+                    isInvalid={Boolean(readingErrorProgress)}
+                    errorId={readingErrorProgress ? "reading-progress-error" : undefined}
+                    onCommit={(value) =>
+                      readingForm.setValue("progressPercent", value, {
+                        shouldDirty: true,
+                      })
+                    }
+                  />
                 </section>
 
                 <section className={styles.sectionBlock}>
@@ -1056,7 +1126,23 @@ export const ReadingWorkspace = () => {
                   >
                     Close
                   </Button>
+                  {selectedEntry ? (
+                    <Button
+                      className={styles.dangerButton}
+                      color="tertiary"
+                      type="button"
+                      isDisabled={deleteReadingRecord.isPending}
+                      onClick={() => deleteReadingRecord.mutate()}
+                    >
+                      {deleteReadingRecord.isPending ? "Deleting..." : "Delete record"}
+                    </Button>
+                  ) : null}
                 </div>
+                {readingDeleteError ? (
+                  <p className={styles.errorText} role="alert">
+                    {readingDeleteError}
+                  </p>
+                ) : null}
               </form>
             )}
 
@@ -1067,35 +1153,40 @@ export const ReadingWorkspace = () => {
                   className={styles.formStack}
                   onSubmit={toReadForm.handleSubmit((values) => addQueue.mutate(values))}
                 >
-                  <div className={styles.fieldStack}>
-                    <label className={styles.fieldLabel} htmlFor="queue-priority">
-                      Priority
-                    </label>
-                    <InputBase
-                      wrapperClassName={styles.inputWrapper}
-                      inputClassName={styles.inputField}
-                      id="queue-priority"
-                      type="number"
-                      aria-invalid={Boolean(queueErrorPriority)}
-                      aria-describedby={queueErrorPriority ? "queue-priority-error" : undefined}
-                      inputMode="numeric"
-                      min={1}
-                      max={5}
-                      step={1}
-                      placeholder="1-5"
-                      value={toReadForm.watch("priority")?.toString() ?? ""}
-                      onChange={(value) => {
-                        setQueueSaveState("idle");
-                        toReadForm.setValue(
-                          "priority",
-                          normalizeInputValue(value) === ""
-                            ? undefined
-                            : Number(normalizeInputValue(value)),
-                          { shouldDirty: true },
+                  <fieldset
+                    className={`${styles.fieldStack} ${styles.priorityFieldset}`}
+                    aria-describedby={queueErrorPriority ? "queue-priority-error" : undefined}
+                  >
+                    <legend className={styles.fieldLabel}>Priority</legend>
+                    <div className={styles.priorityGroup} role="radiogroup" aria-label="Priority">
+                      {[null, 1, 2, 3, 4, 5].map((priorityValue) => {
+                        const selected = (toReadForm.watch("priority") ?? null) === priorityValue;
+                        const label = priorityValue === null ? "None" : `P${priorityValue}`;
+                        return (
+                          <label
+                            className={selected ? styles.priorityPillActive : styles.priorityPill}
+                            key={label}
+                            htmlFor={`queue-priority-${label}`}
+                          >
+                            <input
+                              className={styles.priorityInput}
+                              id={`queue-priority-${label}`}
+                              name="queue-priority"
+                              type="radio"
+                              value={label}
+                              checked={selected}
+                              onChange={() =>
+                                toReadForm.setValue("priority", priorityValue ?? undefined, {
+                                  shouldDirty: true,
+                                })
+                              }
+                            />
+                            <span>{label}</span>
+                          </label>
                         );
-                      }}
-                    />
-                  </div>
+                      })}
+                    </div>
+                  </fieldset>
                   <div className={styles.fieldStack}>
                     <label className={styles.fieldLabel} htmlFor="queue-note">
                       Note
@@ -1104,14 +1195,12 @@ export const ReadingWorkspace = () => {
                       className={styles.compactTextArea}
                       id="queue-note"
                       rows={3}
-                      placeholder="Reason for planning"
                       value={toReadForm.watch("notes") ?? ""}
-                      onChange={(value: unknown) => {
-                        setQueueSaveState("idle");
+                      onChange={(value: unknown) =>
                         toReadForm.setValue("notes", normalizeInputValue(value), {
                           shouldDirty: true,
-                        });
-                      }}
+                        })
+                      }
                     />
                   </div>
                   {queueErrorPriority ? (
@@ -1124,16 +1213,10 @@ export const ReadingWorkspace = () => {
                       {queueSaveError}
                     </p>
                   ) : null}
-                  {queueSaveState === "success" ? (
-                    <output className={styles.successText} aria-live="polite">
-                      Planned record saved.
-                    </output>
-                  ) : null}
-                  {queueSaveState === "warning" ? (
-                    <output className={styles.warningText} aria-live="polite">
-                      Planned record saved, but the refreshed values did not match exactly. Re-open
-                      this book to confirm saved details.
-                    </output>
+                  {queueDeleteError ? (
+                    <p className={styles.errorText} role="alert">
+                      {queueDeleteError}
+                    </p>
                   ) : null}
                   <div className={styles.actionRow}>
                     <Button
@@ -1152,6 +1235,15 @@ export const ReadingWorkspace = () => {
                     >
                       Close
                     </Button>
+                    <Button
+                      className={styles.dangerButton}
+                      color="tertiary"
+                      type="button"
+                      isDisabled={deleteQueueRecord.isPending}
+                      onClick={() => deleteQueueRecord.mutate()}
+                    >
+                      {deleteQueueRecord.isPending ? "Deleting..." : "Delete record"}
+                    </Button>
                   </div>
                 </form>
               </section>
@@ -1161,6 +1253,11 @@ export const ReadingWorkspace = () => {
           <p className={styles.mutedBody}>Unable to load this book right now.</p>
         )}
       </article>
+      {toastMessage ? (
+        <output className={styles.toast} aria-live="polite" aria-atomic="true">
+          {toastMessage}
+        </output>
+      ) : null}
     </section>
   );
 };

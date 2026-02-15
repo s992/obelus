@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import * as styles from "./BookMetadataDescription.css";
 
@@ -15,10 +16,22 @@ export const BookMetadataDescription = ({
   onToggleExpanded,
 }: BookMetadataDescriptionProps) => {
   const normalizedDescription = normalizeMarkdownReferences(description);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const [isExpandable, setIsExpandable] = useState(isLong);
+
+  useEffect(() => {
+    if (!isLong || !description.trim() || !contentRef.current) {
+      setIsExpandable(false);
+      return;
+    }
+    const element = contentRef.current;
+    setIsExpandable(element.scrollHeight > element.clientHeight + 1);
+  }, [description, isLong]);
 
   return (
     <>
       <div
+        ref={contentRef}
         className={isExpanded ? styles.markdownRoot : styles.markdownRootCollapsed}
         data-testid="book-metadata-description"
       >
@@ -30,7 +43,7 @@ export const BookMetadataDescription = ({
           {normalizedDescription}
         </ReactMarkdown>
       </div>
-      {isLong ? (
+      {isExpandable ? (
         <button
           aria-expanded={isExpanded}
           className={styles.expandButton}

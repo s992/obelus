@@ -267,18 +267,18 @@ export const mutedBody = style({
   lineHeight: 1.6,
 });
 
-export const successText = style({
-  margin: 0,
-  color: vars.color.success,
-  fontSize: "0.75rem",
-  lineHeight: 1.4,
-});
-
-export const warningText = style({
-  margin: 0,
+export const toast = style({
+  position: "fixed",
+  right: "20px",
+  bottom: "20px",
+  border: `1px solid ${vars.color.borderPrimary}`,
+  backgroundColor: vars.color.bgPrimary,
   color: vars.color.textSecondary,
   fontSize: "0.75rem",
-  lineHeight: 1.4,
+  padding: "0.5rem 0.75rem",
+  borderRadius: "8px",
+  boxShadow: vars.shadow.card,
+  zIndex: 40,
 });
 
 export const bookHeader = style({
@@ -589,3 +589,67 @@ export const compactTextArea = style({
     },
   },
 });
+
+export const progressSlider = style({
+  width: "100%",
+  accentColor: vars.color.textPrimary,
+});
+
+export const priorityGroup = style({
+  display: "flex",
+  flexWrap: "wrap",
+  gap: "0.5rem",
+});
+
+export const priorityFieldset = style({
+  border: 0,
+  margin: 0,
+  padding: 0,
+  minInlineSize: 0,
+});
+
+export const priorityInput = style({
+  position: "absolute",
+  opacity: 0,
+  pointerEvents: "none",
+});
+
+const priorityPillBase = style({
+  position: "relative",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  border: `1px solid ${vars.color.borderTertiary}`,
+  borderRadius: "999px",
+  minWidth: "44px",
+  padding: "0.25rem 0.75rem",
+  cursor: "pointer",
+  fontSize: "0.75rem",
+  color: vars.color.textTertiary,
+  backgroundColor: vars.color.bgSecondary,
+  selectors: {
+    "&:focus-within": {
+      boxShadow: `0 0 0 2px ${vars.color.textPrimary}`,
+    },
+  },
+});
+
+export const priorityPill = priorityPillBase;
+
+export const priorityPillActive = style([
+  priorityPillBase,
+  {
+    borderColor: vars.color.borderPrimary,
+    backgroundColor: vars.color.bgTertiary,
+    color: vars.color.textPrimary,
+  },
+]);
+
+export const dangerButton = style([
+  buttonBase,
+  {
+    border: `1px solid ${vars.color.error}`,
+    backgroundColor: vars.color.errorBg,
+    color: vars.color.error,
+  },
+]);

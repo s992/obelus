@@ -66,6 +66,7 @@ export const chartArea = style({
   alignItems: "flex-end",
   gap: "1rem",
   overflowX: "auto",
+  overflowY: "visible",
   paddingBottom: "0.25rem",
 });
 
@@ -81,6 +82,28 @@ export const chartBars = style({
   display: "flex",
   alignItems: "flex-end",
   gap: "0.25rem",
+  overflow: "visible",
+});
+
+export const chartHoverTarget = style({
+  display: "inline-flex",
+  alignItems: "flex-end",
+  cursor: "default",
+});
+
+export const chartTooltip = style({
+  position: "fixed",
+  pointerEvents: "none",
+  zIndex: 100,
+  whiteSpace: "nowrap",
+  fontSize: "0.6875rem",
+  lineHeight: 1.2,
+  color: vars.color.bgPrimary,
+  backgroundColor: vars.color.textPrimary,
+  borderRadius: "6px",
+  padding: "0.25rem 0.45rem",
+  maxWidth: "220px",
+  boxShadow: vars.shadow.card,
 });
 
 export const chartBarStarted = style({

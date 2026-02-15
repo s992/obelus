@@ -13,6 +13,27 @@ import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as styles from "./PublicCollectionView.css";
 
+const toTimestamp = (value: string | null | undefined) => {
+  if (!value) return 0;
+  const timestamp = new Date(value).getTime();
+  return Number.isFinite(timestamp) ? timestamp : 0;
+};
+
+const compareByNewestDate = (left: string | null | undefined, right: string | null | undefined) =>
+  toTimestamp(right) - toTimestamp(left);
+
+const comparePlannedEntries = (
+  left: { priority: number | null; addedAt: string },
+  right: { priority: number | null; addedAt: string },
+) => {
+  const leftPriority = left.priority ?? Number.POSITIVE_INFINITY;
+  const rightPriority = right.priority ?? Number.POSITIVE_INFINITY;
+  if (leftPriority !== rightPriority) {
+    return leftPriority - rightPriority;
+  }
+  return compareByNewestDate(left.addedAt, right.addedAt);
+};
+
 export const PublicCollectionView = () => {
   const navigate = useNavigate();
   const params = useParams();
@@ -38,11 +59,21 @@ export const PublicCollectionView = () => {
   const detailIndex = detailLookups.data ?? {};
 
   const publicReading = useMemo(
-    () => (availableCollection?.reading ?? []).filter((entry) => !entry.finishedAt),
+    () =>
+      [...(availableCollection?.reading ?? [])]
+        .filter((entry) => !entry.finishedAt)
+        .sort((left, right) => compareByNewestDate(left.startedAt, right.startedAt)),
     [availableCollection],
   );
   const publicFinished = useMemo(
-    () => (availableCollection?.reading ?? []).filter((entry) => Boolean(entry.finishedAt)),
+    () =>
+      [...(availableCollection?.reading ?? [])]
+        .filter((entry) => Boolean(entry.finishedAt))
+        .sort((left, right) => compareByNewestDate(left.finishedAt, right.finishedAt)),
+    [availableCollection],
+  );
+  const publicPlanned = useMemo(
+    () => [...(availableCollection?.toRead ?? [])].sort(comparePlannedEntries),
     [availableCollection],
   );
 
@@ -194,8 +225,8 @@ export const PublicCollectionView = () => {
           <section className={styles.sectionBlock}>
             <h3 className={styles.sectionTitle}>Planned</h3>
             <div className={styles.listContainer}>
-              {availableCollection.toRead.length ? (
-                availableCollection.toRead.map((entry) => {
+              {publicPlanned.length ? (
+                publicPlanned.map((entry) => {
                   const meta = detailIndex[entry.bookKey];
                   return (
                     <div key={entry.id} className={styles.bookListRowReadOnly}>

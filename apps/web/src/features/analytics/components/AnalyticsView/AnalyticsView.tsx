@@ -5,9 +5,23 @@ import { queryKeys } from "@/lib/query-keys";
 import * as a11yStyles from "@/styles/a11y.css";
 import type { DashboardReport } from "@obelus/shared";
 import { useQuery } from "@tanstack/react-query";
+import { type MouseEvent, useState } from "react";
 import * as styles from "./AnalyticsView.css";
 
+const tooltipPadding = 12;
+const tooltipMaxWidth = 220;
+const tooltipCharWidth = 7;
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
 export const AnalyticsView = () => {
+  const [chartTooltip, setChartTooltip] = useState<{
+    text: string;
+    x: number;
+    y: number;
+    placement: "top" | "bottom";
+  } | null>(null);
+
   const reading = useQuery({
     queryKey: queryKeys.reading,
     queryFn: () => trpc.library.listReading.query(),
@@ -47,6 +61,18 @@ export const AnalyticsView = () => {
     return <LoadingObelus label="Compiling reports..." />;
   }
   const monthly = report.data?.monthly ?? [];
+  const onTimelineHover = (event: MouseEvent<HTMLElement>, text: string) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const estimatedWidth = Math.min(tooltipMaxWidth, Math.max(120, text.length * tooltipCharWidth));
+    const x = clamp(
+      rect.left + rect.width / 2,
+      tooltipPadding + estimatedWidth / 2,
+      window.innerWidth - tooltipPadding - estimatedWidth / 2,
+    );
+    const placement = rect.top < 64 ? "bottom" : "top";
+    const y = placement === "top" ? rect.top - 8 : rect.bottom + 8;
+    setChartTooltip({ text, x, y, placement });
+  };
 
   return (
     <section className={styles.analyticsView}>
@@ -72,30 +98,79 @@ export const AnalyticsView = () => {
             <div className={styles.chartColumn} key={point.month}>
               <div className={styles.chartBars}>
                 {point.startedBooks === 0 ? (
-                  <span className={styles.chartZeroTick} />
+                  <span
+                    className={styles.chartHoverTarget}
+                    onMouseEnter={(event) => onTimelineHover(event, "Started books: 0")}
+                    onMouseMove={(event) => onTimelineHover(event, "Started books: 0")}
+                    onMouseLeave={() => setChartTooltip(null)}
+                  >
+                    <span className={styles.chartZeroTick} />
+                  </span>
                 ) : (
                   <span
-                    className={styles.chartBarStarted}
-                    style={{
-                      height: `${Math.max(8, (point.startedBooks / monthlyMax) * 120)}px`,
-                    }}
-                  />
+                    className={styles.chartHoverTarget}
+                    onMouseEnter={(event) =>
+                      onTimelineHover(event, `Started books: ${point.startedBooks}`)
+                    }
+                    onMouseMove={(event) =>
+                      onTimelineHover(event, `Started books: ${point.startedBooks}`)
+                    }
+                    onMouseLeave={() => setChartTooltip(null)}
+                  >
+                    <span
+                      className={styles.chartBarStarted}
+                      style={{
+                        height: `${Math.max(8, (point.startedBooks / monthlyMax) * 120)}px`,
+                      }}
+                    />
+                  </span>
                 )}
                 {point.finishedBooks === 0 ? (
-                  <span className={styles.chartZeroTick} />
+                  <span
+                    className={styles.chartHoverTarget}
+                    onMouseEnter={(event) => onTimelineHover(event, "Finished books: 0")}
+                    onMouseMove={(event) => onTimelineHover(event, "Finished books: 0")}
+                    onMouseLeave={() => setChartTooltip(null)}
+                  >
+                    <span className={styles.chartZeroTick} />
+                  </span>
                 ) : (
                   <span
-                    className={styles.chartBarFinished}
-                    style={{
-                      height: `${Math.max(8, (point.finishedBooks / monthlyMax) * 120)}px`,
-                    }}
-                  />
+                    className={styles.chartHoverTarget}
+                    onMouseEnter={(event) =>
+                      onTimelineHover(event, `Finished books: ${point.finishedBooks}`)
+                    }
+                    onMouseMove={(event) =>
+                      onTimelineHover(event, `Finished books: ${point.finishedBooks}`)
+                    }
+                    onMouseLeave={() => setChartTooltip(null)}
+                  >
+                    <span
+                      className={styles.chartBarFinished}
+                      style={{
+                        height: `${Math.max(8, (point.finishedBooks / monthlyMax) * 120)}px`,
+                      }}
+                    />
+                  </span>
                 )}
               </div>
               <span className={styles.chartLabel}>{point.month.slice(5)}</span>
             </div>
           ))}
         </div>
+        {chartTooltip ? (
+          <div
+            className={styles.chartTooltip}
+            style={{
+              left: `${chartTooltip.x}px`,
+              top: `${chartTooltip.y}px`,
+              transform:
+                chartTooltip.placement === "top" ? "translate(-50%, -100%)" : "translate(-50%, 0)",
+            }}
+          >
+            {chartTooltip.text}
+          </div>
+        ) : null}
         <table className={a11yStyles.srOnly}>
           <caption className={a11yStyles.srOnly}>Reading timeline by month</caption>
           <thead>

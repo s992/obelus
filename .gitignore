@@ -6,6 +6,7 @@ coverage
 dist
 build
 .tmp
+tmp
 tmp/logs
 .DS_Store
 LEDGER.md
