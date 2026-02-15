@@ -2,13 +2,13 @@ import { trpc } from "@/api/trpc";
 import { useBookDetailsByKeys } from "@/features/books/hooks/useBookDetailsByKeys";
 import { BookMetadataDescription } from "@/features/reading/components/BookMetadataDescription/BookMetadataDescription";
 import { ProgressSliderField } from "@/features/reading/components/ReadingWorkspace/ProgressSliderField";
+import { ReadingListPane } from "@/features/reading/components/ReadingWorkspace/ReadingListPane";
 import { ReadingSearchDropdown } from "@/features/reading/components/ReadingWorkspace/ReadingSearchDropdown";
 import { BookCover } from "@/features/shared/components/BookCover/BookCover";
 import { LoadingObelus } from "@/features/shared/components/LoadingObelus/LoadingObelus";
 import {
   METADATA_DESCRIPTION_COLLAPSE_LENGTH,
   detailMetadataFromRaw,
-  statusLabel,
 } from "@/features/shared/lib/book-metadata";
 import {
   type ReadingInput,
@@ -17,15 +17,8 @@ import {
   readingSchema,
   toReadSchema,
 } from "@/features/shared/lib/schemas";
-import { statusClassName } from "@/features/shared/lib/status-class";
 import { getErrorMessage } from "@/lib/errors";
-import {
-  fallbackTitle,
-  toDate,
-  toDateInputValue,
-  toIsoFromLocalDateInput,
-  toPublishedLabel,
-} from "@/lib/format";
+import { toDate, toDateInputValue, toIsoFromLocalDateInput } from "@/lib/format";
 import { normalizeBookKeyFromParam, normalizeInputValue } from "@/lib/normalize";
 import { queryKeys } from "@/lib/query-keys";
 import { Button } from "@/ui/Button";
@@ -35,8 +28,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SearchLg } from "@untitledui/icons/SearchLg";
 import { XClose } from "@untitledui/icons/XClose";
-import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { type KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import * as styles from "./ReadingWorkspace.css";
 import {
@@ -405,12 +398,6 @@ export const ReadingWorkspace = () => {
     });
   }, [readingForm, selectedBookKey, selectedEntry, selectedQueueEntry, toReadForm]);
 
-  const listTabs: { id: ReadingTab; label: string }[] = [
-    { id: "currently-reading", label: "Currently Reading" },
-    { id: "planned", label: "Planned" },
-    { id: "finished", label: "Finished" },
-  ];
-  const readingPanelId = "reading-list-panel";
   const readingErrorStartedAt = readingForm.formState.errors.startedAt?.message;
   const readingErrorProgress = readingForm.formState.errors.progressPercent?.message;
   const readingSaveError = addReading.error ? getErrorMessage(addReading.error) : null;
@@ -424,30 +411,6 @@ export const ReadingWorkspace = () => {
     : null;
   const actionReadingError = toggleReading.error ? getErrorMessage(toggleReading.error) : null;
   const actionQueueError = toggleQueue.error ? getErrorMessage(toggleQueue.error) : null;
-
-  const onTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
-    const key = event.key;
-    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(key)) {
-      return;
-    }
-    event.preventDefault();
-    const lastIndex = listTabs.length - 1;
-    const nextIndex =
-      key === "Home"
-        ? 0
-        : key === "End"
-          ? lastIndex
-          : key === "ArrowRight"
-            ? (index + 1) % listTabs.length
-            : (index - 1 + listTabs.length) % listTabs.length;
-    const nextTabId = listTabs[nextIndex]?.id;
-    if (!nextTabId) {
-      return;
-    }
-    setReadingTab(nextTabId);
-    const nextTabElement = document.getElementById(`reading-tab-${nextTabId}`);
-    nextTabElement?.focus();
-  };
 
   useEffect(() => {
     if (!isSearchMode) {
@@ -558,10 +521,12 @@ export const ReadingWorkspace = () => {
     return () => document.removeEventListener("mousedown", onMouseDown);
   }, []);
 
-  const navigateToBook = (bookKey: string) => {
-    window.scrollTo({ top: 0 });
-    navigate(`/books/${encodeURIComponent(bookKey)}`);
-  };
+  const navigateToBook = useCallback(
+    (bookKey: string) => {
+      navigate(`/books/${encodeURIComponent(bookKey)}`);
+    },
+    [navigate],
+  );
 
   const selectMyBookFromSearch = (bookKey: string) => {
     navigateToBook(bookKey);
@@ -628,6 +593,13 @@ export const ReadingWorkspace = () => {
     }
   };
 
+  const readingJudgmentValue = useWatch({ control: readingForm.control, name: "judgment" });
+  const readingStartedAtValue = useWatch({ control: readingForm.control, name: "startedAt" });
+  const readingFinishedAtValue = useWatch({ control: readingForm.control, name: "finishedAt" });
+  const readingNotesValue = useWatch({ control: readingForm.control, name: "notes" });
+  const queuePriorityValue = useWatch({ control: toReadForm.control, name: "priority" });
+  const queueNotesValue = useWatch({ control: toReadForm.control, name: "notes" });
+
   return (
     <section className={styles.readingWorkspace}>
       <article className={styles.card}>
@@ -691,156 +663,17 @@ export const ReadingWorkspace = () => {
             ) : null}
           </div>
         </div>
-        {!isSearchMode ? (
-          <div className={styles.tabRow} role="tablist" aria-label="Reading sections">
-            {listTabs.map((tab, index) => (
-              <Button
-                key={tab.id}
-                type="button"
-                color="tertiary"
-                id={`reading-tab-${tab.id}`}
-                role="tab"
-                aria-selected={readingTab === tab.id}
-                aria-controls={readingPanelId}
-                tabIndex={readingTab === tab.id ? 0 : -1}
-                className={readingTab === tab.id ? styles.tabButtonActive : styles.tabButton}
-                onClick={() => setReadingTab(tab.id)}
-                onKeyDown={(event) => onTabKeyDown(event, index)}
-              >
-                {tab.label}
-              </Button>
-            ))}
-          </div>
-        ) : null}
-
-        <div
-          className={styles.listContainer}
-          id={!isSearchMode ? readingPanelId : undefined}
-          role={!isSearchMode ? "tabpanel" : undefined}
-          aria-labelledby={!isSearchMode ? `reading-tab-${readingTab}` : undefined}
-          aria-live="polite"
-          aria-busy={isLibraryLoading}
-        >
-          {!isSearchMode && readingTab === "currently-reading"
-            ? currentlyReading.map((entry) => {
-                const bookMeta = detailIndex[entry.bookKey];
-                return (
-                  <button
-                    className={styles.bookListRow}
-                    type="button"
-                    key={entry.id}
-                    onClick={() => navigateToBook(entry.bookKey)}
-                  >
-                    <div className={styles.bookRowContent}>
-                      <BookCover
-                        title={bookMeta?.title ?? fallbackTitle(entry.bookKey)}
-                        coverUrl={bookMeta?.coverUrl ?? bookMeta?.covers?.[0] ?? null}
-                      />
-                      <div className={styles.bookRowMain}>
-                        <h3 className={styles.bookListTitle}>
-                          {bookMeta?.title ?? fallbackTitle(entry.bookKey)}
-                        </h3>
-                        <p className={styles.bookListAuthor}>
-                          {bookMeta?.authors.join(", ") || "Unknown author"}
-                        </p>
-                      </div>
-                    </div>
-                    <div className={styles.bookMetaRow}>
-                      <span>Started {toDate(entry.startedAt)}</span>
-                      {toPublishedLabel(bookMeta?.publishDate ?? null) ? (
-                        <span>{toPublishedLabel(bookMeta?.publishDate ?? null)}</span>
-                      ) : null}
-                      <span className={styles.readingBadge}>Reading</span>
-                    </div>
-                  </button>
-                );
-              })
-            : null}
-
-          {!isSearchMode && readingTab === "planned"
-            ? plannedReading.map((entry) => {
-                const bookMeta = detailIndex[entry.bookKey];
-                return (
-                  <button
-                    className={styles.bookListRow}
-                    type="button"
-                    key={entry.id}
-                    onClick={() => navigateToBook(entry.bookKey)}
-                  >
-                    <div className={styles.bookRowContent}>
-                      <BookCover
-                        title={bookMeta?.title ?? fallbackTitle(entry.bookKey)}
-                        coverUrl={bookMeta?.coverUrl ?? bookMeta?.covers?.[0] ?? null}
-                      />
-                      <div className={styles.bookRowMain}>
-                        <h3 className={styles.bookListTitle}>
-                          {bookMeta?.title ?? fallbackTitle(entry.bookKey)}
-                        </h3>
-                        <p className={styles.bookListAuthor}>
-                          {bookMeta?.authors.join(", ") || "Unknown author"}
-                        </p>
-                      </div>
-                    </div>
-                    <div className={styles.bookMetaRow}>
-                      <span>Added {toDate(entry.addedAt)}</span>
-                      {toPublishedLabel(bookMeta?.publishDate ?? null) ? (
-                        <span>{toPublishedLabel(bookMeta?.publishDate ?? null)}</span>
-                      ) : null}
-                      <span className={styles.readingBadge}>Planned</span>
-                    </div>
-                  </button>
-                );
-              })
-            : null}
-
-          {!isSearchMode && readingTab === "finished"
-            ? archiveReading.map((entry) => {
-                const bookMeta = detailIndex[entry.bookKey];
-                const status = statusLabel(entry);
-                return (
-                  <button
-                    className={styles.bookListRow}
-                    type="button"
-                    key={entry.id}
-                    onClick={() => navigateToBook(entry.bookKey)}
-                  >
-                    <div className={styles.bookRowContent}>
-                      <BookCover
-                        title={bookMeta?.title ?? fallbackTitle(entry.bookKey)}
-                        coverUrl={bookMeta?.coverUrl ?? bookMeta?.covers?.[0] ?? null}
-                      />
-                      <div className={styles.bookRowMain}>
-                        <h3 className={styles.bookListTitle}>
-                          {bookMeta?.title ?? fallbackTitle(entry.bookKey)}
-                        </h3>
-                        <p className={styles.bookListAuthor}>
-                          {bookMeta?.authors.join(", ") || "Unknown author"}
-                        </p>
-                      </div>
-                    </div>
-                    <div className={styles.bookMetaRow}>
-                      <span>Finished {toDate(entry.finishedAt ?? null)}</span>
-                      {toPublishedLabel(bookMeta?.publishDate ?? null) ? (
-                        <span>{toPublishedLabel(bookMeta?.publishDate ?? null)}</span>
-                      ) : null}
-                      <span className={statusClassName(status)}>{status}</span>
-                    </div>
-                  </button>
-                );
-              })
-            : null}
-
-          {!isSearchMode &&
-          !isLibraryLoading &&
-          ((readingTab === "currently-reading" && currentlyReading.length === 0) ||
-            (readingTab === "planned" && plannedReading.length === 0) ||
-            (readingTab === "finished" && archiveReading.length === 0)) ? (
-            <p className={styles.mutedBody}>No entries in this section.</p>
-          ) : null}
-          {isLibraryLoading && !isSearchMode ? (
-            <LoadingObelus label="Loading collection..." compact />
-          ) : null}
-        </div>
+        <ReadingListPane
+          isSearchMode={isSearchMode}
+          isLibraryLoading={isLibraryLoading}
+          readingTab={readingTab}
+          currentlyReading={currentlyReading}
+          plannedReading={plannedReading}
+          archiveReading={archiveReading}
+          detailIndex={detailIndex}
+          onReadingTabChange={setReadingTab}
+          onNavigateToBook={navigateToBook}
+        />
       </article>
 
       <article className={styles.detailCard}>
@@ -979,39 +812,39 @@ export const ReadingWorkspace = () => {
                   <div className={styles.judgmentRow}>
                     <Button
                       className={
-                        readingForm.watch("judgment") === "Accepted"
+                        readingJudgmentValue === "Accepted"
                           ? styles.judgmentAcceptedActive
                           : styles.judgmentAccepted
                       }
                       type="button"
                       color="tertiary"
-                      aria-pressed={readingForm.watch("judgment") === "Accepted"}
+                      aria-pressed={readingJudgmentValue === "Accepted"}
                       onClick={() => readingForm.setValue("judgment", "Accepted")}
                     >
                       Accepted
                     </Button>
                     <Button
                       className={
-                        readingForm.watch("judgment") === "Rejected"
+                        readingJudgmentValue === "Rejected"
                           ? styles.judgmentRejectedActive
                           : styles.judgmentRejected
                       }
                       type="button"
                       color="tertiary"
-                      aria-pressed={readingForm.watch("judgment") === "Rejected"}
+                      aria-pressed={readingJudgmentValue === "Rejected"}
                       onClick={() => readingForm.setValue("judgment", "Rejected")}
                     >
                       Rejected
                     </Button>
                     <Button
                       className={
-                        readingForm.watch("judgment")
+                        readingJudgmentValue
                           ? styles.judgmentUnjudged
                           : styles.judgmentUnjudgedActive
                       }
                       type="button"
                       color="tertiary"
-                      aria-pressed={!readingForm.watch("judgment")}
+                      aria-pressed={!readingJudgmentValue}
                       onClick={() =>
                         readingForm.setValue("judgment", undefined, { shouldDirty: true })
                       }
@@ -1035,7 +868,7 @@ export const ReadingWorkspace = () => {
                       aria-describedby={
                         readingErrorStartedAt ? "reading-started-at-error" : undefined
                       }
-                      value={readingForm.watch("startedAt") ?? ""}
+                      value={readingStartedAtValue ?? ""}
                       onChange={(value) =>
                         readingForm.setValue("startedAt", normalizeInputValue(value), {
                           shouldDirty: true,
@@ -1053,7 +886,7 @@ export const ReadingWorkspace = () => {
                       inputClassName={styles.inputField}
                       id="reading-finished-at"
                       type="date"
-                      value={readingForm.watch("finishedAt") ?? ""}
+                      value={readingFinishedAtValue ?? ""}
                       onChange={(value) =>
                         readingForm.setValue("finishedAt", normalizeInputValue(value), {
                           shouldDirty: true,
@@ -1084,7 +917,7 @@ export const ReadingWorkspace = () => {
                     id="reading-notes"
                     rows={10}
                     placeholder="Record your notes..."
-                    value={readingForm.watch("notes") ?? ""}
+                    value={readingNotesValue ?? ""}
                     onChange={(value: unknown) =>
                       readingForm.setValue("notes", normalizeInputValue(value), {
                         shouldDirty: true,
@@ -1160,7 +993,7 @@ export const ReadingWorkspace = () => {
                     <legend className={styles.fieldLabel}>Priority</legend>
                     <div className={styles.priorityGroup} role="radiogroup" aria-label="Priority">
                       {[null, 1, 2, 3, 4, 5].map((priorityValue) => {
-                        const selected = (toReadForm.watch("priority") ?? null) === priorityValue;
+                        const selected = (queuePriorityValue ?? null) === priorityValue;
                         const label = priorityValue === null ? "None" : `P${priorityValue}`;
                         return (
                           <label
@@ -1195,7 +1028,7 @@ export const ReadingWorkspace = () => {
                       className={styles.compactTextArea}
                       id="queue-note"
                       rows={3}
-                      value={toReadForm.watch("notes") ?? ""}
+                      value={queueNotesValue ?? ""}
                       onChange={(value: unknown) =>
                         toReadForm.setValue("notes", normalizeInputValue(value), {
                           shouldDirty: true,

@@ -5,7 +5,7 @@ import { queryKeys } from "@/lib/query-keys";
 import * as a11yStyles from "@/styles/a11y.css";
 import type { DashboardReport } from "@obelus/shared";
 import { useQuery } from "@tanstack/react-query";
-import { type MouseEvent, useState } from "react";
+import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as styles from "./AnalyticsView.css";
 
 const tooltipPadding = 12;
@@ -13,9 +13,24 @@ const tooltipMaxWidth = 220;
 const tooltipCharWidth = 7;
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const isTooltipEqual = (
+  left: { text: string; x: number; y: number; placement: "top" | "bottom" } | null,
+  right: { text: string; x: number; y: number; placement: "top" | "bottom" } | null,
+) =>
+  left?.text === right?.text &&
+  left?.x === right?.x &&
+  left?.y === right?.y &&
+  left?.placement === right?.placement;
 
 export const AnalyticsView = () => {
   const [chartTooltip, setChartTooltip] = useState<{
+    text: string;
+    x: number;
+    y: number;
+    placement: "top" | "bottom";
+  } | null>(null);
+  const tooltipFrameRef = useRef<number | null>(null);
+  const pendingTooltipRef = useRef<{
     text: string;
     x: number;
     y: number;
@@ -32,18 +47,23 @@ export const AnalyticsView = () => {
     queryFn: () => trpc.reports.dashboard.query(),
   });
 
-  const libraryKeys = [...new Set((reading.data ?? []).map((entry) => entry.bookKey))];
+  const libraryKeys = useMemo(
+    () => [...new Set((reading.data ?? []).map((entry) => entry.bookKey))],
+    [reading.data],
+  );
 
   const detailLookups = useBookDetailsByKeys(libraryKeys);
 
-  const monthlyMax = !report.data?.monthly.length
-    ? 1
-    : Math.max(
-        1,
-        ...report.data.monthly.map((point) => Math.max(point.finishedBooks, point.startedBooks)),
-      );
+  const monthly = report.data?.monthly ?? [];
+  const monthlyMax = useMemo(
+    () =>
+      !monthly.length
+        ? 1
+        : Math.max(1, ...monthly.map((point) => Math.max(point.finishedBooks, point.startedBooks))),
+    [monthly],
+  );
 
-  const topAuthors = (() => {
+  const topAuthors = useMemo(() => {
     const counts = new Map<string, number>();
     for (const entry of reading.data ?? []) {
       const authors = detailLookups.data?.[entry.bookKey]?.authors ?? [];
@@ -55,24 +75,73 @@ export const AnalyticsView = () => {
       .sort((a, b) => b[1] - a[1])
       .slice(0, 6)
       .map(([author, count]) => ({ author, count }));
-  })();
+  }, [detailLookups.data, reading.data]);
+
+  const commitTooltip = useCallback(
+    (nextTooltip: { text: string; x: number; y: number; placement: "top" | "bottom" } | null) => {
+      setChartTooltip((current) => (isTooltipEqual(current, nextTooltip) ? current : nextTooltip));
+    },
+    [],
+  );
+
+  const scheduleTooltip = useCallback(
+    (nextTooltip: { text: string; x: number; y: number; placement: "top" | "bottom" }) => {
+      pendingTooltipRef.current = nextTooltip;
+      if (tooltipFrameRef.current !== null) {
+        return;
+      }
+      tooltipFrameRef.current = window.requestAnimationFrame(() => {
+        tooltipFrameRef.current = null;
+        const pendingTooltip = pendingTooltipRef.current;
+        if (!pendingTooltip) {
+          return;
+        }
+        commitTooltip(pendingTooltip);
+      });
+    },
+    [commitTooltip],
+  );
+
+  useEffect(
+    () => () => {
+      if (tooltipFrameRef.current !== null) {
+        window.cancelAnimationFrame(tooltipFrameRef.current);
+      }
+    },
+    [],
+  );
+
+  const onTimelineHover = useCallback(
+    (event: MouseEvent<HTMLElement>, text: string) => {
+      const rect = event.currentTarget.getBoundingClientRect();
+      const estimatedWidth = Math.min(
+        tooltipMaxWidth,
+        Math.max(120, text.length * tooltipCharWidth),
+      );
+      const x = clamp(
+        rect.left + rect.width / 2,
+        tooltipPadding + estimatedWidth / 2,
+        window.innerWidth - tooltipPadding - estimatedWidth / 2,
+      );
+      const placement = rect.top < 64 ? "bottom" : "top";
+      const y = placement === "top" ? rect.top - 8 : rect.bottom + 8;
+      scheduleTooltip({ text, x, y, placement });
+    },
+    [scheduleTooltip],
+  );
+
+  const onTimelineLeave = useCallback(() => {
+    pendingTooltipRef.current = null;
+    if (tooltipFrameRef.current !== null) {
+      window.cancelAnimationFrame(tooltipFrameRef.current);
+      tooltipFrameRef.current = null;
+    }
+    commitTooltip(null);
+  }, [commitTooltip]);
 
   if (reading.isLoading || report.isLoading) {
     return <LoadingObelus label="Compiling reports..." />;
   }
-  const monthly = report.data?.monthly ?? [];
-  const onTimelineHover = (event: MouseEvent<HTMLElement>, text: string) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const estimatedWidth = Math.min(tooltipMaxWidth, Math.max(120, text.length * tooltipCharWidth));
-    const x = clamp(
-      rect.left + rect.width / 2,
-      tooltipPadding + estimatedWidth / 2,
-      window.innerWidth - tooltipPadding - estimatedWidth / 2,
-    );
-    const placement = rect.top < 64 ? "bottom" : "top";
-    const y = placement === "top" ? rect.top - 8 : rect.bottom + 8;
-    setChartTooltip({ text, x, y, placement });
-  };
 
   return (
     <section className={styles.analyticsView}>
@@ -102,7 +171,7 @@ export const AnalyticsView = () => {
                     className={styles.chartHoverTarget}
                     onMouseEnter={(event) => onTimelineHover(event, "Started books: 0")}
                     onMouseMove={(event) => onTimelineHover(event, "Started books: 0")}
-                    onMouseLeave={() => setChartTooltip(null)}
+                    onMouseLeave={onTimelineLeave}
                   >
                     <span className={styles.chartZeroTick} />
                   </span>
@@ -115,7 +184,7 @@ export const AnalyticsView = () => {
                     onMouseMove={(event) =>
                       onTimelineHover(event, `Started books: ${point.startedBooks}`)
                     }
-                    onMouseLeave={() => setChartTooltip(null)}
+                    onMouseLeave={onTimelineLeave}
                   >
                     <span
                       className={styles.chartBarStarted}
@@ -130,7 +199,7 @@ export const AnalyticsView = () => {
                     className={styles.chartHoverTarget}
                     onMouseEnter={(event) => onTimelineHover(event, "Finished books: 0")}
                     onMouseMove={(event) => onTimelineHover(event, "Finished books: 0")}
-                    onMouseLeave={() => setChartTooltip(null)}
+                    onMouseLeave={onTimelineLeave}
                   >
                     <span className={styles.chartZeroTick} />
                   </span>
@@ -143,7 +212,7 @@ export const AnalyticsView = () => {
                     onMouseMove={(event) =>
                       onTimelineHover(event, `Finished books: ${point.finishedBooks}`)
                     }
-                    onMouseLeave={() => setChartTooltip(null)}
+                    onMouseLeave={onTimelineLeave}
                   >
                     <span
                       className={styles.chartBarFinished}

@@ -172,6 +172,12 @@ export const listContainer = style({
   display: "grid",
 });
 
+export const virtualListViewport = style({
+  maxHeight: "min(72vh, 980px)",
+  overflowY: "auto",
+  overflowX: "hidden",
+});
+
 export const bookListRow = style({
   display: "grid",
   gridTemplateColumns: "1fr",
@@ -202,6 +208,13 @@ export const bookListRow = style({
     },
   },
 });
+
+export const virtualizedBookListRow = style([
+  bookListRow,
+  {
+    margin: 0,
+  },
+]);
 
 export const bookRowContent = style({
   display: "grid",

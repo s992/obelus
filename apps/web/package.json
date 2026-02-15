@@ -17,6 +17,7 @@
     "@obelus/shared": "workspace:*",
     "@react-stately/utils": "^3.11.0",
     "@tanstack/react-query": "5.66.8",
+    "@tanstack/react-virtual": "^3.13.18",
     "@trpc/client": "11.9.0",
     "@untitledui/icons": "^0.0.20",
     "date-fns": "^4.1.0",
