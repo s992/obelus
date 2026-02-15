@@ -602,7 +602,7 @@ export const ReadingWorkspace = () => {
 
   return (
     <section className={styles.readingWorkspace}>
-      <article className={styles.card}>
+      <article className={styles.listCard}>
         <div className={styles.headerActionRow}>
           <div className={styles.searchInputWrap} ref={searchRootRef}>
             <SearchLg size={18} className={styles.searchIcon} />

@@ -23,6 +23,16 @@ export const card = style({
   gap: "1.5rem",
 });
 
+export const listCard = style([
+  card,
+  {
+    minHeight: "620px",
+    maxHeight: "min(72vh, 980px)",
+    display: "flex",
+    flexDirection: "column",
+  },
+]);
+
 export const detailCard = style([
   card,
   {
@@ -170,10 +180,12 @@ export const tabButtonActive = style([
 
 export const listContainer = style({
   display: "grid",
+  flex: 1,
+  minHeight: 0,
 });
 
 export const virtualListViewport = style({
-  maxHeight: "min(72vh, 980px)",
+  height: "100%",
   overflowY: "auto",
   overflowX: "hidden",
 });
