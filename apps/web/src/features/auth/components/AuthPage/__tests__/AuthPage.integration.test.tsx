@@ -4,11 +4,18 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-li
 import { axe } from "jest-axe";
 import type { ButtonHTMLAttributes } from "react";
 import { BrowserRouter } from "react-router-dom";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { registerMutate, loginMutate } = vi.hoisted(() => ({
   registerMutate: vi.fn(),
   loginMutate: vi.fn(),
+}));
+const { ssoConfigQuery, ssoBeginQuery } = vi.hoisted(() => ({
+  ssoConfigQuery: vi.fn(),
+  ssoBeginQuery: vi.fn(),
+}));
+const { redirectToUrl } = vi.hoisted(() => ({
+  redirectToUrl: vi.fn(),
 }));
 
 vi.mock("@/api/trpc", () => ({
@@ -16,8 +23,13 @@ vi.mock("@/api/trpc", () => ({
     auth: {
       registerWithPassword: { mutate: registerMutate },
       loginWithPassword: { mutate: loginMutate },
+      ssoConfig: { query: ssoConfigQuery },
+      ssoBegin: { query: ssoBeginQuery },
     },
   },
+}));
+vi.mock("@/features/auth/lib/sso", () => ({
+  redirectToUrl,
 }));
 
 vi.mock("@/ui/Button", () => ({
@@ -72,10 +84,18 @@ const renderAuthPage = () => {
 };
 
 describe("AuthPage integration", () => {
+  beforeEach(() => {
+    ssoConfigQuery.mockResolvedValue({ enabled: false });
+    ssoBeginQuery.mockResolvedValue({ authorizeUrl: "https://idp.example.com/login" });
+    redirectToUrl.mockReset();
+  });
+
   afterEach(() => {
     cleanup();
     registerMutate.mockReset();
     loginMutate.mockReset();
+    ssoConfigQuery.mockReset();
+    ssoBeginQuery.mockReset();
   });
 
   it("shows validation errors for empty register submission", async () => {
@@ -141,5 +161,31 @@ describe("AuthPage integration", () => {
     fireEvent.click(within(loginCard).getByRole("button", { name: "Sign in" }));
 
     expect(await within(loginCard).findByText("Invalid email or password.")).toBeInTheDocument();
+  });
+
+  it("does not show SSO action when SSO is disabled", async () => {
+    ssoConfigQuery.mockResolvedValue({ enabled: false });
+
+    renderAuthPage();
+
+    await waitFor(() => {
+      expect(ssoConfigQuery).toHaveBeenCalledTimes(1);
+    });
+    expect(screen.queryByRole("button", { name: "Continue with single sign-on" })).toBeNull();
+  });
+
+  it("shows SSO action and redirects when enabled", async () => {
+    ssoConfigQuery.mockResolvedValue({ enabled: true });
+    ssoBeginQuery.mockResolvedValue({ authorizeUrl: "https://idp.example.com/authorize" });
+
+    renderAuthPage();
+
+    const ssoButton = await screen.findByRole("button", { name: "Continue with single sign-on" });
+    fireEvent.click(ssoButton);
+
+    await waitFor(() => {
+      expect(ssoBeginQuery).toHaveBeenCalledTimes(1);
+      expect(redirectToUrl).toHaveBeenCalledWith("https://idp.example.com/authorize");
+    });
   });
 });

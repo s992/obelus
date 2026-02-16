@@ -4,7 +4,10 @@ import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 import { agentTail } from "vite-plugin-agent-tail";
 
+const workspaceRootDir = fileURLToPath(new URL("../..", import.meta.url));
+
 export default defineConfig({
+  envDir: workspaceRootDir,
   plugins: [react(), vanillaExtractPlugin(), agentTail()],
   resolve: {
     alias: {

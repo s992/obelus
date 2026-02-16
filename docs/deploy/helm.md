@@ -27,6 +27,8 @@ If using OAuth/OIDC:
 kubectl patch secret obelus-app-secrets -p '{"stringData":{"OAUTH_CLIENT_SECRET":"..."}}'
 ```
 
+Set `OAUTH_REDIRECT_URI` to the web callback route (for example `https://obelus.example.com/auth/sso/callback`).
+
 ## 2. Create values file
 
 Example `values-prod.yaml`:

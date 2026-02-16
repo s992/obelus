@@ -1,5 +1,6 @@
 export const queryKeys = {
   me: ["me"] as const,
+  ssoConfig: ["sso-config"] as const,
   reading: ["reading"] as const,
   toRead: ["to-read"] as const,
   report: ["report"] as const,

@@ -8,54 +8,9 @@ export const page = style({
 });
 
 export const container = style({
-  maxWidth: "1400px",
+  maxWidth: "640px",
   margin: "0 auto",
-  padding: "3rem 2rem",
-  display: "grid",
-  gap: "1.5rem",
-});
-
-export const authHeader = style({
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  borderBottom: `1px solid ${vars.color.borderPrimary}`,
-  paddingBottom: "1rem",
-});
-
-export const logo = style({
-  display: "flex",
-  alignItems: "center",
-  gap: "0.5rem",
-});
-
-export const logoSymbol = style({
-  color: vars.color.textSecondary,
-  fontSize: "1.25rem",
-  lineHeight: 1,
-});
-
-export const logoText = style({
-  color: vars.color.textPrimary,
-  fontSize: "1.125rem",
-  fontWeight: 600,
-});
-
-export const headerMetaText = style({
-  margin: 0,
-  color: vars.color.textSecondary,
-  fontSize: "0.875rem",
-});
-
-export const authGrid = style({
-  display: "grid",
-  gap: "2rem",
-  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-  "@media": {
-    "(max-width: 900px)": {
-      gridTemplateColumns: "1fr",
-    },
-  },
+  padding: "4rem 1.5rem",
 });
 
 export const card = style({
@@ -65,17 +20,17 @@ export const card = style({
   boxShadow: vars.shadow.card,
   padding: "2rem",
   display: "grid",
-  gap: "1.5rem",
+  gap: "1rem",
 });
 
-export const pageTitle = style({
+export const title = style({
   margin: 0,
-  fontSize: "2.25rem",
-  lineHeight: 1.2,
+  fontSize: "1.75rem",
+  lineHeight: 1.25,
   fontWeight: 600,
 });
 
-export const mutedBody = style({
+export const bodyText = style({
   margin: 0,
   color: vars.color.textSecondary,
   fontSize: "0.875rem",
@@ -120,11 +75,6 @@ export const inputField = style({
   fontFamily: `${vars.font.interface} !important`,
   fontSize: "0.875rem !important",
   lineHeight: "1.45 !important",
-  selectors: {
-    "&::placeholder": {
-      color: `${vars.color.textSecondary} !important`,
-    },
-  },
 });
 
 export const errorText = style({
@@ -133,8 +83,11 @@ export const errorText = style({
   fontSize: "0.75rem",
 });
 
-const buttonBase = style({
+export const primaryButton = style({
   borderRadius: "8px",
+  border: `1px solid ${vars.color.textPrimary}`,
+  backgroundColor: vars.color.textPrimary,
+  color: vars.color.bgPrimary,
   padding: "10px 16px",
   fontSize: "0.875rem",
   fontWeight: 500,
@@ -150,41 +103,9 @@ const buttonBase = style({
   },
 });
 
-export const primaryButton = style([
-  buttonBase,
-  {
-    border: `1px solid ${vars.color.textPrimary}`,
-    backgroundColor: vars.color.textPrimary,
-    color: vars.color.bgPrimary,
-  },
-]);
-
-export const secondaryButton = style([
-  buttonBase,
-  {
-    border: `1px solid ${vars.color.borderPrimary}`,
-    backgroundColor: vars.color.bgPrimary,
-    color: vars.color.textPrimary,
-  },
-]);
-
-export const ssoDivider = style({
-  display: "flex",
-  alignItems: "center",
-  gap: "0.75rem",
-  marginTop: "0.25rem",
-});
-
-export const ssoDividerLine = style({
-  height: "1px",
-  flex: 1,
-  backgroundColor: vars.color.borderPrimary,
-});
-
-export const ssoDividerLabel = style({
-  margin: 0,
-  color: vars.color.textSecondary,
-  fontSize: "0.75rem",
-  textTransform: "uppercase",
-  letterSpacing: "0.08em",
+export const link = style({
+  color: vars.color.textPrimary,
+  fontSize: "0.875rem",
+  textDecoration: "underline",
+  textUnderlineOffset: "2px",
 });

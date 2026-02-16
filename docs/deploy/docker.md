@@ -65,3 +65,4 @@ Override these tags/repositories in CI/CD as needed.
 - `WEB_API_BASE_URL` controls SPA runtime API base URL via `window.__OBELUS_CONFIG__`.
 - Keep `APP_ORIGIN` aligned with the URL users access in browsers.
 - If OAuth/OIDC is enabled, set all `OAUTH_*` fields together.
+- Set `OAUTH_REDIRECT_URI` to the web callback route (for example `https://obelus.example.com/auth/sso/callback`).

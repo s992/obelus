@@ -82,6 +82,23 @@ export const oauthLoginStates = pgTable(
   }),
 );
 
+export const oauthLinkConfirmations = pgTable(
+  "oauth_link_confirmations",
+  {
+    token: text("token").primaryKey(),
+    provider: authProviderEnum("provider").notNull(),
+    providerSubject: text("provider_subject").notNull(),
+    email: text("email").notNull(),
+    displayName: text("display_name").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    usedAt: timestamp("used_at", { withTimezone: true }),
+  },
+  (table) => ({
+    expiresIdx: index("oauth_link_confirmations_expires_idx").on(table.expiresAt),
+  }),
+);
+
 export const sessions = pgTable(
   "sessions",
   {

@@ -1,5 +1,7 @@
 # Configuration reference
 
+For local development, both API and web read configuration from the repository root `.env`.
+
 ## API environment variables
 
 | Variable | Required | Default | Sensitive | Description |
@@ -24,7 +26,7 @@
 | `OAUTH_AUTHORIZE_URL` | Conditionally | empty | No | Authorization endpoint URL. |
 | `OAUTH_TOKEN_URL` | Conditionally | empty | No | Token endpoint URL. |
 | `OAUTH_USERINFO_URL` | Conditionally | empty | No | Userinfo endpoint URL. |
-| `OAUTH_REDIRECT_URI` | Conditionally | empty | No | Redirect/callback URL. |
+| `OAUTH_REDIRECT_URI` | Conditionally | empty | No | Redirect/callback URL, typically `${web_origin}/auth/sso/callback`. |
 | `OAUTH_SCOPES` | No | `openid email profile` | No | Space-separated OAuth scopes. |
 | `DRIZZLE_MIGRATIONS_DIR` | No | `apps/api/drizzle` | No | Override migration folder path for runtime migrate command. |
 

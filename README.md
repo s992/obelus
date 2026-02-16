@@ -42,11 +42,9 @@ Obelus is a private, multi-user reading record app focused on judgment and notes
 
 ```bash
 cp .env.example .env
-cp apps/api/.env.example apps/api/.env
-cp apps/web/.env.example apps/web/.env
 ```
 
-Set `HARDCOVER_API_TOKEN` in your API env (`.env` or `apps/api/.env`) before starting services.
+Set `HARDCOVER_API_TOKEN` in root `.env` before starting services.
 
 2. Install dependencies:
 
@@ -82,8 +80,8 @@ pnpm dev
 
 If you open the web app via a WSL host IP (for example `http://172.25.71.27:5173`), keep API/CORS aligned:
 
-- Prefer leaving `VITE_API_URL` empty in `apps/web/.env` so the frontend targets `http://<current-host>:4000`.
-- Add that web origin to `APP_ORIGINS` in `apps/api/.env` (comma-separated for multiple origins), for example:
+- Prefer leaving `VITE_API_URL` empty in root `.env` so the frontend targets `http://<current-host>:4000`.
+- Add that web origin to `APP_ORIGINS` in root `.env` (comma-separated for multiple origins), for example:
   - `APP_ORIGINS=http://172.25.71.27:5173`
 
 ## Quality checks

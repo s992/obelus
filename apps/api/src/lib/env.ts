@@ -4,11 +4,9 @@ import { config as loadDotenv } from "dotenv";
 import { z } from "zod";
 
 const currentDir = dirname(fileURLToPath(import.meta.url));
-const apiRootDir = resolve(currentDir, "../..");
-const workspaceRootDir = resolve(apiRootDir, "../..");
+const workspaceRootDir = resolve(currentDir, "../../../..");
 
-// Existing process env has highest precedence. Then load API-local .env, then workspace fallback.
-loadDotenv({ path: resolve(apiRootDir, ".env") });
+// Existing process env has highest precedence. Load workspace root .env as shared source.
 loadDotenv({ path: resolve(workspaceRootDir, ".env") });
 
 const optionalUrl = z.preprocess(
@@ -58,24 +56,28 @@ if (!parsed.success) {
 
 const envValues = parsed.data;
 
-const oauthFields = {
-  issuer: envValues.OAUTH_ISSUER,
-  jwksUrl: envValues.OAUTH_JWKS_URL,
-  clientId: envValues.OAUTH_CLIENT_ID,
-  clientSecret: envValues.OAUTH_CLIENT_SECRET,
-  authorizeUrl: envValues.OAUTH_AUTHORIZE_URL,
-  tokenUrl: envValues.OAUTH_TOKEN_URL,
-  userInfoUrl: envValues.OAUTH_USERINFO_URL,
-  redirectUri: envValues.OAUTH_REDIRECT_URI,
-};
+const oauthFields = [
+  ["OAUTH_ISSUER", envValues.OAUTH_ISSUER],
+  ["OAUTH_JWKS_URL", envValues.OAUTH_JWKS_URL],
+  ["OAUTH_CLIENT_ID", envValues.OAUTH_CLIENT_ID],
+  ["OAUTH_CLIENT_SECRET", envValues.OAUTH_CLIENT_SECRET],
+  ["OAUTH_AUTHORIZE_URL", envValues.OAUTH_AUTHORIZE_URL],
+  ["OAUTH_TOKEN_URL", envValues.OAUTH_TOKEN_URL],
+  ["OAUTH_USERINFO_URL", envValues.OAUTH_USERINFO_URL],
+  ["OAUTH_REDIRECT_URI", envValues.OAUTH_REDIRECT_URI],
+] as const;
 
-const oauthValues = Object.values(oauthFields);
-const oauthConfigured = oauthValues.every((value) => Boolean(value));
-const oauthPartiallyConfigured = oauthValues.some((value) => Boolean(value)) && !oauthConfigured;
+const oauthConfigured = oauthFields.every(([, value]) => Boolean(value));
+const oauthPartiallyConfigured =
+  oauthFields.some(([, value]) => Boolean(value)) && !oauthConfigured;
 
 if (oauthPartiallyConfigured) {
+  const missingOauthFields = oauthFields
+    .filter(([, value]) => !value)
+    .map(([field]) => field)
+    .join(", ");
   throw new Error(
-    "OAuth/OIDC env is partially configured. Set all required OAUTH_* values or leave all unset.",
+    `OAuth/OIDC env is partially configured. Missing required values: ${missingOauthFields}. Set all required OAUTH_* values or leave all unset.`,
   );
 }
 

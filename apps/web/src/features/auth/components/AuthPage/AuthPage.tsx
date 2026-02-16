@@ -1,4 +1,5 @@
 import { trpc } from "@/api/trpc";
+import { redirectToUrl } from "@/features/auth/lib/sso";
 import { type AuthInput, authSchema } from "@/features/shared/lib/schemas";
 import { getErrorMessage } from "@/lib/errors";
 import { normalizeInputValue } from "@/lib/normalize";
@@ -7,7 +8,7 @@ import * as a11yStyles from "@/styles/a11y.css";
 import { Button } from "@/ui/Button";
 import { InputBase } from "@/ui/InputBase";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import * as styles from "./AuthPage.css";
 
@@ -16,6 +17,11 @@ export const AuthPage = () => {
   const registerForm = useForm<AuthInput>({ resolver: zodResolver(authSchema) });
   const loginForm = useForm<AuthInput>({
     resolver: zodResolver(authSchema.pick({ email: true, password: true })),
+  });
+  const ssoConfig = useQuery({
+    queryKey: queryKeys.ssoConfig,
+    queryFn: () => trpc.auth.ssoConfig.query(),
+    retry: false,
   });
 
   const register = useMutation({
@@ -39,6 +45,12 @@ export const AuthPage = () => {
       loginForm.reset();
     },
   });
+  const ssoBegin = useMutation({
+    mutationFn: () => trpc.auth.ssoBegin.query(),
+    onSuccess: (payload) => {
+      redirectToUrl(payload.authorizeUrl);
+    },
+  });
 
   const loginErrorMessage =
     login.error &&
@@ -56,6 +68,8 @@ export const AuthPage = () => {
   const registerErrorMessage = register.error ? getErrorMessage(register.error) : null;
   const loginEmailError = loginForm.formState.errors.email?.message;
   const loginPasswordError = loginForm.formState.errors.password?.message;
+  const showSsoAction = ssoConfig.data?.enabled === true;
+  const ssoErrorMessage = ssoBegin.error ? getErrorMessage(ssoBegin.error) : null;
 
   return (
     <main className={styles.page} id="main-content" tabIndex={-1}>
@@ -223,6 +237,30 @@ export const AuthPage = () => {
               >
                 {login.isPending ? "Signing in..." : "Sign in"}
               </Button>
+
+              {showSsoAction ? (
+                <>
+                  <div className={styles.ssoDivider} aria-hidden="true">
+                    <span className={styles.ssoDividerLine} />
+                    <span className={styles.ssoDividerLabel}>or</span>
+                    <span className={styles.ssoDividerLine} />
+                  </div>
+                  <Button
+                    className={styles.secondaryButton}
+                    color="tertiary"
+                    type="button"
+                    isDisabled={ssoBegin.isPending}
+                    onClick={() => ssoBegin.mutate()}
+                  >
+                    {ssoBegin.isPending ? "Redirecting..." : "Continue with single sign-on"}
+                  </Button>
+                  {ssoErrorMessage ? (
+                    <p className={styles.errorText} role="alert">
+                      {ssoErrorMessage}
+                    </p>
+                  ) : null}
+                </>
+              ) : null}
             </form>
           </article>
         </section>

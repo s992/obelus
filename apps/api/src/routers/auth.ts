@@ -1,8 +1,16 @@
+import { randomBytes } from "node:crypto";
 import { TRPCError } from "@trpc/server";
 import { and, eq, gt, isNull, lt } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "../db/client.js";
-import { oauthAccounts, oauthLoginStates, passwords, sessions, users } from "../db/schema.js";
+import {
+  oauthAccounts,
+  oauthLinkConfirmations,
+  oauthLoginStates,
+  passwords,
+  sessions,
+  users,
+} from "../db/schema.js";
 import { issueSessionToken } from "../lib/auth.js";
 import { normalizeEmail } from "../lib/email.js";
 import { env, isSsoEnabled } from "../lib/env.js";
@@ -18,6 +26,12 @@ import {
 } from "../lib/trpc.js";
 
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 30;
+const SSO_LINK_CONFIRMATION_TTL_MS = 10 * 60 * 1000;
+
+type SsoLinkResolution =
+  | { type: "linked"; userId: string }
+  | { type: "existing_user"; userId: string }
+  | { type: "new_user" };
 
 const createSession = async (userId: string) => {
   const [session] = await db
@@ -46,6 +60,53 @@ const isUniqueViolation = (error: unknown): boolean => {
       typeof error.code === "string" &&
       error.code === "23505",
   );
+};
+
+const randomBase64Url = (bytes: number): string => {
+  return randomBytes(bytes).toString("base64url");
+};
+
+const resolveSsoLinkResolution = (input: {
+  linkedUserId: string | null;
+  existingUserId: string | null;
+}): SsoLinkResolution => {
+  if (input.linkedUserId) {
+    return { type: "linked", userId: input.linkedUserId };
+  }
+
+  if (input.existingUserId) {
+    return { type: "existing_user", userId: input.existingUserId };
+  }
+
+  return { type: "new_user" };
+};
+
+const buildSsoLinkConfirmation = (
+  input: {
+    provider: "oauth2" | "oidc";
+    providerSubject: string;
+    email: string;
+    displayName: string;
+  },
+  options?: {
+    now?: Date;
+    createToken?: () => string;
+  },
+) => {
+  const now = options?.now ?? new Date();
+  return {
+    token: options?.createToken?.() ?? randomBase64Url(32),
+    provider: input.provider,
+    providerSubject: input.providerSubject,
+    email: input.email,
+    displayName: input.displayName,
+    expiresAt: new Date(now.getTime() + SSO_LINK_CONFIRMATION_TTL_MS),
+  };
+};
+
+export const __testables = {
+  resolveSsoLinkResolution,
+  buildSsoLinkConfirmation,
 };
 
 export const authRouter = router({
@@ -278,7 +339,10 @@ export const authRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       enforceAuthRateLimit(`${ctx.ip}:sso-callback`);
-      await db.delete(oauthLoginStates).where(lt(oauthLoginStates.expiresAt, new Date()));
+      await Promise.all([
+        db.delete(oauthLoginStates).where(lt(oauthLoginStates.expiresAt, new Date())),
+        db.delete(oauthLinkConfirmations).where(lt(oauthLinkConfirmations.expiresAt, new Date())),
+      ]);
 
       const [stateRecord] = await db
         .select()
@@ -320,50 +384,178 @@ export const authRouter = router({
         )
         .limit(1);
 
-      const userId =
-        linked?.userId ??
-        (await db.transaction(async (tx) => {
-          const [existingUser] = await tx
-            .select()
-            .from(users)
-            .where(eq(users.email, email))
-            .limit(1);
-          const user =
-            existingUser ??
-            (
-              await tx
-                .insert(users)
-                .values({
-                  email,
-                  displayName,
-                })
-                .returning()
-            )[0];
+      const [existingUser] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+      const resolution = resolveSsoLinkResolution({
+        linkedUserId: linked?.userId ?? null,
+        existingUserId: existingUser?.id ?? null,
+      });
 
-          if (!user) {
-            throw new TRPCError({
-              code: "INTERNAL_SERVER_ERROR",
-              message: "Failed to resolve SSO user.",
-            });
+      if (resolution.type === "linked") {
+        const session = await createSession(resolution.userId);
+        ctx.setCookie(await issueSessionToken(session.id, resolution.userId));
+        return { userId: resolution.userId };
+      }
+
+      if (resolution.type === "existing_user") {
+        const confirmation = buildSsoLinkConfirmation({
+          provider: identity.provider,
+          providerSubject: identity.providerSubject,
+          email,
+          displayName,
+        });
+
+        await db.insert(oauthLinkConfirmations).values(confirmation);
+
+        return {
+          requiresLinkConfirmation: true as const,
+          linkToken: confirmation.token,
+          email,
+          provider: identity.provider,
+        };
+      }
+
+      const userId = await db.transaction(async (tx) => {
+        const [createdUser] = await tx
+          .insert(users)
+          .values({
+            email,
+            displayName,
+          })
+          .returning();
+
+        if (!createdUser) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to resolve SSO user.",
+          });
+        }
+
+        try {
+          await tx.insert(oauthAccounts).values({
+            userId: createdUser.id,
+            provider: identity.provider,
+            providerSubject: identity.providerSubject,
+          });
+        } catch (error) {
+          if (!isUniqueViolation(error)) {
+            throw error;
           }
+        }
 
-          try {
-            await tx.insert(oauthAccounts).values({
-              userId: user.id,
-              provider: identity.provider,
-              providerSubject: identity.providerSubject,
-            });
-          } catch (error) {
-            if (!isUniqueViolation(error)) {
-              throw error;
-            }
-          }
-
-          return user.id;
-        }));
+        return createdUser.id;
+      });
 
       const session = await createSession(userId);
       ctx.setCookie(await issueSessionToken(session.id, userId));
       return { userId };
+    }),
+
+  confirmSsoLink: csrfPublicProcedure
+    .input(
+      z.object({
+        linkToken: z.string().min(1),
+        password: z.string().min(8),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      enforceAuthRateLimit(`${ctx.ip}:sso-confirm-link`);
+      await db
+        .delete(oauthLinkConfirmations)
+        .where(lt(oauthLinkConfirmations.expiresAt, new Date()));
+
+      const [linkRecord] = await db
+        .select()
+        .from(oauthLinkConfirmations)
+        .where(
+          and(
+            eq(oauthLinkConfirmations.token, input.linkToken),
+            isNull(oauthLinkConfirmations.usedAt),
+            gt(oauthLinkConfirmations.expiresAt, new Date()),
+          ),
+        )
+        .limit(1);
+
+      if (!linkRecord) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Invalid or expired SSO link confirmation.",
+        });
+      }
+
+      const [userRecord] = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, normalizeEmail(linkRecord.email)))
+        .limit(1);
+
+      if (!userRecord) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Unable to complete account link.",
+        });
+      }
+
+      const [passwordRecord] = await db
+        .select()
+        .from(passwords)
+        .where(eq(passwords.userId, userRecord.id))
+        .limit(1);
+
+      if (!passwordRecord || !(await verifyPassword(input.password, passwordRecord.passwordHash))) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid credentials." });
+      }
+
+      const session = await db.transaction(async (tx) => {
+        const [activeToken] = await tx
+          .update(oauthLinkConfirmations)
+          .set({ usedAt: new Date() })
+          .where(
+            and(
+              eq(oauthLinkConfirmations.token, input.linkToken),
+              isNull(oauthLinkConfirmations.usedAt),
+              gt(oauthLinkConfirmations.expiresAt, new Date()),
+            ),
+          )
+          .returning();
+
+        if (!activeToken) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Invalid or expired SSO link confirmation.",
+          });
+        }
+
+        try {
+          await tx.insert(oauthAccounts).values({
+            userId: userRecord.id,
+            provider: linkRecord.provider,
+            providerSubject: linkRecord.providerSubject,
+          });
+        } catch (error) {
+          if (!isUniqueViolation(error)) {
+            throw error;
+          }
+        }
+
+        const [createdSession] = await tx
+          .insert(sessions)
+          .values({
+            userId: userRecord.id,
+            expiresAt: new Date(Date.now() + SESSION_TTL_MS),
+          })
+          .returning();
+
+        if (!createdSession) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to create session.",
+          });
+        }
+
+        return createdSession;
+      });
+
+      ctx.setCookie(await issueSessionToken(session.id, userRecord.id));
+      return { userId: userRecord.id };
     }),
 });

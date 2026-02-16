@@ -8,6 +8,7 @@ const routeLabelFromPath = (pathname: string) => {
   if (pathname.startsWith("/settings")) return "Settings";
   if (pathname.startsWith("/public/")) return "Public collection";
   if (pathname.startsWith("/books/")) return "Book details";
+  if (pathname.startsWith("/auth/")) return "Sign in";
   return "Reading";
 };
 
