@@ -2,6 +2,7 @@ import { trpc } from "@/api/trpc";
 import { AnalyticsView } from "@/features/analytics/components/AnalyticsView/AnalyticsView";
 import { AuthPage } from "@/features/auth/components/AuthPage/AuthPage";
 import { ReadingWorkspace } from "@/features/reading/components/ReadingWorkspace/ReadingWorkspace";
+import { SeriesView } from "@/features/series/components/SeriesView/SeriesView";
 import { SettingsView } from "@/features/settings/components/SettingsView/SettingsView";
 import { LoadingObelus } from "@/features/shared/components/LoadingObelus/LoadingObelus";
 import { getErrorMessage } from "@/lib/errors";
@@ -71,9 +72,11 @@ export const AuthenticatedApp = () => {
     ? "Reports"
     : location.pathname.startsWith("/settings")
       ? "Settings"
-      : location.pathname.startsWith("/books/")
-        ? "Book details"
-        : "Reading";
+      : location.pathname.startsWith("/series/")
+        ? "Series"
+        : location.pathname.startsWith("/books/")
+          ? "Book details"
+          : "Reading";
 
   return (
     <main className={styles.page} id="main-content" tabIndex={-1}>
@@ -88,7 +91,9 @@ export const AuthenticatedApp = () => {
             {navLinks.map((link) => {
               const isActive =
                 link.path === "/"
-                  ? location.pathname === "/" || location.pathname.startsWith("/books/")
+                  ? location.pathname === "/" ||
+                    location.pathname.startsWith("/books/") ||
+                    location.pathname.startsWith("/series/")
                   : location.pathname.startsWith(link.path);
               return (
                 <Button
@@ -131,6 +136,7 @@ export const AuthenticatedApp = () => {
         <Routes>
           <Route path="/" element={<ReadingWorkspace />} />
           <Route path="/books/*" element={<ReadingWorkspace />} />
+          <Route path="/series/:seriesId" element={<SeriesView />} />
           <Route path="/analytics" element={<AnalyticsView />} />
           <Route path="/settings" element={<SettingsView me={me.data} />} />
           <Route path="*" element={<Navigate to="/" replace />} />

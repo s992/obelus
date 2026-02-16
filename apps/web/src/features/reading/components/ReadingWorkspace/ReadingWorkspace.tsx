@@ -4,6 +4,7 @@ import { BookMetadataDescription } from "@/features/reading/components/BookMetad
 import { ProgressSliderField } from "@/features/reading/components/ReadingWorkspace/ProgressSliderField";
 import { ReadingListPane } from "@/features/reading/components/ReadingWorkspace/ReadingListPane";
 import { ReadingSearchDropdown } from "@/features/reading/components/ReadingWorkspace/ReadingSearchDropdown";
+import { buildSeriesLinkData } from "@/features/reading/components/ReadingWorkspace/series-link";
 import { BookCover } from "@/features/shared/components/BookCover/BookCover";
 import { LoadingObelus } from "@/features/shared/components/LoadingObelus/LoadingObelus";
 import {
@@ -30,7 +31,7 @@ import { SearchLg } from "@untitledui/icons/SearchLg";
 import { XClose } from "@untitledui/icons/XClose";
 import { type KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import * as styles from "./ReadingWorkspace.css";
 import {
   REMOTE_SEARCH_MIN_QUERY_LENGTH,
@@ -379,6 +380,7 @@ export const ReadingWorkspace = () => {
   const isMetadataDescriptionLong =
     (metadataDescription?.length ?? 0) > METADATA_DESCRIPTION_COLLAPSE_LENGTH;
   const hasRenderableMetadata = hasMetadataRows || hasMetadataDescription;
+  const seriesLinkData = useMemo(() => buildSeriesLinkData(detail.data), [detail.data]);
 
   useEffect(() => {
     if (!selectedBookKey) {
@@ -716,6 +718,16 @@ export const ReadingWorkspace = () => {
                 />
                 <div className={styles.bookHeaderContent}>
                   <h2 className={styles.bookTitle}>{detail.data.title}</h2>
+                  {seriesLinkData ? (
+                    <p className={styles.bookSeriesMeta}>
+                      <Link
+                        className={styles.bookSeriesLink}
+                        to={`/series/${seriesLinkData.seriesId}`}
+                      >
+                        {seriesLinkData.text}
+                      </Link>
+                    </p>
+                  ) : null}
                   <p className={styles.bookAuthor}>
                     {detail.data.authors.join(", ") || "Unknown author"}
                   </p>

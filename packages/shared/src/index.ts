@@ -50,8 +50,10 @@ export const bookDetailSchema = z.object({
   publishDate: z.string().nullable(),
   covers: z.array(z.string().url()),
   coverUrl: z.string().url().nullable().default(null),
+  seriesId: z.number().int().nullable(),
   seriesName: z.string().nullable(),
   seriesPosition: z.number().nullable(),
+  seriesTotalBooks: z.number().int().nullable(),
   isbn_13: z.array(z.string()).default([]),
   number_of_pages: z.number().int().nullable().default(null),
   seriesBooks: z
@@ -63,6 +65,32 @@ export const bookDetailSchema = z.object({
       }),
     )
     .default([]),
+});
+
+export const seriesUserBookStateSchema = z.object({
+  status: z.enum(["not-in-library", "planned", "reading", "finished"]),
+  judgment: judgmentSchema.nullable(),
+  supportingText: z.string().nullable(),
+});
+
+export const seriesDetailSchema = z.object({
+  id: z.number().int().positive(),
+  name: z.string().min(1),
+  description: z.string().nullable(),
+  booksCount: z.number().int().nonnegative().nullable(),
+  isCompleted: z.boolean().nullable(),
+  books: z.array(
+    z.object({
+      key: z.string(),
+      title: z.string(),
+      position: z.number().nullable(),
+      publishDate: z.string().nullable(),
+      coverUrl: z.string().url().nullable(),
+      description: z.string().nullable().default(null),
+      authors: z.array(z.string()),
+      userState: seriesUserBookStateSchema,
+    }),
+  ),
 });
 
 export const reportPointSchema = z.object({
@@ -189,6 +217,8 @@ export type ToReadEntry = z.infer<typeof toReadEntrySchema>;
 export type UserProfile = z.infer<typeof userProfileSchema>;
 export type BookSearchResult = z.infer<typeof bookSearchResultSchema>;
 export type BookDetail = z.infer<typeof bookDetailSchema>;
+export type SeriesUserBookState = z.infer<typeof seriesUserBookStateSchema>;
+export type SeriesDetail = z.infer<typeof seriesDetailSchema>;
 export type DashboardReport = z.infer<typeof dashboardReportSchema>;
 export type PublicCollectionResponse = z.infer<typeof publicCollectionResponseSchema>;
 export type UpsertReadingEntryInput = z.infer<typeof upsertReadingEntryInputSchema>;

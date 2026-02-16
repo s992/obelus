@@ -7,6 +7,7 @@ import { env } from "./env.js";
 
 const SEARCH_TTL_SECONDS = 60 * 60 * 6;
 const DETAIL_TTL_SECONDS = 60 * 60 * 24;
+const SERIES_TTL_SECONDS = 60 * 60 * 24;
 const BOOK_META_TTL_SECONDS = 60 * 60 * 24 * 365;
 const FETCH_TIMEOUT_MS = 7000;
 const MIN_REQUEST_INTERVAL_MS = 1100;
@@ -28,6 +29,23 @@ type CachedBookMetadata = {
   pages: number | null;
 };
 
+type HardcoverSeriesDetail = {
+  id: number;
+  name: string;
+  description: string | null;
+  booksCount: number | null;
+  isCompleted: boolean | null;
+  books: Array<{
+    key: string;
+    title: string;
+    position: number | null;
+    publishDate: string | null;
+    coverUrl: string | null;
+    description: string | null;
+    authors: string[];
+  }>;
+};
+
 type GraphQlResponse<TData> = {
   data?: TData;
   errors?: Array<{ message?: string }>;
@@ -36,6 +54,7 @@ type GraphQlResponse<TData> = {
 const isRetryableStatus = (status: number): boolean => status === 429 || status >= 500;
 
 const toBookMetaCacheKey = (bookKey: string): string => `hardcover:book-meta:${bookKey}`;
+const toSeriesCacheKey = (seriesId: number): string => `hardcover:series:v3:${seriesId}`;
 
 const toBookKey = (hardcoverBookId: number): string => `hc:${hardcoverBookId}`;
 
@@ -56,8 +75,10 @@ const fallbackDetail = (bookKey: string): BookDetail => ({
   publishDate: null,
   covers: [],
   coverUrl: null,
+  seriesId: null,
   seriesName: null,
   seriesPosition: null,
+  seriesTotalBooks: null,
   seriesBooks: [],
   isbn_13: [],
   number_of_pages: null,
@@ -71,12 +92,37 @@ const toDetailFromMetadata = (metadata: CachedBookMetadata): BookDetail => ({
   publishDate: metadata.publishDate,
   covers: metadata.coverUrls,
   coverUrl: metadata.coverUrls[0] ?? null,
+  seriesId: null,
   seriesName: null,
   seriesPosition: null,
+  seriesTotalBooks: null,
   seriesBooks: [],
   isbn_13: metadata.isbn13,
   number_of_pages: metadata.pages,
 });
+
+const coerceBoolean = (value: unknown): boolean | null => {
+  if (typeof value === "boolean") {
+    return value;
+  }
+  return null;
+};
+
+const coerceInt = (value: unknown): number | null => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    return null;
+  }
+  return Math.trunc(parsed);
+};
+
+const coerceNumber = (value: unknown): number | null => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    return null;
+  }
+  return parsed;
+};
 
 const getCache = async <T>(key: string): Promise<T | null> => {
   try {
@@ -484,11 +530,57 @@ const mapBookNodeToDetail = (book: Record<string, unknown>, key: string): BookDe
       .find((value): value is string => Boolean(value)) ?? coerceString(book.release_date);
 
   const coverUrl = extractCoverUrl(book);
-  const featuredSeries = book.cached_featured_series;
+  const featuredSeriesRelation = Array.isArray(book.book_series) ? book.book_series[0] : null;
+  const featuredSeries =
+    featuredSeriesRelation && typeof featuredSeriesRelation === "object"
+      ? (featuredSeriesRelation as Record<string, unknown>).series
+      : null;
+
   const firstSeriesName =
     featuredSeries && typeof featuredSeries === "object"
       ? coerceString((featuredSeries as Record<string, unknown>).name)
       : null;
+  const firstSeriesId =
+    featuredSeries && typeof featuredSeries === "object"
+      ? coerceInt((featuredSeries as Record<string, unknown>).id)
+      : null;
+  const seriesPosition =
+    featuredSeriesRelation && typeof featuredSeriesRelation === "object"
+      ? coerceNumber((featuredSeriesRelation as Record<string, unknown>).position)
+      : null;
+  const seriesTotalBooks =
+    featuredSeries && typeof featuredSeries === "object"
+      ? coerceInt((featuredSeries as Record<string, unknown>).books_count)
+      : null;
+  const seriesBookNodes =
+    featuredSeries && typeof featuredSeries === "object"
+      ? ((featuredSeries as Record<string, unknown>).book_series as unknown)
+      : null;
+  const seriesBooks = Array.isArray(seriesBookNodes)
+    ? seriesBookNodes
+        .map((entry) => {
+          if (!entry || typeof entry !== "object") {
+            return null;
+          }
+          const relation = entry as Record<string, unknown>;
+          const seriesBook = relation.book;
+          if (!seriesBook || typeof seriesBook !== "object") {
+            return null;
+          }
+          const seriesBookId = coerceInt((seriesBook as Record<string, unknown>).id);
+          const seriesBookTitle = coerceString((seriesBook as Record<string, unknown>).title);
+          if (!seriesBookId || !seriesBookTitle) {
+            return null;
+          }
+
+          return {
+            key: toBookKey(seriesBookId),
+            title: seriesBookTitle,
+            position: coerceNumber(relation.position),
+          };
+        })
+        .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry))
+    : [];
 
   const detail: BookDetail = {
     key,
@@ -498,12 +590,142 @@ const mapBookNodeToDetail = (book: Record<string, unknown>, key: string): BookDe
     publishDate: releaseDate ?? null,
     covers: coverUrl ? [coverUrl] : [],
     coverUrl,
+    seriesId: firstSeriesId,
     seriesName: firstSeriesName,
-    seriesPosition: null,
-    seriesBooks: [],
+    seriesPosition,
+    seriesTotalBooks,
+    seriesBooks,
     isbn_13: isbn13,
     number_of_pages: Number.isFinite(pages ?? Number.NaN) ? Number(pages) : null,
   };
+
+  return detail;
+};
+
+const mapSeriesNodeToDetail = (
+  series: Record<string, unknown>,
+  fallbackSeriesId: number,
+): HardcoverSeriesDetail | null => {
+  const id = coerceInt(series.id) ?? fallbackSeriesId;
+  const name = coerceString(series.name);
+  if (!name) {
+    return null;
+  }
+
+  const bookSeries = Array.isArray(series.book_series) ? series.book_series : [];
+  const books = bookSeries
+    .map((entry) => {
+      if (!entry || typeof entry !== "object") {
+        return null;
+      }
+      const relation = entry as Record<string, unknown>;
+      const rawBook = relation.book;
+      if (!rawBook || typeof rawBook !== "object") {
+        return null;
+      }
+      const bookNode = rawBook as Record<string, unknown>;
+      const bookId = coerceInt(bookNode.id);
+      const title = coerceString(bookNode.title);
+      if (!bookId || !title) {
+        return null;
+      }
+
+      return {
+        key: toBookKey(bookId),
+        title,
+        position: coerceNumber(relation.position),
+        publishDate: coerceString(bookNode.release_date),
+        coverUrl: extractCoverUrl(bookNode),
+        description: coerceString(bookNode.description),
+        authors: extractAuthors(bookNode),
+      };
+    })
+    .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry))
+    .sort((left, right) => {
+      const leftPosition = left.position ?? Number.POSITIVE_INFINITY;
+      const rightPosition = right.position ?? Number.POSITIVE_INFINITY;
+      if (leftPosition !== rightPosition) {
+        return leftPosition - rightPosition;
+      }
+      return left.title.localeCompare(right.title);
+    });
+
+  return {
+    id,
+    name,
+    description: coerceString(series.description),
+    booksCount: coerceInt(series.books_count),
+    isCompleted: coerceBoolean(series.is_completed),
+    books,
+  };
+};
+
+export const getSeriesDetail = async (seriesId: number): Promise<HardcoverSeriesDetail | null> => {
+  const cacheKey = toSeriesCacheKey(seriesId);
+  const cached = await getCache<HardcoverSeriesDetail>(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
+  const data = await postGraphQl<{
+    series_by_pk?: Record<string, unknown> | null;
+  }>(
+    `query SeriesDetail($seriesId: Int!) {
+      series_by_pk(id: $seriesId) {
+        id
+        name
+        description
+        books_count
+        is_completed
+        book_series(
+          limit: 500
+          distinct_on: position
+          order_by: [{ position: asc }, { book: { users_count: desc } }]
+        ) {
+          position
+          book {
+            id
+            title
+            release_date
+            description
+            image {
+              url
+            }
+            cached_image
+            contributions(limit: 6) {
+              author {
+                name
+              }
+            }
+          }
+        }
+      }
+    }`,
+    { seriesId },
+  );
+
+  const node = data.series_by_pk;
+  if (!node) {
+    return null;
+  }
+
+  const detail = mapSeriesNodeToDetail(node, seriesId);
+  if (!detail) {
+    return null;
+  }
+
+  await Promise.all([
+    setCache(cacheKey, detail, SERIES_TTL_SECONDS),
+    seedBookMetadataEntries(
+      detail.books.map((book) => ({
+        key: book.key,
+        title: book.title,
+        authors: book.authors,
+        coverUrls: book.coverUrl ? [book.coverUrl] : [],
+        publishDate: book.publishDate,
+      })),
+    ),
+  ]);
 
   return detail;
 };
@@ -513,11 +735,13 @@ export const getBookDetail = async (
   options?: {
     allowRemoteFetch?: boolean;
     forceRemoteFetch?: boolean;
+    allowMetadataFallback?: boolean;
   },
 ): Promise<BookDetail> => {
   const allowRemoteFetch = options?.allowRemoteFetch ?? true;
   const forceRemoteFetch = options?.forceRemoteFetch ?? false;
-  const detailCacheKey = `hardcover:detail:${bookKey}`;
+  const allowMetadataFallback = options?.allowMetadataFallback ?? true;
+  const detailCacheKey = `hardcover:detail:v2:${bookKey}`;
 
   if (!forceRemoteFetch) {
     const cachedDetail = await getCache<BookDetail>(detailCacheKey);
@@ -525,9 +749,11 @@ export const getBookDetail = async (
       return cachedDetail;
     }
 
-    const cachedMetadata = await getCachedBookMetadata(bookKey);
-    if (cachedMetadata) {
-      return toDetailFromMetadata(cachedMetadata);
+    if (allowMetadataFallback) {
+      const cachedMetadata = await getCachedBookMetadata(bookKey);
+      if (cachedMetadata) {
+        return toDetailFromMetadata(cachedMetadata);
+      }
     }
   }
 
@@ -549,7 +775,6 @@ export const getBookDetail = async (
         title
         description
         release_date
-        cached_featured_series
         image {
           url
         }
@@ -559,6 +784,25 @@ export const getBookDetail = async (
           isbn_13
           pages
           release_date
+        }
+        book_series(where: { featured: { _eq: true } }, limit: 1) {
+          position
+          series {
+            id
+            name
+            books_count
+            book_series(
+              limit: 500
+              distinct_on: position
+              order_by: [{ position: asc }, { book: { users_count: desc } }]
+            ) {
+              position
+              book {
+                id
+                title
+              }
+            }
+          }
         }
       }
     }`,

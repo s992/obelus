@@ -345,6 +345,25 @@ export const bookAuthor = style({
   color: vars.color.textSecondary,
 });
 
+export const bookSeriesMeta = style({
+  margin: 0,
+  fontSize: "0.8125rem",
+  color: vars.color.textSecondary,
+});
+
+export const bookSeriesLink = style({
+  color: vars.color.textSecondary,
+  textDecoration: "underline",
+  textUnderlineOffset: "2px",
+  selectors: {
+    "&:focus-visible": {
+      outline: "none",
+      boxShadow: `0 0 0 2px ${vars.color.textPrimary}`,
+      borderRadius: "2px",
+    },
+  },
+});
+
 export const metadataInline = style({
   display: "grid",
   gap: "0.625rem",
