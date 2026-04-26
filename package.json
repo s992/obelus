@@ -1,0 +1,22 @@
+{
+  "name": "obelus",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "format:check": "biome check --assist-enabled=true",
+    "format:fix": "biome check --assist-enabled=true --write",
+    "lint:check": "oxlint",
+    "lint:fix": "oxlint --fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.33.2",
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "@tsconfig/strictest": "catalog:",
+    "oxlint": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "extends": "@tsconfig/strictest/tsconfig.json",
+  "baseUrl": "./",
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext"
+  }
+}
