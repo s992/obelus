@@ -1,0 +1,4 @@
+{
+  "*": ["pnpm run format:fix"],
+  "*.{ts,tsx}": ["pnpm run format:fix", "pnpm run lint:fix"]
+}
