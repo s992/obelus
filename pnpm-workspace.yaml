@@ -3,12 +3,20 @@ packages:
   - packages/client
   - packages/shared
 catalog:
-  '@biomejs/biome': 2.4.13
+  "@biomejs/biome": 2.4.13
+  "@graphql-codegen/cli": ^6.3.1
+  "@graphql-codegen/typescript": ^5.0.10
+  '@graphql-codegen/typescript-generic-sdk': ^5.0.1
+  '@graphql-codegen/typescript-operations': ^5.1.0
+  "@graphql-codegen/typescript-resolvers": ^5.1.8
+  '@graphql-typed-document-node/core': ^3.2.0
   "@tsconfig/strictest": ^2.0.8
   "@types/pg": ^8.20.0
   dotenv: ^17.4.2
   drizzle-kit: ^0.31.10
   drizzle-orm: ^0.45.2
+  graphql: ^16.13.2
+  graphql-tag: ^2.12.6
   oxlint: 1.61.0
   pg: ^8.20.0
   tsx: ^4.21.0

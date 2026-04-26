@@ -25,7 +25,8 @@
               ":BLANK_LINE:",
               ":ALIAS:",
               ":BLANK_LINE:",
-              ":PATH:"
+              ":PATH:",
+              ":BLANK_LINE:"
             ]
           }
         }

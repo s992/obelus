@@ -1,0 +1,5 @@
+query SearchBooks($query: String!) {
+  search(query: $query, sort: "_text_match:desc,users_count:desc,release_year:asc", query_type: "book") {
+    ids
+  }
+}

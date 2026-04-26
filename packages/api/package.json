@@ -4,9 +4,10 @@
   "description": "",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "db:generate": "drizzle-kit generate",
+    "db:gen": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "gql:gen": "graphql-codegen"
   },
   "keywords": [],
   "author": "",
@@ -15,10 +16,16 @@
   "dependencies": {
     "dotenv": "catalog:",
     "drizzle-orm": "catalog:",
-    "graphql": "^16.13.2",
+    "graphql": "catalog:",
+    "graphql-tag": "catalog:",
     "pg": "catalog:"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "catalog:",
+    "@graphql-codegen/typescript": "catalog:",
+    "@graphql-codegen/typescript-generic-sdk": "catalog:",
+    "@graphql-codegen/typescript-operations": "catalog:",
+    "@graphql-typed-document-node/core": "catalog:",
     "@types/pg": "catalog:",
     "drizzle-kit": "catalog:",
     "tsx": "catalog:"
