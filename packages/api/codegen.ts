@@ -1,10 +1,6 @@
-import 'dotenv/config';
 import { CodegenConfig } from '@graphql-codegen/cli';
 
-if (!process.env['HARDCOVER_API_TOKEN']) {
-  process.stderr.write('failed to initialize: HARDCOVER_API_TOKEN is not defined');
-  process.exit(1);
-}
+import { config as appConfig } from './src/config';
 
 const config: CodegenConfig = {
   overwrite: true,
@@ -12,7 +8,7 @@ const config: CodegenConfig = {
     {
       'https://api.hardcover.app/v1/graphql': {
         headers: {
-          Authorization: `Bearer ${process.env['HARDCOVER_API_TOKEN']}`,
+          Authorization: `Bearer ${appConfig.HARDCOVER_API_TOKEN}`,
         },
       },
     },

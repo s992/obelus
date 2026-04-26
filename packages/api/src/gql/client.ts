@@ -1,6 +1,6 @@
-import 'dotenv/config';
 import { DocumentNode, print } from 'graphql';
 
+import { config } from '../config';
 import { getSdk } from './graphql';
 
 async function gqlFetch<R, V>(doc: DocumentNode, variables: V): Promise<R> {
@@ -8,7 +8,7 @@ async function gqlFetch<R, V>(doc: DocumentNode, variables: V): Promise<R> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env['HARDCOVER_API_TOKEN']}`,
+      Authorization: `Bearer ${config.HARDCOVER_API_TOKEN}`,
     },
     body: JSON.stringify({ query: print(doc), variables }),
   });

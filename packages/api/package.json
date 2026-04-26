@@ -18,7 +18,8 @@
     "drizzle-orm": "catalog:",
     "graphql": "catalog:",
     "graphql-tag": "catalog:",
-    "pg": "catalog:"
+    "pg": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "catalog:",
