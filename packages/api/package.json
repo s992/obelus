@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch src/server.ts",
     "db:gen": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
@@ -14,11 +14,18 @@
   "license": "ISC",
   "packageManager": "pnpm@10.33.2",
   "dependencies": {
+    "@fastify/cookie": "catalog:",
+    "@fastify/helmet": "catalog:",
+    "@fastify/jwt": "catalog:",
+    "@trpc/server": "catalog:",
+    "argon2": "catalog:",
     "dotenv": "catalog:",
     "drizzle-orm": "catalog:",
+    "fastify": "catalog:",
     "graphql": "catalog:",
     "graphql-tag": "catalog:",
     "pg": "catalog:",
+    "pino": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
@@ -29,6 +36,7 @@
     "@graphql-typed-document-node/core": "catalog:",
     "@types/pg": "catalog:",
     "drizzle-kit": "catalog:",
+    "pino-pretty": "catalog:",
     "tsx": "catalog:"
   }
 }
