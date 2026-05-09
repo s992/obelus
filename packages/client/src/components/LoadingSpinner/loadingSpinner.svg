@@ -1,0 +1,54 @@
+<svg viewBox="-50 -50 100 100">
+  <!--
+    Timeline (period = 1.6s, four phases × 0.4s):
+      0.00 → 0.25  dots slide out from center to opposite ends   (bar held)
+      0.25 → 0.50  bar rotates 0° → 180°                          (dots held at ends)
+      0.50 → 0.75  dots slide back to center                      (bar held at 180°)
+      0.75 → 1.00  bar rotates 180° → 360°                        (dots held at center)
+
+    Every animation shares dur="1.6s" and the same keyTimes, so the SVG document
+    clock keeps them locked together — no drift between elements.
+
+    Splines:
+      phase active   → 0.65 0 0.35 1   (cubic ease-in-out)
+      phase held     → 0 0 1 1         (linear, but value is constant so it's a hold)
+  -->
+  <g>
+    <animateTransform
+      attributeName="transform"
+      type="rotate"
+      values="0; 0; 180; 180; 360"
+      keyTimes="0; 0.25; 0.5; 0.75; 1"
+      keySplines="0 0 1 1; 0.65 0 0.35 1; 0 0 1 1; 0.65 0 0.35 1"
+      calcMode="spline"
+      dur="1.6s"
+      repeatCount="indefinite" />
+
+    <!-- bar -->
+    <rect x="-32" y="-3" width="64" height="6" rx="3" fill="currentColor" />
+
+    <!-- top dot: starts above-center, slides right to bar's right end -->
+    <circle r="6" cy="-24" cx="0" fill="currentColor">
+      <animate
+        attributeName="cx"
+        values="0; 26; 26; 0; 0"
+        keyTimes="0; 0.25; 0.5; 0.75; 1"
+        keySplines="0.65 0 0.35 1; 0 0 1 1; 0.65 0 0.35 1; 0 0 1 1"
+        calcMode="spline"
+        dur="1.6s"
+        repeatCount="indefinite" />
+    </circle>
+
+    <!-- bottom dot: starts below-center, slides left to bar's left end -->
+    <circle r="6" cy="24" cx="0" fill="currentColor">
+      <animate
+        attributeName="cx"
+        values="0; -26; -26; 0; 0"
+        keyTimes="0; 0.25; 0.5; 0.75; 1"
+        keySplines="0.65 0 0.35 1; 0 0 1 1; 0.65 0 0.35 1; 0 0 1 1"
+        calcMode="spline"
+        dur="1.6s"
+        repeatCount="indefinite" />
+    </circle>
+  </g>
+</svg>

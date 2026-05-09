@@ -1,0 +1,311 @@
+import { style, styleVariants } from '@vanilla-extract/css';
+
+import { vars } from './contract.css';
+
+/* ─────────── Display + headings ─────────── */
+
+// Type-specimen / hero display. Used sparingly — once per page at most.
+export const display = style({
+  fontFamily: vars.font.display,
+  fontSize: vars.fontSize.display,
+  lineHeight: vars.lineHeight.display,
+  fontWeight: vars.fontWeight.display,
+  letterSpacing: vars.letterSpacing.display,
+  color: vars.color.ink,
+  margin: 0,
+});
+
+// Section header — "Typography", "Color", "Components".
+export const sectionH = style({
+  fontFamily: vars.font.display,
+  fontSize: vars.fontSize.sectionH,
+  lineHeight: vars.lineHeight.h2,
+  fontWeight: vars.fontWeight.display,
+  letterSpacing: vars.letterSpacing.display,
+  color: vars.color.ink,
+  margin: 0,
+});
+
+// H2 — note headers, brand wordmark, sub-section titles.
+export const h2 = style({
+  fontFamily: vars.font.display,
+  fontSize: vars.fontSize.h2,
+  lineHeight: vars.lineHeight.h2,
+  fontWeight: vars.fontWeight.display,
+  letterSpacing: vars.letterSpacing.display,
+  color: vars.color.ink,
+  margin: 0,
+});
+
+// Brand wordmark — same metrics as h2 but tightly coupled to the obelus mark.
+export const brand = h2;
+
+/* ─────────── Book titles ─────────── */
+
+// List-row book title — primary handle in the editorial table.
+export const bookTitle = style({
+  fontFamily: vars.font.display,
+  fontSize: vars.fontSize.bookTitle,
+  lineHeight: vars.lineHeight.bookTitle,
+  fontWeight: vars.fontWeight.display,
+  letterSpacing: vars.letterSpacing.display,
+  color: vars.color.ink,
+});
+
+// Card-variant book title (smaller, tighter container).
+export const cardTitle = style({
+  fontFamily: vars.font.display,
+  fontSize: vars.fontSize.cardTitle,
+  lineHeight: vars.lineHeight.bookTitle,
+  fontWeight: vars.fontWeight.display,
+  letterSpacing: vars.letterSpacing.display,
+  color: vars.color.ink,
+});
+
+/* ─────────── Body copy ─────────── */
+
+// Base body — running text, nav, judgment word, search placeholder.
+export const body = style({
+  fontFamily: vars.font.body,
+  fontSize: vars.fontSize.body,
+  lineHeight: vars.lineHeight.body,
+  fontWeight: vars.fontWeight.regular,
+  letterSpacing: vars.letterSpacing.body,
+  color: vars.color.ink,
+});
+
+// Larger body — type-specimen body, preferred long-form reading size.
+export const bodyLg = style({
+  fontFamily: vars.font.body,
+  fontSize: vars.fontSize.bodyLg,
+  lineHeight: vars.lineHeight.long,
+  fontWeight: vars.fontWeight.regular,
+  letterSpacing: vars.letterSpacing.body,
+  color: vars.color.ink2,
+});
+
+// Long-form note text — italic, ink-2, 1.55 line-height.
+export const note = style({
+  fontFamily: vars.font.body,
+  fontSize: vars.fontSize.body,
+  lineHeight: vars.lineHeight.long,
+  fontWeight: vars.fontWeight.regular,
+  letterSpacing: vars.letterSpacing.body,
+  fontStyle: 'italic',
+  color: vars.color.ink2,
+});
+
+/* ─────────── Author + meta ─────────── */
+
+// Book-row author line.
+export const author = style({
+  fontFamily: vars.font.body,
+  fontSize: vars.fontSize.metaItalic,
+  lineHeight: vars.lineHeight.body,
+  fontWeight: vars.fontWeight.regular,
+  letterSpacing: vars.letterSpacing.body,
+  color: vars.color.ink2,
+});
+
+// Card-variant author (italic, slightly smaller).
+export const cardAuthor = style({
+  fontFamily: vars.font.body,
+  fontSize: vars.fontSize.cardAuthor,
+  lineHeight: vars.lineHeight.body,
+  fontStyle: 'italic',
+  color: vars.color.ink2,
+});
+
+// Italic meta — translator, "tr. Anthea Bell", revision marker.
+export const metaItalic = style({
+  fontFamily: vars.font.body,
+  fontSize: vars.fontSize.translator,
+  lineHeight: vars.lineHeight.body,
+  fontStyle: 'italic',
+  color: vars.color.ink3,
+});
+
+// Mono meta — "started 2026-04-12 · last touched 18 mar 2026".
+export const metaMono = style({
+  fontFamily: vars.font.mono,
+  fontSize: vars.fontSize.metaMono,
+  lineHeight: vars.lineHeight.body,
+  letterSpacing: vars.letterSpacing.metaMono,
+  color: vars.color.ink2,
+});
+
+// Tabular date cell in the list (last touched, started).
+export const date = style({
+  fontFamily: vars.font.body,
+  fontSize: vars.fontSize.metaItalic,
+  lineHeight: vars.lineHeight.body,
+  fontVariantNumeric: 'tabular-nums',
+  color: vars.color.ink2,
+});
+
+// Tabular numeric cell (notes count, etc).
+export const numeric = style({
+  fontFamily: vars.font.body,
+  fontSize: vars.fontSize.body,
+  lineHeight: vars.lineHeight.body,
+  fontVariantNumeric: 'tabular-nums',
+  color: vars.color.ink2,
+});
+
+// Published year (display face, body size).
+export const published = style({
+  fontFamily: vars.font.display,
+  fontSize: vars.fontSize.bodyLg,
+  lineHeight: vars.lineHeight.body,
+  fontWeight: vars.fontWeight.regular,
+  letterSpacing: vars.letterSpacing.display,
+  color: vars.color.ink,
+});
+
+/* ─────────── Labels (caps mono) ─────────── */
+
+// Default label — "WORKING NOTES", form labels.
+export const label = style({
+  fontFamily: vars.font.mono,
+  fontSize: vars.fontSize.label,
+  lineHeight: vars.lineHeight.body,
+  textTransform: 'uppercase',
+  letterSpacing: vars.letterSpacing.label,
+  color: vars.color.ink3,
+});
+
+// Slightly larger label — top-bar meta, section number, swatch var name.
+export const labelLg = style({
+  fontFamily: vars.font.mono,
+  fontSize: vars.fontSize.labelLg,
+  lineHeight: vars.lineHeight.body,
+  textTransform: 'uppercase',
+  letterSpacing: vars.letterSpacing.label,
+  color: vars.color.ink3,
+});
+
+// Column header in the editorial list (caps mono, ink-3).
+export const colHeader = label;
+
+/* ─────────── Components ─────────── */
+
+// Button label.
+export const button = style({
+  fontFamily: vars.font.body,
+  fontSize: vars.fontSize.button,
+  lineHeight: vars.lineHeight.h2,
+  fontWeight: vars.fontWeight.regular,
+  letterSpacing: vars.letterSpacing.body,
+  color: vars.color.ink,
+});
+
+// Judgment chip text.
+export const chip = style({
+  fontFamily: vars.font.body,
+  fontSize: vars.fontSize.chip,
+  lineHeight: vars.lineHeight.chip,
+  fontWeight: vars.fontWeight.regular,
+  letterSpacing: vars.letterSpacing.body,
+});
+
+// Inline judgment word ("accepted", "mixed", "rejected") — color applied
+// at the use site via judgmentColor variants below.
+export const judgment = style({
+  fontFamily: vars.font.body,
+  fontSize: vars.fontSize.body,
+  lineHeight: vars.lineHeight.body,
+});
+
+// "· revised 1" trailing italic gray after a judgment.
+export const judgmentRev = style({
+  fontFamily: vars.font.body,
+  fontSize: vars.fontSize.body,
+  fontStyle: 'italic',
+  color: vars.color.ink3,
+});
+
+/* ─────────── Cover placeholder ─────────── */
+
+// Italic display title on the cover stand-in (9px).
+export const coverTitle = style({
+  fontFamily: vars.font.display,
+  fontSize: vars.fontSize.coverTitle,
+  lineHeight: vars.lineHeight.coverTitle,
+  fontWeight: vars.fontWeight.regular,
+  letterSpacing: vars.letterSpacing.display,
+  fontStyle: 'italic',
+  color: vars.color.ink2,
+});
+
+// Caps mono author label on the cover stand-in (7.5px, 0.08em tracking).
+export const coverLabel = style({
+  fontFamily: vars.font.mono,
+  fontSize: vars.fontSize.coverLabel,
+  lineHeight: vars.lineHeight.body,
+  textTransform: 'uppercase',
+  letterSpacing: vars.letterSpacing.coverCap,
+  color: vars.color.ink3,
+});
+
+/* ─────────── Judgment color variants ─────────── */
+//
+// Compose with `judgment` for the inline word, or with `chip` for the pill.
+// Usage:
+//   <span className={`${typography.judgment} ${typography.judgmentColor.good}`}>
+//     accepted
+//   </span>
+
+export const judgmentColor = styleVariants({
+  good: { color: vars.color.good },
+  warn: { color: vars.color.warn },
+  bad: { color: vars.color.bad },
+  neutral: { color: vars.color.ink3, fontStyle: 'italic' },
+});
+
+/* ─────────── Bundle ─────────── */
+//
+// Re-export as a single object for ergonomic imports.
+
+export const typography = {
+  // headings
+  display,
+  sectionH,
+  h2,
+  brand,
+
+  // book titles
+  bookTitle,
+  cardTitle,
+
+  // body
+  body,
+  bodyLg,
+  note,
+
+  // author + meta
+  author,
+  cardAuthor,
+  metaItalic,
+  metaMono,
+  date,
+  numeric,
+  published,
+
+  // labels
+  label,
+  labelLg,
+  colHeader,
+
+  // components
+  button,
+  chip,
+  judgment,
+  judgmentRev,
+  judgmentColor,
+
+  // cover
+  coverTitle,
+  coverLabel,
+} as const;
+
+export type TypographyRole = Exclude<keyof typeof typography, 'judgmentColor'>;

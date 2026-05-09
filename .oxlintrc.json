@@ -1,3 +1,12 @@
 {
-  "$schema": "./node_modules/oxlint/configuration_schema.json"
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "jsPlugins": [
+    { "name": "react-hooks-js", "specifier": "eslint-plugin-react-hooks" },
+    { "name": "react-js", "specifier": "eslint-plugin-react" },
+    { "name": "react-refresh-js", "specifier": "eslint-plugin-react-refresh" },
+    { "name": "jsx-a11y-js", "specifier": "eslint-plugin-jsx-a11y" }
+  ],
+  "rules": {
+    "react-hooks-js/set-state-in-render": "error"
+  }
 }

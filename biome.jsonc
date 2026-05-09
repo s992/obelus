@@ -1,5 +1,8 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
+  "files": {
+    "includes": ["**", "!**/storybook-static/**"]
+  },
   "formatter": {
     "indentStyle": "space",
     "indentWidth": 2,

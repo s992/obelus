@@ -4,11 +4,13 @@
   "description": "",
   "private": true,
   "scripts": {
+    "dev": "pnpm -r --parallel dev",
     "format:check": "biome check --assist-enabled=true",
     "format:fix": "biome check --assist-enabled=true --write",
     "lint:check": "oxlint",
     "lint:fix": "oxlint --fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "typecheck": "pnpm -r --parallel typecheck"
   },
   "keywords": [],
   "author": "",

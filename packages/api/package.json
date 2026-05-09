@@ -2,12 +2,16 @@
   "name": "@obelus/api",
   "version": "1.0.0",
   "description": "",
+  "exports": {
+    ".": "./src/appRouter.ts"
+  },
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "db:gen": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "gql:gen": "graphql-codegen"
+    "gql:gen": "graphql-codegen",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +19,7 @@
   "packageManager": "pnpm@10.33.2",
   "dependencies": {
     "@fastify/cookie": "catalog:",
+    "@fastify/cors": "catalog:",
     "@fastify/helmet": "catalog:",
     "@fastify/jwt": "catalog:",
     "@trpc/server": "catalog:",

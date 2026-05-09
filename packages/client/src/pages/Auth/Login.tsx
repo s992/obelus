@@ -1,0 +1,18 @@
+import { useMutation } from '@tanstack/react-query';
+
+import { useTRPC } from '../../client';
+import { AuthError } from './AuthError';
+import { AuthForm } from './AuthForm';
+import { formContainer } from './auth.css';
+
+export function Login() {
+  const trpc = useTRPC();
+  const login = useMutation(trpc.auth.login.mutationOptions());
+
+  return (
+    <div className={formContainer}>
+      {login.isError && <AuthError code={login.error.data?.code ?? ''} attemptedUserName={login.variables.userName} />}
+      <AuthForm submitLabel="Sign In" isLoading={login.isPending} onSubmit={({ value }) => login.mutate(value)} />
+    </div>
+  );
+}
