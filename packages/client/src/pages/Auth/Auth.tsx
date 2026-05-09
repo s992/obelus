@@ -1,5 +1,6 @@
 import { Outlet, useLinkProps, useLocation } from '@tanstack/react-router';
 import { Tab, TabList, TabPanels, Tabs } from 'react-aria-components';
+import { FormattedMessage } from 'react-intl';
 
 import { tab, tabContainer, tabContent, tabList } from './auth.css';
 
@@ -13,10 +14,10 @@ export function Auth() {
       <Tabs selectedKey={location}>
         <TabList className={tabList}>
           <Tab id={loginHref} href={loginHref} className={tab}>
-            sign in
+            <FormattedMessage defaultMessage="sign in" />
           </Tab>
           <Tab id={registerHref} href={registerHref} className={tab}>
-            register
+            <FormattedMessage defaultMessage="register" />
           </Tab>
         </TabList>
         <TabPanels>

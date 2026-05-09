@@ -1,3 +1,4 @@
+import formatjs from '@formatjs/unplugin/vite';
 import babel from '@rolldown/plugin-babel';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
@@ -13,6 +14,10 @@ export default defineConfig({
       autoCodeSplitting: true,
     }),
     vanillaExtractPlugin(),
+    formatjs({
+      idInterpolationPattern: '[sha512:contenthash:base64:6]',
+      ast: true,
+    }),
     react(),
     babel({ presets: [reactCompilerPreset()] }),
     svgr(),

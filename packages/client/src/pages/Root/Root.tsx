@@ -3,11 +3,9 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import clsx from 'clsx';
 import { useState } from 'react';
 
-import { Button } from '../../components/Button';
+import { type Theme, ThemeToggle } from '../../components/ThemeToggle';
 import { darkTheme, lightTheme } from '../../style';
 import { brand, container, headerContainer, obelusMark, pageWrapper } from './root.css';
-
-type Theme = 'light' | 'dark';
 
 export function Root() {
   const [theme, setTheme] = useState<Theme>('light');
@@ -25,15 +23,11 @@ export function Root() {
       <div className={container}>
         <header className={headerContainer}>
           <div className={brand}>
-            <span className={obelusMark}>÷</span> <span>Obelus</span>
+            <span className={obelusMark}>÷</span>
+            <span>Obelus</span>
           </div>
           <nav>
-            <Button
-              variant="tertiary"
-              onPress={() => setTheme((currTheme) => (currTheme === 'light' ? 'dark' : 'light'))}
-            >
-              {theme} mode
-            </Button>
+            <ThemeToggle currentTheme={theme} onChange={setTheme} />
           </nav>
         </header>
         <Outlet />

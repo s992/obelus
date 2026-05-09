@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { FormattedMessage } from 'react-intl';
 
 import { useTRPC } from '../../client';
 import { AuthError } from './AuthError';
@@ -12,7 +13,11 @@ export function Login() {
   return (
     <div className={formContainer}>
       {login.isError && <AuthError code={login.error.data?.code ?? ''} attemptedUserName={login.variables.userName} />}
-      <AuthForm submitLabel="Sign In" isLoading={login.isPending} onSubmit={({ value }) => login.mutate(value)} />
+      <AuthForm
+        submitLabel={<FormattedMessage defaultMessage="Sign In" />}
+        isLoading={login.isPending}
+        onSubmit={({ value }) => login.mutate(value)}
+      />
     </div>
   );
 }

@@ -26,10 +26,12 @@
     "react": "catalog:",
     "react-aria-components": "catalog:",
     "react-dom": "catalog:",
+    "react-intl": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@babel/core": "catalog:",
+    "@formatjs/unplugin": "catalog:",
     "@rolldown/plugin-babel": "catalog:",
     "@storybook/addon-themes": "catalog:",
     "@storybook/react-vite": "catalog:",

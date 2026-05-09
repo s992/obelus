@@ -1,5 +1,6 @@
 import { mergeProps } from '@react-aria/utils';
 import clsx from 'clsx';
+import type { ReactNode } from 'react';
 import { TextField as AriaTextField, Input, type TextFieldProps } from 'react-aria-components';
 
 import { useFieldContext } from '../../form';
@@ -9,7 +10,7 @@ import { ValidationErrorList } from '../ValidationErrorList';
 import { input } from './textField.css';
 
 type Props = {
-  label: string;
+  label: ReactNode;
 } & TextFieldProps;
 
 export function TextField({ className, label, ...rest }: Props) {

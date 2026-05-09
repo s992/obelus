@@ -4,6 +4,7 @@ import { createRootRoute, useNavigate } from '@tanstack/react-router';
 import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import { useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
+import { IntlProvider } from 'react-intl';
 
 import { getQueryClient } from '../client';
 import { TRPCProvider } from '../client/trpc';
@@ -21,9 +22,11 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-        <RouterProvider navigate={(path, opts) => navigate({ to: path, ...(opts as any) })}>
-          <Root />
-        </RouterProvider>
+        <IntlProvider locale="en-US">
+          <RouterProvider navigate={(path, opts) => navigate({ to: path, ...(opts as any) })}>
+            <Root />
+          </RouterProvider>
+        </IntlProvider>
       </TRPCProvider>
     </QueryClientProvider>
   );
