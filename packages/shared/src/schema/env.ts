@@ -12,4 +12,5 @@ export const env = z.object({
   OBELUS_DATABASE_URL: z.string().nonempty(),
   OBELUS_HARDCOVER_API_TOKEN: z.string().nonempty(),
   OBELUS_LOG_LEVEL: z.enum(LOG_LEVELS).default('info'),
+  OBELUS_REDIS_URL: z.string().nonempty(),
 });

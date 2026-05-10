@@ -18,10 +18,10 @@
   "license": "ISC",
   "packageManager": "pnpm@10.33.2",
   "dependencies": {
-    "@obelus/shared": "workspace:*",
     "@fastify/cookie": "catalog:",
     "@fastify/helmet": "catalog:",
     "@fastify/jwt": "catalog:",
+    "@obelus/shared": "workspace:*",
     "@trpc/server": "catalog:",
     "argon2": "catalog:",
     "dotenv": "catalog:",
@@ -31,6 +31,7 @@
     "graphql-tag": "catalog:",
     "pg": "catalog:",
     "pino": "catalog:",
+    "redis": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
