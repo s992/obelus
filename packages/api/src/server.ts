@@ -1,5 +1,4 @@
 import fastifyCookie from '@fastify/cookie';
-import cors from '@fastify/cors';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyJwt from '@fastify/jwt';
 import { FastifyTRPCPluginOptions, fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
@@ -17,24 +16,6 @@ const server = fastify({
 server.register(fastifyHelmet, { global: true });
 server.register(fastifyJwt, { secret: config.AUTH_TOKEN_SECRET });
 server.register(fastifyCookie, { secret: config.COOKIE_SECRET });
-server.register(cors, {
-  origin: (origin, cb) => {
-    if (!origin) {
-      cb(new Error('Not allowed'), false);
-      return;
-    }
-
-    const hostname = new URL(origin).hostname;
-
-    if (hostname === 'localhost') {
-      cb(null, true);
-      return;
-    }
-
-    cb(new Error('Not allowed'), false);
-  },
-});
-
 server.register(fastifyTRPCPlugin, {
   prefix: 'trpc',
   trpcOptions: {

@@ -76,11 +76,14 @@ export const button = styleVariants({
       padding: `${vars.space.s2} 0`,
       backgroundColor: 'transparent',
       borderRadius: 0,
+      color: vars.color.ink3,
+      cursor: 'pointer',
+      borderBottom: `1px solid transparent`,
       ':hover': {
-        background: vars.color.tint,
+        color: vars.color.ink,
       },
       ':active': {
-        borderBottom: `1px solid ${vars.color.ink}`,
+        borderBottomColor: vars.color.ink,
       },
       selectors: {
         '&[data-disabled=true]': {

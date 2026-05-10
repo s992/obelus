@@ -19,8 +19,12 @@ catalog:
   '@rolldown/plugin-babel': ^0.2.3
   '@storybook/addon-themes': ^9.0.0
   '@storybook/react-vite': ^9.0.0
+  '@tanstack/devtools-vite': ^0.6.0
+  '@tanstack/react-devtools': ^0.10.2
   '@tanstack/react-form': ^1.29.1
+  '@tanstack/react-form-devtools': ^0.2.26
   '@tanstack/react-query': ^5.100.9
+  '@tanstack/react-query-devtools': ^5.100.9
   '@tanstack/react-router': ^1.169.2
   '@tanstack/react-router-devtools': ^1.166.13
   '@tanstack/router-plugin': ^1.167.34
@@ -64,6 +68,7 @@ catalog:
   storybook: ^9.0.0
   tsx: ^4.21.0
   typescript: ^6.0.3
+  usehooks-ts: ^3.1.1
   vite: ^8.0.10
   vite-plugin-svgr: ^5.2.0
   zod: ^4.3.6

@@ -27,6 +27,7 @@ export const brand = style([
     display: 'flex',
     alignItems: 'center',
     gap: vars.space.s4,
+    textDecoration: 'none',
   },
 ]);
 
@@ -36,4 +37,10 @@ export const obelusMark = style({
 
 export const navList = style({
   listStyleType: 'none',
+});
+
+export const navSection = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: vars.space.s5,
 });

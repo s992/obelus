@@ -7,7 +7,14 @@ import { publicProcedure, router } from '../trpc/trpc';
 import { login, register } from './auth';
 
 const JWT_OPTS = { expiresIn: '30d' } satisfies Partial<SignOptions>;
-const COOKIE_OPTS = { signed: true, secure: true, sameSite: true } satisfies CookieSerializeOptions;
+// TODO: env vars for secure and domain
+const COOKIE_OPTS = {
+  domain: 'localhost',
+  path: '/',
+  sameSite: true,
+  secure: false,
+  signed: true,
+} satisfies CookieSerializeOptions;
 
 export const authRouter = router({
   register: publicProcedure
@@ -27,4 +34,7 @@ export const authRouter = router({
       const user = await login(input.userName, input.password);
       ctx.res.cookie('token', ctx.req.server.jwt.sign({ id: user.id }, JWT_OPTS), COOKIE_OPTS);
     }),
+  logout: publicProcedure.mutation(({ ctx }) => {
+    ctx.res.clearCookie('token', COOKIE_OPTS);
+  }),
 });

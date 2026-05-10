@@ -19,7 +19,6 @@
   "packageManager": "pnpm@10.33.2",
   "dependencies": {
     "@fastify/cookie": "catalog:",
-    "@fastify/cors": "catalog:",
     "@fastify/helmet": "catalog:",
     "@fastify/jwt": "catalog:",
     "@trpc/server": "catalog:",
