@@ -8,7 +8,7 @@ async function gqlFetch<R, V>(doc: DocumentNode, variables: V): Promise<R> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${config.HARDCOVER_API_TOKEN}`,
+      Authorization: `Bearer ${config.OBELUS_HARDCOVER_API_TOKEN}`,
     },
     body: JSON.stringify({ query: print(doc), variables }),
   });

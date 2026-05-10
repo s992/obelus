@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@obelus/api": "workspace:*",
+    "@obelus/shared": "workspace:*",
     "@react-aria/utils": "catalog:",
     "@tanstack/devtools-vite": "catalog:",
     "@tanstack/react-devtools": "catalog:",
@@ -53,6 +54,7 @@
     "eslint-plugin-react-hooks": "catalog:",
     "eslint-plugin-react-refresh": "catalog:",
     "globals": "catalog:",
+    "jiti": "catalog:",
     "storybook": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",

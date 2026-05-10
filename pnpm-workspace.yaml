@@ -55,6 +55,7 @@ catalog:
   graphql: ^16.13.2
   graphql-tag: ^2.12.6
   husky: ^9.1.7
+  jiti: ^2.7.0
   lint-staged: ^16.4.0
   lucide-react: ^1.14.0
   oxlint: 1.61.0

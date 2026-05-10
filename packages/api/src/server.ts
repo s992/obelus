@@ -14,8 +14,8 @@ const server = fastify({
 });
 
 server.register(fastifyHelmet, { global: true });
-server.register(fastifyJwt, { secret: config.AUTH_TOKEN_SECRET });
-server.register(fastifyCookie, { secret: config.COOKIE_SECRET });
+server.register(fastifyJwt, { secret: config.OBELUS_AUTH_TOKEN_SECRET });
+server.register(fastifyCookie, { secret: config.OBELUS_COOKIE_SECRET });
 server.register(fastifyTRPCPlugin, {
   prefix: 'trpc',
   trpcOptions: {
@@ -26,7 +26,7 @@ server.register(fastifyTRPCPlugin, {
 
 (async () => {
   try {
-    await server.listen({ port: config.PORT });
+    await server.listen({ port: config.OBELUS_API_PORT });
   } catch (err) {
     console.error(`failed to start: ${err}`);
     process.exit(1);

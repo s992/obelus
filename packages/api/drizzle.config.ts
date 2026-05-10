@@ -7,6 +7,6 @@ export default defineConfig({
   schema: './src/db/schema.ts',
   dialect: 'postgresql',
   dbCredentials: {
-    url: config.DATABASE_URL,
+    url: config.OBELUS_DATABASE_URL,
   },
 });

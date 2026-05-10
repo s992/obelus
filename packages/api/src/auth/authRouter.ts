@@ -3,16 +3,18 @@ import { SignOptions } from '@fastify/jwt';
 import { TRPCError } from '@trpc/server';
 import z from 'zod';
 
+import { config } from '../config';
 import { publicProcedure, router } from '../trpc/trpc';
 import { login, register } from './auth';
 
+const { protocol, hostname } = new URL(config.OBELUS_BASE_URL);
+
 const JWT_OPTS = { expiresIn: '30d' } satisfies Partial<SignOptions>;
-// TODO: env vars for secure and domain
 const COOKIE_OPTS = {
-  domain: 'localhost',
+  domain: hostname,
   path: '/',
   sameSite: true,
-  secure: false,
+  secure: protocol === 'https:',
   signed: true,
 } satisfies CookieSerializeOptions;
 

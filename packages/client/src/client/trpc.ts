@@ -7,7 +7,7 @@ export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<AppRou
 export const trpcClient = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
-      url: 'http://localhost:5173/api/trpc',
+      url: `${import.meta.env.OBELUS_BASE_URL}/api/trpc`,
       fetch(url, options) {
         return fetch(url, { ...options, credentials: 'include' });
       },
