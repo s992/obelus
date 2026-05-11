@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 
 import { useTRPC } from '../../client';
-import { CoverPlaceholder } from '../../components/CoverPlaceholder';
 
 export function BookDetail() {
   const { bookId } = useParams({ from: '/_authenticated/book/$bookId' });

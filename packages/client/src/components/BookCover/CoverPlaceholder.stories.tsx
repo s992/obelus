@@ -19,6 +19,10 @@ export const Large: Story = {
   args: { author: 'Wight', title: 'Unsouled', size: 'large' },
 };
 
+export const XLarge: Story = {
+  args: { author: 'Wight', title: 'Unsouled', size: 'xlarge' },
+};
+
 export const LongTitleDefault: Story = {
   args: {
     author: 'Zetter',
@@ -31,5 +35,13 @@ export const LongTitleLarge: Story = {
     author: 'Zetter',
     title: "Countdown to Zero Day: Stuxnet and the Launch of the World's First Digital Weapon",
     size: 'large',
+  },
+};
+
+export const LongTitleXLarge: Story = {
+  args: {
+    author: 'Zetter',
+    title: "Countdown to Zero Day: Stuxnet and the Launch of the World's First Digital Weapon",
+    size: 'xlarge',
   },
 };

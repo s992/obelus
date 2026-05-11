@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { BOOK_COVER_DEFAULT_WIDTH, typography, vars } from '../../style';
+import { BOOK_COVER_MEDIUM_WIDTH, typography, vars } from '../../style';
 
 export const container = style({
   display: 'flex',
@@ -20,12 +20,7 @@ export const tableRow = style({
 });
 
 export const coverCell = style({
-  width: BOOK_COVER_DEFAULT_WIDTH,
-});
-
-export const cover = style({
-  aspectRatio: '2 / 3',
-  maxWidth: '100%',
+  width: BOOK_COVER_MEDIUM_WIDTH,
 });
 
 export const bookTitle = style([typography.bookTitle]);

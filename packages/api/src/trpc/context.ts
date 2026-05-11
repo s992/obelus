@@ -1,7 +1,8 @@
+import { Maybe } from '@obelus/shared/types';
 import { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
 
 import { logger } from '../log';
-import { JWTPayload, Maybe } from '../types';
+import { JWTPayload } from '../types';
 import { getUserById } from '../user/user';
 
 export async function createContext(opts: CreateFastifyContextOptions) {

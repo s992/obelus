@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "exports": {
-    "./schema": "./src/schema/index.ts"
+    "./schema": "./src/schema/index.ts",
+    "./types": "./src/types/index.ts"
   },
   "scripts": {},
   "keywords": [],

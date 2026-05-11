@@ -1,3 +1,4 @@
+import type { Book } from '@obelus/shared/types';
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
@@ -5,7 +6,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useDebounceValue } from 'usehooks-ts';
 
 import { useTRPC } from '../../client';
-import { CoverPlaceholder } from '../CoverPlaceholder';
+import { BookCover } from '../BookCover';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Search } from '../Search';
 import { Table } from '../Table';
@@ -13,7 +14,6 @@ import {
   bookAuthor,
   bookTitle,
   container,
-  cover,
   coverCell,
   spinnerContainer,
   tableContainer,
@@ -61,31 +61,33 @@ export function BookSearch() {
                 <FormattedMessage defaultMessage="judgment" />
               </Table.Column>
             </Table.Header>
-            <Table.Body items={results}>
-              {(result) => (
-                <Table.Row className={tableRow} href={`/book/${result.id}`}>
-                  <Table.Cell className={coverCell}>
-                    {result.image?.url ? (
-                      <img className={cover} src={result.image.url} />
-                    ) : (
-                      <CoverPlaceholder
-                        author={result.contributions[0]?.author?.name ?? ''}
-                        title={result.title ?? ''}
-                      />
-                    )}
-                  </Table.Cell>
-                  <Table.Cell>
-                    <div className={bookTitle}>{result.title}</div>
-                    <div className={bookAuthor}>{result.contributions[0]?.author?.name}</div>
-                  </Table.Cell>
-                  <Table.Cell>{dayjs(result.release_date as string, 'YYYY-MM-DD').format('YYYY')}</Table.Cell>
-                  <Table.Cell>unread</Table.Cell>
-                </Table.Row>
-              )}
-            </Table.Body>
+            {/*TODO: figure out why i have to cast here when everything uses the same goddamn type*/}
+            <Table.Body items={results}>{(result) => <BookRow book={result as Book} />}</Table.Body>
           </Table>
         </div>
       )}
     </div>
+  );
+}
+
+function BookRow({ book }: { book: Book }) {
+  const intl = useIntl();
+  const publishDate = dayjs(book.releaseDate, 'YYYY-MM-DD');
+  const formattedPublishDate = publishDate.isValid()
+    ? publishDate.format('YYYY')
+    : intl.formatMessage({ defaultMessage: 'N/A' });
+
+  return (
+    <Table.Row className={tableRow} href={`/book/${book.id}`}>
+      <Table.Cell className={coverCell}>
+        <BookCover book={book} />
+      </Table.Cell>
+      <Table.Cell>
+        <div className={bookTitle}>{book.title}</div>
+        <div className={bookAuthor}>{book.author}</div>
+      </Table.Cell>
+      <Table.Cell>{formattedPublishDate}</Table.Cell>
+      <Table.Cell>unread</Table.Cell>
+    </Table.Row>
   );
 }
