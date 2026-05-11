@@ -4,7 +4,7 @@ import { client } from '../gql/client';
 import { privateProcedure, router } from '../trpc/trpc';
 
 export const bookRouter = router({
-  search: privateProcedure.input(z.object({ query: z.string().nonempty() })).mutation(async ({ input }) => {
+  search: privateProcedure.input(z.object({ query: z.string().nonempty() })).query(async ({ input }) => {
     const searchResult = await client.SearchBooks({ query: input.query });
     const ids = (searchResult.search?.ids ?? []).filter((id) => id !== null);
 
@@ -16,7 +16,7 @@ export const bookRouter = router({
 
     return books;
   }),
-  byId: privateProcedure.input(z.object({ id: z.number() })).mutation(async ({ input }) => {
+  byId: privateProcedure.input(z.object({ id: z.number() })).query(async ({ input }) => {
     const { books } = await client.GetBooksByIds({ ids: [input.id] });
 
     return books[0];

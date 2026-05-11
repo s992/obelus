@@ -44,3 +44,7 @@ export const navSection = style({
   alignItems: 'center',
   gap: vars.space.s5,
 });
+
+export const searchButton = style({
+  transform: 'translateY(2px)', // better horizontal alignment
+});

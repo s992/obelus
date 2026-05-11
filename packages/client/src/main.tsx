@@ -4,11 +4,16 @@ import { createRoot } from 'react-dom/client';
 
 import { routeTree } from './routeTree.gen';
 import './style/reset.css';
+import './style/react-aria-modal.css';
 import { QueryClientProvider } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { IntlProvider } from 'react-intl';
 
 import { getQueryClient, TRPCProvider, trpcClient } from './client';
 import { AuthContextProvider, useAuthContext } from './context';
+
+dayjs.extend(customParseFormat);
 
 const router = createRouter({ routeTree, context: { auth: undefined! } });
 

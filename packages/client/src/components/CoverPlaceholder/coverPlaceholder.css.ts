@@ -1,6 +1,6 @@
 import { style, styleVariants } from '@vanilla-extract/css';
 
-import { typography, vars } from '../../style';
+import { BOOK_COVER_DEFAULT_WIDTH, BOOK_COVER_LARGE_WIDTH, typography, vars } from '../../style';
 
 const baseCover = style({
   aspectRatio: '2 / 3',
@@ -15,8 +15,8 @@ const baseCover = style({
 });
 
 export const cover = styleVariants({
-  default: [baseCover, { width: '56px' }],
-  large: [baseCover, { width: '72px' }],
+  default: [baseCover, { width: BOOK_COVER_DEFAULT_WIDTH }],
+  large: [baseCover, { width: BOOK_COVER_LARGE_WIDTH }],
 });
 
 export const title = style([typography.coverTitle, { maxHeight: '70%', overflow: 'clip' }]);

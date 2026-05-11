@@ -5,6 +5,6 @@ type Props = {
   size: keyof typeof spinner;
 };
 
-export function LoadingSpinner({ size = 'button' }: Props) {
+export function LoadingSpinner({ size = 'small' }: Props) {
   return <Spinner className={spinner[size]} />;
 }

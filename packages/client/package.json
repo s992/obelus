@@ -27,10 +27,13 @@
     "@trpc/tanstack-react-query": "catalog:",
     "@vanilla-extract/css": "catalog:",
     "clsx": "catalog:",
+    "dayjs": "catalog:",
     "lucide-react": "catalog:",
     "react": "catalog:",
+    "react-aria": "catalog:",
     "react-aria-components": "catalog:",
     "react-dom": "catalog:",
+    "react-hotkeys-hook": "catalog:",
     "react-intl": "catalog:",
     "usehooks-ts": "catalog:",
     "zod": "catalog:"

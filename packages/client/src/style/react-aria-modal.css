@@ -1,0 +1,23 @@
+.react-aria-ModalOverlay {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(3px);
+
+  &[data-entering] {
+    animation: modal-fade 200ms;
+  }
+
+  &[data-exiting] {
+    animation: modal-fade 150ms reverse ease-in;
+  }
+}
+
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

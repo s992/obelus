@@ -11,7 +11,7 @@ export const wrapper = style([
     border: 0,
     borderBottom: `1px solid ${vars.color.fieldRule}`,
     background: 'transparent',
-    padding: `${vars.space.s3} ${vars.space.s2}`,
+    padding: `${vars.space.s1} ${vars.space.s2}`,
     transition: 'border-color .15s ease',
   },
 ]);

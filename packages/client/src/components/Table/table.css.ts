@@ -7,6 +7,5 @@ export const table = style([
   {
     width: '100%',
     borderCollapse: 'collapse',
-    tableLayout: 'fixed',
   },
 ]);

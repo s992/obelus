@@ -60,8 +60,8 @@
 
   /* Accessibility */
   :where(:focus-visible) {
-    outline: 2px solid canvasText;
-    outline-offset: 2px;
+    outline: 0px solid canvasText;
+    outline-offset: 0px;
   }
 
   @media (prefers-reduced-motion: reduce) {
