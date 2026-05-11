@@ -17,6 +17,7 @@ const baseCover = style({
 export const cover = styleVariants({
   medium: [baseCover, { width: BOOK_COVER_MEDIUM_WIDTH }],
   large: [baseCover, { width: BOOK_COVER_LARGE_WIDTH }],
+  // TODO: need xlarge font size too
   xlarge: [baseCover, { width: BOOK_COVER_XLARGE_WIDTH }],
 });
 

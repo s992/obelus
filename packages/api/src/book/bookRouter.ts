@@ -1,4 +1,5 @@
 import { Book } from '@obelus/shared/types';
+import { TRPCError } from '@trpc/server';
 import z from 'zod';
 
 import { client } from '../gql/client';
@@ -23,7 +24,7 @@ export const bookRouter = router({
     const book = books[0];
 
     if (!book) {
-      return null;
+      throw new TRPCError({ code: 'NOT_FOUND' });
     }
 
     return formatBook(book);
@@ -39,12 +40,14 @@ function formatBook(book: GetBooksByIdsQuery['books'][number]): Book {
     description: book.description,
     pages: book.pages,
     releaseDate: book.release_date as string,
-    series: {
-      bookCount: book.featured_book_series?.series?.books_count,
-      id: book.featured_book_series?.series?.id,
-      name: book.featured_book_series?.series?.name,
-      position: book.featured_book_series?.position as number,
-    },
+    series: book.featured_book_series
+      ? {
+          bookCount: book.featured_book_series.series?.books_count,
+          id: book.featured_book_series.series?.id,
+          name: book.featured_book_series.series?.name,
+          position: book.featured_book_series.position as number,
+        }
+      : null,
     subTitle: book.subtitle,
   };
 }
