@@ -12,7 +12,7 @@ type Props = {
 export function Button({ children, className, isDisabled, isProcessing = false, variant = 'primary', ...rest }: Props) {
   return (
     <AriaButton {...rest} className={clsx(button[variant], className)} isDisabled={isDisabled || isProcessing}>
-      {isProcessing ? <LoadingSpinner size="button" /> : children}
+      {isProcessing ? <LoadingSpinner size="med" /> : children}
     </AriaButton>
   );
 }

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { CoverPlaceholder } from '../CoverPlaceholder';
+import { CoverPlaceholder } from '../BookCover/CoverPlaceholder';
 import { Table } from '.';
 
 const meta = {

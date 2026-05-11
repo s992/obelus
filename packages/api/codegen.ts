@@ -8,7 +8,7 @@ const config: CodegenConfig = {
     {
       'https://api.hardcover.app/v1/graphql': {
         headers: {
-          Authorization: `Bearer ${appConfig.HARDCOVER_API_TOKEN}`,
+          Authorization: `Bearer ${appConfig.OBELUS_HARDCOVER_API_TOKEN}`,
         },
       },
     },

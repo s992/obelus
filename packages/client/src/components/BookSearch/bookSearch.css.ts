@@ -17,6 +17,11 @@ export const tableRow = style({
   ':hover': {
     background: vars.color.tint,
   },
+  selectors: {
+    '&[data-focus-visible=true]': {
+      background: vars.color.tint,
+    },
+  },
 });
 
 export const coverCell = style({

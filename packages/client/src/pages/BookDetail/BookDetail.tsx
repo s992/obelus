@@ -1,4 +1,3 @@
-import type { Book } from '@obelus/shared/types';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import dayjs from 'dayjs';
@@ -30,9 +29,7 @@ export function BookDetail() {
   const { bookId } = useParams({ from: '/_authenticated/book/$bookId' });
   const intl = useIntl();
   const trpc = useTRPC();
-  const { data, isLoading, isError } = useQuery(trpc.book.byId.queryOptions({ id: parseInt(bookId) }));
-  // TODO: figure out why i have to cast this
-  const book = data as Book;
+  const { data: book, isLoading, isError } = useQuery(trpc.book.byId.queryOptions({ id: parseInt(bookId) }));
 
   if (isLoading) {
     return (

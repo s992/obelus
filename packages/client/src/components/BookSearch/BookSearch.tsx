@@ -61,8 +61,7 @@ export function BookSearch() {
                 <FormattedMessage defaultMessage="judgment" />
               </Table.Column>
             </Table.Header>
-            {/*TODO: figure out why i have to cast here when everything uses the same goddamn type*/}
-            <Table.Body items={results}>{(result) => <BookRow book={result as Book} />}</Table.Body>
+            <Table.Body items={results}>{(result) => <BookRow book={result} />}</Table.Body>
           </Table>
         </div>
       )}

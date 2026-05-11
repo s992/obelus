@@ -11,10 +11,10 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Button: Story = {
-  args: { size: 'button' },
+export const Small: Story = {
+  args: { size: 'med' },
 };
 
 export const XL: Story = {
-  args: { size: 'xl' },
+  args: { size: 'xlarge' },
 };

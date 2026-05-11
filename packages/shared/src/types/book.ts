@@ -1,14 +1,5 @@
-import type { Series } from './series';
-import type { Maybe } from './utility';
+import { z } from 'zod';
 
-export type Book = {
-  id: Maybe<number>;
-  author: Maybe<string>;
-  coverImage: Maybe<string>;
-  description: Maybe<string>;
-  pages: Maybe<number>;
-  releaseDate: Maybe<string>;
-  series: Maybe<Series>;
-  subTitle: Maybe<string>;
-  title: Maybe<string>;
-};
+import { book } from '../schema/book';
+
+export type Book = z.infer<typeof book>;

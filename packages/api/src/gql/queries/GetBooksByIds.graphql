@@ -19,7 +19,8 @@ query GetBooksByIds($ids: [Int!]) {
       position
     }
     pages
-    contributions(limit: 1) {
+    contributions {
+      contribution
       author {
         name
       }

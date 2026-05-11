@@ -1,8 +1,5 @@
-import { Maybe } from './utility';
+import type z from 'zod';
 
-export type Series = {
-  id: Maybe<number>;
-  name: Maybe<string>;
-  position: Maybe<number>;
-  bookCount: Maybe<number>;
-};
+import type { series } from '../schema';
+
+export type Series = z.infer<typeof series>;

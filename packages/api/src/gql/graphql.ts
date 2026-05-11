@@ -5389,7 +5389,10 @@ export type Editions = {
   /** An array relationship */
   images: Array<Images>;
   isbn_10?: Maybe<Scalars['String']['output']>;
+  isbn_10_valid?: Maybe<Scalars['Boolean']['output']>;
   isbn_13?: Maybe<Scalars['String']['output']>;
+  isbn_13_valid?: Maybe<Scalars['Boolean']['output']>;
+  isbns_match?: Maybe<Scalars['Boolean']['output']>;
   /** An object relationship */
   language?: Maybe<Languages>;
   language_id?: Maybe<Scalars['Int']['output']>;
@@ -5566,7 +5569,10 @@ export type Editions_Bool_Exp = {
   image_id?: InputMaybe<Int_Comparison_Exp>;
   images?: InputMaybe<Images_Bool_Exp>;
   isbn_10?: InputMaybe<String_Comparison_Exp>;
+  isbn_10_valid?: InputMaybe<Boolean_Comparison_Exp>;
   isbn_13?: InputMaybe<String_Comparison_Exp>;
+  isbn_13_valid?: InputMaybe<Boolean_Comparison_Exp>;
+  isbns_match?: InputMaybe<Boolean_Comparison_Exp>;
   language?: InputMaybe<Languages_Bool_Exp>;
   language_id?: InputMaybe<Int_Comparison_Exp>;
   list_books?: InputMaybe<List_Books_Bool_Exp>;
@@ -5700,7 +5706,10 @@ export type Editions_Order_By = {
   image_id?: InputMaybe<Order_By>;
   images_aggregate?: InputMaybe<Images_Aggregate_Order_By>;
   isbn_10?: InputMaybe<Order_By>;
+  isbn_10_valid?: InputMaybe<Order_By>;
   isbn_13?: InputMaybe<Order_By>;
+  isbn_13_valid?: InputMaybe<Order_By>;
+  isbns_match?: InputMaybe<Order_By>;
   language?: InputMaybe<Languages_Order_By>;
   language_id?: InputMaybe<Order_By>;
   list_books_aggregate?: InputMaybe<List_Books_Aggregate_Order_By>;
@@ -5768,7 +5777,13 @@ export enum Editions_Select_Column {
   /** column name */
   Isbn_10 = 'isbn_10',
   /** column name */
+  Isbn_10Valid = 'isbn_10_valid',
+  /** column name */
   Isbn_13 = 'isbn_13',
+  /** column name */
+  Isbn_13Valid = 'isbn_13_valid',
+  /** column name */
+  IsbnsMatch = 'isbns_match',
   /** column name */
   LanguageId = 'language_id',
   /** column name */
@@ -5912,7 +5927,10 @@ export type Editions_Stream_Cursor_Value_Input = {
   id?: InputMaybe<Scalars['Int']['input']>;
   image_id?: InputMaybe<Scalars['Int']['input']>;
   isbn_10?: InputMaybe<Scalars['String']['input']>;
+  isbn_10_valid?: InputMaybe<Scalars['Boolean']['input']>;
   isbn_13?: InputMaybe<Scalars['String']['input']>;
+  isbn_13_valid?: InputMaybe<Scalars['Boolean']['input']>;
+  isbns_match?: InputMaybe<Scalars['Boolean']['input']>;
   language_id?: InputMaybe<Scalars['Int']['input']>;
   lists_count?: InputMaybe<Scalars['Int']['input']>;
   locked?: InputMaybe<Scalars['Boolean']['input']>;
@@ -19437,7 +19455,11 @@ export type GetBooksByIdsQuery = {
       position?: unknown | null;
       series?: { __typename?: 'series'; id: number; name: string; books_count: number } | null;
     } | null;
-    contributions: Array<{ __typename?: 'contributions'; author?: { __typename?: 'authors'; name: string } | null }>;
+    contributions: Array<{
+      __typename?: 'contributions';
+      contribution?: string | null;
+      author?: { __typename?: 'authors'; name: string } | null;
+    }>;
   }>;
 };
 
@@ -19472,7 +19494,8 @@ export const GetBooksByIdsDocument = gql`
       position
     }
     pages
-    contributions(limit: 1) {
+    contributions {
+      contribution
       author {
         name
       }

@@ -13,11 +13,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
+  args: { label: 'Email' },
+  render: (args) => (
     <FormDecorator defaultValues={{ email: '' }}>
       {(form) => (
         <form.AppForm>
-          <form.AppField name="email">{(field) => <field.TextField label="Email" />}</form.AppField>
+          <form.AppField name="email">{(field) => <field.TextField {...args} />}</form.AppField>
         </form.AppForm>
       )}
     </FormDecorator>
