@@ -22,24 +22,24 @@ type Props = {
 export function AuthContextProvider({ children }: Props) {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
-  const [isAuthenticatedLS, setIsAuthenticatedLS, removeIsAuthenticatedLS] = useLocalStorage('isAuthenticated', false);
+  const [isAuthenticatedLS, setIsAuthenticatedLS] = useLocalStorage('isAuthenticated', false);
   const logout = useMutation(
     trpc.auth.logout.mutationOptions({
       onSuccess: async () => {
-        removeIsAuthenticatedLS();
+        setIsAuthenticatedLS(false);
         await queryClient.invalidateQueries(trpc.user.me.queryFilter());
       },
     }),
   );
-  const { isError: isLoggedOut } = useQuery(trpc.user.me.queryOptions(undefined, { retry: false }));
+  const { isLoading, isError: isLoggedOut } = useQuery(trpc.user.me.queryOptions(undefined, { retry: false }));
 
   useEffect(() => {
-    if (isLoggedOut) {
-      removeIsAuthenticatedLS();
-    } else {
-      setIsAuthenticatedLS(true);
+    if (isLoading) {
+      return;
     }
-  }, [isLoggedOut]);
+
+    setIsAuthenticatedLS(!isLoggedOut);
+  }, [isLoading, isLoggedOut]);
 
   return (
     <ctx.Provider
