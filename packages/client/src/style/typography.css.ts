@@ -5,7 +5,7 @@ import { vars } from './contract.css';
 /* ─────────── Display + headings ─────────── */
 
 // Type-specimen / hero display. Used sparingly — once per page at most.
-export const display = style({
+const display = style({
   fontFamily: vars.font.display,
   fontSize: vars.fontSize.display,
   lineHeight: vars.lineHeight.display,
@@ -16,7 +16,7 @@ export const display = style({
 });
 
 // Section header — "Typography", "Color", "Components".
-export const sectionH = style({
+const sectionH = style({
   fontFamily: vars.font.display,
   fontSize: vars.fontSize.sectionH,
   lineHeight: vars.lineHeight.h2,
@@ -27,7 +27,7 @@ export const sectionH = style({
 });
 
 // H2 — note headers, brand wordmark, sub-section titles.
-export const h2 = style({
+const h2 = style({
   fontFamily: vars.font.display,
   fontSize: vars.fontSize.h2,
   lineHeight: vars.lineHeight.h2,
@@ -38,12 +38,12 @@ export const h2 = style({
 });
 
 // Brand wordmark — same metrics as h2 but tightly coupled to the obelus mark.
-export const brand = h2;
+const brand = h2;
 
 /* ─────────── Book titles ─────────── */
 
 // List-row book title — primary handle in the editorial table.
-export const bookTitle = style({
+const bookTitle = style({
   fontFamily: vars.font.display,
   fontSize: vars.fontSize.bookTitle,
   lineHeight: vars.lineHeight.bookTitle,
@@ -53,7 +53,7 @@ export const bookTitle = style({
 });
 
 // Card-variant book title (smaller, tighter container).
-export const cardTitle = style({
+const cardTitle = style({
   fontFamily: vars.font.display,
   fontSize: vars.fontSize.cardTitle,
   lineHeight: vars.lineHeight.bookTitle,
@@ -65,7 +65,7 @@ export const cardTitle = style({
 /* ─────────── Body copy ─────────── */
 
 // Base body — running text, nav, judgment word, search placeholder.
-export const body = style({
+const body = style({
   fontFamily: vars.font.body,
   fontSize: vars.fontSize.body,
   lineHeight: vars.lineHeight.body,
@@ -75,7 +75,7 @@ export const body = style({
 });
 
 // Larger body — type-specimen body, preferred long-form reading size.
-export const bodyLg = style({
+const bodyLg = style({
   fontFamily: vars.font.body,
   fontSize: vars.fontSize.bodyLg,
   lineHeight: vars.lineHeight.long,
@@ -85,7 +85,7 @@ export const bodyLg = style({
 });
 
 // Long-form note text — italic, ink-2, 1.55 line-height.
-export const note = style({
+const note = style({
   fontFamily: vars.font.body,
   fontSize: vars.fontSize.body,
   lineHeight: vars.lineHeight.long,
@@ -98,7 +98,7 @@ export const note = style({
 /* ─────────── Author + meta ─────────── */
 
 // Book-row author line.
-export const author = style({
+const author = style({
   fontFamily: vars.font.body,
   fontSize: vars.fontSize.metaItalic,
   lineHeight: vars.lineHeight.body,
@@ -108,7 +108,7 @@ export const author = style({
 });
 
 // Card-variant author (italic, slightly smaller).
-export const cardAuthor = style({
+const cardAuthor = style({
   fontFamily: vars.font.body,
   fontSize: vars.fontSize.cardAuthor,
   lineHeight: vars.lineHeight.body,
@@ -117,7 +117,7 @@ export const cardAuthor = style({
 });
 
 // Italic meta — translator, "tr. Anthea Bell", revision marker.
-export const metaItalic = style({
+const metaItalic = style({
   fontFamily: vars.font.body,
   fontSize: vars.fontSize.translator,
   lineHeight: vars.lineHeight.body,
@@ -126,7 +126,7 @@ export const metaItalic = style({
 });
 
 // Mono meta — "started 2026-04-12 · last touched 18 mar 2026".
-export const metaMono = style({
+const metaMono = style({
   fontFamily: vars.font.mono,
   fontSize: vars.fontSize.metaMono,
   lineHeight: vars.lineHeight.body,
@@ -135,7 +135,7 @@ export const metaMono = style({
 });
 
 // Tabular date cell in the list (last touched, started).
-export const date = style({
+const date = style({
   fontFamily: vars.font.body,
   fontSize: vars.fontSize.metaItalic,
   lineHeight: vars.lineHeight.body,
@@ -144,7 +144,7 @@ export const date = style({
 });
 
 // Tabular numeric cell (notes count, etc).
-export const numeric = style({
+const numeric = style({
   fontFamily: vars.font.body,
   fontSize: vars.fontSize.body,
   lineHeight: vars.lineHeight.body,
@@ -153,7 +153,7 @@ export const numeric = style({
 });
 
 // Published year (display face, body size).
-export const published = style({
+const published = style({
   fontFamily: vars.font.display,
   fontSize: vars.fontSize.bodyLg,
   lineHeight: vars.lineHeight.body,
@@ -165,7 +165,7 @@ export const published = style({
 /* ─────────── Labels (caps mono) ─────────── */
 
 // Default label — "WORKING NOTES", form labels.
-export const label = style({
+const label = style({
   fontFamily: vars.font.mono,
   fontSize: vars.fontSize.label,
   lineHeight: vars.lineHeight.body,
@@ -175,7 +175,7 @@ export const label = style({
 });
 
 // Slightly larger label — top-bar meta, section number, swatch var name.
-export const labelLg = style({
+const labelLg = style({
   fontFamily: vars.font.mono,
   fontSize: vars.fontSize.labelLg,
   lineHeight: vars.lineHeight.body,
@@ -185,12 +185,12 @@ export const labelLg = style({
 });
 
 // Column header in the editorial list (caps mono, ink-3).
-export const colHeader = label;
+const colHeader = label;
 
 /* ─────────── Components ─────────── */
 
 // Button label.
-export const button = style({
+const button = style({
   fontFamily: vars.font.body,
   fontSize: vars.fontSize.button,
   lineHeight: vars.lineHeight.h2,
@@ -200,7 +200,7 @@ export const button = style({
 });
 
 // Judgment chip text.
-export const chip = style({
+const chip = style({
   fontFamily: vars.font.body,
   fontSize: vars.fontSize.chip,
   lineHeight: vars.lineHeight.chip,
@@ -210,14 +210,14 @@ export const chip = style({
 
 // Inline judgment word ("accepted", "mixed", "rejected") — color applied
 // at the use site via judgmentColor variants below.
-export const judgment = style({
+const judgment = style({
   fontFamily: vars.font.body,
   fontSize: vars.fontSize.body,
   lineHeight: vars.lineHeight.body,
 });
 
 // "· revised 1" trailing italic gray after a judgment.
-export const judgmentRev = style({
+const judgmentRev = style({
   fontFamily: vars.font.body,
   fontSize: vars.fontSize.body,
   fontStyle: 'italic',
@@ -227,7 +227,7 @@ export const judgmentRev = style({
 /* ─────────── Cover placeholder ─────────── */
 
 // Italic display title on the cover stand-in (9px).
-export const coverTitle = style({
+const coverTitle = style({
   fontFamily: vars.font.display,
   fontSize: vars.fontSize.coverTitle,
   lineHeight: vars.lineHeight.coverTitle,
@@ -238,7 +238,7 @@ export const coverTitle = style({
 });
 
 // Caps mono author label on the cover stand-in (7.5px, 0.08em tracking).
-export const coverLabel = style({
+const coverLabel = style({
   fontFamily: vars.font.mono,
   fontSize: vars.fontSize.coverLabel,
   lineHeight: vars.lineHeight.body,
@@ -255,7 +255,7 @@ export const coverLabel = style({
 //     accepted
 //   </span>
 
-export const judgmentColor = styleVariants({
+const judgmentColor = styleVariants({
   good: { color: vars.color.good },
   warn: { color: vars.color.warn },
   bad: { color: vars.color.bad },
@@ -264,7 +264,7 @@ export const judgmentColor = styleVariants({
 
 /* ─────────── Bundle ─────────── */
 //
-// Re-export as a single object for ergonomic imports.
+// Export as a single object for ergonomic imports.
 
 export const typography = {
   // headings
@@ -307,5 +307,3 @@ export const typography = {
   coverTitle,
   coverLabel,
 } as const;
-
-export type TypographyRole = Exclude<keyof typeof typography, 'judgmentColor'>;

@@ -15,7 +15,8 @@
     "lint:check": "oxlint",
     "lint:fix": "oxlint --fix",
     "clean": "pnpm -r exec rm -rf dist node_modules/.tmp .tsbuildinfo *.tsbuildinfo",
-    "prepare": "husky"
+    "prepare": "husky",
+    "knip": "SAFE_ENV=1 knip"
   },
   "keywords": [],
   "author": "",
@@ -24,7 +25,13 @@
   "devDependencies": {
     "@biomejs/biome": "catalog:",
     "@tsconfig/strictest": "catalog:",
+    "@types/node": "catalog:",
+    "eslint-plugin-jsx-a11y": "catalog:",
+    "eslint-plugin-react": "catalog:",
+    "eslint-plugin-react-hooks": "catalog:",
+    "eslint-plugin-react-refresh": "catalog:",
     "husky": "catalog:",
+    "knip": "catalog:",
     "lint-staged": "catalog:",
     "oxlint": "catalog:",
     "typescript": "catalog:"

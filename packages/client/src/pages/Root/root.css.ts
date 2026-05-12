@@ -35,10 +35,6 @@ export const obelusMark = style({
   transform: 'translateY(-1px)',
 });
 
-export const navList = style({
-  listStyleType: 'none',
-});
-
 export const navSection = style({
   display: 'flex',
   alignItems: 'center',

@@ -4,4 +4,5 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: path.resolve('../../.env') });
 
-export const config = env.parse(process.env);
+// SAFE_ENV is a hack to make knip play nice when we fail to parse the config
+export const config = process.env['SAFE_ENV'] ? env.safeParse(process.env) : env.parse(process.env);
