@@ -12,16 +12,17 @@ type Props = {
   value: string;
   onChange: (value: string) => void;
   ref?: RefObject<HTMLDivElement | null>;
+  inputRef?: RefObject<HTMLInputElement | null>;
 } & TextFieldProps;
 
-export function Search({ label, className, ref, ...rest }: Props) {
+export function Search({ label, className, ref, inputRef, ...rest }: Props) {
   const intl = useIntl();
   const { value, onChange } = rest;
 
   return (
     <TextField {...rest} className={clsx(wrapper, className)} ref={ref} aria-label={label}>
       <SearchIcon className={icon} />
-      <Input placeholder={label} className={input} />
+      <Input placeholder={label} className={input} ref={inputRef} />
       {!!value && (
         <IconButton
           aria-label={intl.formatMessage({ defaultMessage: 'Clear search input' })}
