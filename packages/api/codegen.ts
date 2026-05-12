@@ -1,4 +1,4 @@
-import { CodegenConfig } from '@graphql-codegen/cli';
+import type { CodegenConfig } from '@graphql-codegen/cli';
 
 import { config as appConfig } from './src/config';
 
@@ -19,6 +19,7 @@ const config: CodegenConfig = {
       plugins: ['typescript', 'typescript-operations', 'typescript-generic-sdk'],
       config: {
         defaultScalarType: 'unknown',
+        enumsAsTypes: true,
       },
     },
   },

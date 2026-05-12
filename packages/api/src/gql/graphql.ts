@@ -1,4 +1,4 @@
-import { DocumentNode } from 'graphql';
+import type { DocumentNode } from 'graphql';
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -911,30 +911,29 @@ export type Activities_Order_By = {
 };
 
 /** select columns of table "activities" */
-export enum Activities_Select_Column {
+export type Activities_Select_Column =
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Data = 'data',
+  | 'data'
   /** column name */
-  Event = 'event',
+  | 'event'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  LikesCount = 'likes_count',
+  | 'likes_count'
   /** column name */
-  ObjectType = 'object_type',
+  | 'object_type'
   /** column name */
-  OriginalBookId = 'original_book_id',
+  | 'original_book_id'
   /** column name */
-  PrivacySettingId = 'privacy_setting_id',
+  | 'privacy_setting_id'
   /** column name */
-  Uid = 'uid',
+  | 'uid'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** order by stddev() on columns of table "activities" */
 export type Activities_Stddev_Order_By = {
@@ -1284,62 +1283,61 @@ export type Authors_Order_By = {
 };
 
 /** select columns of table "authors" */
-export enum Authors_Select_Column {
+export type Authors_Select_Column =
   /** column name */
-  AliasId = 'alias_id',
+  | 'alias_id'
   /** column name */
-  AlternateNames = 'alternate_names',
+  | 'alternate_names'
   /** column name */
-  Bio = 'bio',
+  | 'bio'
   /** column name */
-  BooksCount = 'books_count',
+  | 'books_count'
   /** column name */
-  BornDate = 'born_date',
+  | 'born_date'
   /** column name */
-  BornYear = 'born_year',
+  | 'born_year'
   /** column name */
-  CachedImage = 'cached_image',
+  | 'cached_image'
   /** column name */
-  CanonicalId = 'canonical_id',
+  | 'canonical_id'
   /** column name */
-  DeathDate = 'death_date',
+  | 'death_date'
   /** column name */
-  DeathYear = 'death_year',
+  | 'death_year'
   /** column name */
-  GenderId = 'gender_id',
+  | 'gender_id'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Identifiers = 'identifiers',
+  | 'identifiers'
   /** column name */
-  ImageId = 'image_id',
+  | 'image_id'
   /** column name */
-  IsBipoc = 'is_bipoc',
+  | 'is_bipoc'
   /** column name */
-  IsLgbtq = 'is_lgbtq',
+  | 'is_lgbtq'
   /** column name */
-  Links = 'links',
+  | 'links'
   /** column name */
-  Location = 'location',
+  | 'location'
   /** column name */
-  Locked = 'locked',
+  | 'locked'
   /** column name */
-  Name = 'name',
+  | 'name'
   /** column name */
-  NamePersonal = 'name_personal',
+  | 'name_personal'
   /** column name */
-  ObjectType = 'object_type',
+  | 'object_type'
   /** column name */
-  Slug = 'slug',
+  | 'slug'
   /** column name */
-  State = 'state',
+  | 'state'
   /** column name */
-  Title = 'title',
+  | 'title'
   /** column name */
-  UserId = 'user_id',
+  | 'user_id'
   /** column name */
-  UsersCount = 'users_count',
-}
+  | 'users_count';
 
 /** order by stddev() on columns of table "authors" */
 export type Authors_Stddev_Order_By = {
@@ -1514,12 +1512,11 @@ export type Book_Categories_Order_By = {
 };
 
 /** select columns of table "book_categories" */
-export enum Book_Categories_Select_Column {
+export type Book_Categories_Select_Column =
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Name = 'name',
-}
+  | 'name';
 
 /** Streaming cursor of the table "book_categories" */
 export type Book_Categories_Stream_Cursor_Input = {
@@ -1617,20 +1614,19 @@ export type Book_Characters_Order_By = {
 };
 
 /** select columns of table "book_characters" */
-export enum Book_Characters_Select_Column {
+export type Book_Characters_Select_Column =
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  CharacterId = 'character_id',
+  | 'character_id'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  OnlyMentioned = 'only_mentioned',
+  | 'only_mentioned'
   /** column name */
-  Position = 'position',
+  | 'position'
   /** column name */
-  Spoiler = 'spoiler',
-}
+  | 'spoiler';
 
 /** order by stddev() on columns of table "book_characters" */
 export type Book_Characters_Stddev_Order_By = {
@@ -1735,16 +1731,15 @@ export type Book_Collections_Order_By = {
 };
 
 /** select columns of table "book_collections" */
-export enum Book_Collections_Select_Column {
+export type Book_Collections_Select_Column =
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  ChildBookId = 'child_book_id',
+  | 'child_book_id'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Position = 'position',
-}
+  | 'position';
 
 /** Streaming cursor of the table "book_collections" */
 export type Book_Collections_Stream_Cursor_Input = {
@@ -1901,40 +1896,39 @@ export type Book_Mappings_Order_By = {
 };
 
 /** select columns of table "book_mappings" */
-export enum Book_Mappings_Select_Column {
+export type Book_Mappings_Select_Column =
   /** column name */
-  Attempts = 'attempts',
+  | 'attempts'
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  EditionId = 'edition_id',
+  | 'edition_id'
   /** column name */
-  ExternalDataId = 'external_data_id',
+  | 'external_data_id'
   /** column name */
-  ExternalId = 'external_id',
+  | 'external_id'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Loaded = 'loaded',
+  | 'loaded'
   /** column name */
-  LoadedAt = 'loaded_at',
+  | 'loaded_at'
   /** column name */
-  NormalizedAt = 'normalized_at',
+  | 'normalized_at'
   /** column name */
-  OriginalBookId = 'original_book_id',
+  | 'original_book_id'
   /** column name */
-  PlatformId = 'platform_id',
+  | 'platform_id'
   /** column name */
-  State = 'state',
+  | 'state'
   /** column name */
-  UpdatedAt = 'updated_at',
+  | 'updated_at'
   /** column name */
-  Verified = 'verified',
+  | 'verified'
   /** column name */
-  VerifiedAt = 'verified_at',
-}
+  | 'verified_at';
 
 /** order by stddev() on columns of table "book_mappings" */
 export type Book_Mappings_Stddev_Order_By = {
@@ -2301,90 +2295,79 @@ export type Book_Series_Order_By = {
 };
 
 /** select columns of table "book_series" */
-export enum Book_Series_Select_Column {
+export type Book_Series_Select_Column =
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  Compilation = 'compilation',
+  | 'compilation'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Details = 'details',
+  | 'details'
   /** column name */
-  Featured = 'featured',
+  | 'featured'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Position = 'position',
+  | 'position'
   /** column name */
-  SeriesId = 'series_id',
+  | 'series_id'
   /** column name */
-  UpdatedAt = 'updated_at',
-}
+  | 'updated_at';
 
 /** select "book_series_aggregate_bool_exp_avg_arguments_columns" columns of table "book_series" */
-export enum Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Avg_Arguments_Columns {
+export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Avg_Arguments_Columns =
   /** column name */
-  Position = 'position',
-}
+  'position';
 
 /** select "book_series_aggregate_bool_exp_bool_and_arguments_columns" columns of table "book_series" */
-export enum Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
+export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Bool_And_Arguments_Columns =
   /** column name */
-  Compilation = 'compilation',
+  | 'compilation'
   /** column name */
-  Featured = 'featured',
-}
+  | 'featured';
 
 /** select "book_series_aggregate_bool_exp_bool_or_arguments_columns" columns of table "book_series" */
-export enum Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
+export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns =
   /** column name */
-  Compilation = 'compilation',
+  | 'compilation'
   /** column name */
-  Featured = 'featured',
-}
+  | 'featured';
 
 /** select "book_series_aggregate_bool_exp_corr_arguments_columns" columns of table "book_series" */
-export enum Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Corr_Arguments_Columns {
+export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Corr_Arguments_Columns =
   /** column name */
-  Position = 'position',
-}
+  'position';
 
 /** select "book_series_aggregate_bool_exp_covar_samp_arguments_columns" columns of table "book_series" */
-export enum Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Covar_Samp_Arguments_Columns {
+export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Covar_Samp_Arguments_Columns =
   /** column name */
-  Position = 'position',
-}
+  'position';
 
 /** select "book_series_aggregate_bool_exp_max_arguments_columns" columns of table "book_series" */
-export enum Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Max_Arguments_Columns {
+export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Max_Arguments_Columns =
   /** column name */
-  Position = 'position',
-}
+  'position';
 
 /** select "book_series_aggregate_bool_exp_min_arguments_columns" columns of table "book_series" */
-export enum Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Min_Arguments_Columns {
+export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Min_Arguments_Columns =
   /** column name */
-  Position = 'position',
-}
+  'position';
 
 /** select "book_series_aggregate_bool_exp_stddev_samp_arguments_columns" columns of table "book_series" */
-export enum Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Stddev_Samp_Arguments_Columns {
+export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Stddev_Samp_Arguments_Columns =
   /** column name */
-  Position = 'position',
-}
+  'position';
 
 /** select "book_series_aggregate_bool_exp_sum_arguments_columns" columns of table "book_series" */
-export enum Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Sum_Arguments_Columns {
+export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Sum_Arguments_Columns =
   /** column name */
-  Position = 'position',
-}
+  'position';
 
 /** select "book_series_aggregate_bool_exp_var_samp_arguments_columns" columns of table "book_series" */
-export enum Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Var_Samp_Arguments_Columns {
+export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Var_Samp_Arguments_Columns =
   /** column name */
-  Position = 'position',
-}
+  'position';
 
 /** aggregate stddev on columns */
 export type Book_Series_Stddev_Fields = {
@@ -2574,12 +2557,11 @@ export type Book_Statuses_Order_By = {
 };
 
 /** select columns of table "book_statuses" */
-export enum Book_Statuses_Select_Column {
+export type Book_Statuses_Select_Column =
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Name = 'name',
-}
+  | 'name';
 
 /** Streaming cursor of the table "book_statuses" */
 export type Book_Statuses_Stream_Cursor_Input = {
@@ -2628,16 +2610,15 @@ export type Bookles_Order_By = {
 };
 
 /** select columns of table "bookles" */
-export enum Bookles_Select_Column {
+export type Bookles_Select_Column =
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Date = 'date',
+  | 'date'
   /** column name */
-  Id = 'id',
-}
+  | 'id';
 
 /** Streaming cursor of the table "bookles" */
 export type Bookles_Stream_Cursor_Input = {
@@ -3444,126 +3425,123 @@ export type Books_Order_By = {
 };
 
 /** select columns of table "books" */
-export enum Books_Select_Column {
+export type Books_Select_Column =
   /** column name */
-  ActivitiesCount = 'activities_count',
+  | 'activities_count'
   /** column name */
-  AlternativeTitles = 'alternative_titles',
+  | 'alternative_titles'
   /** column name */
-  AudioSeconds = 'audio_seconds',
+  | 'audio_seconds'
   /** column name */
-  BookCategoryId = 'book_category_id',
+  | 'book_category_id'
   /** column name */
-  BookStatusId = 'book_status_id',
+  | 'book_status_id'
   /** column name */
-  CachedContributors = 'cached_contributors',
+  | 'cached_contributors'
   /** column name */
-  CachedFeaturedSeries = 'cached_featured_series',
+  | 'cached_featured_series'
   /** column name */
-  CachedHeaderImage = 'cached_header_image',
+  | 'cached_header_image'
   /** column name */
-  CachedImage = 'cached_image',
+  | 'cached_image'
   /** column name */
-  CachedTags = 'cached_tags',
+  | 'cached_tags'
   /** column name */
-  CanonicalId = 'canonical_id',
+  | 'canonical_id'
   /** column name */
-  Compilation = 'compilation',
+  | 'compilation'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  CreatedByUserId = 'created_by_user_id',
+  | 'created_by_user_id'
   /** column name */
-  CurationStatus = 'curation_status',
+  | 'curation_status'
   /** column name */
-  DefaultAudioEditionId = 'default_audio_edition_id',
+  | 'default_audio_edition_id'
   /** column name */
-  DefaultCoverEditionId = 'default_cover_edition_id',
+  | 'default_cover_edition_id'
   /** column name */
-  DefaultEbookEditionId = 'default_ebook_edition_id',
+  | 'default_ebook_edition_id'
   /** column name */
-  DefaultPhysicalEditionId = 'default_physical_edition_id',
+  | 'default_physical_edition_id'
   /** column name */
-  Description = 'description',
+  | 'description'
   /** column name */
-  EditionsCount = 'editions_count',
+  | 'editions_count'
   /** column name */
-  FeaturedBookSeriesId = 'featured_book_series_id',
+  | 'featured_book_series_id'
   /** column name */
-  HeaderImageId = 'header_image_id',
+  | 'header_image_id'
   /** column name */
-  Headline = 'headline',
+  | 'headline'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  ImageId = 'image_id',
+  | 'image_id'
   /** column name */
-  ImportPlatformId = 'import_platform_id',
+  | 'import_platform_id'
   /** column name */
-  IsPartialBook = 'is_partial_book',
+  | 'is_partial_book'
   /** column name */
-  JournalsCount = 'journals_count',
+  | 'journals_count'
   /** column name */
-  Links = 'links',
+  | 'links'
   /** column name */
-  ListsCount = 'lists_count',
+  | 'lists_count'
   /** column name */
-  LiteraryTypeId = 'literary_type_id',
+  | 'literary_type_id'
   /** column name */
-  Locked = 'locked',
+  | 'locked'
   /** column name */
-  Pages = 'pages',
+  | 'pages'
   /** column name */
-  ParentBookId = 'parent_book_id',
+  | 'parent_book_id'
   /** column name */
-  PromptsCount = 'prompts_count',
+  | 'prompts_count'
   /** column name */
-  Rating = 'rating',
+  | 'rating'
   /** column name */
-  RatingsCount = 'ratings_count',
+  | 'ratings_count'
   /** column name */
-  RatingsDistribution = 'ratings_distribution',
+  | 'ratings_distribution'
   /** column name */
-  ReleaseDate = 'release_date',
+  | 'release_date'
   /** column name */
-  ReleaseYear = 'release_year',
+  | 'release_year'
   /** column name */
-  ReviewsCount = 'reviews_count',
+  | 'reviews_count'
   /** column name */
-  Slug = 'slug',
+  | 'slug'
   /** column name */
-  State = 'state',
+  | 'state'
   /** column name */
-  Subtitle = 'subtitle',
+  | 'subtitle'
   /** column name */
-  Title = 'title',
+  | 'title'
   /** column name */
-  UpdatedAt = 'updated_at',
+  | 'updated_at'
   /** column name */
-  UsersCount = 'users_count',
+  | 'users_count'
   /** column name */
-  UsersReadCount = 'users_read_count',
-}
+  | 'users_read_count';
 
 /** select "books_aggregate_bool_exp_bool_and_arguments_columns" columns of table "books" */
-export enum Books_Select_Column_Books_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
+export type Books_Select_Column_Books_Aggregate_Bool_Exp_Bool_And_Arguments_Columns =
   /** column name */
-  Compilation = 'compilation',
+  | 'compilation'
   /** column name */
-  IsPartialBook = 'is_partial_book',
+  | 'is_partial_book'
   /** column name */
-  Locked = 'locked',
-}
+  | 'locked';
 
 /** select "books_aggregate_bool_exp_bool_or_arguments_columns" columns of table "books" */
-export enum Books_Select_Column_Books_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
+export type Books_Select_Column_Books_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns =
   /** column name */
-  Compilation = 'compilation',
+  | 'compilation'
   /** column name */
-  IsPartialBook = 'is_partial_book',
+  | 'is_partial_book'
   /** column name */
-  Locked = 'locked',
-}
+  | 'locked';
 
 /** aggregate stddev on columns */
 export type Books_Stddev_Fields = {
@@ -4219,48 +4197,47 @@ export type Characters_Order_By = {
 };
 
 /** select columns of table "characters" */
-export enum Characters_Select_Column {
+export type Characters_Select_Column =
   /** column name */
-  Biography = 'biography',
+  | 'biography'
   /** column name */
-  BooksCount = 'books_count',
+  | 'books_count'
   /** column name */
-  CachedTags = 'cached_tags',
+  | 'cached_tags'
   /** column name */
-  CanonicalBooksCount = 'canonical_books_count',
+  | 'canonical_books_count'
   /** column name */
-  CanonicalId = 'canonical_id',
+  | 'canonical_id'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  GenderId = 'gender_id',
+  | 'gender_id'
   /** column name */
-  HasDisability = 'has_disability',
+  | 'has_disability'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  ImageId = 'image_id',
+  | 'image_id'
   /** column name */
-  IsLgbtq = 'is_lgbtq',
+  | 'is_lgbtq'
   /** column name */
-  IsPoc = 'is_poc',
+  | 'is_poc'
   /** column name */
-  Locked = 'locked',
+  | 'locked'
   /** column name */
-  Name = 'name',
+  | 'name'
   /** column name */
-  ObjectType = 'object_type',
+  | 'object_type'
   /** column name */
-  OpenlibraryUrl = 'openlibrary_url',
+  | 'openlibrary_url'
   /** column name */
-  Slug = 'slug',
+  | 'slug'
   /** column name */
-  State = 'state',
+  | 'state'
   /** column name */
-  UpdatedAt = 'updated_at',
+  | 'updated_at'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** Streaming cursor of the table "characters" */
 export type Characters_Stream_Cursor_Input = {
@@ -4455,28 +4432,27 @@ export type Collection_Import_Results_Pk_Columns_Input = {
 };
 
 /** select columns of table "collection_import_results" */
-export enum Collection_Import_Results_Select_Column {
+export type Collection_Import_Results_Select_Column =
   /** column name */
-  Author = 'author',
+  | 'author'
   /** column name */
-  BookFoundMethod = 'book_found_method',
+  | 'book_found_method'
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  CollectionImportId = 'collection_import_id',
+  | 'collection_import_id'
   /** column name */
-  Contents = 'contents',
+  | 'contents'
   /** column name */
-  ExternalId = 'external_id',
+  | 'external_id'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Report = 'report',
+  | 'report'
   /** column name */
-  State = 'state',
+  | 'state'
   /** column name */
-  Title = 'title',
-}
+  | 'title';
 
 /** input type for updating data in table "collection_import_results" */
 export type Collection_Import_Results_Set_Input = {
@@ -4735,48 +4711,47 @@ export type Collection_Imports_Order_By = {
 };
 
 /** select columns of table "collection_imports" */
-export enum Collection_Imports_Select_Column {
+export type Collection_Imports_Select_Column =
   /** column name */
-  CompletedAt = 'completed_at',
+  | 'completed_at'
   /** column name */
-  ContentsKey = 'contents_key',
+  | 'contents_key'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  CurrentBook = 'current_book',
+  | 'current_book'
   /** column name */
-  ErrorMessage = 'error_message',
+  | 'error_message'
   /** column name */
-  FailureCount = 'failure_count',
+  | 'failure_count'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  OverrideDateRead = 'override_date_read',
+  | 'override_date_read'
   /** column name */
-  OverrideRatings = 'override_ratings',
+  | 'override_ratings'
   /** column name */
-  OverrideShelves = 'override_shelves',
+  | 'override_shelves'
   /** column name */
-  PlatformId = 'platform_id',
+  | 'platform_id'
   /** column name */
-  ProcessedCount = 'processed_count',
+  | 'processed_count'
   /** column name */
-  ReimportCount = 'reimport_count',
+  | 'reimport_count'
   /** column name */
-  StartedAt = 'started_at',
+  | 'started_at'
   /** column name */
-  State = 'state',
+  | 'state'
   /** column name */
-  SuccessCount = 'success_count',
+  | 'success_count'
   /** column name */
-  TagResolution = 'tag_resolution',
+  | 'tag_resolution'
   /** column name */
-  TotalCount = 'total_count',
+  | 'total_count'
   /** column name */
-  UpdatedAt = 'updated_at',
+  | 'updated_at'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** order by stddev() on columns of table "collection_imports" */
 export type Collection_Imports_Stddev_Order_By = {
@@ -5063,22 +5038,21 @@ export type Contributions_Order_By = {
 };
 
 /** select columns of table "contributions" */
-export enum Contributions_Select_Column {
+export type Contributions_Select_Column =
   /** column name */
-  AuthorId = 'author_id',
+  | 'author_id'
   /** column name */
-  ContributableId = 'contributable_id',
+  | 'contributable_id'
   /** column name */
-  ContributableType = 'contributable_type',
+  | 'contributable_type'
   /** column name */
-  Contribution = 'contribution',
+  | 'contribution'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  UpdatedAt = 'updated_at',
-}
+  | 'updated_at';
 
 /** aggregate stddev on columns */
 export type Contributions_Stddev_Fields = {
@@ -5276,36 +5250,35 @@ export type Countries_Order_By = {
 };
 
 /** select columns of table "countries" */
-export enum Countries_Select_Column {
+export type Countries_Select_Column =
   /** column name */
-  Code2 = 'code2',
+  | 'code2'
   /** column name */
-  Code3 = 'code3',
+  | 'code3'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  IntermediateRegion = 'intermediate_region',
+  | 'intermediate_region'
   /** column name */
-  IntermediateRegionCode = 'intermediate_region_code',
+  | 'intermediate_region_code'
   /** column name */
-  Iso_3166 = 'iso_3166',
+  | 'iso_3166'
   /** column name */
-  Name = 'name',
+  | 'name'
   /** column name */
-  PhoneCode = 'phone_code',
+  | 'phone_code'
   /** column name */
-  Region = 'region',
+  | 'region'
   /** column name */
-  RegionCode = 'region_code',
+  | 'region_code'
   /** column name */
-  SubRegion = 'sub_region',
+  | 'sub_region'
   /** column name */
-  SubRegionCode = 'sub_region_code',
+  | 'sub_region_code'
   /** column name */
-  UpdatedAt = 'updated_at',
-}
+  | 'updated_at';
 
 /** Streaming cursor of the table "countries" */
 export type Countries_Stream_Cursor_Input = {
@@ -5334,12 +5307,11 @@ export type Countries_Stream_Cursor_Value_Input = {
 };
 
 /** ordering argument of a cursor */
-export enum Cursor_Ordering {
+export type Cursor_Ordering =
   /** ascending ordering of the cursor */
-  Asc = 'ASC',
+  | 'ASC'
   /** descending ordering of the cursor */
-  Desc = 'DESC',
-}
+  | 'DESC';
 
 /** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
 export type Date_Comparison_Exp = {
@@ -5739,96 +5711,95 @@ export type Editions_Order_By = {
 };
 
 /** select columns of table "editions" */
-export enum Editions_Select_Column {
+export type Editions_Select_Column =
   /** column name */
-  AlternativeTitles = 'alternative_titles',
+  | 'alternative_titles'
   /** column name */
-  Asin = 'asin',
+  | 'asin'
   /** column name */
-  AudioSeconds = 'audio_seconds',
+  | 'audio_seconds'
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  CachedContributors = 'cached_contributors',
+  | 'cached_contributors'
   /** column name */
-  CachedImage = 'cached_image',
+  | 'cached_image'
   /** column name */
-  CachedTags = 'cached_tags',
+  | 'cached_tags'
   /** column name */
-  CanonicalId = 'canonical_id',
+  | 'canonical_id'
   /** column name */
-  Compilation = 'compilation',
+  | 'compilation'
   /** column name */
-  CountryId = 'country_id',
+  | 'country_id'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  CreatedByUserId = 'created_by_user_id',
+  | 'created_by_user_id'
   /** column name */
-  CurationStatus = 'curation_status',
+  | 'curation_status'
   /** column name */
-  EditionFormat = 'edition_format',
+  | 'edition_format'
   /** column name */
-  EditionInformation = 'edition_information',
+  | 'edition_information'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  ImageId = 'image_id',
+  | 'image_id'
   /** column name */
-  Isbn_10 = 'isbn_10',
+  | 'isbn_10'
   /** column name */
-  Isbn_10Valid = 'isbn_10_valid',
+  | 'isbn_10_valid'
   /** column name */
-  Isbn_13 = 'isbn_13',
+  | 'isbn_13'
   /** column name */
-  Isbn_13Valid = 'isbn_13_valid',
+  | 'isbn_13_valid'
   /** column name */
-  IsbnsMatch = 'isbns_match',
+  | 'isbns_match'
   /** column name */
-  LanguageId = 'language_id',
+  | 'language_id'
   /** column name */
-  ListsCount = 'lists_count',
+  | 'lists_count'
   /** column name */
-  Locked = 'locked',
+  | 'locked'
   /** column name */
-  NormalizedAt = 'normalized_at',
+  | 'normalized_at'
   /** column name */
-  ObjectType = 'object_type',
+  | 'object_type'
   /** column name */
-  OriginalBookId = 'original_book_id',
+  | 'original_book_id'
   /** column name */
-  Pages = 'pages',
+  | 'pages'
   /** column name */
-  PhysicalFormat = 'physical_format',
+  | 'physical_format'
   /** column name */
-  PhysicalInformation = 'physical_information',
+  | 'physical_information'
   /** column name */
-  PublisherId = 'publisher_id',
+  | 'publisher_id'
   /** column name */
-  Rating = 'rating',
+  | 'rating'
   /** column name */
-  ReadingFormatId = 'reading_format_id',
+  | 'reading_format_id'
   /** column name */
-  ReleaseDate = 'release_date',
+  | 'release_date'
   /** column name */
-  ReleaseYear = 'release_year',
+  | 'release_year'
   /** column name */
-  Score = 'score',
+  | 'score'
   /** column name */
-  Source = 'source',
+  | 'source'
   /** column name */
-  State = 'state',
+  | 'state'
   /** column name */
-  Subtitle = 'subtitle',
+  | 'subtitle'
   /** column name */
-  Title = 'title',
+  | 'title'
   /** column name */
-  UpdatedAt = 'updated_at',
+  | 'updated_at'
   /** column name */
-  UsersCount = 'users_count',
+  | 'users_count'
   /** column name */
-  UsersReadCount = 'users_read_count',
-}
+  | 'users_read_count';
 
 /** order by stddev() on columns of table "editions" */
 export type Editions_Stddev_Order_By = {
@@ -6083,12 +6054,11 @@ export type Flag_Statuses_Order_By = {
 };
 
 /** select columns of table "flag_statuses" */
-export enum Flag_Statuses_Select_Column {
+export type Flag_Statuses_Select_Column =
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Status = 'status',
-}
+  | 'status';
 
 /** Streaming cursor of the table "flag_statuses" */
 export type Flag_Statuses_Stream_Cursor_Input = {
@@ -6192,16 +6162,15 @@ export type Followed_Lists_Order_By = {
 };
 
 /** select columns of table "followed_lists" */
-export enum Followed_Lists_Select_Column {
+export type Followed_Lists_Select_Column =
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  ListId = 'list_id',
+  | 'list_id'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** order by stddev() on columns of table "followed_lists" */
 export type Followed_Lists_Stddev_Order_By = {
@@ -6320,14 +6289,13 @@ export type Followed_Prompts_Bool_Exp = {
 };
 
 /** unique or primary key constraints on table "followed_prompts" */
-export enum Followed_Prompts_Constraint {
+export type Followed_Prompts_Constraint =
   /** unique or primary key constraint on columns "id" */
-  FollowedPromptsPkey = 'followed_prompts_pkey',
+  | 'followed_prompts_pkey'
   /** unique or primary key constraint on columns "id" */
-  QuestionFeaturesIdKey = 'question_features_id_key',
+  | 'question_features_id_key'
   /** unique or primary key constraint on columns "user_id", "prompt_id" */
-  QuestionFeaturesUserIdQuestionIdKey = 'question_features_userId_questionId_key',
-}
+  | 'question_features_userId_questionId_key';
 
 /** input type for incrementing numeric columns in table "followed_prompts" */
 export type Followed_Prompts_Inc_Input = {
@@ -6392,18 +6360,17 @@ export type Followed_Prompts_Pk_Columns_Input = {
 };
 
 /** select columns of table "followed_prompts" */
-export enum Followed_Prompts_Select_Column {
+export type Followed_Prompts_Select_Column =
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Order = 'order',
+  | 'order'
   /** column name */
-  PromptId = 'prompt_id',
+  | 'prompt_id'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** input type for updating data in table "followed_prompts" */
 export type Followed_Prompts_Set_Input = {
@@ -6460,10 +6427,9 @@ export type Followed_Prompts_Sum_Order_By = {
 };
 
 /** update columns of table "followed_prompts" */
-export enum Followed_Prompts_Update_Column {
+export type Followed_Prompts_Update_Column =
   /** column name */
-  Order = 'order',
-}
+  'order';
 
 export type Followed_Prompts_Updates = {
   /** increments the numeric columns with given value of the filtered values */
@@ -6599,16 +6565,15 @@ export type Followed_User_Books_Order_By = {
 };
 
 /** select columns of table "followed_user_books" */
-export enum Followed_User_Books_Select_Column {
+export type Followed_User_Books_Select_Column =
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  FollowerUserId = 'follower_user_id',
+  | 'follower_user_id'
   /** column name */
-  UserBookId = 'user_book_id',
+  | 'user_book_id'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** aggregate stddev on columns */
 export type Followed_User_Books_Stddev_Fields = {
@@ -6773,16 +6738,15 @@ export type Followed_Users_Order_By = {
 };
 
 /** select columns of table "followed_users" */
-export enum Followed_Users_Select_Column {
+export type Followed_Users_Select_Column =
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  FollowedUserId = 'followed_user_id',
+  | 'followed_user_id'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** order by stddev() on columns of table "followed_users" */
 export type Followed_Users_Stddev_Order_By = {
@@ -6950,16 +6914,15 @@ export type Following_User_Books_Order_By = {
 };
 
 /** select columns of table "following_user_books" */
-export enum Following_User_Books_Select_Column {
+export type Following_User_Books_Select_Column =
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  FollowedUserId = 'followed_user_id',
+  | 'followed_user_id'
   /** column name */
-  UserBookId = 'user_book_id',
+  | 'user_book_id'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** aggregate stddev on columns */
 export type Following_User_Books_Stddev_Fields = {
@@ -7219,20 +7182,19 @@ export type Follows_Order_By = {
 };
 
 /** select columns of table "follows" */
-export enum Follows_Select_Column {
+export type Follows_Select_Column =
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  FollowableId = 'followable_id',
+  | 'followable_id'
   /** column name */
-  FollowableType = 'followable_type',
+  | 'followable_type'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  UpdatedAt = 'updated_at',
+  | 'updated_at'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** aggregate stddev on columns */
 export type Follows_Stddev_Fields = {
@@ -7489,34 +7451,33 @@ export type Goals_Order_By = {
 };
 
 /** select columns of table "goals" */
-export enum Goals_Select_Column {
+export type Goals_Select_Column =
   /** column name */
-  Archived = 'archived',
+  | 'archived'
   /** column name */
-  CompletedAt = 'completed_at',
+  | 'completed_at'
   /** column name */
-  Conditions = 'conditions',
+  | 'conditions'
   /** column name */
-  Description = 'description',
+  | 'description'
   /** column name */
-  EndDate = 'end_date',
+  | 'end_date'
   /** column name */
-  Goal = 'goal',
+  | 'goal'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Metric = 'metric',
+  | 'metric'
   /** column name */
-  PrivacySettingId = 'privacy_setting_id',
+  | 'privacy_setting_id'
   /** column name */
-  Progress = 'progress',
+  | 'progress'
   /** column name */
-  StartDate = 'start_date',
+  | 'start_date'
   /** column name */
-  State = 'state',
+  | 'state'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** order by stddev() on columns of table "goals" */
 export type Goals_Stddev_Order_By = {
@@ -7703,26 +7664,25 @@ export type Images_Order_By = {
 };
 
 /** select columns of table "images" */
-export enum Images_Select_Column {
+export type Images_Select_Column =
   /** column name */
-  Color = 'color',
+  | 'color'
   /** column name */
-  Colors = 'colors',
+  | 'colors'
   /** column name */
-  Height = 'height',
+  | 'height'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  ImageableId = 'imageable_id',
+  | 'imageable_id'
   /** column name */
-  ImageableType = 'imageable_type',
+  | 'imageable_type'
   /** column name */
-  Ratio = 'ratio',
+  | 'ratio'
   /** column name */
-  Url = 'url',
+  | 'url'
   /** column name */
-  Width = 'width',
-}
+  | 'width';
 
 /** order by stddev() on columns of table "images" */
 export type Images_Stddev_Order_By = {
@@ -7878,16 +7838,15 @@ export type Languages_Order_By = {
 };
 
 /** select columns of table "languages" */
-export enum Languages_Select_Column {
+export type Languages_Select_Column =
   /** column name */
-  Code2 = 'code2',
+  | 'code2'
   /** column name */
-  Code3 = 'code3',
+  | 'code3'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Language = 'language',
-}
+  | 'language';
 
 /** Streaming cursor of the table "languages" */
 export type Languages_Stream_Cursor_Input = {
@@ -8006,18 +7965,17 @@ export type Likes_Order_By = {
 };
 
 /** select columns of table "likes" */
-export enum Likes_Select_Column {
+export type Likes_Select_Column =
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  LikeableId = 'likeable_id',
+  | 'likeable_id'
   /** column name */
-  LikeableType = 'likeable_type',
+  | 'likeable_type'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** order by stddev() on columns of table "likes" */
 export type Likes_Stddev_Order_By = {
@@ -8130,24 +8088,23 @@ export type Links_Order_By = {
 };
 
 /** select columns of table "links" */
-export enum Links_Select_Column {
+export type Links_Select_Column =
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  LinkableId = 'linkable_id',
+  | 'linkable_id'
   /** column name */
-  LinkableType = 'linkable_type',
+  | 'linkable_type'
   /** column name */
-  SocialType = 'social_type',
+  | 'social_type'
   /** column name */
-  UpdatedAt = 'updated_at',
+  | 'updated_at'
   /** column name */
-  Url = 'url',
+  | 'url'
   /** column name */
-  Username = 'username',
-}
+  | 'username';
 
 /** Streaming cursor of the table "links" */
 export type Links_Stream_Cursor_Input = {
@@ -8441,46 +8398,43 @@ export type List_Books_Pk_Columns_Input = {
 };
 
 /** select columns of table "list_books" */
-export enum List_Books_Select_Column {
+export type List_Books_Select_Column =
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  DateAdded = 'date_added',
+  | 'date_added'
   /** column name */
-  EditionId = 'edition_id',
+  | 'edition_id'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Imported = 'imported',
+  | 'imported'
   /** column name */
-  ListId = 'list_id',
+  | 'list_id'
   /** column name */
-  MergedAt = 'merged_at',
+  | 'merged_at'
   /** column name */
-  OriginalBookId = 'original_book_id',
+  | 'original_book_id'
   /** column name */
-  OriginalEditionId = 'original_edition_id',
+  | 'original_edition_id'
   /** column name */
-  Position = 'position',
+  | 'position'
   /** column name */
-  Reason = 'reason',
+  | 'reason'
   /** column name */
-  UpdatedAt = 'updated_at',
-}
+  | 'updated_at';
 
 /** select "list_books_aggregate_bool_exp_bool_and_arguments_columns" columns of table "list_books" */
-export enum List_Books_Select_Column_List_Books_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
+export type List_Books_Select_Column_List_Books_Aggregate_Bool_Exp_Bool_And_Arguments_Columns =
   /** column name */
-  Imported = 'imported',
-}
+  'imported';
 
 /** select "list_books_aggregate_bool_exp_bool_or_arguments_columns" columns of table "list_books" */
-export enum List_Books_Select_Column_List_Books_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
+export type List_Books_Select_Column_List_Books_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns =
   /** column name */
-  Imported = 'imported',
-}
+  'imported';
 
 /** input type for updating data in table "list_books" */
 export type List_Books_Set_Input = {
@@ -8995,74 +8949,71 @@ export type Lists_Order_By = {
 };
 
 /** select columns of table "lists" */
-export enum Lists_Select_Column {
+export type Lists_Select_Column =
   /** column name */
-  BooksCount = 'books_count',
+  | 'books_count'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  DefaultView = 'default_view',
+  | 'default_view'
   /** column name */
-  Description = 'description',
+  | 'description'
   /** column name */
-  Featured = 'featured',
+  | 'featured'
   /** column name */
-  FeaturedProfile = 'featured_profile',
+  | 'featured_profile'
   /** column name */
-  FollowersCount = 'followers_count',
+  | 'followers_count'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Imported = 'imported',
+  | 'imported'
   /** column name */
-  LikesCount = 'likes_count',
+  | 'likes_count'
   /** column name */
-  Name = 'name',
+  | 'name'
   /** column name */
-  ObjectType = 'object_type',
+  | 'object_type'
   /** column name */
-  PrivacySettingId = 'privacy_setting_id',
+  | 'privacy_setting_id'
   /** column name */
-  Public = 'public',
+  | 'public'
   /** column name */
-  Ranked = 'ranked',
+  | 'ranked'
   /** column name */
-  Slug = 'slug',
+  | 'slug'
   /** column name */
-  UpdatedAt = 'updated_at',
+  | 'updated_at'
   /** column name */
-  Url = 'url',
+  | 'url'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** select "lists_aggregate_bool_exp_bool_and_arguments_columns" columns of table "lists" */
-export enum Lists_Select_Column_Lists_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
+export type Lists_Select_Column_Lists_Aggregate_Bool_Exp_Bool_And_Arguments_Columns =
   /** column name */
-  Featured = 'featured',
+  | 'featured'
   /** column name */
-  FeaturedProfile = 'featured_profile',
+  | 'featured_profile'
   /** column name */
-  Imported = 'imported',
+  | 'imported'
   /** column name */
-  Public = 'public',
+  | 'public'
   /** column name */
-  Ranked = 'ranked',
-}
+  | 'ranked';
 
 /** select "lists_aggregate_bool_exp_bool_or_arguments_columns" columns of table "lists" */
-export enum Lists_Select_Column_Lists_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
+export type Lists_Select_Column_Lists_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns =
   /** column name */
-  Featured = 'featured',
+  | 'featured'
   /** column name */
-  FeaturedProfile = 'featured_profile',
+  | 'featured_profile'
   /** column name */
-  Imported = 'imported',
+  | 'imported'
   /** column name */
-  Public = 'public',
+  | 'public'
   /** column name */
-  Ranked = 'ranked',
-}
+  | 'ranked';
 
 /** aggregate stddev on columns */
 export type Lists_Stddev_Fields = {
@@ -10034,12 +9985,11 @@ export type Notification_Channels_Order_By = {
 };
 
 /** select columns of table "notification_channels" */
-export enum Notification_Channels_Select_Column {
+export type Notification_Channels_Select_Column =
   /** column name */
-  Channel = 'channel',
+  | 'channel'
   /** column name */
-  Id = 'id',
-}
+  | 'id';
 
 /** Streaming cursor of the table "notification_channels" */
 export type Notification_Channels_Stream_Cursor_Input = {
@@ -10249,34 +10199,31 @@ export type Notification_Deliveries_Pk_Columns_Input = {
 };
 
 /** select columns of table "notification_deliveries" */
-export enum Notification_Deliveries_Select_Column {
+export type Notification_Deliveries_Select_Column =
   /** column name */
-  ChannelId = 'channel_id',
+  | 'channel_id'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  NotificationId = 'notification_id',
+  | 'notification_id'
   /** column name */
-  Read = 'read',
+  | 'read'
   /** column name */
-  ReadAt = 'read_at',
+  | 'read_at'
   /** column name */
-  SentAt = 'sent_at',
+  | 'sent_at'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** select "notification_deliveries_aggregate_bool_exp_bool_and_arguments_columns" columns of table "notification_deliveries" */
-export enum Notification_Deliveries_Select_Column_Notification_Deliveries_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
+export type Notification_Deliveries_Select_Column_Notification_Deliveries_Aggregate_Bool_Exp_Bool_And_Arguments_Columns =
   /** column name */
-  Read = 'read',
-}
+  'read';
 
 /** select "notification_deliveries_aggregate_bool_exp_bool_or_arguments_columns" columns of table "notification_deliveries" */
-export enum Notification_Deliveries_Select_Column_Notification_Deliveries_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
+export type Notification_Deliveries_Select_Column_Notification_Deliveries_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns =
   /** column name */
-  Read = 'read',
-}
+  'read';
 
 /** input type for updating data in table "notification_deliveries" */
 export type Notification_Deliveries_Set_Input = {
@@ -10480,10 +10427,9 @@ export type Notification_Settings_Bool_Exp = {
 };
 
 /** unique or primary key constraints on table "notification_settings" */
-export enum Notification_Settings_Constraint {
+export type Notification_Settings_Constraint =
   /** unique or primary key constraint on columns "id" */
-  NotificationSettingsPkey = 'notification_settings_pkey',
-}
+  'notification_settings_pkey';
 
 /** input type for inserting data into table "notification_settings" */
 export type Notification_Settings_Insert_Input = {
@@ -10537,16 +10483,15 @@ export type Notification_Settings_Pk_Columns_Input = {
 };
 
 /** select columns of table "notification_settings" */
-export enum Notification_Settings_Select_Column {
+export type Notification_Settings_Select_Column =
   /** column name */
-  ChannelIds = 'channel_ids',
+  | 'channel_ids'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  NotificationTypeId = 'notification_type_id',
+  | 'notification_type_id'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** input type for updating data in table "notification_settings" */
 export type Notification_Settings_Set_Input = {
@@ -10598,10 +10543,9 @@ export type Notification_Settings_Sum_Order_By = {
 };
 
 /** update columns of table "notification_settings" */
-export enum Notification_Settings_Update_Column {
+export type Notification_Settings_Update_Column =
   /** column name */
-  ChannelIds = 'channel_ids',
-}
+  'channel_ids';
 
 export type Notification_Settings_Updates = {
   /** sets the columns of the filtered rows to the given values */
@@ -10687,22 +10631,21 @@ export type Notification_Types_Order_By = {
 };
 
 /** select columns of table "notification_types" */
-export enum Notification_Types_Select_Column {
+export type Notification_Types_Select_Column =
   /** column name */
-  Active = 'active',
+  | 'active'
   /** column name */
-  DefaultChannelIds = 'default_channel_ids',
+  | 'default_channel_ids'
   /** column name */
-  DefaultPriority = 'default_priority',
+  | 'default_priority'
   /** column name */
-  Description = 'description',
+  | 'description'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Name = 'name',
+  | 'name'
   /** column name */
-  Uid = 'uid',
-}
+  | 'uid';
 
 /** Streaming cursor of the table "notification_types" */
 export type Notification_Types_Stream_Cursor_Input = {
@@ -10799,28 +10742,27 @@ export type Notifications_Order_By = {
 };
 
 /** select columns of table "notifications" */
-export enum Notifications_Select_Column {
+export type Notifications_Select_Column =
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Description = 'description',
+  | 'description'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Link = 'link',
+  | 'link'
   /** column name */
-  LinkText = 'link_text',
+  | 'link_text'
   /** column name */
-  NotificationTypeId = 'notification_type_id',
+  | 'notification_type_id'
   /** column name */
-  NotifierUserId = 'notifier_user_id',
+  | 'notifier_user_id'
   /** column name */
-  Priority = 'priority',
+  | 'priority'
   /** column name */
-  Title = 'title',
+  | 'title'
   /** column name */
-  Uid = 'uid',
-}
+  | 'uid';
 
 /** Streaming cursor of the table "notifications" */
 export type Notifications_Stream_Cursor_Input = {
@@ -10858,20 +10800,19 @@ export type Numeric_Comparison_Exp = {
 };
 
 /** column ordering options */
-export enum Order_By {
+export type Order_By =
   /** in ascending order, nulls last */
-  Asc = 'asc',
+  | 'asc'
   /** in ascending order, nulls first */
-  AscNullsFirst = 'asc_nulls_first',
+  | 'asc_nulls_first'
   /** in ascending order, nulls last */
-  AscNullsLast = 'asc_nulls_last',
+  | 'asc_nulls_last'
   /** in descending order, nulls first */
-  Desc = 'desc',
+  | 'desc'
   /** in descending order, nulls first */
-  DescNullsFirst = 'desc_nulls_first',
+  | 'desc_nulls_first'
   /** in descending order, nulls last */
-  DescNullsLast = 'desc_nulls_last',
-}
+  | 'desc_nulls_last';
 
 /** columns and relationships of "platforms" */
 export type Platforms = {
@@ -10912,14 +10853,13 @@ export type Platforms_Order_By = {
 };
 
 /** select columns of table "platforms" */
-export enum Platforms_Select_Column {
+export type Platforms_Select_Column =
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Name = 'name',
+  | 'name'
   /** column name */
-  Url = 'url',
-}
+  | 'url';
 
 /** Streaming cursor of the table "platforms" */
 export type Platforms_Stream_Cursor_Input = {
@@ -11061,12 +11001,11 @@ export type Privacy_Settings_Order_By = {
 };
 
 /** select columns of table "privacy_settings" */
-export enum Privacy_Settings_Select_Column {
+export type Privacy_Settings_Select_Column =
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Setting = 'setting',
-}
+  | 'setting';
 
 /** Streaming cursor of the table "privacy_settings" */
 export type Privacy_Settings_Stream_Cursor_Input = {
@@ -11277,24 +11216,23 @@ export type Prompt_Answers_Pk_Columns_Input = {
 };
 
 /** select columns of table "prompt_answers" */
-export enum Prompt_Answers_Select_Column {
+export type Prompt_Answers_Select_Column =
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Description = 'description',
+  | 'description'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  MergedAt = 'merged_at',
+  | 'merged_at'
   /** column name */
-  OriginalBookId = 'original_book_id',
+  | 'original_book_id'
   /** column name */
-  PromptId = 'prompt_id',
+  | 'prompt_id'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** input type for updating data in table "prompt_answers" */
 export type Prompt_Answers_Set_Input = {
@@ -11531,14 +11469,13 @@ export type Prompt_Books_Summary_Order_By = {
 };
 
 /** select columns of table "prompt_books_summary" */
-export enum Prompt_Books_Summary_Select_Column {
+export type Prompt_Books_Summary_Select_Column =
   /** column name */
-  AnswersCount = 'answers_count',
+  | 'answers_count'
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  PromptId = 'prompt_id',
-}
+  | 'prompt_id';
 
 /** order by stddev() on columns of table "prompt_books_summary" */
 export type Prompt_Books_Summary_Stddev_Order_By = {
@@ -11788,30 +11725,29 @@ export type Prompts_Order_By = {
 };
 
 /** select columns of table "prompts" */
-export enum Prompts_Select_Column {
+export type Prompts_Select_Column =
   /** column name */
-  AnswersCount = 'answers_count',
+  | 'answers_count'
   /** column name */
-  BooksCount = 'books_count',
+  | 'books_count'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Description = 'description',
+  | 'description'
   /** column name */
-  Featured = 'featured',
+  | 'featured'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  PrivacySettingId = 'privacy_setting_id',
+  | 'privacy_setting_id'
   /** column name */
-  Question = 'question',
+  | 'question'
   /** column name */
-  Slug = 'slug',
+  | 'slug'
   /** column name */
-  UserId = 'user_id',
+  | 'user_id'
   /** column name */
-  UsersCount = 'users_count',
-}
+  | 'users_count';
 
 /** order by stddev() on columns of table "prompts" */
 export type Prompts_Stddev_Order_By = {
@@ -11976,32 +11912,31 @@ export type Publishers_Order_By = {
 };
 
 /** select columns of table "publishers" */
-export enum Publishers_Select_Column {
+export type Publishers_Select_Column =
   /** column name */
-  CanonicalId = 'canonical_id',
+  | 'canonical_id'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  EditionsCount = 'editions_count',
+  | 'editions_count'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Locked = 'locked',
+  | 'locked'
   /** column name */
-  Name = 'name',
+  | 'name'
   /** column name */
-  ObjectType = 'object_type',
+  | 'object_type'
   /** column name */
-  ParentId = 'parent_id',
+  | 'parent_id'
   /** column name */
-  Slug = 'slug',
+  | 'slug'
   /** column name */
-  State = 'state',
+  | 'state'
   /** column name */
-  UpdatedAt = 'updated_at',
+  | 'updated_at'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** Streaming cursor of the table "publishers" */
 export type Publishers_Stream_Cursor_Input = {
@@ -13173,12 +13108,11 @@ export type Reading_Formats_Order_By = {
 };
 
 /** select columns of table "reading_formats" */
-export enum Reading_Formats_Select_Column {
+export type Reading_Formats_Select_Column =
   /** column name */
-  Format = 'format',
+  | 'format'
   /** column name */
-  Id = 'id',
-}
+  | 'id';
 
 /** Streaming cursor of the table "reading_formats" */
 export type Reading_Formats_Stream_Cursor_Input = {
@@ -13375,34 +13309,33 @@ export type Reading_Journals_Order_By = {
 };
 
 /** select columns of table "reading_journals" */
-export enum Reading_Journals_Select_Column {
+export type Reading_Journals_Select_Column =
   /** column name */
-  ActionAt = 'action_at',
+  | 'action_at'
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  EditionId = 'edition_id',
+  | 'edition_id'
   /** column name */
-  Entry = 'entry',
+  | 'entry'
   /** column name */
-  Event = 'event',
+  | 'event'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  LikesCount = 'likes_count',
+  | 'likes_count'
   /** column name */
-  Metadata = 'metadata',
+  | 'metadata'
   /** column name */
-  ObjectType = 'object_type',
+  | 'object_type'
   /** column name */
-  PrivacySettingId = 'privacy_setting_id',
+  | 'privacy_setting_id'
   /** column name */
-  UpdatedAt = 'updated_at',
+  | 'updated_at'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** order by stddev() on columns of table "reading_journals" */
 export type Reading_Journals_Stddev_Order_By = {
@@ -13532,16 +13465,15 @@ export type Reading_Journals_Summary_Order_By = {
 };
 
 /** select columns of table "reading_journals_summary" */
-export enum Reading_Journals_Summary_Select_Column {
+export type Reading_Journals_Summary_Select_Column =
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  JournalsCount = 'journals_count',
+  | 'journals_count'
   /** column name */
-  LastUpdatedAt = 'last_updated_at',
+  | 'last_updated_at'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** Streaming cursor of the table "reading_journals_summary" */
 export type Reading_Journals_Summary_Stream_Cursor_Input = {
@@ -13690,36 +13622,35 @@ export type Series_Order_By = {
 };
 
 /** select columns of table "series" */
-export enum Series_Select_Column {
+export type Series_Select_Column =
   /** column name */
-  AuthorId = 'author_id',
+  | 'author_id'
   /** column name */
-  BooksCount = 'books_count',
+  | 'books_count'
   /** column name */
-  CanonicalId = 'canonical_id',
+  | 'canonical_id'
   /** column name */
-  Description = 'description',
+  | 'description'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Identifiers = 'identifiers',
+  | 'identifiers'
   /** column name */
-  IsCompleted = 'is_completed',
+  | 'is_completed'
   /** column name */
-  Locked = 'locked',
+  | 'locked'
   /** column name */
-  Name = 'name',
+  | 'name'
   /** column name */
-  ObjectType = 'object_type',
+  | 'object_type'
   /** column name */
-  PrimaryBooksCount = 'primary_books_count',
+  | 'primary_books_count'
   /** column name */
-  Slug = 'slug',
+  | 'slug'
   /** column name */
-  State = 'state',
+  | 'state'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** Streaming cursor of the table "series" */
 export type Series_Stream_Cursor_Input = {
@@ -15362,16 +15293,15 @@ export type Tag_Categories_Order_By = {
 };
 
 /** select columns of table "tag_categories" */
-export enum Tag_Categories_Select_Column {
+export type Tag_Categories_Select_Column =
   /** column name */
-  Category = 'category',
+  | 'category'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Slug = 'slug',
-}
+  | 'slug';
 
 /** Streaming cursor of the table "tag_categories" */
 export type Tag_Categories_Stream_Cursor_Input = {
@@ -15489,26 +15419,25 @@ export type Taggable_Counts_Order_By = {
 };
 
 /** select columns of table "taggable_counts" */
-export enum Taggable_Counts_Select_Column {
+export type Taggable_Counts_Select_Column =
   /** column name */
-  Count = 'count',
+  | 'count'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  HardcoverTagged = 'hardcover_tagged',
+  | 'hardcover_tagged'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  SpoilerRatio = 'spoiler_ratio',
+  | 'spoiler_ratio'
   /** column name */
-  TagId = 'tag_id',
+  | 'tag_id'
   /** column name */
-  TaggableId = 'taggable_id',
+  | 'taggable_id'
   /** column name */
-  TaggableType = 'taggable_type',
+  | 'taggable_type'
   /** column name */
-  UpdatedAt = 'updated_at',
-}
+  | 'updated_at';
 
 /** order by stddev() on columns of table "taggable_counts" */
 export type Taggable_Counts_Stddev_Order_By = {
@@ -15774,34 +15703,31 @@ export type Taggings_Order_By = {
 };
 
 /** select columns of table "taggings" */
-export enum Taggings_Select_Column {
+export type Taggings_Select_Column =
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Spoiler = 'spoiler',
+  | 'spoiler'
   /** column name */
-  TagId = 'tag_id',
+  | 'tag_id'
   /** column name */
-  TaggableId = 'taggable_id',
+  | 'taggable_id'
   /** column name */
-  TaggableType = 'taggable_type',
+  | 'taggable_type'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** select "taggings_aggregate_bool_exp_bool_and_arguments_columns" columns of table "taggings" */
-export enum Taggings_Select_Column_Taggings_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
+export type Taggings_Select_Column_Taggings_Aggregate_Bool_Exp_Bool_And_Arguments_Columns =
   /** column name */
-  Spoiler = 'spoiler',
-}
+  'spoiler';
 
 /** select "taggings_aggregate_bool_exp_bool_or_arguments_columns" columns of table "taggings" */
-export enum Taggings_Select_Column_Taggings_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
+export type Taggings_Select_Column_Taggings_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns =
   /** column name */
-  Spoiler = 'spoiler',
-}
+  'spoiler';
 
 /** aggregate stddev on columns */
 export type Taggings_Stddev_Fields = {
@@ -16110,18 +16036,17 @@ export type Tags_Order_By = {
 };
 
 /** select columns of table "tags" */
-export enum Tags_Select_Column {
+export type Tags_Select_Column =
   /** column name */
-  Count = 'count',
+  | 'count'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Slug = 'slug',
+  | 'slug'
   /** column name */
-  Tag = 'tag',
+  | 'tag'
   /** column name */
-  TagCategoryId = 'tag_category_id',
-}
+  | 'tag_category_id';
 
 /** aggregate stddev on columns */
 export type Tags_Stddev_Fields = {
@@ -16342,12 +16267,11 @@ export type User_Blocks_Bool_Exp = {
 };
 
 /** unique or primary key constraints on table "user_blocks" */
-export enum User_Blocks_Constraint {
+export type User_Blocks_Constraint =
   /** unique or primary key constraint on columns "user_id", "blocked_user_id" */
-  IndexUserBlocksOnUserIdAndBlockedUserId = 'index_user_blocks_on_user_id_and_blocked_user_id',
+  | 'index_user_blocks_on_user_id_and_blocked_user_id'
   /** unique or primary key constraint on columns "id" */
-  UserBlocksPkey = 'user_blocks_pkey',
-}
+  | 'user_blocks_pkey';
 
 /** input type for inserting data into table "user_blocks" */
 export type User_Blocks_Insert_Input = {
@@ -16398,16 +16322,15 @@ export type User_Blocks_Order_By = {
 };
 
 /** select columns of table "user_blocks" */
-export enum User_Blocks_Select_Column {
+export type User_Blocks_Select_Column =
   /** column name */
-  BlockedUserId = 'blocked_user_id',
+  | 'blocked_user_id'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** order by stddev() on columns of table "user_blocks" */
 export type User_Blocks_Stddev_Order_By = {
@@ -16454,10 +16377,9 @@ export type User_Blocks_Sum_Order_By = {
 };
 
 /** placeholder for update columns of table "user_blocks" (current role has no relevant permissions) */
-export enum User_Blocks_Update_Column {
+export type User_Blocks_Update_Column =
   /** placeholder (do not use) */
-  Placeholder = '_PLACEHOLDER',
-}
+  '_PLACEHOLDER';
 
 /** order by var_pop() on columns of table "user_blocks" */
 export type User_Blocks_Var_Pop_Order_By = {
@@ -16745,76 +16667,67 @@ export type User_Book_Reads_Order_By = {
 };
 
 /** select columns of table "user_book_reads" */
-export enum User_Book_Reads_Select_Column {
+export type User_Book_Reads_Select_Column =
   /** column name */
-  EditionId = 'edition_id',
+  | 'edition_id'
   /** column name */
-  FinishedAt = 'finished_at',
+  | 'finished_at'
   /** column name */
-  FinishedAtPrecision = 'finished_at_precision',
+  | 'finished_at_precision'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  PausedAt = 'paused_at',
+  | 'paused_at'
   /** column name */
-  Progress = 'progress',
+  | 'progress'
   /** column name */
-  ProgressPages = 'progress_pages',
+  | 'progress_pages'
   /** column name */
-  ProgressSeconds = 'progress_seconds',
+  | 'progress_seconds'
   /** column name */
-  StartedAt = 'started_at',
+  | 'started_at'
   /** column name */
-  UserBookId = 'user_book_id',
-}
+  | 'user_book_id';
 
 /** select "user_book_reads_aggregate_bool_exp_avg_arguments_columns" columns of table "user_book_reads" */
-export enum User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Avg_Arguments_Columns {
+export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Avg_Arguments_Columns =
   /** column name */
-  Progress = 'progress',
-}
+  'progress';
 
 /** select "user_book_reads_aggregate_bool_exp_corr_arguments_columns" columns of table "user_book_reads" */
-export enum User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Corr_Arguments_Columns {
+export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Corr_Arguments_Columns =
   /** column name */
-  Progress = 'progress',
-}
+  'progress';
 
 /** select "user_book_reads_aggregate_bool_exp_covar_samp_arguments_columns" columns of table "user_book_reads" */
-export enum User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Covar_Samp_Arguments_Columns {
+export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Covar_Samp_Arguments_Columns =
   /** column name */
-  Progress = 'progress',
-}
+  'progress';
 
 /** select "user_book_reads_aggregate_bool_exp_max_arguments_columns" columns of table "user_book_reads" */
-export enum User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Max_Arguments_Columns {
+export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Max_Arguments_Columns =
   /** column name */
-  Progress = 'progress',
-}
+  'progress';
 
 /** select "user_book_reads_aggregate_bool_exp_min_arguments_columns" columns of table "user_book_reads" */
-export enum User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Min_Arguments_Columns {
+export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Min_Arguments_Columns =
   /** column name */
-  Progress = 'progress',
-}
+  'progress';
 
 /** select "user_book_reads_aggregate_bool_exp_stddev_samp_arguments_columns" columns of table "user_book_reads" */
-export enum User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Stddev_Samp_Arguments_Columns {
+export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Stddev_Samp_Arguments_Columns =
   /** column name */
-  Progress = 'progress',
-}
+  'progress';
 
 /** select "user_book_reads_aggregate_bool_exp_sum_arguments_columns" columns of table "user_book_reads" */
-export enum User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Sum_Arguments_Columns {
+export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Sum_Arguments_Columns =
   /** column name */
-  Progress = 'progress',
-}
+  'progress';
 
 /** select "user_book_reads_aggregate_bool_exp_var_samp_arguments_columns" columns of table "user_book_reads" */
-export enum User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Var_Samp_Arguments_Columns {
+export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Var_Samp_Arguments_Columns =
   /** column name */
-  Progress = 'progress',
-}
+  'progress';
 
 /** aggregate stddev on columns */
 export type User_Book_Reads_Stddev_Fields = {
@@ -17106,16 +17019,15 @@ export type User_Book_Statuses_Order_By = {
 };
 
 /** select columns of table "user_book_statuses" */
-export enum User_Book_Statuses_Select_Column {
+export type User_Book_Statuses_Select_Column =
   /** column name */
-  Description = 'description',
+  | 'description'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Slug = 'slug',
+  | 'slug'
   /** column name */
-  Status = 'status',
-}
+  | 'status';
 
 /** aggregate stddev on columns */
 export type User_Book_Statuses_Stddev_Fields = {
@@ -17683,122 +17595,119 @@ export type User_Books_Order_By = {
 };
 
 /** select columns of table "user_books" */
-export enum User_Books_Select_Column {
+export type User_Books_Select_Column =
   /** column name */
-  BookId = 'book_id',
+  | 'book_id'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  DateAdded = 'date_added',
+  | 'date_added'
   /** column name */
-  EditionId = 'edition_id',
+  | 'edition_id'
   /** column name */
-  FirstReadDate = 'first_read_date',
+  | 'first_read_date'
   /** column name */
-  FirstStartedReadingDate = 'first_started_reading_date',
+  | 'first_started_reading_date'
   /** column name */
-  HasReview = 'has_review',
+  | 'has_review'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Imported = 'imported',
+  | 'imported'
   /** column name */
-  LastReadDate = 'last_read_date',
+  | 'last_read_date'
   /** column name */
-  LikesCount = 'likes_count',
+  | 'likes_count'
   /** column name */
-  MediaUrl = 'media_url',
+  | 'media_url'
   /** column name */
-  MergedAt = 'merged_at',
+  | 'merged_at'
   /** column name */
-  ModStatus = 'mod_status',
+  | 'mod_status'
   /** column name */
-  ObjectType = 'object_type',
+  | 'object_type'
   /** column name */
-  OriginalBookId = 'original_book_id',
+  | 'original_book_id'
   /** column name */
-  OriginalEditionId = 'original_edition_id',
+  | 'original_edition_id'
   /** column name */
-  Owned = 'owned',
+  | 'owned'
   /** column name */
-  OwnedCopies = 'owned_copies',
+  | 'owned_copies'
   /** column name */
-  PrivacySettingId = 'privacy_setting_id',
+  | 'privacy_setting_id'
   /** column name */
-  PrivateNotes = 'private_notes',
+  | 'private_notes'
   /** column name */
-  Rating = 'rating',
+  | 'rating'
   /** column name */
-  ReadCount = 'read_count',
+  | 'read_count'
   /** column name */
-  RecommendedBy = 'recommended_by',
+  | 'recommended_by'
   /** column name */
-  RecommendedFor = 'recommended_for',
+  | 'recommended_for'
   /** column name */
-  ReferrerUserId = 'referrer_user_id',
+  | 'referrer_user_id'
   /** column name */
-  Review = 'review',
+  | 'review'
   /** column name */
-  ReviewHasSpoilers = 'review_has_spoilers',
+  | 'review_has_spoilers'
   /** column name */
-  ReviewLength = 'review_length',
+  | 'review_length'
   /** column name */
-  ReviewMigrated = 'review_migrated',
+  | 'review_migrated'
   /** column name */
-  ReviewRaw = 'review_raw',
+  | 'review_raw'
   /** column name */
-  ReviewSlate = 'review_slate',
+  | 'review_slate'
   /** column name */
-  ReviewedAt = 'reviewed_at',
+  | 'reviewed_at'
   /** column name */
-  SponsoredReview = 'sponsored_review',
+  | 'sponsored_review'
   /** column name */
-  Starred = 'starred',
+  | 'starred'
   /** column name */
-  StatusId = 'status_id',
+  | 'status_id'
   /** column name */
-  UpdatedAt = 'updated_at',
+  | 'updated_at'
   /** column name */
-  Url = 'url',
+  | 'url'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** select "user_books_aggregate_bool_exp_bool_and_arguments_columns" columns of table "user_books" */
-export enum User_Books_Select_Column_User_Books_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
+export type User_Books_Select_Column_User_Books_Aggregate_Bool_Exp_Bool_And_Arguments_Columns =
   /** column name */
-  HasReview = 'has_review',
+  | 'has_review'
   /** column name */
-  Imported = 'imported',
+  | 'imported'
   /** column name */
-  Owned = 'owned',
+  | 'owned'
   /** column name */
-  ReviewHasSpoilers = 'review_has_spoilers',
+  | 'review_has_spoilers'
   /** column name */
-  ReviewMigrated = 'review_migrated',
+  | 'review_migrated'
   /** column name */
-  SponsoredReview = 'sponsored_review',
+  | 'sponsored_review'
   /** column name */
-  Starred = 'starred',
-}
+  | 'starred';
 
 /** select "user_books_aggregate_bool_exp_bool_or_arguments_columns" columns of table "user_books" */
-export enum User_Books_Select_Column_User_Books_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
+export type User_Books_Select_Column_User_Books_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns =
   /** column name */
-  HasReview = 'has_review',
+  | 'has_review'
   /** column name */
-  Imported = 'imported',
+  | 'imported'
   /** column name */
-  Owned = 'owned',
+  | 'owned'
   /** column name */
-  ReviewHasSpoilers = 'review_has_spoilers',
+  | 'review_has_spoilers'
   /** column name */
-  ReviewMigrated = 'review_migrated',
+  | 'review_migrated'
   /** column name */
-  SponsoredReview = 'sponsored_review',
+  | 'sponsored_review'
   /** column name */
-  Starred = 'starred',
-}
+  | 'starred';
 
 /** aggregate stddev on columns */
 export type User_Books_Stddev_Fields = {
@@ -18188,12 +18097,11 @@ export type User_Flags_Bool_Exp = {
 };
 
 /** unique or primary key constraints on table "user_flags" */
-export enum User_Flags_Constraint {
+export type User_Flags_Constraint =
   /** unique or primary key constraint on columns "id" */
-  UserFlagsIdKey = 'user_flags_id_key',
+  | 'user_flags_id_key'
   /** unique or primary key constraint on columns "id" */
-  UserFlagsPkey = 'user_flags_pkey',
-}
+  | 'user_flags_pkey';
 
 /** input type for inserting data into table "user_flags" */
 export type User_Flags_Insert_Input = {
@@ -18264,26 +18172,25 @@ export type User_Flags_Order_By = {
 };
 
 /** select columns of table "user_flags" */
-export enum User_Flags_Select_Column {
+export type User_Flags_Select_Column =
   /** column name */
-  ActionId = 'action_id',
+  | 'action_id'
   /** column name */
-  ActionType = 'action_type',
+  | 'action_type'
   /** column name */
-  Category = 'category',
+  | 'category'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Details = 'details',
+  | 'details'
   /** column name */
-  FlagStatusId = 'flag_status_id',
+  | 'flag_status_id'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  ReportedUserId = 'reported_user_id',
+  | 'reported_user_id'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** order by stddev() on columns of table "user_flags" */
 export type User_Flags_Stddev_Order_By = {
@@ -18343,10 +18250,9 @@ export type User_Flags_Sum_Order_By = {
 };
 
 /** placeholder for update columns of table "user_flags" (current role has no relevant permissions) */
-export enum User_Flags_Update_Column {
+export type User_Flags_Update_Column =
   /** placeholder (do not use) */
-  Placeholder = '_PLACEHOLDER',
-}
+  '_PLACEHOLDER';
 
 /** order by var_pop() on columns of table "user_flags" */
 export type User_Flags_Var_Pop_Order_By = {
@@ -18418,20 +18324,19 @@ export type User_Referrals_Order_By = {
 };
 
 /** select columns of table "user_referrals" */
-export enum User_Referrals_Select_Column {
+export type User_Referrals_Select_Column =
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  ReferrerId = 'referrer_id',
+  | 'referrer_id'
   /** column name */
-  State = 'state',
+  | 'state'
   /** column name */
-  UpdatedAt = 'updated_at',
+  | 'updated_at'
   /** column name */
-  UserId = 'user_id',
-}
+  | 'user_id';
 
 /** Streaming cursor of the table "user_referrals" */
 export type User_Referrals_Stream_Cursor_Input = {
@@ -18487,12 +18392,11 @@ export type User_Statuses_Order_By = {
 };
 
 /** select columns of table "user_statuses" */
-export enum User_Statuses_Select_Column {
+export type User_Statuses_Select_Column =
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  Status = 'status',
-}
+  | 'status';
 
 /** Streaming cursor of the table "user_statuses" */
 export type User_Statuses_Stream_Cursor_Input = {
@@ -18881,12 +18785,11 @@ export type Users_Aggregate_By_Created_At_Date_Order_By = {
 };
 
 /** select columns of table "users_aggregate_by_created_at_date" */
-export enum Users_Aggregate_By_Created_At_Date_Select_Column {
+export type Users_Aggregate_By_Created_At_Date_Select_Column =
   /** column name */
-  Count = 'count',
+  | 'count'
   /** column name */
-  CreatedAt = 'created_at',
-}
+  | 'created_at';
 
 /** Streaming cursor of the table "users_aggregate_by_created_at_date" */
 export type Users_Aggregate_By_Created_At_Date_Stream_Cursor_Input = {
@@ -19170,100 +19073,99 @@ export type Users_Order_By = {
 };
 
 /** select columns of table "users" */
-export enum Users_Select_Column {
+export type Users_Select_Column =
   /** column name */
-  AccessLevel = 'access_level',
+  | 'access_level'
   /** column name */
-  AccountPrivacySettingId = 'account_privacy_setting_id',
+  | 'account_privacy_setting_id'
   /** column name */
-  ActivityPrivacySettingsId = 'activity_privacy_settings_id',
+  | 'activity_privacy_settings_id'
   /** column name */
-  Admin = 'admin',
+  | 'admin'
   /** column name */
-  Bio = 'bio',
+  | 'bio'
   /** column name */
-  Birthdate = 'birthdate',
+  | 'birthdate'
   /** column name */
-  BooksCount = 'books_count',
+  | 'books_count'
   /** column name */
-  CachedCover = 'cached_cover',
+  | 'cached_cover'
   /** column name */
-  CachedGenres = 'cached_genres',
+  | 'cached_genres'
   /** column name */
-  CachedImage = 'cached_image',
+  | 'cached_image'
   /** column name */
-  ConfirmationSentAt = 'confirmation_sent_at',
+  | 'confirmation_sent_at'
   /** column name */
-  ConfirmedAt = 'confirmed_at',
+  | 'confirmed_at'
   /** column name */
-  CreatedAt = 'created_at',
+  | 'created_at'
   /** column name */
-  CurrentSignInAt = 'current_sign_in_at',
+  | 'current_sign_in_at'
   /** column name */
-  Email = 'email',
+  | 'email'
   /** column name */
-  EmailVerified = 'email_verified',
+  | 'email_verified'
   /** column name */
-  Flair = 'flair',
+  | 'flair'
   /** column name */
-  FollowedUsersCount = 'followed_users_count',
+  | 'followed_users_count'
   /** column name */
-  FollowersCount = 'followers_count',
+  | 'followers_count'
   /** column name */
-  Id = 'id',
+  | 'id'
   /** column name */
-  ImageId = 'image_id',
+  | 'image_id'
   /** column name */
-  LastActivityAt = 'last_activity_at',
+  | 'last_activity_at'
   /** column name */
-  LastSignInAt = 'last_sign_in_at',
+  | 'last_sign_in_at'
   /** column name */
-  LibrarianRoles = 'librarian_roles',
+  | 'librarian_roles'
   /** column name */
-  Link = 'link',
+  | 'link'
   /** column name */
-  Location = 'location',
+  | 'location'
   /** column name */
-  LockedAt = 'locked_at',
+  | 'locked_at'
   /** column name */
-  Membership = 'membership',
+  | 'membership'
   /** column name */
-  MembershipEndsAt = 'membership_ends_at',
+  | 'membership_ends_at'
   /** column name */
-  Name = 'name',
+  | 'name'
   /** column name */
-  ObjectType = 'object_type',
+  | 'object_type'
   /** column name */
-  Onboarded = 'onboarded',
+  | 'onboarded'
   /** column name */
-  PaymentSystemId = 'payment_system_id',
+  | 'payment_system_id'
   /** column name */
-  Pro = 'pro',
+  | 'pro'
   /** column name */
-  PronounPersonal = 'pronoun_personal',
+  | 'pronoun_personal'
   /** column name */
-  PronounPossessive = 'pronoun_possessive',
+  | 'pronoun_possessive'
   /** column name */
-  ReferrerId = 'referrer_id',
+  | 'referrer_id'
   /** column name */
-  ReferrerUrl = 'referrer_url',
+  | 'referrer_url'
   /** column name */
-  RememberCreatedAt = 'remember_created_at',
+  | 'remember_created_at'
   /** column name */
-  ResetPasswordSentAt = 'reset_password_sent_at',
+  | 'reset_password_sent_at'
   /** column name */
-  SignInCount = 'sign_in_count',
+  | 'sign_in_count'
   /** column name */
-  StatusId = 'status_id',
+  | 'status_id'
   /** column name */
-  Timezone = 'timezone',
+  | 'timezone'
   /** column name */
-  UnconfirmedEmail = 'unconfirmed_email',
+  | 'unconfirmed_email'
   /** column name */
-  UpdatedAt = 'updated_at',
+  | 'updated_at'
   /** column name */
-  Username = 'username',
-}
+  | 'username';
 
 /** order by stddev() on columns of table "users" */
 export type Users_Stddev_Order_By = {

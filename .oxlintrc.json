@@ -1,5 +1,12 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/storybook-static/**",
+    "**/routeTree.gen.ts",
+    "**/drizzle/meta/**"
+  ],
   "jsPlugins": [
     { "name": "react-hooks-js", "specifier": "eslint-plugin-react-hooks" },
     { "name": "react-js", "specifier": "eslint-plugin-react" },

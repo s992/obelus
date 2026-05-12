@@ -1,10 +1,10 @@
 import { book } from '@obelus/shared/schema';
-import { Book } from '@obelus/shared/types';
+import type { Book } from '@obelus/shared/types';
 import { TRPCError } from '@trpc/server';
 import z from 'zod';
 
 import { client } from '../gql/client';
-import { GetBooksByIdsQuery } from '../gql/graphql';
+import type { GetBooksByIdsQuery } from '../gql/graphql';
 import { privateProcedure, router } from '../trpc/trpc';
 
 export const bookRouter = router({

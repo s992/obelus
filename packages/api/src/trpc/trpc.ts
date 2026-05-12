@@ -1,6 +1,6 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 
-import { Context } from './context';
+import type { Context } from './context';
 
 const t = initTRPC.context<Context>().create();
 

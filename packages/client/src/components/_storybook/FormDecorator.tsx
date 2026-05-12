@@ -4,7 +4,8 @@ import { useForm } from '../../form/useForm';
 
 type Props = {
   defaultValues?: Record<string, unknown>;
-  children: (form: ReturnType<typeof useForm>) => ReactNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  children: (form: any) => ReactNode;
 };
 
 export function FormDecorator({ defaultValues = {}, children }: Props) {

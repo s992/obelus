@@ -14,7 +14,7 @@ type OnSubmitArgs = {
 type Props = {
   isLoading: boolean;
   onSubmit: (args: OnSubmitArgs) => void | Promise<void>;
-  schema?: z.ZodType<FormValues>;
+  schema?: z.ZodObject<{ userName: z.ZodString; password: z.ZodString }>;
   submitLabel: ReactNode;
 };
 

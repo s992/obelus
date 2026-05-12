@@ -1,10 +1,10 @@
 import fastifyCookie from '@fastify/cookie';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyJwt from '@fastify/jwt';
-import { FastifyTRPCPluginOptions, fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
+import { type FastifyTRPCPluginOptions, fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import fastify from 'fastify';
 
-import { AppRouter, appRouter } from './appRouter';
+import { type AppRouter, appRouter } from './appRouter';
 import { config } from './config';
 import { logger } from './log';
 import { createContext } from './trpc/context';

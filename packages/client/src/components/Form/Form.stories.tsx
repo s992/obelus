@@ -19,8 +19,8 @@ export const Stacked: Story = {
       {(form) => (
         <form.AppForm>
           <Form>
-            <form.AppField name="email">{(field) => <field.TextField label="Email" />}</form.AppField>
-            <form.AppField name="name">{(field) => <field.TextField label="Name" />}</form.AppField>
+            <form.AppField name="email">{(field: any) => <field.TextField label="Email" />}</form.AppField>
+            <form.AppField name="name">{(field: any) => <field.TextField label="Name" />}</form.AppField>
             <Button type="submit">Submit</Button>
           </Form>
         </form.AppForm>

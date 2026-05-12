@@ -1,4 +1,4 @@
 {
-  "*": ["pnpm run format:fix"],
-  "*.{ts,tsx}": ["pnpm run format:fix", "pnpm run lint:fix", "pnpm run lint:check"]
+  "*": ["biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --assist-enabled=true"],
+  "*.{ts,tsx,js,jsx,cjs,mjs}": ["oxlint --fix"]
 }

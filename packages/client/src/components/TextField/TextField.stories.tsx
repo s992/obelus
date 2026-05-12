@@ -18,7 +18,7 @@ export const Default: Story = {
     <FormDecorator defaultValues={{ email: '' }}>
       {(form) => (
         <form.AppForm>
-          <form.AppField name="email">{(field) => <field.TextField {...args} />}</form.AppField>
+          <form.AppField name="email">{(field: any) => <field.TextField {...args} />}</form.AppField>
         </form.AppForm>
       )}
     </FormDecorator>

@@ -1,5 +1,5 @@
-import { CookieSerializeOptions } from '@fastify/cookie';
-import { SignOptions } from '@fastify/jwt';
+import type { CookieSerializeOptions } from '@fastify/cookie';
+import type { SignOptions } from '@fastify/jwt';
 import { TRPCError } from '@trpc/server';
 import z from 'zod';
 

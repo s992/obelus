@@ -1,4 +1,4 @@
-import { DocumentNode, print } from 'graphql';
+import { type DocumentNode, print } from 'graphql';
 
 import { config } from '../config';
 import { logger } from '../log';
@@ -29,10 +29,10 @@ async function gqlFetch<R, V>(doc: DocumentNode, variables: V): Promise<R> {
     body: cacheKey,
   });
 
-  const { data, errors } = await response.json();
+  const { data, errors } = (await response.json()) as { data: R; errors?: Array<{ message: string }> };
 
-  if (errors) {
-    throw new Error(errors[0].message);
+  if (errors?.length) {
+    throw new Error(errors[0]!.message);
   }
 
   await redis.setEx(cacheKey, CACHE_TIME, JSON.stringify(data));

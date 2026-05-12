@@ -1,8 +1,15 @@
 {
   "extends": "@tsconfig/strictest/tsconfig.json",
-  "baseUrl": "./",
   "compilerOptions": {
-    "module": "nodenext",
-    "moduleResolution": "nodenext"
+    "target": "es2023",
+    "lib": ["ES2023"],
+    "skipLibCheck": true,
+    "moduleDetection": "force",
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": false
   }
 }
