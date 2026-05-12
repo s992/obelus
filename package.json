@@ -16,7 +16,7 @@
     "lint:fix": "oxlint --fix",
     "clean": "pnpm -r exec rm -rf dist node_modules/.tmp .tsbuildinfo *.tsbuildinfo",
     "prepare": "husky",
-    "knip": "SAFE_ENV=1 knip"
+    "knip": "dotenvx run -- knip"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +24,7 @@
   "packageManager": "pnpm@10.33.2",
   "devDependencies": {
     "@biomejs/biome": "catalog:",
+    "@dotenvx/dotenvx": "catalog:",
     "@tsconfig/strictest": "catalog:",
     "@types/node": "catalog:",
     "eslint-plugin-jsx-a11y": "catalog:",

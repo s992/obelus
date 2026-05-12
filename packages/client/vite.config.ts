@@ -13,8 +13,7 @@ const { env: envSchema } = (await jiti.import('@obelus/shared/schema')) as typeo
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '../..', '');
-  // SAFE_ENV is a hack to make knip play nice when we fail to parse the config
-  const parsed = process.env['SAFE_ENV'] ? envSchema.safeParse(env) : envSchema.parse(env);
+  const parsed = envSchema.parse(env);
 
   return {
     plugins: [
