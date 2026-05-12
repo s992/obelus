@@ -8,6 +8,7 @@ export function getQueryClient() {
       defaultOptions: {
         queries: {
           staleTime: 60 * 1000,
+          refetchOnWindowFocus: false,
         },
       },
     });
