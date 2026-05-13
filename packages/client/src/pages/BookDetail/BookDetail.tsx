@@ -7,8 +7,9 @@ import { FormattedAlert } from '../../components/Alert';
 import { BookCover } from '../../components/BookCover';
 import { Button } from '../../components/Button';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
+import { StatusCell } from '../../features/StatusCell';
 import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';
-import { typography } from '../../style';
+import { flex, typography } from '../../style';
 import {
   actions,
   author,
@@ -16,7 +17,6 @@ import {
   coverWrapper,
   description,
   header,
-  loadingContainer,
   meta,
   metaRow,
   seriesLink,
@@ -32,7 +32,7 @@ export function BookDetail() {
 
   if (isLoading) {
     return (
-      <div className={loadingContainer}>
+      <div className={flex.center}>
         <LoadingSpinner size="xlarge" />
       </div>
     );
@@ -83,17 +83,11 @@ export function BookDetail() {
           )}
         </div>
         <pre className={description}>{book.description}</pre>
-        <div className={actions}>
-          <Button variant="underlined">
-            <FormattedMessage defaultMessage="mark read" />
-          </Button>
-          <Button variant="underlined">
-            <FormattedMessage defaultMessage="add to planned" />
-          </Button>
-          <Button variant="underlined">
-            <FormattedMessage defaultMessage="start reading" />
-          </Button>
-        </div>
+        {!book.record && (
+          <div className={actions}>
+            <StatusCell bookId={book.id} seriesId={book.series?.id} layout="horizontal" />
+          </div>
+        )}
       </div>
     </div>
   );

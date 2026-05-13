@@ -10,6 +10,7 @@ import { Button } from '../../components/Button';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { Table } from '../../components/Table';
 import { TitleAuthorStack } from '../../components/TitleAuthorStack';
+import { StatusCell } from '../../features/StatusCell';
 import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';
 import { flex, typography } from '../../style';
 import { link, pageContainer, position, smallCell } from './seriesDetail.css';
@@ -89,36 +90,13 @@ export function SeriesDetail() {
               </Table.Cell>
               <Table.Cell>{formatPublishYear(book.releaseDate)}</Table.Cell>
               <Table.Cell>
-                {book.record ? (
-                  book.record.status
-                ) : (
-                  <>
-                    <Button
-                      variant="underlined"
-                      onPress={() => {
-                        createRecord({ bookId: book.id, status: 'reading' });
-                      }}
-                    >
-                      <FormattedMessage defaultMessage="start reading" />
-                    </Button>
-                    <Button
-                      variant="underlined"
-                      onPress={() => {
-                        createRecord({ bookId: book.id, status: 'planned' });
-                      }}
-                    >
-                      <FormattedMessage defaultMessage="add to planned" />
-                    </Button>
-                    <Button
-                      variant="underlined"
-                      onPress={() => {
-                        createRecord({ bookId: book.id, status: 'finished' });
-                      }}
-                    >
-                      <FormattedMessage defaultMessage="mark read" />
-                    </Button>
-                  </>
-                )}
+                <StatusCell
+                  bookId={book.id}
+                  seriesId={book.series?.id}
+                  layout="vertical"
+                  status={book.record?.status}
+                  judgment={book.record?.judgment}
+                />
               </Table.Cell>
             </Table.Row>
           )}

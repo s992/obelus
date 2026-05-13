@@ -76,12 +76,5 @@ export const description = style([
 
 export const actions = style({
   display: 'flex',
-  gap: vars.space.s4,
   justifyContent: 'flex-end',
-});
-
-export const loadingContainer = style({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
 });

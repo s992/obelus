@@ -13,6 +13,7 @@ import { Button } from '../../components/Button';
 import { IconButton } from '../../components/IconButton';
 import { Link } from '../../components/Link';
 import { type Theme, ThemeToggle } from '../../components/ThemeToggle';
+import { ToastRegion } from '../../components/Toast';
 import { useAuthContext } from '../../context';
 import { SearchModal } from '../../features/SearchModal';
 import { darkTheme, lightTheme } from '../../style';
@@ -106,6 +107,7 @@ export function Root() {
         />
       </div>
       {isSearchOpen && <SearchModal onClose={() => setIsSearchOpen(false)} />}
+      <ToastRegion />
     </div>
   );
 }
