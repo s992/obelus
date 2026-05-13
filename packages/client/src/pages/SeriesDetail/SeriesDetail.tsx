@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -6,7 +6,6 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useTRPC } from '../../client';
 import { FormattedAlert } from '../../components/Alert';
 import { BookCover } from '../../components/BookCover';
-import { Button } from '../../components/Button';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { Table } from '../../components/Table';
 import { TitleAuthorStack } from '../../components/TitleAuthorStack';
@@ -19,20 +18,12 @@ export function SeriesDetail() {
   const { seriesId } = useParams({ from: '/_authenticated/series/$seriesId' });
   const intl = useIntl();
   const trpc = useTRPC();
-  const queryClient = useQueryClient();
   const formatPublishYear = useFormatPublishYear();
   const {
     data: series,
     isLoading,
     isError: isLoadError,
   } = useQuery(trpc.book.seriesById.queryOptions({ id: parseInt(seriesId) }));
-  const { mutate: createRecord } = useMutation(
-    trpc.record.create.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: trpc.book.seriesById.queryKey({ id: parseInt(seriesId) }) });
-      },
-    }),
-  );
 
   if (isLoading) {
     return (

@@ -5,7 +5,6 @@ import { FormattedMessage } from 'react-intl';
 import { useTRPC } from '../../client';
 import { FormattedAlert } from '../../components/Alert';
 import { BookCover } from '../../components/BookCover';
-import { Button } from '../../components/Button';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { StatusCell } from '../../features/StatusCell';
 import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';

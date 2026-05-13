@@ -1,6 +1,6 @@
 import type { Judgment, Maybe, Status } from '@obelus/shared/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 
 import { useTRPC } from '../../client';
 import { toastQueue } from '../../components/Toast';
