@@ -1,8 +1,11 @@
 import { book } from '@obelus/shared/schema';
 import type { Book } from '@obelus/shared/types';
 import { TRPCError } from '@trpc/server';
+import { and, eq, inArray } from 'drizzle-orm';
 import z from 'zod';
 
+import { db } from '../db/db';
+import { recordTable } from '../db/schema';
 import { client } from '../gql/client';
 import type { GetBooksByIdsQuery } from '../gql/graphql';
 import { privateProcedure, router } from '../trpc/trpc';
@@ -21,12 +24,12 @@ export const bookRouter = router({
 
       const { books } = await client.GetBooksByIds({ ids });
 
-      return books.map(formatBook);
+      return books.map((book) => formatBook(book));
     }),
   byId: privateProcedure
     .input(z.object({ id: z.number() }))
     .output(book)
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const { books } = await client.GetBooksByIds({ ids: [input.id] });
       const book = books[0];
 
@@ -34,7 +37,12 @@ export const bookRouter = router({
         throw new TRPCError({ code: 'NOT_FOUND' });
       }
 
-      return formatBook(book);
+      const [record] = await db
+        .select()
+        .from(recordTable)
+        .where(and(eq(recordTable.userId, ctx.currentUser.id!), eq(recordTable.bookId, input.id)));
+
+      return formatBook(book, record);
     }),
   seriesById: privateProcedure
     .input(z.object({ id: z.number() }))
@@ -44,12 +52,18 @@ export const bookRouter = router({
         series: z.object({ id: z.number().nullable(), bookCount: z.number().nullable(), name: z.string().nullable() }),
       }),
     )
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const { book_series: bookSeries } = await client.GetSeriesById({ id: input.id });
 
       if (!bookSeries.length) {
         throw new TRPCError({ code: 'NOT_FOUND' });
       }
+
+      const ids = bookSeries.map(({ book }) => book?.id).filter((id) => id !== undefined);
+      const records = await db
+        .select()
+        .from(recordTable)
+        .where(and(eq(recordTable.userId, ctx.currentUser.id!), inArray(recordTable.bookId, ids)));
 
       const books = bookSeries
         .map(({ book }) => {
@@ -57,7 +71,9 @@ export const bookRouter = router({
             return null;
           }
 
-          return formatBook(book);
+          const record = records.find(({ bookId }) => bookId === book.id);
+
+          return formatBook(book, record);
         })
         .filter((book) => book !== null);
 
@@ -76,7 +92,7 @@ export const bookRouter = router({
     }),
 });
 
-function formatBook(book: GetBooksByIdsQuery['books'][number]): Book {
+function formatBook(book: GetBooksByIdsQuery['books'][number], record?: typeof recordTable.$inferSelect): Book {
   const author = book.contributions.find(({ contribution }) => contribution === null || contribution === 'Author');
 
   return {
@@ -96,5 +112,6 @@ function formatBook(book: GetBooksByIdsQuery['books'][number]): Book {
         }
       : null,
     subTitle: book.subtitle ?? null,
+    record: record ?? null,
   };
 }

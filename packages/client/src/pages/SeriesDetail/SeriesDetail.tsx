@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -18,8 +18,20 @@ export function SeriesDetail() {
   const { seriesId } = useParams({ from: '/_authenticated/series/$seriesId' });
   const intl = useIntl();
   const trpc = useTRPC();
-  const { data: series, isLoading, isError } = useQuery(trpc.book.seriesById.queryOptions({ id: parseInt(seriesId) }));
+  const queryClient = useQueryClient();
   const formatPublishYear = useFormatPublishYear();
+  const {
+    data: series,
+    isLoading,
+    isError: isLoadError,
+  } = useQuery(trpc.book.seriesById.queryOptions({ id: parseInt(seriesId) }));
+  const { mutate: createRecord } = useMutation(
+    trpc.record.create.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: trpc.book.seriesById.queryKey({ id: parseInt(seriesId) }) });
+      },
+    }),
+  );
 
   if (isLoading) {
     return (
@@ -29,7 +41,7 @@ export function SeriesDetail() {
     );
   }
 
-  if (isError || !series) {
+  if (isLoadError || !series) {
     return (
       <FormattedAlert
         variant="error"
@@ -77,15 +89,36 @@ export function SeriesDetail() {
               </Table.Cell>
               <Table.Cell>{formatPublishYear(book.releaseDate)}</Table.Cell>
               <Table.Cell>
-                <Button variant="underlined">
-                  <FormattedMessage defaultMessage="start reading" />
-                </Button>
-                <Button variant="underlined">
-                  <FormattedMessage defaultMessage="add to planned" />
-                </Button>
-                <Button variant="underlined">
-                  <FormattedMessage defaultMessage="mark read" />
-                </Button>
+                {book.record ? (
+                  book.record.status
+                ) : (
+                  <>
+                    <Button
+                      variant="underlined"
+                      onPress={() => {
+                        createRecord({ bookId: book.id, status: 'reading' });
+                      }}
+                    >
+                      <FormattedMessage defaultMessage="start reading" />
+                    </Button>
+                    <Button
+                      variant="underlined"
+                      onPress={() => {
+                        createRecord({ bookId: book.id, status: 'planned' });
+                      }}
+                    >
+                      <FormattedMessage defaultMessage="add to planned" />
+                    </Button>
+                    <Button
+                      variant="underlined"
+                      onPress={() => {
+                        createRecord({ bookId: book.id, status: 'finished' });
+                      }}
+                    >
+                      <FormattedMessage defaultMessage="mark read" />
+                    </Button>
+                  </>
+                )}
               </Table.Cell>
             </Table.Row>
           )}

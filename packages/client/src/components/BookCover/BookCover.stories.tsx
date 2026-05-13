@@ -13,6 +13,7 @@ const baseBook: Book = {
   releaseDate: null,
   series: null,
   subTitle: null,
+  record: null,
 };
 
 const bookWithCover: Book = {

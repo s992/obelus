@@ -5,7 +5,7 @@ import { CoverPlaceholder } from './CoverPlaceholder';
 import { cover } from './coverPlaceholder.css';
 
 type Props = {
-  book: Book;
+  book: Pick<Book, 'coverImage' | 'author' | 'title'>;
   size?: keyof typeof cover;
 };
 

@@ -23,6 +23,7 @@
     "argon2": "catalog:",
     "dotenv": "catalog:",
     "drizzle-orm": "catalog:",
+    "drizzle-zod": "catalog:",
     "fastify": "catalog:",
     "graphql": "catalog:",
     "graphql-tag": "catalog:",

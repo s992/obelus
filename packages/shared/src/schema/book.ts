@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { record } from './record';
 import { series } from './series';
 
 export const book = z.object({
@@ -12,4 +13,5 @@ export const book = z.object({
   series: series.nullable(),
   subTitle: z.string().nullable(),
   title: z.string().nullable(),
+  record: record.nullable(),
 });
