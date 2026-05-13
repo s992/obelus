@@ -9,11 +9,17 @@ const CACHE_TIME = 24 * 60 * 60; // 24hr in seconds
 
 async function gqlFetch<R, V>(doc: DocumentNode, variables: V): Promise<R> {
   const cacheKey = JSON.stringify({ query: print(doc), variables });
-  const cached = await redis.get(cacheKey);
+  let cached;
+
+  try {
+    cached = await redis.get(cacheKey);
+  } catch (err) {
+    logger.error(err, 'failed to retrieve cached content');
+  }
 
   if (cached) {
     try {
-      logger.debug(`found cached data, trying to return it: ${cached}`);
+      logger.debug('found cached data, trying to return it');
       return JSON.parse(cached) as R;
     } catch (err) {
       logger.error(err, 'failed to parse cached redis data - proceeding with hardcover api request');
@@ -35,7 +41,11 @@ async function gqlFetch<R, V>(doc: DocumentNode, variables: V): Promise<R> {
     throw new Error(errors[0]!.message);
   }
 
-  await redis.setEx(cacheKey, CACHE_TIME, JSON.stringify(data));
+  try {
+    await redis.setEx(cacheKey, CACHE_TIME, JSON.stringify(data));
+  } catch (err) {
+    logger.error(err, 'failed to store cached content');
+  }
 
   return data;
 }
