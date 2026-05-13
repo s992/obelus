@@ -112,6 +112,14 @@ function formatBook(book: GetBooksByIdsQuery['books'][number], record?: typeof r
         }
       : null,
     subTitle: book.subtitle ?? null,
-    record: record ?? null,
+    record: record
+      ? {
+          ...record,
+          createdAt: record.createdAt.toISOString(),
+          updatedAt: record.updatedAt.toISOString(),
+          startedAt: record.startedAt?.toISOString() ?? null,
+          finishedAt: record.finishedAt?.toISOString() ?? null,
+        }
+      : null,
   };
 }

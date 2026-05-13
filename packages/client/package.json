@@ -30,6 +30,7 @@
     "dayjs": "catalog:",
     "lucide-react": "catalog:",
     "react": "catalog:",
+    "react-aria": "catalog:",
     "react-aria-components": "catalog:",
     "react-dom": "catalog:",
     "react-hotkeys-hook": "catalog:",

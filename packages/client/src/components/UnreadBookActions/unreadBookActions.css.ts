@@ -6,7 +6,7 @@ const baseContainer = style({ width: 'fit-content' });
 
 export const container = styleVariants({
   horizontal: [flex.container, baseContainer, { gap: vars.space.s4 }],
-  vertical: [flex.column, baseContainer],
+  vertical: [flex.column, baseContainer, { flexDirection: 'column-reverse' }],
 });
 
 export const button = style({

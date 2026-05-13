@@ -1,12 +1,12 @@
 import type { Judgment, Maybe, Status } from '@obelus/shared/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import clsx from 'clsx';
 import { useIntl } from 'react-intl';
 
 import { useTRPC } from '../../client';
 import { toastQueue } from '../../components/Toast';
 import { UnreadBookActions, type Props as UnreadBookActionsProps } from '../../components/UnreadBookActions';
-import { typography } from '../../style';
-import { judgment as judgmentCss } from './statusCell.css';
+import { judgment as judgmentCss, typography } from '../../style';
 
 type Props = {
   bookId: number;
@@ -53,5 +53,5 @@ export function StatusCell({ bookId, seriesId, layout, status, judgment }: Props
     return <span className={typography.body}>{status}</span>;
   }
 
-  return <span className={judgmentCss[judgment]}>{judgment}</span>;
+  return <span className={clsx(typography.body, judgmentCss[judgment])}>{judgment}</span>;
 }

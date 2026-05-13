@@ -7,6 +7,7 @@ import { FormattedAlert } from '../../components/Alert';
 import { BookCover } from '../../components/BookCover';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { StatusCell } from '../../features/StatusCell';
+import { useFormatLongDate } from '../../hooks/useFormatLongDate';
 import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';
 import { flex, typography } from '../../style';
 import {
@@ -22,12 +23,14 @@ import {
   sidebar,
   title,
 } from './bookDetail.css';
+import { RecordContent } from './RecordContent';
 
 export function BookDetail() {
   const { bookId } = useParams({ from: '/_authenticated/book/$bookId' });
   const trpc = useTRPC();
   const { data: book, isLoading, isError } = useQuery(trpc.book.byId.queryOptions({ id: parseInt(bookId) }));
   const formatPublishDate = useFormatPublishYear();
+  const formatLongDate = useFormatLongDate();
 
   if (isLoading) {
     return (
@@ -54,6 +57,22 @@ export function BookDetail() {
           <BookCover book={book} size="xlarge" />
         </div>
         <dl className={meta}>
+          {book.record && (
+            <>
+              <div className={metaRow}>
+                <dt className={typography.label}>
+                  <FormattedMessage defaultMessage="first entered" />
+                </dt>
+                <dd className={typography.metaItalic}>{formatLongDate(book.record.createdAt)}</dd>
+              </div>
+              <div className={metaRow}>
+                <dt className={typography.label}>
+                  <FormattedMessage defaultMessage="last touched" />
+                </dt>
+                <dd className={typography.metaItalic}>{formatLongDate(book.record.updatedAt)}</dd>
+              </div>
+            </>
+          )}
           <div className={metaRow}>
             <dt className={typography.label}>
               <FormattedMessage defaultMessage="published" />
@@ -82,7 +101,9 @@ export function BookDetail() {
           )}
         </div>
         <pre className={description}>{book.description}</pre>
-        {!book.record && (
+        {book.record ? (
+          <RecordContent book={book} />
+        ) : (
           <div className={actions}>
             <StatusCell bookId={book.id} seriesId={book.series?.id} layout="horizontal" />
           </div>

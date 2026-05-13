@@ -176,12 +176,13 @@ const label = style({
 
 // Slightly larger label — top-bar meta, section number, swatch var name.
 const labelLg = style({
-  fontFamily: vars.font.mono,
+  fontFamily: vars.font.body,
   fontSize: vars.fontSize.labelLg,
   lineHeight: vars.lineHeight.body,
   textTransform: 'uppercase',
-  letterSpacing: vars.letterSpacing.label,
+  letterSpacing: '0.15em',
   color: vars.color.ink3,
+  fontWeight: vars.fontWeight.display,
 });
 
 // Column header in the editorial list (caps mono, ink-3).
