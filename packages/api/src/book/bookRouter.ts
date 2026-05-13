@@ -36,6 +36,44 @@ export const bookRouter = router({
 
       return formatBook(book);
     }),
+  seriesById: privateProcedure
+    .input(z.object({ id: z.number() }))
+    .output(
+      z.object({
+        books: z.array(book),
+        series: z.object({ id: z.number().nullable(), bookCount: z.number().nullable(), name: z.string().nullable() }),
+      }),
+    )
+    .query(async ({ input }) => {
+      const { book_series: bookSeries } = await client.GetSeriesById({ id: input.id });
+
+      if (!bookSeries.length) {
+        throw new TRPCError({ code: 'NOT_FOUND' });
+      }
+
+      const books = bookSeries
+        .map(({ book }) => {
+          if (!book) {
+            return null;
+          }
+
+          return formatBook(book);
+        })
+        .filter((book) => book !== null);
+
+      const series = bookSeries[0]?.series;
+
+      const seriesData = {
+        id: series?.id ?? null,
+        bookCount: series?.books_count ?? null,
+        name: series?.name ?? null,
+      };
+
+      return {
+        books,
+        series: seriesData,
+      };
+    }),
 });
 
 function formatBook(book: GetBooksByIdsQuery['books'][number]): Book {

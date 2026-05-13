@@ -37,13 +37,6 @@ export const formContainer = style({
   gap: vars.space.s4,
 });
 
-export const alertBody = style({
-  display: 'flex',
-  alignItems: 'center',
-  gap: vars.space.s2,
-  margin: `${vars.space.s2} 0 0 0`,
-});
-
 export const userNameHighlight = style([
   typography.metaMono,
   {

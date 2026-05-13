@@ -9,21 +9,21 @@ export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> =
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string };
-  String: { input: string; output: string };
-  Boolean: { input: boolean; output: boolean };
-  Int: { input: number; output: number };
-  Float: { input: number; output: number };
-  bigint: { input: unknown; output: unknown };
-  citext: { input: unknown; output: unknown };
-  date: { input: unknown; output: unknown };
-  float8: { input: unknown; output: unknown };
-  json: { input: unknown; output: unknown };
-  jsonb: { input: unknown; output: unknown };
-  numeric: { input: unknown; output: unknown };
-  smallint: { input: unknown; output: unknown };
-  timestamp: { input: unknown; output: unknown };
-  timestamptz: { input: unknown; output: unknown };
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  bigint: { input: unknown; output: unknown; }
+  citext: { input: unknown; output: unknown; }
+  date: { input: unknown; output: unknown; }
+  float8: { input: unknown; output: unknown; }
+  json: { input: unknown; output: unknown; }
+  jsonb: { input: unknown; output: unknown; }
+  numeric: { input: unknown; output: unknown; }
+  smallint: { input: unknown; output: unknown; }
+  timestamp: { input: unknown; output: unknown; }
+  timestamptz: { input: unknown; output: unknown; }
 };
 
 export type AuthorIdType = {
@@ -782,10 +782,12 @@ export type Activities = {
   user_id: Scalars['Int']['output'];
 };
 
+
 /** columns and relationships of "activities" */
 export type ActivitiesDataArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "activities" */
 export type ActivitiesFollowersArgs = {
@@ -795,6 +797,7 @@ export type ActivitiesFollowersArgs = {
   order_by?: InputMaybe<Array<Followed_Users_Order_By>>;
   where?: InputMaybe<Followed_Users_Bool_Exp>;
 };
+
 
 /** columns and relationships of "activities" */
 export type ActivitiesLikesArgs = {
@@ -1082,6 +1085,7 @@ export type Authors = {
   users_count: Scalars['Int']['output'];
 };
 
+
 /** columns and relationships of "authors" */
 export type AuthorsAliasArgs = {
   distinct_on?: InputMaybe<Array<Authors_Select_Column>>;
@@ -1091,15 +1095,18 @@ export type AuthorsAliasArgs = {
   where?: InputMaybe<Authors_Bool_Exp>;
 };
 
+
 /** columns and relationships of "authors" */
 export type AuthorsAlternate_NamesArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
 
+
 /** columns and relationships of "authors" */
 export type AuthorsCached_ImageArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "authors" */
 export type AuthorsContributionsArgs = {
@@ -1110,6 +1117,7 @@ export type AuthorsContributionsArgs = {
   where?: InputMaybe<Contributions_Bool_Exp>;
 };
 
+
 /** columns and relationships of "authors" */
 export type AuthorsContributions_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Contributions_Select_Column>>;
@@ -1119,10 +1127,12 @@ export type AuthorsContributions_AggregateArgs = {
   where?: InputMaybe<Contributions_Bool_Exp>;
 };
 
+
 /** columns and relationships of "authors" */
 export type AuthorsIdentifiersArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "authors" */
 export type AuthorsLinksArgs = {
@@ -2177,6 +2187,7 @@ export type Book_Series_Aggregate_Fields = {
   variance?: Maybe<Book_Series_Variance_Fields>;
 };
 
+
 /** aggregate fields of "book_series" */
 export type Book_Series_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Book_Series_Select_Column>>;
@@ -2318,7 +2329,7 @@ export type Book_Series_Select_Column =
 /** select "book_series_aggregate_bool_exp_avg_arguments_columns" columns of table "book_series" */
 export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Avg_Arguments_Columns =
   /** column name */
-  'position';
+  | 'position';
 
 /** select "book_series_aggregate_bool_exp_bool_and_arguments_columns" columns of table "book_series" */
 export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Bool_And_Arguments_Columns =
@@ -2337,37 +2348,37 @@ export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Bool_Or_Arg
 /** select "book_series_aggregate_bool_exp_corr_arguments_columns" columns of table "book_series" */
 export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Corr_Arguments_Columns =
   /** column name */
-  'position';
+  | 'position';
 
 /** select "book_series_aggregate_bool_exp_covar_samp_arguments_columns" columns of table "book_series" */
 export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Covar_Samp_Arguments_Columns =
   /** column name */
-  'position';
+  | 'position';
 
 /** select "book_series_aggregate_bool_exp_max_arguments_columns" columns of table "book_series" */
 export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Max_Arguments_Columns =
   /** column name */
-  'position';
+  | 'position';
 
 /** select "book_series_aggregate_bool_exp_min_arguments_columns" columns of table "book_series" */
 export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Min_Arguments_Columns =
   /** column name */
-  'position';
+  | 'position';
 
 /** select "book_series_aggregate_bool_exp_stddev_samp_arguments_columns" columns of table "book_series" */
 export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Stddev_Samp_Arguments_Columns =
   /** column name */
-  'position';
+  | 'position';
 
 /** select "book_series_aggregate_bool_exp_sum_arguments_columns" columns of table "book_series" */
 export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Sum_Arguments_Columns =
   /** column name */
-  'position';
+  | 'position';
 
 /** select "book_series_aggregate_bool_exp_var_samp_arguments_columns" columns of table "book_series" */
 export type Book_Series_Select_Column_Book_Series_Aggregate_Bool_Exp_Var_Samp_Arguments_Columns =
   /** column name */
-  'position';
+  | 'position';
 
 /** aggregate stddev on columns */
 export type Book_Series_Stddev_Fields = {
@@ -2520,6 +2531,7 @@ export type Book_Statuses = {
   name: Scalars['String']['output'];
 };
 
+
 /** columns and relationships of "book_statuses" */
 export type Book_StatusesBooksArgs = {
   distinct_on?: InputMaybe<Array<Books_Select_Column>>;
@@ -2528,6 +2540,7 @@ export type Book_StatusesBooksArgs = {
   order_by?: InputMaybe<Array<Books_Order_By>>;
   where?: InputMaybe<Books_Bool_Exp>;
 };
+
 
 /** columns and relationships of "book_statuses" */
 export type Book_StatusesBooks_AggregateArgs = {
@@ -2746,10 +2759,12 @@ export type Books = {
   users_read_count: Scalars['Int']['output'];
 };
 
+
 /** columns and relationships of "books" */
 export type BooksAlternative_TitlesArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "books" */
 export type BooksBook_CharactersArgs = {
@@ -2760,6 +2775,7 @@ export type BooksBook_CharactersArgs = {
   where?: InputMaybe<Book_Characters_Bool_Exp>;
 };
 
+
 /** columns and relationships of "books" */
 export type BooksBook_MappingsArgs = {
   distinct_on?: InputMaybe<Array<Book_Mappings_Select_Column>>;
@@ -2768,6 +2784,7 @@ export type BooksBook_MappingsArgs = {
   order_by?: InputMaybe<Array<Book_Mappings_Order_By>>;
   where?: InputMaybe<Book_Mappings_Bool_Exp>;
 };
+
 
 /** columns and relationships of "books" */
 export type BooksBook_SeriesArgs = {
@@ -2778,6 +2795,7 @@ export type BooksBook_SeriesArgs = {
   where?: InputMaybe<Book_Series_Bool_Exp>;
 };
 
+
 /** columns and relationships of "books" */
 export type BooksBook_Series_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Book_Series_Select_Column>>;
@@ -2787,30 +2805,36 @@ export type BooksBook_Series_AggregateArgs = {
   where?: InputMaybe<Book_Series_Bool_Exp>;
 };
 
+
 /** columns and relationships of "books" */
 export type BooksCached_ContributorsArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "books" */
 export type BooksCached_Featured_SeriesArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
 
+
 /** columns and relationships of "books" */
 export type BooksCached_Header_ImageArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "books" */
 export type BooksCached_ImageArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
 
+
 /** columns and relationships of "books" */
 export type BooksCached_TagsArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "books" */
 export type BooksCollection_Import_ResultsArgs = {
@@ -2821,6 +2845,7 @@ export type BooksCollection_Import_ResultsArgs = {
   where?: InputMaybe<Collection_Import_Results_Bool_Exp>;
 };
 
+
 /** columns and relationships of "books" */
 export type BooksContributionsArgs = {
   distinct_on?: InputMaybe<Array<Contributions_Select_Column>>;
@@ -2829,6 +2854,7 @@ export type BooksContributionsArgs = {
   order_by?: InputMaybe<Array<Contributions_Order_By>>;
   where?: InputMaybe<Contributions_Bool_Exp>;
 };
+
 
 /** columns and relationships of "books" */
 export type BooksContributions_AggregateArgs = {
@@ -2839,6 +2865,7 @@ export type BooksContributions_AggregateArgs = {
   where?: InputMaybe<Contributions_Bool_Exp>;
 };
 
+
 /** columns and relationships of "books" */
 export type BooksEditionsArgs = {
   distinct_on?: InputMaybe<Array<Editions_Select_Column>>;
@@ -2847,6 +2874,7 @@ export type BooksEditionsArgs = {
   order_by?: InputMaybe<Array<Editions_Order_By>>;
   where?: InputMaybe<Editions_Bool_Exp>;
 };
+
 
 /** columns and relationships of "books" */
 export type BooksImagesArgs = {
@@ -2857,10 +2885,12 @@ export type BooksImagesArgs = {
   where?: InputMaybe<Images_Bool_Exp>;
 };
 
+
 /** columns and relationships of "books" */
 export type BooksLinksArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "books" */
 export type BooksList_BooksArgs = {
@@ -2871,6 +2901,7 @@ export type BooksList_BooksArgs = {
   where?: InputMaybe<List_Books_Bool_Exp>;
 };
 
+
 /** columns and relationships of "books" */
 export type BooksList_Books_AggregateArgs = {
   distinct_on?: InputMaybe<Array<List_Books_Select_Column>>;
@@ -2879,6 +2910,7 @@ export type BooksList_Books_AggregateArgs = {
   order_by?: InputMaybe<Array<List_Books_Order_By>>;
   where?: InputMaybe<List_Books_Bool_Exp>;
 };
+
 
 /** columns and relationships of "books" */
 export type BooksPrompt_AnswersArgs = {
@@ -2889,6 +2921,7 @@ export type BooksPrompt_AnswersArgs = {
   where?: InputMaybe<Prompt_Answers_Bool_Exp>;
 };
 
+
 /** columns and relationships of "books" */
 export type BooksPrompt_Answers_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Prompt_Answers_Select_Column>>;
@@ -2897,6 +2930,7 @@ export type BooksPrompt_Answers_AggregateArgs = {
   order_by?: InputMaybe<Array<Prompt_Answers_Order_By>>;
   where?: InputMaybe<Prompt_Answers_Bool_Exp>;
 };
+
 
 /** columns and relationships of "books" */
 export type BooksPrompt_SummariesArgs = {
@@ -2907,10 +2941,12 @@ export type BooksPrompt_SummariesArgs = {
   where?: InputMaybe<Prompt_Books_Summary_Bool_Exp>;
 };
 
+
 /** columns and relationships of "books" */
 export type BooksRatings_DistributionArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "books" */
 export type BooksTaggable_CountsArgs = {
@@ -2921,6 +2957,7 @@ export type BooksTaggable_CountsArgs = {
   where?: InputMaybe<Taggable_Counts_Bool_Exp>;
 };
 
+
 /** columns and relationships of "books" */
 export type BooksTaggingsArgs = {
   distinct_on?: InputMaybe<Array<Taggings_Select_Column>>;
@@ -2929,6 +2966,7 @@ export type BooksTaggingsArgs = {
   order_by?: InputMaybe<Array<Taggings_Order_By>>;
   where?: InputMaybe<Taggings_Bool_Exp>;
 };
+
 
 /** columns and relationships of "books" */
 export type BooksTaggings_AggregateArgs = {
@@ -2939,6 +2977,7 @@ export type BooksTaggings_AggregateArgs = {
   where?: InputMaybe<Taggings_Bool_Exp>;
 };
 
+
 /** columns and relationships of "books" */
 export type BooksUser_BooksArgs = {
   distinct_on?: InputMaybe<Array<User_Books_Select_Column>>;
@@ -2947,6 +2986,7 @@ export type BooksUser_BooksArgs = {
   order_by?: InputMaybe<Array<User_Books_Order_By>>;
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
+
 
 /** columns and relationships of "books" */
 export type BooksUser_Books_AggregateArgs = {
@@ -3006,6 +3046,7 @@ export type Books_Aggregate_Fields = {
   var_samp?: Maybe<Books_Var_Samp_Fields>;
   variance?: Maybe<Books_Variance_Fields>;
 };
+
 
 /** aggregate fields of "books" */
 export type Books_Aggregate_FieldsCountArgs = {
@@ -4106,6 +4147,7 @@ export type Characters = {
   user_id?: Maybe<Scalars['Int']['output']>;
 };
 
+
 /** columns and relationships of "characters" */
 export type CharactersBook_CharactersArgs = {
   distinct_on?: InputMaybe<Array<Book_Characters_Select_Column>>;
@@ -4115,10 +4157,12 @@ export type CharactersBook_CharactersArgs = {
   where?: InputMaybe<Book_Characters_Bool_Exp>;
 };
 
+
 /** columns and relationships of "characters" */
 export type CharactersCached_TagsArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "characters" */
 export type CharactersContributionsArgs = {
@@ -4128,6 +4172,7 @@ export type CharactersContributionsArgs = {
   order_by?: InputMaybe<Array<Contributions_Order_By>>;
   where?: InputMaybe<Contributions_Bool_Exp>;
 };
+
 
 /** columns and relationships of "characters" */
 export type CharactersContributions_AggregateArgs = {
@@ -4322,6 +4367,7 @@ export type Collection_Import_Results = {
   state: Scalars['String']['output'];
   title: Scalars['String']['output'];
 };
+
 
 /** columns and relationships of "collection_import_results" */
 export type Collection_Import_ResultsContentsArgs = {
@@ -4575,6 +4621,7 @@ export type Collection_Imports = {
   user: Users;
   user_id: Scalars['Int']['output'];
 };
+
 
 /** columns and relationships of "collection_imports" */
 export type Collection_ImportsCollection_Import_ResultsArgs = {
@@ -4926,6 +4973,7 @@ export type Contributions_Aggregate_Fields = {
   variance?: Maybe<Contributions_Variance_Fields>;
 };
 
+
 /** aggregate fields of "contributions" */
 export type Contributions_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Contributions_Select_Column>>;
@@ -5199,6 +5247,7 @@ export type Countries = {
   updated_at: Scalars['timestamp']['output'];
 };
 
+
 /** columns and relationships of "countries" */
 export type CountriesEditionsArgs = {
   distinct_on?: InputMaybe<Array<Editions_Select_Column>>;
@@ -5399,10 +5448,12 @@ export type Editions = {
   users_read_count: Scalars['Int']['output'];
 };
 
+
 /** columns and relationships of "editions" */
 export type EditionsAlternative_TitlesArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "editions" */
 export type EditionsBook_MappingsArgs = {
@@ -5413,20 +5464,24 @@ export type EditionsBook_MappingsArgs = {
   where?: InputMaybe<Book_Mappings_Bool_Exp>;
 };
 
+
 /** columns and relationships of "editions" */
 export type EditionsCached_ContributorsArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "editions" */
 export type EditionsCached_ImageArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
 
+
 /** columns and relationships of "editions" */
 export type EditionsCached_TagsArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "editions" */
 export type EditionsContributionsArgs = {
@@ -5437,6 +5492,7 @@ export type EditionsContributionsArgs = {
   where?: InputMaybe<Contributions_Bool_Exp>;
 };
 
+
 /** columns and relationships of "editions" */
 export type EditionsContributions_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Contributions_Select_Column>>;
@@ -5445,6 +5501,7 @@ export type EditionsContributions_AggregateArgs = {
   order_by?: InputMaybe<Array<Contributions_Order_By>>;
   where?: InputMaybe<Contributions_Bool_Exp>;
 };
+
 
 /** columns and relationships of "editions" */
 export type EditionsImagesArgs = {
@@ -5455,6 +5512,7 @@ export type EditionsImagesArgs = {
   where?: InputMaybe<Images_Bool_Exp>;
 };
 
+
 /** columns and relationships of "editions" */
 export type EditionsList_BooksArgs = {
   distinct_on?: InputMaybe<Array<List_Books_Select_Column>>;
@@ -5463,6 +5521,7 @@ export type EditionsList_BooksArgs = {
   order_by?: InputMaybe<Array<List_Books_Order_By>>;
   where?: InputMaybe<List_Books_Bool_Exp>;
 };
+
 
 /** columns and relationships of "editions" */
 export type EditionsList_Books_AggregateArgs = {
@@ -6027,6 +6086,7 @@ export type Flag_Statuses = {
   user_flags: Array<User_Flags>;
 };
 
+
 /** columns and relationships of "flag_statuses" */
 export type Flag_StatusesUser_FlagsArgs = {
   distinct_on?: InputMaybe<Array<User_Flags_Select_Column>>;
@@ -6429,7 +6489,7 @@ export type Followed_Prompts_Sum_Order_By = {
 /** update columns of table "followed_prompts" */
 export type Followed_Prompts_Update_Column =
   /** column name */
-  'order';
+  | 'order';
 
 export type Followed_Prompts_Updates = {
   /** increments the numeric columns with given value of the filtered values */
@@ -6503,6 +6563,7 @@ export type Followed_User_Books_Aggregate_Fields = {
   var_samp?: Maybe<Followed_User_Books_Var_Samp_Fields>;
   variance?: Maybe<Followed_User_Books_Variance_Fields>;
 };
+
 
 /** aggregate fields of "followed_user_books" */
 export type Followed_User_Books_Aggregate_FieldsCountArgs = {
@@ -6853,6 +6914,7 @@ export type Following_User_Books_Aggregate_Fields = {
   variance?: Maybe<Following_User_Books_Variance_Fields>;
 };
 
+
 /** aggregate fields of "following_user_books" */
 export type Following_User_Books_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Following_User_Books_Select_Column>>;
@@ -7063,6 +7125,7 @@ export type Follows_Aggregate_Fields = {
   var_samp?: Maybe<Follows_Var_Samp_Fields>;
   variance?: Maybe<Follows_Variance_Fields>;
 };
+
 
 /** aggregate fields of "follows" */
 export type Follows_Aggregate_FieldsCountArgs = {
@@ -7341,10 +7404,12 @@ export type Goals = {
   user_id: Scalars['Int']['output'];
 };
 
+
 /** columns and relationships of "goals" */
 export type GoalsConditionsArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "goals" */
 export type GoalsFollowersArgs = {
@@ -7580,6 +7645,7 @@ export type Images = {
   url?: Maybe<Scalars['String']['output']>;
   width?: Maybe<Scalars['Int']['output']>;
 };
+
 
 /** columns and relationships of "images" */
 export type ImagesColorsArgs = {
@@ -7884,6 +7950,7 @@ export type Likes = {
   user_id: Scalars['Int']['output'];
 };
 
+
 /** columns and relationships of "likes" */
 export type LikesFollowersArgs = {
   distinct_on?: InputMaybe<Array<Followed_Users_Select_Column>>;
@@ -8154,6 +8221,7 @@ export type List_Books = {
   user_books_aggregate: User_Books_Aggregate;
 };
 
+
 /** columns and relationships of "list_books" */
 export type List_BooksUser_BooksArgs = {
   distinct_on?: InputMaybe<Array<User_Books_Select_Column>>;
@@ -8162,6 +8230,7 @@ export type List_BooksUser_BooksArgs = {
   order_by?: InputMaybe<Array<User_Books_Order_By>>;
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
+
 
 /** columns and relationships of "list_books" */
 export type List_BooksUser_Books_AggregateArgs = {
@@ -8221,6 +8290,7 @@ export type List_Books_Aggregate_Fields = {
   var_samp?: Maybe<List_Books_Var_Samp_Fields>;
   variance?: Maybe<List_Books_Variance_Fields>;
 };
+
 
 /** aggregate fields of "list_books" */
 export type List_Books_Aggregate_FieldsCountArgs = {
@@ -8429,12 +8499,12 @@ export type List_Books_Select_Column =
 /** select "list_books_aggregate_bool_exp_bool_and_arguments_columns" columns of table "list_books" */
 export type List_Books_Select_Column_List_Books_Aggregate_Bool_Exp_Bool_And_Arguments_Columns =
   /** column name */
-  'imported';
+  | 'imported';
 
 /** select "list_books_aggregate_bool_exp_bool_or_arguments_columns" columns of table "list_books" */
 export type List_Books_Select_Column_List_Books_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns =
   /** column name */
-  'imported';
+  | 'imported';
 
 /** input type for updating data in table "list_books" */
 export type List_Books_Set_Input = {
@@ -8675,6 +8745,7 @@ export type Lists = {
   user_id: Scalars['Int']['output'];
 };
 
+
 /** columns and relationships of "lists" */
 export type ListsFollowed_ListsArgs = {
   distinct_on?: InputMaybe<Array<Followed_Lists_Select_Column>>;
@@ -8683,6 +8754,7 @@ export type ListsFollowed_ListsArgs = {
   order_by?: InputMaybe<Array<Followed_Lists_Order_By>>;
   where?: InputMaybe<Followed_Lists_Bool_Exp>;
 };
+
 
 /** columns and relationships of "lists" */
 export type ListsFollowersArgs = {
@@ -8693,6 +8765,7 @@ export type ListsFollowersArgs = {
   where?: InputMaybe<Followed_Users_Bool_Exp>;
 };
 
+
 /** columns and relationships of "lists" */
 export type ListsLikesArgs = {
   distinct_on?: InputMaybe<Array<Likes_Select_Column>>;
@@ -8702,6 +8775,7 @@ export type ListsLikesArgs = {
   where?: InputMaybe<Likes_Bool_Exp>;
 };
 
+
 /** columns and relationships of "lists" */
 export type ListsList_BooksArgs = {
   distinct_on?: InputMaybe<Array<List_Books_Select_Column>>;
@@ -8710,6 +8784,7 @@ export type ListsList_BooksArgs = {
   order_by?: InputMaybe<Array<List_Books_Order_By>>;
   where?: InputMaybe<List_Books_Bool_Exp>;
 };
+
 
 /** columns and relationships of "lists" */
 export type ListsList_Books_AggregateArgs = {
@@ -8769,6 +8844,7 @@ export type Lists_Aggregate_Fields = {
   var_samp?: Maybe<Lists_Var_Samp_Fields>;
   variance?: Maybe<Lists_Variance_Fields>;
 };
+
 
 /** aggregate fields of "lists" */
 export type Lists_Aggregate_FieldsCountArgs = {
@@ -9401,11 +9477,13 @@ export type Mutation_Root = {
   user_login?: Maybe<UserIdType>;
 };
 
+
 /** mutation root */
 export type Mutation_RootBook_Mapping_NormalizeArgs = {
   deep: Scalars['Boolean']['input'];
   id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootBook_NormalizeArgs = {
@@ -9413,30 +9491,36 @@ export type Mutation_RootBook_NormalizeArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootCollection_Import_Result_ReimportArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootCollection_Import_RetryArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootDelete_ActivitiesArgs = {
   where: Activities_Bool_Exp;
 };
+
 
 /** mutation root */
 export type Mutation_RootDelete_Activities_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootDelete_Book_MappingArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootDelete_FollowArgs = {
@@ -9444,25 +9528,30 @@ export type Mutation_RootDelete_FollowArgs = {
   followable_type: Scalars['String']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootDelete_Followed_ListArgs = {
   list_id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootDelete_Followed_PromptArgs = {
   prompt_id: Scalars['Int']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootDelete_Followed_PromptsArgs = {
   where: Followed_Prompts_Bool_Exp;
 };
 
+
 /** mutation root */
 export type Mutation_RootDelete_Followed_Prompts_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootDelete_Followed_UserArgs = {
@@ -9470,20 +9559,24 @@ export type Mutation_RootDelete_Followed_UserArgs = {
   user_id: Scalars['Int']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootDelete_Followed_UsersArgs = {
   where: Followed_Users_Bool_Exp;
 };
+
 
 /** mutation root */
 export type Mutation_RootDelete_Followed_Users_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootDelete_GoalArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootDelete_LikeArgs = {
@@ -9491,60 +9584,72 @@ export type Mutation_RootDelete_LikeArgs = {
   likeable_type: Scalars['String']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootDelete_ListArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootDelete_List_BookArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootDelete_Prompt_AnswerArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootDelete_PromptsArgs = {
   where: Prompts_Bool_Exp;
 };
 
+
 /** mutation root */
 export type Mutation_RootDelete_Prompts_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootDelete_Reading_JournalArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootDelete_Reading_Journals_For_BookArgs = {
   book_id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootDelete_User_BlocksArgs = {
   where: User_Blocks_Bool_Exp;
 };
 
+
 /** mutation root */
 export type Mutation_RootDelete_User_Blocks_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootDelete_User_BookArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootDelete_User_Book_ReadArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootEdition_NormalizeArgs = {
@@ -9552,40 +9657,48 @@ export type Mutation_RootEdition_NormalizeArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootEdition_OwnedArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootInsert_AuthorArgs = {
   object: AuthorInputType;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_BlockArgs = {
   blocked_user_id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootInsert_BookArgs = {
   edition: EditionInput;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_Book_MappingArgs = {
   object: BookMappingInput;
 };
+
 
 /** mutation root */
 export type Mutation_RootInsert_CharacterArgs = {
   character: CharacterInput;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_Collection_ImportArgs = {
   object: CollectionImportInput;
 };
+
 
 /** mutation root */
 export type Mutation_RootInsert_EditionArgs = {
@@ -9593,11 +9706,13 @@ export type Mutation_RootInsert_EditionArgs = {
   edition: EditionInput;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_FollowArgs = {
   followable_id: Scalars['Int']['input'];
   followable_type: Scalars['String']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootInsert_Followed_PromptsArgs = {
@@ -9605,36 +9720,43 @@ export type Mutation_RootInsert_Followed_PromptsArgs = {
   on_conflict?: InputMaybe<Followed_Prompts_On_Conflict>;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_Followed_Prompts_OneArgs = {
   object: Followed_Prompts_Insert_Input;
   on_conflict?: InputMaybe<Followed_Prompts_On_Conflict>;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_Followed_UserArgs = {
   user_id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootInsert_GoalArgs = {
   object: GoalInput;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_ImageArgs = {
   image: ImageInput;
 };
+
 
 /** mutation root */
 export type Mutation_RootInsert_ListArgs = {
   object: ListInput;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_List_BookArgs = {
   object: ListBookInput;
 };
+
 
 /** mutation root */
 export type Mutation_RootInsert_Notification_SettingsArgs = {
@@ -9642,46 +9764,55 @@ export type Mutation_RootInsert_Notification_SettingsArgs = {
   on_conflict?: InputMaybe<Notification_Settings_On_Conflict>;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_Notification_Settings_OneArgs = {
   object: Notification_Settings_Insert_Input;
   on_conflict?: InputMaybe<Notification_Settings_On_Conflict>;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_PromptArgs = {
   object: CreatePromptInput;
 };
+
 
 /** mutation root */
 export type Mutation_RootInsert_Prompt_AnswerArgs = {
   object: PromptAnswerCreateInput;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_PublisherArgs = {
   publisher: PublisherInputType;
 };
+
 
 /** mutation root */
 export type Mutation_RootInsert_Reading_JournalArgs = {
   object: ReadingJournalCreateType;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_ReportArgs = {
   report: ReportInput;
 };
+
 
 /** mutation root */
 export type Mutation_RootInsert_SerieArgs = {
   object: SeriesInput;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_UserArgs = {
   user: UserJoinInput;
 };
+
 
 /** mutation root */
 export type Mutation_RootInsert_User_BlocksArgs = {
@@ -9689,16 +9820,19 @@ export type Mutation_RootInsert_User_BlocksArgs = {
   on_conflict?: InputMaybe<User_Blocks_On_Conflict>;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_User_Blocks_OneArgs = {
   object: User_Blocks_Insert_Input;
   on_conflict?: InputMaybe<User_Blocks_On_Conflict>;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_User_BookArgs = {
   object: UserBookCreateInput;
 };
+
 
 /** mutation root */
 export type Mutation_RootInsert_User_Book_ReadArgs = {
@@ -9706,11 +9840,13 @@ export type Mutation_RootInsert_User_Book_ReadArgs = {
   user_book_read: DatesReadInput;
 };
 
+
 /** mutation root */
 export type Mutation_RootInsert_User_FlagsArgs = {
   objects: Array<User_Flags_Insert_Input>;
   on_conflict?: InputMaybe<User_Flags_On_Conflict>;
 };
+
 
 /** mutation root */
 export type Mutation_RootInsert_User_Flags_OneArgs = {
@@ -9718,11 +9854,13 @@ export type Mutation_RootInsert_User_Flags_OneArgs = {
   on_conflict?: InputMaybe<User_Flags_On_Conflict>;
 };
 
+
 /** mutation root */
 export type Mutation_RootReceipt_ValidateArgs = {
   payment_system_id: Scalars['Int']['input'];
   receipt: Scalars['String']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootUpdate_AuthorArgs = {
@@ -9730,17 +9868,20 @@ export type Mutation_RootUpdate_AuthorArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_BookArgs = {
   book: BookInput;
   id: Scalars['Int']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_CharacterArgs = {
   character: CharacterInput;
   id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootUpdate_Collection_Import_ResultsArgs = {
@@ -9749,6 +9890,7 @@ export type Mutation_RootUpdate_Collection_Import_ResultsArgs = {
   where: Collection_Import_Results_Bool_Exp;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_Collection_Import_Results_By_PkArgs = {
   _inc?: InputMaybe<Collection_Import_Results_Inc_Input>;
@@ -9756,16 +9898,19 @@ export type Mutation_RootUpdate_Collection_Import_Results_By_PkArgs = {
   pk_columns: Collection_Import_Results_Pk_Columns_Input;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_Collection_Import_Results_ManyArgs = {
   updates: Array<Collection_Import_Results_Updates>;
 };
+
 
 /** mutation root */
 export type Mutation_RootUpdate_EditionArgs = {
   edition: EditionInput;
   id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootUpdate_Followed_PromptsArgs = {
@@ -9774,6 +9919,7 @@ export type Mutation_RootUpdate_Followed_PromptsArgs = {
   where: Followed_Prompts_Bool_Exp;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_Followed_Prompts_By_PkArgs = {
   _inc?: InputMaybe<Followed_Prompts_Inc_Input>;
@@ -9781,10 +9927,12 @@ export type Mutation_RootUpdate_Followed_Prompts_By_PkArgs = {
   pk_columns: Followed_Prompts_Pk_Columns_Input;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_Followed_Prompts_ManyArgs = {
   updates: Array<Followed_Prompts_Updates>;
 };
+
 
 /** mutation root */
 export type Mutation_RootUpdate_GoalArgs = {
@@ -9792,16 +9940,19 @@ export type Mutation_RootUpdate_GoalArgs = {
   object: GoalInput;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_Goal_ProgressArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootUpdate_ListArgs = {
   id: Scalars['Int']['input'];
   object: ListInput;
 };
+
 
 /** mutation root */
 export type Mutation_RootUpdate_List_BooksArgs = {
@@ -9810,6 +9961,7 @@ export type Mutation_RootUpdate_List_BooksArgs = {
   where: List_Books_Bool_Exp;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_List_Books_By_PkArgs = {
   _inc?: InputMaybe<List_Books_Inc_Input>;
@@ -9817,15 +9969,18 @@ export type Mutation_RootUpdate_List_Books_By_PkArgs = {
   pk_columns: List_Books_Pk_Columns_Input;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_List_Books_ManyArgs = {
   updates: Array<List_Books_Updates>;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_NewsletterArgs = {
   subscribed: Scalars['Boolean']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootUpdate_Notification_DeliveriesArgs = {
@@ -9833,16 +9988,19 @@ export type Mutation_RootUpdate_Notification_DeliveriesArgs = {
   where: Notification_Deliveries_Bool_Exp;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_Notification_Deliveries_By_PkArgs = {
   _set?: InputMaybe<Notification_Deliveries_Set_Input>;
   pk_columns: Notification_Deliveries_Pk_Columns_Input;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_Notification_Deliveries_ManyArgs = {
   updates: Array<Notification_Deliveries_Updates>;
 };
+
 
 /** mutation root */
 export type Mutation_RootUpdate_Notification_SettingsArgs = {
@@ -9850,21 +10008,25 @@ export type Mutation_RootUpdate_Notification_SettingsArgs = {
   where: Notification_Settings_Bool_Exp;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_Notification_Settings_By_PkArgs = {
   _set?: InputMaybe<Notification_Settings_Set_Input>;
   pk_columns: Notification_Settings_Pk_Columns_Input;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_Notification_Settings_ManyArgs = {
   updates: Array<Notification_Settings_Updates>;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_PromptArgs = {
   object: UpdatePromptInput;
 };
+
 
 /** mutation root */
 export type Mutation_RootUpdate_Prompt_AnswersArgs = {
@@ -9872,16 +10034,19 @@ export type Mutation_RootUpdate_Prompt_AnswersArgs = {
   where: Prompt_Answers_Bool_Exp;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_Prompt_Answers_By_PkArgs = {
   _set?: InputMaybe<Prompt_Answers_Set_Input>;
   pk_columns: Prompt_Answers_Pk_Columns_Input;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_Prompt_Answers_ManyArgs = {
   updates: Array<Prompt_Answers_Updates>;
 };
+
 
 /** mutation root */
 export type Mutation_RootUpdate_PublisherArgs = {
@@ -9889,11 +10054,13 @@ export type Mutation_RootUpdate_PublisherArgs = {
   publisher: PublisherInputType;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_Reading_JournalArgs = {
   id: Scalars['Int']['input'];
   object: ReadingJournalUpdateType;
 };
+
 
 /** mutation root */
 export type Mutation_RootUpdate_SerieArgs = {
@@ -9901,10 +10068,12 @@ export type Mutation_RootUpdate_SerieArgs = {
   series: SeriesInputType;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_UserArgs = {
   user: Update_User_Input;
 };
+
 
 /** mutation root */
 export type Mutation_RootUpdate_User_BookArgs = {
@@ -9912,37 +10081,44 @@ export type Mutation_RootUpdate_User_BookArgs = {
   object: UserBookUpdateInput;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_User_Book_ReadArgs = {
   id: Scalars['Int']['input'];
   object: DatesReadInput;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpdate_User_Privacy_SettingArgs = {
   privacy_setting_id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootUpsert_BookArgs = {
   book: CreateBookFromPlatformInput;
 };
 
+
 /** mutation root */
 export type Mutation_RootUpsert_Followed_ListArgs = {
   list_id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootUpsert_Followed_PromptArgs = {
   prompt_id: Scalars['Int']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootUpsert_LikeArgs = {
   likeable_id: Scalars['Int']['input'];
   likeable_type?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** mutation root */
 export type Mutation_RootUpsert_TagsArgs = {
@@ -9951,11 +10127,13 @@ export type Mutation_RootUpsert_TagsArgs = {
   type: Scalars['String']['input'];
 };
 
+
 /** mutation root */
 export type Mutation_RootUpsert_User_Book_ReadsArgs = {
   datesRead: Array<InputMaybe<DatesReadInput>>;
   user_book_id: Scalars['Int']['input'];
 };
+
 
 /** mutation root */
 export type Mutation_RootUser_LoginArgs = {
@@ -10072,6 +10250,7 @@ export type Notification_Deliveries_Aggregate_Fields = {
   var_samp?: Maybe<Notification_Deliveries_Var_Samp_Fields>;
   variance?: Maybe<Notification_Deliveries_Variance_Fields>;
 };
+
 
 /** aggregate fields of "notification_deliveries" */
 export type Notification_Deliveries_Aggregate_FieldsCountArgs = {
@@ -10218,12 +10397,12 @@ export type Notification_Deliveries_Select_Column =
 /** select "notification_deliveries_aggregate_bool_exp_bool_and_arguments_columns" columns of table "notification_deliveries" */
 export type Notification_Deliveries_Select_Column_Notification_Deliveries_Aggregate_Bool_Exp_Bool_And_Arguments_Columns =
   /** column name */
-  'read';
+  | 'read';
 
 /** select "notification_deliveries_aggregate_bool_exp_bool_or_arguments_columns" columns of table "notification_deliveries" */
 export type Notification_Deliveries_Select_Column_Notification_Deliveries_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns =
   /** column name */
-  'read';
+  | 'read';
 
 /** input type for updating data in table "notification_deliveries" */
 export type Notification_Deliveries_Set_Input = {
@@ -10387,6 +10566,7 @@ export type Notification_Settings = {
   user_id: Scalars['Int']['output'];
 };
 
+
 /** columns and relationships of "notification_settings" */
 export type Notification_SettingsChannel_IdsArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
@@ -10429,7 +10609,7 @@ export type Notification_Settings_Bool_Exp = {
 /** unique or primary key constraints on table "notification_settings" */
 export type Notification_Settings_Constraint =
   /** unique or primary key constraint on columns "id" */
-  'notification_settings_pkey';
+  | 'notification_settings_pkey';
 
 /** input type for inserting data into table "notification_settings" */
 export type Notification_Settings_Insert_Input = {
@@ -10545,7 +10725,7 @@ export type Notification_Settings_Sum_Order_By = {
 /** update columns of table "notification_settings" */
 export type Notification_Settings_Update_Column =
   /** column name */
-  'channel_ids';
+  | 'channel_ids';
 
 export type Notification_Settings_Updates = {
   /** sets the columns of the filtered rows to the given values */
@@ -10589,10 +10769,12 @@ export type Notification_Types = {
   uid: Scalars['String']['output'];
 };
 
+
 /** columns and relationships of "notification_types" */
 export type Notification_TypesDefault_Channel_IdsArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "notification_types" */
 export type Notification_TypesNotification_SettingsArgs = {
@@ -10687,6 +10869,7 @@ export type Notifications = {
   uid: Scalars['String']['output'];
 };
 
+
 /** columns and relationships of "notifications" */
 export type NotificationsNotification_DeliveriesArgs = {
   distinct_on?: InputMaybe<Array<Notification_Deliveries_Select_Column>>;
@@ -10695,6 +10878,7 @@ export type NotificationsNotification_DeliveriesArgs = {
   order_by?: InputMaybe<Array<Notification_Deliveries_Order_By>>;
   where?: InputMaybe<Notification_Deliveries_Bool_Exp>;
 };
+
 
 /** columns and relationships of "notifications" */
 export type NotificationsNotification_Deliveries_AggregateArgs = {
@@ -10824,6 +11008,7 @@ export type Platforms = {
   url?: Maybe<Scalars['String']['output']>;
 };
 
+
 /** columns and relationships of "platforms" */
 export type PlatformsBook_MappingsArgs = {
   distinct_on?: InputMaybe<Array<Book_Mappings_Select_Column>>;
@@ -10899,6 +11084,7 @@ export type Privacy_Settings = {
   users_by_activity: Array<Users>;
 };
 
+
 /** columns and relationships of "privacy_settings" */
 export type Privacy_SettingsActivitiesArgs = {
   distinct_on?: InputMaybe<Array<Activities_Select_Column>>;
@@ -10907,6 +11093,7 @@ export type Privacy_SettingsActivitiesArgs = {
   order_by?: InputMaybe<Array<Activities_Order_By>>;
   where?: InputMaybe<Activities_Bool_Exp>;
 };
+
 
 /** columns and relationships of "privacy_settings" */
 export type Privacy_SettingsListsArgs = {
@@ -10917,6 +11104,7 @@ export type Privacy_SettingsListsArgs = {
   where?: InputMaybe<Lists_Bool_Exp>;
 };
 
+
 /** columns and relationships of "privacy_settings" */
 export type Privacy_SettingsLists_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Lists_Select_Column>>;
@@ -10925,6 +11113,7 @@ export type Privacy_SettingsLists_AggregateArgs = {
   order_by?: InputMaybe<Array<Lists_Order_By>>;
   where?: InputMaybe<Lists_Bool_Exp>;
 };
+
 
 /** columns and relationships of "privacy_settings" */
 export type Privacy_SettingsPromptsArgs = {
@@ -10935,6 +11124,7 @@ export type Privacy_SettingsPromptsArgs = {
   where?: InputMaybe<Prompts_Bool_Exp>;
 };
 
+
 /** columns and relationships of "privacy_settings" */
 export type Privacy_SettingsUser_BooksArgs = {
   distinct_on?: InputMaybe<Array<User_Books_Select_Column>>;
@@ -10943,6 +11133,7 @@ export type Privacy_SettingsUser_BooksArgs = {
   order_by?: InputMaybe<Array<User_Books_Order_By>>;
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
+
 
 /** columns and relationships of "privacy_settings" */
 export type Privacy_SettingsUser_Books_AggregateArgs = {
@@ -10953,6 +11144,7 @@ export type Privacy_SettingsUser_Books_AggregateArgs = {
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
 
+
 /** columns and relationships of "privacy_settings" */
 export type Privacy_SettingsUsersArgs = {
   distinct_on?: InputMaybe<Array<Users_Select_Column>>;
@@ -10961,6 +11153,7 @@ export type Privacy_SettingsUsersArgs = {
   order_by?: InputMaybe<Array<Users_Order_By>>;
   where?: InputMaybe<Users_Bool_Exp>;
 };
+
 
 /** columns and relationships of "privacy_settings" */
 export type Privacy_SettingsUsers_By_ActivityArgs = {
@@ -11075,6 +11268,7 @@ export type Prompt_Answers_Aggregate_Fields = {
   var_samp?: Maybe<Prompt_Answers_Var_Samp_Fields>;
   variance?: Maybe<Prompt_Answers_Variance_Fields>;
 };
+
 
 /** aggregate fields of "prompt_answers" */
 export type Prompt_Answers_Aggregate_FieldsCountArgs = {
@@ -11571,6 +11765,7 @@ export type Prompts = {
   users_count: Scalars['Int']['output'];
 };
 
+
 /** columns and relationships of "prompts" */
 export type PromptsFollowed_PromptsArgs = {
   distinct_on?: InputMaybe<Array<Followed_Prompts_Select_Column>>;
@@ -11579,6 +11774,7 @@ export type PromptsFollowed_PromptsArgs = {
   order_by?: InputMaybe<Array<Followed_Prompts_Order_By>>;
   where?: InputMaybe<Followed_Prompts_Bool_Exp>;
 };
+
 
 /** columns and relationships of "prompts" */
 export type PromptsFollowersArgs = {
@@ -11589,6 +11785,7 @@ export type PromptsFollowersArgs = {
   where?: InputMaybe<Followed_Users_Bool_Exp>;
 };
 
+
 /** columns and relationships of "prompts" */
 export type PromptsPrompt_AnswersArgs = {
   distinct_on?: InputMaybe<Array<Prompt_Answers_Select_Column>>;
@@ -11598,6 +11795,7 @@ export type PromptsPrompt_AnswersArgs = {
   where?: InputMaybe<Prompt_Answers_Bool_Exp>;
 };
 
+
 /** columns and relationships of "prompts" */
 export type PromptsPrompt_Answers_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Prompt_Answers_Select_Column>>;
@@ -11606,6 +11804,7 @@ export type PromptsPrompt_Answers_AggregateArgs = {
   order_by?: InputMaybe<Array<Prompt_Answers_Order_By>>;
   where?: InputMaybe<Prompt_Answers_Bool_Exp>;
 };
+
 
 /** columns and relationships of "prompts" */
 export type PromptsPrompt_BooksArgs = {
@@ -11862,6 +12061,7 @@ export type Publishers = {
   updated_at: Scalars['timestamp']['output'];
   user_id?: Maybe<Scalars['Int']['output']>;
 };
+
 
 /** columns and relationships of "publishers" */
 export type PublishersEditionsArgs = {
@@ -12233,6 +12433,7 @@ export type Query_Root = {
   users_by_pk?: Maybe<Users>;
 };
 
+
 export type Query_RootActivitiesArgs = {
   distinct_on?: InputMaybe<Array<Activities_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12241,9 +12442,11 @@ export type Query_RootActivitiesArgs = {
   where?: InputMaybe<Activities_Bool_Exp>;
 };
 
+
 export type Query_RootActivities_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootActivity_FeedArgs = {
   args: Activity_Feed_Args;
@@ -12254,6 +12457,7 @@ export type Query_RootActivity_FeedArgs = {
   where?: InputMaybe<Activities_Bool_Exp>;
 };
 
+
 export type Query_RootActivity_Foryou_FeedArgs = {
   args: Activity_Foryou_Feed_Args;
   distinct_on?: InputMaybe<Array<Activities_Select_Column>>;
@@ -12263,6 +12467,7 @@ export type Query_RootActivity_Foryou_FeedArgs = {
   where?: InputMaybe<Activities_Bool_Exp>;
 };
 
+
 export type Query_RootAuthorsArgs = {
   distinct_on?: InputMaybe<Array<Authors_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12271,9 +12476,11 @@ export type Query_RootAuthorsArgs = {
   where?: InputMaybe<Authors_Bool_Exp>;
 };
 
+
 export type Query_RootAuthors_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootBook_CategoriesArgs = {
   distinct_on?: InputMaybe<Array<Book_Categories_Select_Column>>;
@@ -12283,9 +12490,11 @@ export type Query_RootBook_CategoriesArgs = {
   where?: InputMaybe<Book_Categories_Bool_Exp>;
 };
 
+
 export type Query_RootBook_Categories_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootBook_CharactersArgs = {
   distinct_on?: InputMaybe<Array<Book_Characters_Select_Column>>;
@@ -12295,9 +12504,11 @@ export type Query_RootBook_CharactersArgs = {
   where?: InputMaybe<Book_Characters_Bool_Exp>;
 };
 
+
 export type Query_RootBook_Characters_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootBook_CollectionsArgs = {
   distinct_on?: InputMaybe<Array<Book_Collections_Select_Column>>;
@@ -12307,9 +12518,11 @@ export type Query_RootBook_CollectionsArgs = {
   where?: InputMaybe<Book_Collections_Bool_Exp>;
 };
 
+
 export type Query_RootBook_Collections_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootBook_MappingsArgs = {
   distinct_on?: InputMaybe<Array<Book_Mappings_Select_Column>>;
@@ -12319,9 +12532,11 @@ export type Query_RootBook_MappingsArgs = {
   where?: InputMaybe<Book_Mappings_Bool_Exp>;
 };
 
+
 export type Query_RootBook_Mappings_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootBook_SeriesArgs = {
   distinct_on?: InputMaybe<Array<Book_Series_Select_Column>>;
@@ -12331,6 +12546,7 @@ export type Query_RootBook_SeriesArgs = {
   where?: InputMaybe<Book_Series_Bool_Exp>;
 };
 
+
 export type Query_RootBook_Series_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Book_Series_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12339,9 +12555,11 @@ export type Query_RootBook_Series_AggregateArgs = {
   where?: InputMaybe<Book_Series_Bool_Exp>;
 };
 
+
 export type Query_RootBook_Series_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootBook_StatusesArgs = {
   distinct_on?: InputMaybe<Array<Book_Statuses_Select_Column>>;
@@ -12351,9 +12569,11 @@ export type Query_RootBook_StatusesArgs = {
   where?: InputMaybe<Book_Statuses_Bool_Exp>;
 };
 
+
 export type Query_RootBook_Statuses_By_PkArgs = {
   id: Scalars['smallint']['input'];
 };
+
 
 export type Query_RootBooklesArgs = {
   distinct_on?: InputMaybe<Array<Bookles_Select_Column>>;
@@ -12363,9 +12583,11 @@ export type Query_RootBooklesArgs = {
   where?: InputMaybe<Bookles_Bool_Exp>;
 };
 
+
 export type Query_RootBookles_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootBooksArgs = {
   distinct_on?: InputMaybe<Array<Books_Select_Column>>;
@@ -12375,6 +12597,7 @@ export type Query_RootBooksArgs = {
   where?: InputMaybe<Books_Bool_Exp>;
 };
 
+
 export type Query_RootBooks_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Books_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12383,9 +12606,11 @@ export type Query_RootBooks_AggregateArgs = {
   where?: InputMaybe<Books_Bool_Exp>;
 };
 
+
 export type Query_RootBooks_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootBooks_TrendingArgs = {
   from: Scalars['date']['input'];
@@ -12393,6 +12618,7 @@ export type Query_RootBooks_TrendingArgs = {
   offset: Scalars['Int']['input'];
   to: Scalars['date']['input'];
 };
+
 
 export type Query_RootCharactersArgs = {
   distinct_on?: InputMaybe<Array<Characters_Select_Column>>;
@@ -12402,9 +12628,11 @@ export type Query_RootCharactersArgs = {
   where?: InputMaybe<Characters_Bool_Exp>;
 };
 
+
 export type Query_RootCharacters_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootCollection_Import_ResultsArgs = {
   distinct_on?: InputMaybe<Array<Collection_Import_Results_Select_Column>>;
@@ -12414,9 +12642,11 @@ export type Query_RootCollection_Import_ResultsArgs = {
   where?: InputMaybe<Collection_Import_Results_Bool_Exp>;
 };
 
+
 export type Query_RootCollection_Import_Results_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootCollection_ImportsArgs = {
   distinct_on?: InputMaybe<Array<Collection_Imports_Select_Column>>;
@@ -12426,9 +12656,11 @@ export type Query_RootCollection_ImportsArgs = {
   where?: InputMaybe<Collection_Imports_Bool_Exp>;
 };
 
+
 export type Query_RootCollection_Imports_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootContributionsArgs = {
   distinct_on?: InputMaybe<Array<Contributions_Select_Column>>;
@@ -12438,6 +12670,7 @@ export type Query_RootContributionsArgs = {
   where?: InputMaybe<Contributions_Bool_Exp>;
 };
 
+
 export type Query_RootContributions_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Contributions_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12446,9 +12679,11 @@ export type Query_RootContributions_AggregateArgs = {
   where?: InputMaybe<Contributions_Bool_Exp>;
 };
 
+
 export type Query_RootContributions_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootCountriesArgs = {
   distinct_on?: InputMaybe<Array<Countries_Select_Column>>;
@@ -12458,9 +12693,11 @@ export type Query_RootCountriesArgs = {
   where?: InputMaybe<Countries_Bool_Exp>;
 };
 
+
 export type Query_RootCountries_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootEditionsArgs = {
   distinct_on?: InputMaybe<Array<Editions_Select_Column>>;
@@ -12470,9 +12707,11 @@ export type Query_RootEditionsArgs = {
   where?: InputMaybe<Editions_Bool_Exp>;
 };
 
+
 export type Query_RootEditions_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootFlag_StatusesArgs = {
   distinct_on?: InputMaybe<Array<Flag_Statuses_Select_Column>>;
@@ -12482,9 +12721,11 @@ export type Query_RootFlag_StatusesArgs = {
   where?: InputMaybe<Flag_Statuses_Bool_Exp>;
 };
 
+
 export type Query_RootFlag_Statuses_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootFollowed_ListsArgs = {
   distinct_on?: InputMaybe<Array<Followed_Lists_Select_Column>>;
@@ -12494,9 +12735,11 @@ export type Query_RootFollowed_ListsArgs = {
   where?: InputMaybe<Followed_Lists_Bool_Exp>;
 };
 
+
 export type Query_RootFollowed_Lists_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootFollowed_PromptsArgs = {
   distinct_on?: InputMaybe<Array<Followed_Prompts_Select_Column>>;
@@ -12506,9 +12749,11 @@ export type Query_RootFollowed_PromptsArgs = {
   where?: InputMaybe<Followed_Prompts_Bool_Exp>;
 };
 
+
 export type Query_RootFollowed_Prompts_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootFollowed_User_BooksArgs = {
   distinct_on?: InputMaybe<Array<Followed_User_Books_Select_Column>>;
@@ -12518,6 +12763,7 @@ export type Query_RootFollowed_User_BooksArgs = {
   where?: InputMaybe<Followed_User_Books_Bool_Exp>;
 };
 
+
 export type Query_RootFollowed_User_Books_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Followed_User_Books_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12525,6 +12771,7 @@ export type Query_RootFollowed_User_Books_AggregateArgs = {
   order_by?: InputMaybe<Array<Followed_User_Books_Order_By>>;
   where?: InputMaybe<Followed_User_Books_Bool_Exp>;
 };
+
 
 export type Query_RootFollowed_UsersArgs = {
   distinct_on?: InputMaybe<Array<Followed_Users_Select_Column>>;
@@ -12534,9 +12781,11 @@ export type Query_RootFollowed_UsersArgs = {
   where?: InputMaybe<Followed_Users_Bool_Exp>;
 };
 
+
 export type Query_RootFollowed_Users_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootFollowing_User_BooksArgs = {
   distinct_on?: InputMaybe<Array<Following_User_Books_Select_Column>>;
@@ -12546,6 +12795,7 @@ export type Query_RootFollowing_User_BooksArgs = {
   where?: InputMaybe<Following_User_Books_Bool_Exp>;
 };
 
+
 export type Query_RootFollowing_User_Books_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Following_User_Books_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12553,6 +12803,7 @@ export type Query_RootFollowing_User_Books_AggregateArgs = {
   order_by?: InputMaybe<Array<Following_User_Books_Order_By>>;
   where?: InputMaybe<Following_User_Books_Bool_Exp>;
 };
+
 
 export type Query_RootFollowsArgs = {
   distinct_on?: InputMaybe<Array<Follows_Select_Column>>;
@@ -12562,6 +12813,7 @@ export type Query_RootFollowsArgs = {
   where?: InputMaybe<Follows_Bool_Exp>;
 };
 
+
 export type Query_RootFollows_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Follows_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12570,9 +12822,11 @@ export type Query_RootFollows_AggregateArgs = {
   where?: InputMaybe<Follows_Bool_Exp>;
 };
 
+
 export type Query_RootFollows_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootGoalsArgs = {
   distinct_on?: InputMaybe<Array<Goals_Select_Column>>;
@@ -12582,9 +12836,11 @@ export type Query_RootGoalsArgs = {
   where?: InputMaybe<Goals_Bool_Exp>;
 };
 
+
 export type Query_RootGoals_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootImagesArgs = {
   distinct_on?: InputMaybe<Array<Images_Select_Column>>;
@@ -12594,9 +12850,11 @@ export type Query_RootImagesArgs = {
   where?: InputMaybe<Images_Bool_Exp>;
 };
 
+
 export type Query_RootImages_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootLanguagesArgs = {
   distinct_on?: InputMaybe<Array<Languages_Select_Column>>;
@@ -12606,9 +12864,11 @@ export type Query_RootLanguagesArgs = {
   where?: InputMaybe<Languages_Bool_Exp>;
 };
 
+
 export type Query_RootLanguages_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootLikesArgs = {
   distinct_on?: InputMaybe<Array<Likes_Select_Column>>;
@@ -12618,9 +12878,11 @@ export type Query_RootLikesArgs = {
   where?: InputMaybe<Likes_Bool_Exp>;
 };
 
+
 export type Query_RootLikes_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootLinksArgs = {
   distinct_on?: InputMaybe<Array<Links_Select_Column>>;
@@ -12630,9 +12892,11 @@ export type Query_RootLinksArgs = {
   where?: InputMaybe<Links_Bool_Exp>;
 };
 
+
 export type Query_RootLinks_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootList_BooksArgs = {
   distinct_on?: InputMaybe<Array<List_Books_Select_Column>>;
@@ -12642,6 +12906,7 @@ export type Query_RootList_BooksArgs = {
   where?: InputMaybe<List_Books_Bool_Exp>;
 };
 
+
 export type Query_RootList_Books_AggregateArgs = {
   distinct_on?: InputMaybe<Array<List_Books_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12650,9 +12915,11 @@ export type Query_RootList_Books_AggregateArgs = {
   where?: InputMaybe<List_Books_Bool_Exp>;
 };
 
+
 export type Query_RootList_Books_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootListsArgs = {
   distinct_on?: InputMaybe<Array<Lists_Select_Column>>;
@@ -12662,6 +12929,7 @@ export type Query_RootListsArgs = {
   where?: InputMaybe<Lists_Bool_Exp>;
 };
 
+
 export type Query_RootLists_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Lists_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12670,9 +12938,11 @@ export type Query_RootLists_AggregateArgs = {
   where?: InputMaybe<Lists_Bool_Exp>;
 };
 
+
 export type Query_RootLists_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootMeArgs = {
   distinct_on?: InputMaybe<Array<Users_Select_Column>>;
@@ -12682,6 +12952,7 @@ export type Query_RootMeArgs = {
   where?: InputMaybe<Users_Bool_Exp>;
 };
 
+
 export type Query_RootNotification_ChannelsArgs = {
   distinct_on?: InputMaybe<Array<Notification_Channels_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12690,9 +12961,11 @@ export type Query_RootNotification_ChannelsArgs = {
   where?: InputMaybe<Notification_Channels_Bool_Exp>;
 };
 
+
 export type Query_RootNotification_Channels_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootNotification_DeliveriesArgs = {
   distinct_on?: InputMaybe<Array<Notification_Deliveries_Select_Column>>;
@@ -12702,6 +12975,7 @@ export type Query_RootNotification_DeliveriesArgs = {
   where?: InputMaybe<Notification_Deliveries_Bool_Exp>;
 };
 
+
 export type Query_RootNotification_Deliveries_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Notification_Deliveries_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12710,9 +12984,11 @@ export type Query_RootNotification_Deliveries_AggregateArgs = {
   where?: InputMaybe<Notification_Deliveries_Bool_Exp>;
 };
 
+
 export type Query_RootNotification_Deliveries_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootNotification_SettingsArgs = {
   distinct_on?: InputMaybe<Array<Notification_Settings_Select_Column>>;
@@ -12722,9 +12998,11 @@ export type Query_RootNotification_SettingsArgs = {
   where?: InputMaybe<Notification_Settings_Bool_Exp>;
 };
 
+
 export type Query_RootNotification_Settings_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootNotification_TypesArgs = {
   distinct_on?: InputMaybe<Array<Notification_Types_Select_Column>>;
@@ -12734,9 +13012,11 @@ export type Query_RootNotification_TypesArgs = {
   where?: InputMaybe<Notification_Types_Bool_Exp>;
 };
 
+
 export type Query_RootNotification_Types_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootNotificationsArgs = {
   distinct_on?: InputMaybe<Array<Notifications_Select_Column>>;
@@ -12746,9 +13026,11 @@ export type Query_RootNotificationsArgs = {
   where?: InputMaybe<Notifications_Bool_Exp>;
 };
 
+
 export type Query_RootNotifications_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootPlatformsArgs = {
   distinct_on?: InputMaybe<Array<Platforms_Select_Column>>;
@@ -12758,9 +13040,11 @@ export type Query_RootPlatformsArgs = {
   where?: InputMaybe<Platforms_Bool_Exp>;
 };
 
+
 export type Query_RootPlatforms_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootPrivacy_SettingsArgs = {
   distinct_on?: InputMaybe<Array<Privacy_Settings_Select_Column>>;
@@ -12770,9 +13054,11 @@ export type Query_RootPrivacy_SettingsArgs = {
   where?: InputMaybe<Privacy_Settings_Bool_Exp>;
 };
 
+
 export type Query_RootPrivacy_Settings_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootPrompt_AnswersArgs = {
   distinct_on?: InputMaybe<Array<Prompt_Answers_Select_Column>>;
@@ -12782,6 +13068,7 @@ export type Query_RootPrompt_AnswersArgs = {
   where?: InputMaybe<Prompt_Answers_Bool_Exp>;
 };
 
+
 export type Query_RootPrompt_Answers_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Prompt_Answers_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12790,9 +13077,11 @@ export type Query_RootPrompt_Answers_AggregateArgs = {
   where?: InputMaybe<Prompt_Answers_Bool_Exp>;
 };
 
+
 export type Query_RootPrompt_Answers_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootPrompt_Books_SummaryArgs = {
   distinct_on?: InputMaybe<Array<Prompt_Books_Summary_Select_Column>>;
@@ -12802,6 +13091,7 @@ export type Query_RootPrompt_Books_SummaryArgs = {
   where?: InputMaybe<Prompt_Books_Summary_Bool_Exp>;
 };
 
+
 export type Query_RootPromptsArgs = {
   distinct_on?: InputMaybe<Array<Prompts_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12810,9 +13100,11 @@ export type Query_RootPromptsArgs = {
   where?: InputMaybe<Prompts_Bool_Exp>;
 };
 
+
 export type Query_RootPrompts_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootPublishersArgs = {
   distinct_on?: InputMaybe<Array<Publishers_Select_Column>>;
@@ -12822,9 +13114,11 @@ export type Query_RootPublishersArgs = {
   where?: InputMaybe<Publishers_Bool_Exp>;
 };
 
+
 export type Query_RootPublishers_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootReading_FormatsArgs = {
   distinct_on?: InputMaybe<Array<Reading_Formats_Select_Column>>;
@@ -12834,9 +13128,11 @@ export type Query_RootReading_FormatsArgs = {
   where?: InputMaybe<Reading_Formats_Bool_Exp>;
 };
 
+
 export type Query_RootReading_Formats_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootReading_JournalsArgs = {
   distinct_on?: InputMaybe<Array<Reading_Journals_Select_Column>>;
@@ -12846,9 +13142,11 @@ export type Query_RootReading_JournalsArgs = {
   where?: InputMaybe<Reading_Journals_Bool_Exp>;
 };
 
+
 export type Query_RootReading_Journals_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootReading_Journals_SummaryArgs = {
   distinct_on?: InputMaybe<Array<Reading_Journals_Summary_Select_Column>>;
@@ -12858,12 +13156,14 @@ export type Query_RootReading_Journals_SummaryArgs = {
   where?: InputMaybe<Reading_Journals_Summary_Bool_Exp>;
 };
 
+
 export type Query_RootReferrals_For_UserArgs = {
   end_date?: InputMaybe<Scalars['date']['input']>;
   limit: Scalars['Int']['input'];
   start_date?: InputMaybe<Scalars['date']['input']>;
   user_id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootSearchArgs = {
   fields?: InputMaybe<Scalars['String']['input']>;
@@ -12877,6 +13177,7 @@ export type Query_RootSearchArgs = {
   weights?: InputMaybe<Scalars['String']['input']>;
 };
 
+
 export type Query_RootSeriesArgs = {
   distinct_on?: InputMaybe<Array<Series_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12885,13 +13186,16 @@ export type Query_RootSeriesArgs = {
   where?: InputMaybe<Series_Bool_Exp>;
 };
 
+
 export type Query_RootSeries_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
 
+
 export type Query_RootSubscriptionsArgs = {
   default_payment_system_id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootTag_CategoriesArgs = {
   distinct_on?: InputMaybe<Array<Tag_Categories_Select_Column>>;
@@ -12901,9 +13205,11 @@ export type Query_RootTag_CategoriesArgs = {
   where?: InputMaybe<Tag_Categories_Bool_Exp>;
 };
 
+
 export type Query_RootTag_Categories_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootTaggable_CountsArgs = {
   distinct_on?: InputMaybe<Array<Taggable_Counts_Select_Column>>;
@@ -12913,9 +13219,11 @@ export type Query_RootTaggable_CountsArgs = {
   where?: InputMaybe<Taggable_Counts_Bool_Exp>;
 };
 
+
 export type Query_RootTaggable_Counts_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootTaggingsArgs = {
   distinct_on?: InputMaybe<Array<Taggings_Select_Column>>;
@@ -12925,6 +13233,7 @@ export type Query_RootTaggingsArgs = {
   where?: InputMaybe<Taggings_Bool_Exp>;
 };
 
+
 export type Query_RootTaggings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Taggings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12933,9 +13242,11 @@ export type Query_RootTaggings_AggregateArgs = {
   where?: InputMaybe<Taggings_Bool_Exp>;
 };
 
+
 export type Query_RootTaggings_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootTagsArgs = {
   distinct_on?: InputMaybe<Array<Tags_Select_Column>>;
@@ -12945,6 +13256,7 @@ export type Query_RootTagsArgs = {
   where?: InputMaybe<Tags_Bool_Exp>;
 };
 
+
 export type Query_RootTags_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Tags_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12953,9 +13265,11 @@ export type Query_RootTags_AggregateArgs = {
   where?: InputMaybe<Tags_Bool_Exp>;
 };
 
+
 export type Query_RootTags_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootUser_BlocksArgs = {
   distinct_on?: InputMaybe<Array<User_Blocks_Select_Column>>;
@@ -12965,9 +13279,11 @@ export type Query_RootUser_BlocksArgs = {
   where?: InputMaybe<User_Blocks_Bool_Exp>;
 };
 
+
 export type Query_RootUser_Blocks_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootUser_Book_ReadsArgs = {
   distinct_on?: InputMaybe<Array<User_Book_Reads_Select_Column>>;
@@ -12977,6 +13293,7 @@ export type Query_RootUser_Book_ReadsArgs = {
   where?: InputMaybe<User_Book_Reads_Bool_Exp>;
 };
 
+
 export type Query_RootUser_Book_Reads_AggregateArgs = {
   distinct_on?: InputMaybe<Array<User_Book_Reads_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12985,9 +13302,11 @@ export type Query_RootUser_Book_Reads_AggregateArgs = {
   where?: InputMaybe<User_Book_Reads_Bool_Exp>;
 };
 
+
 export type Query_RootUser_Book_Reads_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootUser_Book_StatusesArgs = {
   distinct_on?: InputMaybe<Array<User_Book_Statuses_Select_Column>>;
@@ -12997,6 +13316,7 @@ export type Query_RootUser_Book_StatusesArgs = {
   where?: InputMaybe<User_Book_Statuses_Bool_Exp>;
 };
 
+
 export type Query_RootUser_Book_Statuses_AggregateArgs = {
   distinct_on?: InputMaybe<Array<User_Book_Statuses_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -13005,9 +13325,11 @@ export type Query_RootUser_Book_Statuses_AggregateArgs = {
   where?: InputMaybe<User_Book_Statuses_Bool_Exp>;
 };
 
+
 export type Query_RootUser_Book_Statuses_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootUser_BooksArgs = {
   distinct_on?: InputMaybe<Array<User_Books_Select_Column>>;
@@ -13017,6 +13339,7 @@ export type Query_RootUser_BooksArgs = {
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
 
+
 export type Query_RootUser_Books_AggregateArgs = {
   distinct_on?: InputMaybe<Array<User_Books_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -13025,9 +13348,11 @@ export type Query_RootUser_Books_AggregateArgs = {
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
 
+
 export type Query_RootUser_Books_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootUser_FlagsArgs = {
   distinct_on?: InputMaybe<Array<User_Flags_Select_Column>>;
@@ -13037,9 +13362,11 @@ export type Query_RootUser_FlagsArgs = {
   where?: InputMaybe<User_Flags_Bool_Exp>;
 };
 
+
 export type Query_RootUser_Flags_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootUser_ReferralsArgs = {
   distinct_on?: InputMaybe<Array<User_Referrals_Select_Column>>;
@@ -13049,9 +13376,11 @@ export type Query_RootUser_ReferralsArgs = {
   where?: InputMaybe<User_Referrals_Bool_Exp>;
 };
 
+
 export type Query_RootUser_Referrals_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Query_RootUser_StatusesArgs = {
   distinct_on?: InputMaybe<Array<User_Statuses_Select_Column>>;
@@ -13061,9 +13390,11 @@ export type Query_RootUser_StatusesArgs = {
   where?: InputMaybe<User_Statuses_Bool_Exp>;
 };
 
+
 export type Query_RootUser_Statuses_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Query_RootUsersArgs = {
   distinct_on?: InputMaybe<Array<Users_Select_Column>>;
@@ -13073,6 +13404,7 @@ export type Query_RootUsersArgs = {
   where?: InputMaybe<Users_Bool_Exp>;
 };
 
+
 export type Query_RootUsers_Aggregate_By_Created_At_DateArgs = {
   distinct_on?: InputMaybe<Array<Users_Aggregate_By_Created_At_Date_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -13080,6 +13412,7 @@ export type Query_RootUsers_Aggregate_By_Created_At_DateArgs = {
   order_by?: InputMaybe<Array<Users_Aggregate_By_Created_At_Date_Order_By>>;
   where?: InputMaybe<Users_Aggregate_By_Created_At_Date_Bool_Exp>;
 };
+
 
 export type Query_RootUsers_By_PkArgs = {
   id: Scalars['Int']['input'];
@@ -13160,6 +13493,7 @@ export type Reading_Journals = {
   user_id?: Maybe<Scalars['Int']['output']>;
 };
 
+
 /** columns and relationships of "reading_journals" */
 export type Reading_JournalsFollowersArgs = {
   distinct_on?: InputMaybe<Array<Followed_Users_Select_Column>>;
@@ -13168,6 +13502,7 @@ export type Reading_JournalsFollowersArgs = {
   order_by?: InputMaybe<Array<Followed_Users_Order_By>>;
   where?: InputMaybe<Followed_Users_Bool_Exp>;
 };
+
 
 /** columns and relationships of "reading_journals" */
 export type Reading_JournalsLikesArgs = {
@@ -13178,10 +13513,12 @@ export type Reading_JournalsLikesArgs = {
   where?: InputMaybe<Likes_Bool_Exp>;
 };
 
+
 /** columns and relationships of "reading_journals" */
 export type Reading_JournalsMetadataArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "reading_journals" */
 export type Reading_JournalsTaggingsArgs = {
@@ -13191,6 +13528,7 @@ export type Reading_JournalsTaggingsArgs = {
   order_by?: InputMaybe<Array<Taggings_Order_By>>;
   where?: InputMaybe<Taggings_Bool_Exp>;
 };
+
 
 /** columns and relationships of "reading_journals" */
 export type Reading_JournalsTaggings_AggregateArgs = {
@@ -13419,6 +13757,7 @@ export type Reading_Journals_Summary = {
   user_id?: Maybe<Scalars['Int']['output']>;
 };
 
+
 /** columns and relationships of "reading_journals_summary" */
 export type Reading_Journals_SummaryFollowersArgs = {
   distinct_on?: InputMaybe<Array<Followed_Users_Select_Column>>;
@@ -13427,6 +13766,7 @@ export type Reading_Journals_SummaryFollowersArgs = {
   order_by?: InputMaybe<Array<Followed_Users_Order_By>>;
   where?: InputMaybe<Followed_Users_Bool_Exp>;
 };
+
 
 /** columns and relationships of "reading_journals_summary" */
 export type Reading_Journals_SummaryReading_JournalsArgs = {
@@ -13550,6 +13890,7 @@ export type Series = {
   user_id?: Maybe<Scalars['Int']['output']>;
 };
 
+
 /** columns and relationships of "series" */
 export type SeriesBook_SeriesArgs = {
   distinct_on?: InputMaybe<Array<Book_Series_Select_Column>>;
@@ -13559,6 +13900,7 @@ export type SeriesBook_SeriesArgs = {
   where?: InputMaybe<Book_Series_Bool_Exp>;
 };
 
+
 /** columns and relationships of "series" */
 export type SeriesBook_Series_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Book_Series_Select_Column>>;
@@ -13567,6 +13909,7 @@ export type SeriesBook_Series_AggregateArgs = {
   order_by?: InputMaybe<Array<Book_Series_Order_By>>;
   where?: InputMaybe<Book_Series_Bool_Exp>;
 };
+
 
 /** columns and relationships of "series" */
 export type SeriesIdentifiersArgs = {
@@ -14069,6 +14412,7 @@ export type Subscription_Root = {
   users_stream: Array<Users>;
 };
 
+
 export type Subscription_RootActivitiesArgs = {
   distinct_on?: InputMaybe<Array<Activities_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -14077,15 +14421,18 @@ export type Subscription_RootActivitiesArgs = {
   where?: InputMaybe<Activities_Bool_Exp>;
 };
 
+
 export type Subscription_RootActivities_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootActivities_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Activities_Stream_Cursor_Input>>;
   where?: InputMaybe<Activities_Bool_Exp>;
 };
+
 
 export type Subscription_RootActivity_FeedArgs = {
   args: Activity_Feed_Args;
@@ -14096,6 +14443,7 @@ export type Subscription_RootActivity_FeedArgs = {
   where?: InputMaybe<Activities_Bool_Exp>;
 };
 
+
 export type Subscription_RootActivity_Foryou_FeedArgs = {
   args: Activity_Foryou_Feed_Args;
   distinct_on?: InputMaybe<Array<Activities_Select_Column>>;
@@ -14105,6 +14453,7 @@ export type Subscription_RootActivity_Foryou_FeedArgs = {
   where?: InputMaybe<Activities_Bool_Exp>;
 };
 
+
 export type Subscription_RootAuthorsArgs = {
   distinct_on?: InputMaybe<Array<Authors_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -14113,15 +14462,18 @@ export type Subscription_RootAuthorsArgs = {
   where?: InputMaybe<Authors_Bool_Exp>;
 };
 
+
 export type Subscription_RootAuthors_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootAuthors_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Authors_Stream_Cursor_Input>>;
   where?: InputMaybe<Authors_Bool_Exp>;
 };
+
 
 export type Subscription_RootBook_CategoriesArgs = {
   distinct_on?: InputMaybe<Array<Book_Categories_Select_Column>>;
@@ -14131,15 +14483,18 @@ export type Subscription_RootBook_CategoriesArgs = {
   where?: InputMaybe<Book_Categories_Bool_Exp>;
 };
 
+
 export type Subscription_RootBook_Categories_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootBook_Categories_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Book_Categories_Stream_Cursor_Input>>;
   where?: InputMaybe<Book_Categories_Bool_Exp>;
 };
+
 
 export type Subscription_RootBook_CharactersArgs = {
   distinct_on?: InputMaybe<Array<Book_Characters_Select_Column>>;
@@ -14149,15 +14504,18 @@ export type Subscription_RootBook_CharactersArgs = {
   where?: InputMaybe<Book_Characters_Bool_Exp>;
 };
 
+
 export type Subscription_RootBook_Characters_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootBook_Characters_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Book_Characters_Stream_Cursor_Input>>;
   where?: InputMaybe<Book_Characters_Bool_Exp>;
 };
+
 
 export type Subscription_RootBook_CollectionsArgs = {
   distinct_on?: InputMaybe<Array<Book_Collections_Select_Column>>;
@@ -14167,15 +14525,18 @@ export type Subscription_RootBook_CollectionsArgs = {
   where?: InputMaybe<Book_Collections_Bool_Exp>;
 };
 
+
 export type Subscription_RootBook_Collections_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootBook_Collections_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Book_Collections_Stream_Cursor_Input>>;
   where?: InputMaybe<Book_Collections_Bool_Exp>;
 };
+
 
 export type Subscription_RootBook_MappingsArgs = {
   distinct_on?: InputMaybe<Array<Book_Mappings_Select_Column>>;
@@ -14185,15 +14546,18 @@ export type Subscription_RootBook_MappingsArgs = {
   where?: InputMaybe<Book_Mappings_Bool_Exp>;
 };
 
+
 export type Subscription_RootBook_Mappings_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootBook_Mappings_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Book_Mappings_Stream_Cursor_Input>>;
   where?: InputMaybe<Book_Mappings_Bool_Exp>;
 };
+
 
 export type Subscription_RootBook_SeriesArgs = {
   distinct_on?: InputMaybe<Array<Book_Series_Select_Column>>;
@@ -14203,6 +14567,7 @@ export type Subscription_RootBook_SeriesArgs = {
   where?: InputMaybe<Book_Series_Bool_Exp>;
 };
 
+
 export type Subscription_RootBook_Series_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Book_Series_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -14211,15 +14576,18 @@ export type Subscription_RootBook_Series_AggregateArgs = {
   where?: InputMaybe<Book_Series_Bool_Exp>;
 };
 
+
 export type Subscription_RootBook_Series_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootBook_Series_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Book_Series_Stream_Cursor_Input>>;
   where?: InputMaybe<Book_Series_Bool_Exp>;
 };
+
 
 export type Subscription_RootBook_StatusesArgs = {
   distinct_on?: InputMaybe<Array<Book_Statuses_Select_Column>>;
@@ -14229,15 +14597,18 @@ export type Subscription_RootBook_StatusesArgs = {
   where?: InputMaybe<Book_Statuses_Bool_Exp>;
 };
 
+
 export type Subscription_RootBook_Statuses_By_PkArgs = {
   id: Scalars['smallint']['input'];
 };
+
 
 export type Subscription_RootBook_Statuses_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Book_Statuses_Stream_Cursor_Input>>;
   where?: InputMaybe<Book_Statuses_Bool_Exp>;
 };
+
 
 export type Subscription_RootBooklesArgs = {
   distinct_on?: InputMaybe<Array<Bookles_Select_Column>>;
@@ -14247,15 +14618,18 @@ export type Subscription_RootBooklesArgs = {
   where?: InputMaybe<Bookles_Bool_Exp>;
 };
 
+
 export type Subscription_RootBookles_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootBookles_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Bookles_Stream_Cursor_Input>>;
   where?: InputMaybe<Bookles_Bool_Exp>;
 };
+
 
 export type Subscription_RootBooksArgs = {
   distinct_on?: InputMaybe<Array<Books_Select_Column>>;
@@ -14265,6 +14639,7 @@ export type Subscription_RootBooksArgs = {
   where?: InputMaybe<Books_Bool_Exp>;
 };
 
+
 export type Subscription_RootBooks_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Books_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -14273,15 +14648,18 @@ export type Subscription_RootBooks_AggregateArgs = {
   where?: InputMaybe<Books_Bool_Exp>;
 };
 
+
 export type Subscription_RootBooks_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootBooks_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Books_Stream_Cursor_Input>>;
   where?: InputMaybe<Books_Bool_Exp>;
 };
+
 
 export type Subscription_RootCharactersArgs = {
   distinct_on?: InputMaybe<Array<Characters_Select_Column>>;
@@ -14291,15 +14669,18 @@ export type Subscription_RootCharactersArgs = {
   where?: InputMaybe<Characters_Bool_Exp>;
 };
 
+
 export type Subscription_RootCharacters_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootCharacters_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Characters_Stream_Cursor_Input>>;
   where?: InputMaybe<Characters_Bool_Exp>;
 };
+
 
 export type Subscription_RootCollection_Import_ResultsArgs = {
   distinct_on?: InputMaybe<Array<Collection_Import_Results_Select_Column>>;
@@ -14309,15 +14690,18 @@ export type Subscription_RootCollection_Import_ResultsArgs = {
   where?: InputMaybe<Collection_Import_Results_Bool_Exp>;
 };
 
+
 export type Subscription_RootCollection_Import_Results_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootCollection_Import_Results_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Collection_Import_Results_Stream_Cursor_Input>>;
   where?: InputMaybe<Collection_Import_Results_Bool_Exp>;
 };
+
 
 export type Subscription_RootCollection_ImportsArgs = {
   distinct_on?: InputMaybe<Array<Collection_Imports_Select_Column>>;
@@ -14327,15 +14711,18 @@ export type Subscription_RootCollection_ImportsArgs = {
   where?: InputMaybe<Collection_Imports_Bool_Exp>;
 };
 
+
 export type Subscription_RootCollection_Imports_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootCollection_Imports_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Collection_Imports_Stream_Cursor_Input>>;
   where?: InputMaybe<Collection_Imports_Bool_Exp>;
 };
+
 
 export type Subscription_RootContributionsArgs = {
   distinct_on?: InputMaybe<Array<Contributions_Select_Column>>;
@@ -14345,6 +14732,7 @@ export type Subscription_RootContributionsArgs = {
   where?: InputMaybe<Contributions_Bool_Exp>;
 };
 
+
 export type Subscription_RootContributions_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Contributions_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -14353,15 +14741,18 @@ export type Subscription_RootContributions_AggregateArgs = {
   where?: InputMaybe<Contributions_Bool_Exp>;
 };
 
+
 export type Subscription_RootContributions_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootContributions_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Contributions_Stream_Cursor_Input>>;
   where?: InputMaybe<Contributions_Bool_Exp>;
 };
+
 
 export type Subscription_RootCountriesArgs = {
   distinct_on?: InputMaybe<Array<Countries_Select_Column>>;
@@ -14371,15 +14762,18 @@ export type Subscription_RootCountriesArgs = {
   where?: InputMaybe<Countries_Bool_Exp>;
 };
 
+
 export type Subscription_RootCountries_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootCountries_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Countries_Stream_Cursor_Input>>;
   where?: InputMaybe<Countries_Bool_Exp>;
 };
+
 
 export type Subscription_RootEditionsArgs = {
   distinct_on?: InputMaybe<Array<Editions_Select_Column>>;
@@ -14389,15 +14783,18 @@ export type Subscription_RootEditionsArgs = {
   where?: InputMaybe<Editions_Bool_Exp>;
 };
 
+
 export type Subscription_RootEditions_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootEditions_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Editions_Stream_Cursor_Input>>;
   where?: InputMaybe<Editions_Bool_Exp>;
 };
+
 
 export type Subscription_RootFlag_StatusesArgs = {
   distinct_on?: InputMaybe<Array<Flag_Statuses_Select_Column>>;
@@ -14407,15 +14804,18 @@ export type Subscription_RootFlag_StatusesArgs = {
   where?: InputMaybe<Flag_Statuses_Bool_Exp>;
 };
 
+
 export type Subscription_RootFlag_Statuses_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootFlag_Statuses_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Flag_Statuses_Stream_Cursor_Input>>;
   where?: InputMaybe<Flag_Statuses_Bool_Exp>;
 };
+
 
 export type Subscription_RootFollowed_ListsArgs = {
   distinct_on?: InputMaybe<Array<Followed_Lists_Select_Column>>;
@@ -14425,15 +14825,18 @@ export type Subscription_RootFollowed_ListsArgs = {
   where?: InputMaybe<Followed_Lists_Bool_Exp>;
 };
 
+
 export type Subscription_RootFollowed_Lists_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootFollowed_Lists_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Followed_Lists_Stream_Cursor_Input>>;
   where?: InputMaybe<Followed_Lists_Bool_Exp>;
 };
+
 
 export type Subscription_RootFollowed_PromptsArgs = {
   distinct_on?: InputMaybe<Array<Followed_Prompts_Select_Column>>;
@@ -14443,15 +14846,18 @@ export type Subscription_RootFollowed_PromptsArgs = {
   where?: InputMaybe<Followed_Prompts_Bool_Exp>;
 };
 
+
 export type Subscription_RootFollowed_Prompts_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootFollowed_Prompts_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Followed_Prompts_Stream_Cursor_Input>>;
   where?: InputMaybe<Followed_Prompts_Bool_Exp>;
 };
+
 
 export type Subscription_RootFollowed_User_BooksArgs = {
   distinct_on?: InputMaybe<Array<Followed_User_Books_Select_Column>>;
@@ -14461,6 +14867,7 @@ export type Subscription_RootFollowed_User_BooksArgs = {
   where?: InputMaybe<Followed_User_Books_Bool_Exp>;
 };
 
+
 export type Subscription_RootFollowed_User_Books_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Followed_User_Books_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -14469,11 +14876,13 @@ export type Subscription_RootFollowed_User_Books_AggregateArgs = {
   where?: InputMaybe<Followed_User_Books_Bool_Exp>;
 };
 
+
 export type Subscription_RootFollowed_User_Books_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Followed_User_Books_Stream_Cursor_Input>>;
   where?: InputMaybe<Followed_User_Books_Bool_Exp>;
 };
+
 
 export type Subscription_RootFollowed_UsersArgs = {
   distinct_on?: InputMaybe<Array<Followed_Users_Select_Column>>;
@@ -14483,15 +14892,18 @@ export type Subscription_RootFollowed_UsersArgs = {
   where?: InputMaybe<Followed_Users_Bool_Exp>;
 };
 
+
 export type Subscription_RootFollowed_Users_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootFollowed_Users_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Followed_Users_Stream_Cursor_Input>>;
   where?: InputMaybe<Followed_Users_Bool_Exp>;
 };
+
 
 export type Subscription_RootFollowing_User_BooksArgs = {
   distinct_on?: InputMaybe<Array<Following_User_Books_Select_Column>>;
@@ -14501,6 +14913,7 @@ export type Subscription_RootFollowing_User_BooksArgs = {
   where?: InputMaybe<Following_User_Books_Bool_Exp>;
 };
 
+
 export type Subscription_RootFollowing_User_Books_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Following_User_Books_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -14509,11 +14922,13 @@ export type Subscription_RootFollowing_User_Books_AggregateArgs = {
   where?: InputMaybe<Following_User_Books_Bool_Exp>;
 };
 
+
 export type Subscription_RootFollowing_User_Books_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Following_User_Books_Stream_Cursor_Input>>;
   where?: InputMaybe<Following_User_Books_Bool_Exp>;
 };
+
 
 export type Subscription_RootFollowsArgs = {
   distinct_on?: InputMaybe<Array<Follows_Select_Column>>;
@@ -14523,6 +14938,7 @@ export type Subscription_RootFollowsArgs = {
   where?: InputMaybe<Follows_Bool_Exp>;
 };
 
+
 export type Subscription_RootFollows_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Follows_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -14531,15 +14947,18 @@ export type Subscription_RootFollows_AggregateArgs = {
   where?: InputMaybe<Follows_Bool_Exp>;
 };
 
+
 export type Subscription_RootFollows_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootFollows_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Follows_Stream_Cursor_Input>>;
   where?: InputMaybe<Follows_Bool_Exp>;
 };
+
 
 export type Subscription_RootGoalsArgs = {
   distinct_on?: InputMaybe<Array<Goals_Select_Column>>;
@@ -14549,15 +14968,18 @@ export type Subscription_RootGoalsArgs = {
   where?: InputMaybe<Goals_Bool_Exp>;
 };
 
+
 export type Subscription_RootGoals_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootGoals_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Goals_Stream_Cursor_Input>>;
   where?: InputMaybe<Goals_Bool_Exp>;
 };
+
 
 export type Subscription_RootImagesArgs = {
   distinct_on?: InputMaybe<Array<Images_Select_Column>>;
@@ -14567,15 +14989,18 @@ export type Subscription_RootImagesArgs = {
   where?: InputMaybe<Images_Bool_Exp>;
 };
 
+
 export type Subscription_RootImages_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootImages_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Images_Stream_Cursor_Input>>;
   where?: InputMaybe<Images_Bool_Exp>;
 };
+
 
 export type Subscription_RootLanguagesArgs = {
   distinct_on?: InputMaybe<Array<Languages_Select_Column>>;
@@ -14585,15 +15010,18 @@ export type Subscription_RootLanguagesArgs = {
   where?: InputMaybe<Languages_Bool_Exp>;
 };
 
+
 export type Subscription_RootLanguages_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootLanguages_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Languages_Stream_Cursor_Input>>;
   where?: InputMaybe<Languages_Bool_Exp>;
 };
+
 
 export type Subscription_RootLikesArgs = {
   distinct_on?: InputMaybe<Array<Likes_Select_Column>>;
@@ -14603,15 +15031,18 @@ export type Subscription_RootLikesArgs = {
   where?: InputMaybe<Likes_Bool_Exp>;
 };
 
+
 export type Subscription_RootLikes_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootLikes_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Likes_Stream_Cursor_Input>>;
   where?: InputMaybe<Likes_Bool_Exp>;
 };
+
 
 export type Subscription_RootLinksArgs = {
   distinct_on?: InputMaybe<Array<Links_Select_Column>>;
@@ -14621,15 +15052,18 @@ export type Subscription_RootLinksArgs = {
   where?: InputMaybe<Links_Bool_Exp>;
 };
 
+
 export type Subscription_RootLinks_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootLinks_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Links_Stream_Cursor_Input>>;
   where?: InputMaybe<Links_Bool_Exp>;
 };
+
 
 export type Subscription_RootList_BooksArgs = {
   distinct_on?: InputMaybe<Array<List_Books_Select_Column>>;
@@ -14639,6 +15073,7 @@ export type Subscription_RootList_BooksArgs = {
   where?: InputMaybe<List_Books_Bool_Exp>;
 };
 
+
 export type Subscription_RootList_Books_AggregateArgs = {
   distinct_on?: InputMaybe<Array<List_Books_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -14647,15 +15082,18 @@ export type Subscription_RootList_Books_AggregateArgs = {
   where?: InputMaybe<List_Books_Bool_Exp>;
 };
 
+
 export type Subscription_RootList_Books_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootList_Books_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<List_Books_Stream_Cursor_Input>>;
   where?: InputMaybe<List_Books_Bool_Exp>;
 };
+
 
 export type Subscription_RootListsArgs = {
   distinct_on?: InputMaybe<Array<Lists_Select_Column>>;
@@ -14665,6 +15103,7 @@ export type Subscription_RootListsArgs = {
   where?: InputMaybe<Lists_Bool_Exp>;
 };
 
+
 export type Subscription_RootLists_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Lists_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -14673,15 +15112,18 @@ export type Subscription_RootLists_AggregateArgs = {
   where?: InputMaybe<Lists_Bool_Exp>;
 };
 
+
 export type Subscription_RootLists_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootLists_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Lists_Stream_Cursor_Input>>;
   where?: InputMaybe<Lists_Bool_Exp>;
 };
+
 
 export type Subscription_RootMeArgs = {
   distinct_on?: InputMaybe<Array<Users_Select_Column>>;
@@ -14691,6 +15133,7 @@ export type Subscription_RootMeArgs = {
   where?: InputMaybe<Users_Bool_Exp>;
 };
 
+
 export type Subscription_RootNotification_ChannelsArgs = {
   distinct_on?: InputMaybe<Array<Notification_Channels_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -14699,15 +15142,18 @@ export type Subscription_RootNotification_ChannelsArgs = {
   where?: InputMaybe<Notification_Channels_Bool_Exp>;
 };
 
+
 export type Subscription_RootNotification_Channels_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootNotification_Channels_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Notification_Channels_Stream_Cursor_Input>>;
   where?: InputMaybe<Notification_Channels_Bool_Exp>;
 };
+
 
 export type Subscription_RootNotification_DeliveriesArgs = {
   distinct_on?: InputMaybe<Array<Notification_Deliveries_Select_Column>>;
@@ -14717,6 +15163,7 @@ export type Subscription_RootNotification_DeliveriesArgs = {
   where?: InputMaybe<Notification_Deliveries_Bool_Exp>;
 };
 
+
 export type Subscription_RootNotification_Deliveries_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Notification_Deliveries_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -14725,15 +15172,18 @@ export type Subscription_RootNotification_Deliveries_AggregateArgs = {
   where?: InputMaybe<Notification_Deliveries_Bool_Exp>;
 };
 
+
 export type Subscription_RootNotification_Deliveries_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootNotification_Deliveries_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Notification_Deliveries_Stream_Cursor_Input>>;
   where?: InputMaybe<Notification_Deliveries_Bool_Exp>;
 };
+
 
 export type Subscription_RootNotification_SettingsArgs = {
   distinct_on?: InputMaybe<Array<Notification_Settings_Select_Column>>;
@@ -14743,15 +15193,18 @@ export type Subscription_RootNotification_SettingsArgs = {
   where?: InputMaybe<Notification_Settings_Bool_Exp>;
 };
 
+
 export type Subscription_RootNotification_Settings_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootNotification_Settings_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Notification_Settings_Stream_Cursor_Input>>;
   where?: InputMaybe<Notification_Settings_Bool_Exp>;
 };
+
 
 export type Subscription_RootNotification_TypesArgs = {
   distinct_on?: InputMaybe<Array<Notification_Types_Select_Column>>;
@@ -14761,15 +15214,18 @@ export type Subscription_RootNotification_TypesArgs = {
   where?: InputMaybe<Notification_Types_Bool_Exp>;
 };
 
+
 export type Subscription_RootNotification_Types_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootNotification_Types_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Notification_Types_Stream_Cursor_Input>>;
   where?: InputMaybe<Notification_Types_Bool_Exp>;
 };
+
 
 export type Subscription_RootNotificationsArgs = {
   distinct_on?: InputMaybe<Array<Notifications_Select_Column>>;
@@ -14779,15 +15235,18 @@ export type Subscription_RootNotificationsArgs = {
   where?: InputMaybe<Notifications_Bool_Exp>;
 };
 
+
 export type Subscription_RootNotifications_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootNotifications_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Notifications_Stream_Cursor_Input>>;
   where?: InputMaybe<Notifications_Bool_Exp>;
 };
+
 
 export type Subscription_RootPlatformsArgs = {
   distinct_on?: InputMaybe<Array<Platforms_Select_Column>>;
@@ -14797,15 +15256,18 @@ export type Subscription_RootPlatformsArgs = {
   where?: InputMaybe<Platforms_Bool_Exp>;
 };
 
+
 export type Subscription_RootPlatforms_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootPlatforms_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Platforms_Stream_Cursor_Input>>;
   where?: InputMaybe<Platforms_Bool_Exp>;
 };
+
 
 export type Subscription_RootPrivacy_SettingsArgs = {
   distinct_on?: InputMaybe<Array<Privacy_Settings_Select_Column>>;
@@ -14815,15 +15277,18 @@ export type Subscription_RootPrivacy_SettingsArgs = {
   where?: InputMaybe<Privacy_Settings_Bool_Exp>;
 };
 
+
 export type Subscription_RootPrivacy_Settings_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootPrivacy_Settings_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Privacy_Settings_Stream_Cursor_Input>>;
   where?: InputMaybe<Privacy_Settings_Bool_Exp>;
 };
+
 
 export type Subscription_RootPrompt_AnswersArgs = {
   distinct_on?: InputMaybe<Array<Prompt_Answers_Select_Column>>;
@@ -14833,6 +15298,7 @@ export type Subscription_RootPrompt_AnswersArgs = {
   where?: InputMaybe<Prompt_Answers_Bool_Exp>;
 };
 
+
 export type Subscription_RootPrompt_Answers_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Prompt_Answers_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -14841,15 +15307,18 @@ export type Subscription_RootPrompt_Answers_AggregateArgs = {
   where?: InputMaybe<Prompt_Answers_Bool_Exp>;
 };
 
+
 export type Subscription_RootPrompt_Answers_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootPrompt_Answers_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Prompt_Answers_Stream_Cursor_Input>>;
   where?: InputMaybe<Prompt_Answers_Bool_Exp>;
 };
+
 
 export type Subscription_RootPrompt_Books_SummaryArgs = {
   distinct_on?: InputMaybe<Array<Prompt_Books_Summary_Select_Column>>;
@@ -14859,11 +15328,13 @@ export type Subscription_RootPrompt_Books_SummaryArgs = {
   where?: InputMaybe<Prompt_Books_Summary_Bool_Exp>;
 };
 
+
 export type Subscription_RootPrompt_Books_Summary_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Prompt_Books_Summary_Stream_Cursor_Input>>;
   where?: InputMaybe<Prompt_Books_Summary_Bool_Exp>;
 };
+
 
 export type Subscription_RootPromptsArgs = {
   distinct_on?: InputMaybe<Array<Prompts_Select_Column>>;
@@ -14873,15 +15344,18 @@ export type Subscription_RootPromptsArgs = {
   where?: InputMaybe<Prompts_Bool_Exp>;
 };
 
+
 export type Subscription_RootPrompts_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootPrompts_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Prompts_Stream_Cursor_Input>>;
   where?: InputMaybe<Prompts_Bool_Exp>;
 };
+
 
 export type Subscription_RootPublishersArgs = {
   distinct_on?: InputMaybe<Array<Publishers_Select_Column>>;
@@ -14891,15 +15365,18 @@ export type Subscription_RootPublishersArgs = {
   where?: InputMaybe<Publishers_Bool_Exp>;
 };
 
+
 export type Subscription_RootPublishers_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootPublishers_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Publishers_Stream_Cursor_Input>>;
   where?: InputMaybe<Publishers_Bool_Exp>;
 };
+
 
 export type Subscription_RootReading_FormatsArgs = {
   distinct_on?: InputMaybe<Array<Reading_Formats_Select_Column>>;
@@ -14909,15 +15386,18 @@ export type Subscription_RootReading_FormatsArgs = {
   where?: InputMaybe<Reading_Formats_Bool_Exp>;
 };
 
+
 export type Subscription_RootReading_Formats_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootReading_Formats_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Reading_Formats_Stream_Cursor_Input>>;
   where?: InputMaybe<Reading_Formats_Bool_Exp>;
 };
+
 
 export type Subscription_RootReading_JournalsArgs = {
   distinct_on?: InputMaybe<Array<Reading_Journals_Select_Column>>;
@@ -14927,15 +15407,18 @@ export type Subscription_RootReading_JournalsArgs = {
   where?: InputMaybe<Reading_Journals_Bool_Exp>;
 };
 
+
 export type Subscription_RootReading_Journals_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootReading_Journals_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Reading_Journals_Stream_Cursor_Input>>;
   where?: InputMaybe<Reading_Journals_Bool_Exp>;
 };
+
 
 export type Subscription_RootReading_Journals_SummaryArgs = {
   distinct_on?: InputMaybe<Array<Reading_Journals_Summary_Select_Column>>;
@@ -14945,11 +15428,13 @@ export type Subscription_RootReading_Journals_SummaryArgs = {
   where?: InputMaybe<Reading_Journals_Summary_Bool_Exp>;
 };
 
+
 export type Subscription_RootReading_Journals_Summary_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Reading_Journals_Summary_Stream_Cursor_Input>>;
   where?: InputMaybe<Reading_Journals_Summary_Bool_Exp>;
 };
+
 
 export type Subscription_RootSeriesArgs = {
   distinct_on?: InputMaybe<Array<Series_Select_Column>>;
@@ -14959,15 +15444,18 @@ export type Subscription_RootSeriesArgs = {
   where?: InputMaybe<Series_Bool_Exp>;
 };
 
+
 export type Subscription_RootSeries_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootSeries_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Series_Stream_Cursor_Input>>;
   where?: InputMaybe<Series_Bool_Exp>;
 };
+
 
 export type Subscription_RootTag_CategoriesArgs = {
   distinct_on?: InputMaybe<Array<Tag_Categories_Select_Column>>;
@@ -14977,15 +15465,18 @@ export type Subscription_RootTag_CategoriesArgs = {
   where?: InputMaybe<Tag_Categories_Bool_Exp>;
 };
 
+
 export type Subscription_RootTag_Categories_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootTag_Categories_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Tag_Categories_Stream_Cursor_Input>>;
   where?: InputMaybe<Tag_Categories_Bool_Exp>;
 };
+
 
 export type Subscription_RootTaggable_CountsArgs = {
   distinct_on?: InputMaybe<Array<Taggable_Counts_Select_Column>>;
@@ -14995,15 +15486,18 @@ export type Subscription_RootTaggable_CountsArgs = {
   where?: InputMaybe<Taggable_Counts_Bool_Exp>;
 };
 
+
 export type Subscription_RootTaggable_Counts_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootTaggable_Counts_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Taggable_Counts_Stream_Cursor_Input>>;
   where?: InputMaybe<Taggable_Counts_Bool_Exp>;
 };
+
 
 export type Subscription_RootTaggingsArgs = {
   distinct_on?: InputMaybe<Array<Taggings_Select_Column>>;
@@ -15013,6 +15507,7 @@ export type Subscription_RootTaggingsArgs = {
   where?: InputMaybe<Taggings_Bool_Exp>;
 };
 
+
 export type Subscription_RootTaggings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Taggings_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -15021,15 +15516,18 @@ export type Subscription_RootTaggings_AggregateArgs = {
   where?: InputMaybe<Taggings_Bool_Exp>;
 };
 
+
 export type Subscription_RootTaggings_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootTaggings_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Taggings_Stream_Cursor_Input>>;
   where?: InputMaybe<Taggings_Bool_Exp>;
 };
+
 
 export type Subscription_RootTagsArgs = {
   distinct_on?: InputMaybe<Array<Tags_Select_Column>>;
@@ -15039,6 +15537,7 @@ export type Subscription_RootTagsArgs = {
   where?: InputMaybe<Tags_Bool_Exp>;
 };
 
+
 export type Subscription_RootTags_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Tags_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -15047,15 +15546,18 @@ export type Subscription_RootTags_AggregateArgs = {
   where?: InputMaybe<Tags_Bool_Exp>;
 };
 
+
 export type Subscription_RootTags_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootTags_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Tags_Stream_Cursor_Input>>;
   where?: InputMaybe<Tags_Bool_Exp>;
 };
+
 
 export type Subscription_RootUser_BlocksArgs = {
   distinct_on?: InputMaybe<Array<User_Blocks_Select_Column>>;
@@ -15065,15 +15567,18 @@ export type Subscription_RootUser_BlocksArgs = {
   where?: InputMaybe<User_Blocks_Bool_Exp>;
 };
 
+
 export type Subscription_RootUser_Blocks_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootUser_Blocks_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<User_Blocks_Stream_Cursor_Input>>;
   where?: InputMaybe<User_Blocks_Bool_Exp>;
 };
+
 
 export type Subscription_RootUser_Book_ReadsArgs = {
   distinct_on?: InputMaybe<Array<User_Book_Reads_Select_Column>>;
@@ -15083,6 +15588,7 @@ export type Subscription_RootUser_Book_ReadsArgs = {
   where?: InputMaybe<User_Book_Reads_Bool_Exp>;
 };
 
+
 export type Subscription_RootUser_Book_Reads_AggregateArgs = {
   distinct_on?: InputMaybe<Array<User_Book_Reads_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -15091,15 +15597,18 @@ export type Subscription_RootUser_Book_Reads_AggregateArgs = {
   where?: InputMaybe<User_Book_Reads_Bool_Exp>;
 };
 
+
 export type Subscription_RootUser_Book_Reads_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootUser_Book_Reads_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<User_Book_Reads_Stream_Cursor_Input>>;
   where?: InputMaybe<User_Book_Reads_Bool_Exp>;
 };
+
 
 export type Subscription_RootUser_Book_StatusesArgs = {
   distinct_on?: InputMaybe<Array<User_Book_Statuses_Select_Column>>;
@@ -15109,6 +15618,7 @@ export type Subscription_RootUser_Book_StatusesArgs = {
   where?: InputMaybe<User_Book_Statuses_Bool_Exp>;
 };
 
+
 export type Subscription_RootUser_Book_Statuses_AggregateArgs = {
   distinct_on?: InputMaybe<Array<User_Book_Statuses_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -15117,15 +15627,18 @@ export type Subscription_RootUser_Book_Statuses_AggregateArgs = {
   where?: InputMaybe<User_Book_Statuses_Bool_Exp>;
 };
 
+
 export type Subscription_RootUser_Book_Statuses_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootUser_Book_Statuses_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<User_Book_Statuses_Stream_Cursor_Input>>;
   where?: InputMaybe<User_Book_Statuses_Bool_Exp>;
 };
+
 
 export type Subscription_RootUser_BooksArgs = {
   distinct_on?: InputMaybe<Array<User_Books_Select_Column>>;
@@ -15135,6 +15648,7 @@ export type Subscription_RootUser_BooksArgs = {
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
 
+
 export type Subscription_RootUser_Books_AggregateArgs = {
   distinct_on?: InputMaybe<Array<User_Books_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -15143,15 +15657,18 @@ export type Subscription_RootUser_Books_AggregateArgs = {
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
 
+
 export type Subscription_RootUser_Books_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootUser_Books_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<User_Books_Stream_Cursor_Input>>;
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
+
 
 export type Subscription_RootUser_FlagsArgs = {
   distinct_on?: InputMaybe<Array<User_Flags_Select_Column>>;
@@ -15161,15 +15678,18 @@ export type Subscription_RootUser_FlagsArgs = {
   where?: InputMaybe<User_Flags_Bool_Exp>;
 };
 
+
 export type Subscription_RootUser_Flags_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootUser_Flags_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<User_Flags_Stream_Cursor_Input>>;
   where?: InputMaybe<User_Flags_Bool_Exp>;
 };
+
 
 export type Subscription_RootUser_ReferralsArgs = {
   distinct_on?: InputMaybe<Array<User_Referrals_Select_Column>>;
@@ -15179,15 +15699,18 @@ export type Subscription_RootUser_ReferralsArgs = {
   where?: InputMaybe<User_Referrals_Bool_Exp>;
 };
 
+
 export type Subscription_RootUser_Referrals_By_PkArgs = {
   id: Scalars['bigint']['input'];
 };
+
 
 export type Subscription_RootUser_Referrals_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<User_Referrals_Stream_Cursor_Input>>;
   where?: InputMaybe<User_Referrals_Bool_Exp>;
 };
+
 
 export type Subscription_RootUser_StatusesArgs = {
   distinct_on?: InputMaybe<Array<User_Statuses_Select_Column>>;
@@ -15197,15 +15720,18 @@ export type Subscription_RootUser_StatusesArgs = {
   where?: InputMaybe<User_Statuses_Bool_Exp>;
 };
 
+
 export type Subscription_RootUser_Statuses_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootUser_Statuses_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<User_Statuses_Stream_Cursor_Input>>;
   where?: InputMaybe<User_Statuses_Bool_Exp>;
 };
+
 
 export type Subscription_RootUsersArgs = {
   distinct_on?: InputMaybe<Array<Users_Select_Column>>;
@@ -15215,6 +15741,7 @@ export type Subscription_RootUsersArgs = {
   where?: InputMaybe<Users_Bool_Exp>;
 };
 
+
 export type Subscription_RootUsers_Aggregate_By_Created_At_DateArgs = {
   distinct_on?: InputMaybe<Array<Users_Aggregate_By_Created_At_Date_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -15223,15 +15750,18 @@ export type Subscription_RootUsers_Aggregate_By_Created_At_DateArgs = {
   where?: InputMaybe<Users_Aggregate_By_Created_At_Date_Bool_Exp>;
 };
 
+
 export type Subscription_RootUsers_Aggregate_By_Created_At_Date_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Users_Aggregate_By_Created_At_Date_Stream_Cursor_Input>>;
   where?: InputMaybe<Users_Aggregate_By_Created_At_Date_Bool_Exp>;
 };
 
+
 export type Subscription_RootUsers_By_PkArgs = {
   id: Scalars['Int']['input'];
 };
+
 
 export type Subscription_RootUsers_StreamArgs = {
   batch_size: Scalars['Int']['input'];
@@ -15252,6 +15782,7 @@ export type Tag_Categories = {
   tags_aggregate: Tags_Aggregate;
 };
 
+
 /** columns and relationships of "tag_categories" */
 export type Tag_CategoriesTagsArgs = {
   distinct_on?: InputMaybe<Array<Tags_Select_Column>>;
@@ -15260,6 +15791,7 @@ export type Tag_CategoriesTagsArgs = {
   order_by?: InputMaybe<Array<Tags_Order_By>>;
   where?: InputMaybe<Tags_Bool_Exp>;
 };
+
 
 /** columns and relationships of "tag_categories" */
 export type Tag_CategoriesTags_AggregateArgs = {
@@ -15591,6 +16123,7 @@ export type Taggings_Aggregate_Fields = {
   variance?: Maybe<Taggings_Variance_Fields>;
 };
 
+
 /** aggregate fields of "taggings" */
 export type Taggings_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<Taggings_Select_Column>>;
@@ -15722,12 +16255,12 @@ export type Taggings_Select_Column =
 /** select "taggings_aggregate_bool_exp_bool_and_arguments_columns" columns of table "taggings" */
 export type Taggings_Select_Column_Taggings_Aggregate_Bool_Exp_Bool_And_Arguments_Columns =
   /** column name */
-  'spoiler';
+  | 'spoiler';
 
 /** select "taggings_aggregate_bool_exp_bool_or_arguments_columns" columns of table "taggings" */
 export type Taggings_Select_Column_Taggings_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns =
   /** column name */
-  'spoiler';
+  | 'spoiler';
 
 /** aggregate stddev on columns */
 export type Taggings_Stddev_Fields = {
@@ -15883,6 +16416,7 @@ export type Tags = {
   taggings_aggregate: Taggings_Aggregate;
 };
 
+
 /** columns and relationships of "tags" */
 export type TagsTaggingsArgs = {
   distinct_on?: InputMaybe<Array<Taggings_Select_Column>>;
@@ -15891,6 +16425,7 @@ export type TagsTaggingsArgs = {
   order_by?: InputMaybe<Array<Taggings_Order_By>>;
   where?: InputMaybe<Taggings_Bool_Exp>;
 };
+
 
 /** columns and relationships of "tags" */
 export type TagsTaggings_AggregateArgs = {
@@ -15934,6 +16469,7 @@ export type Tags_Aggregate_Fields = {
   var_samp?: Maybe<Tags_Var_Samp_Fields>;
   variance?: Maybe<Tags_Variance_Fields>;
 };
+
 
 /** aggregate fields of "tags" */
 export type Tags_Aggregate_FieldsCountArgs = {
@@ -16379,7 +16915,7 @@ export type User_Blocks_Sum_Order_By = {
 /** placeholder for update columns of table "user_blocks" (current role has no relevant permissions) */
 export type User_Blocks_Update_Column =
   /** placeholder (do not use) */
-  '_PLACEHOLDER';
+  | '_PLACEHOLDER';
 
 /** order by var_pop() on columns of table "user_blocks" */
 export type User_Blocks_Var_Pop_Order_By = {
@@ -16528,6 +17064,7 @@ export type User_Book_Reads_Aggregate_Fields = {
   var_samp?: Maybe<User_Book_Reads_Var_Samp_Fields>;
   variance?: Maybe<User_Book_Reads_Variance_Fields>;
 };
+
 
 /** aggregate fields of "user_book_reads" */
 export type User_Book_Reads_Aggregate_FieldsCountArgs = {
@@ -16692,42 +17229,42 @@ export type User_Book_Reads_Select_Column =
 /** select "user_book_reads_aggregate_bool_exp_avg_arguments_columns" columns of table "user_book_reads" */
 export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Avg_Arguments_Columns =
   /** column name */
-  'progress';
+  | 'progress';
 
 /** select "user_book_reads_aggregate_bool_exp_corr_arguments_columns" columns of table "user_book_reads" */
 export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Corr_Arguments_Columns =
   /** column name */
-  'progress';
+  | 'progress';
 
 /** select "user_book_reads_aggregate_bool_exp_covar_samp_arguments_columns" columns of table "user_book_reads" */
 export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Covar_Samp_Arguments_Columns =
   /** column name */
-  'progress';
+  | 'progress';
 
 /** select "user_book_reads_aggregate_bool_exp_max_arguments_columns" columns of table "user_book_reads" */
 export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Max_Arguments_Columns =
   /** column name */
-  'progress';
+  | 'progress';
 
 /** select "user_book_reads_aggregate_bool_exp_min_arguments_columns" columns of table "user_book_reads" */
 export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Min_Arguments_Columns =
   /** column name */
-  'progress';
+  | 'progress';
 
 /** select "user_book_reads_aggregate_bool_exp_stddev_samp_arguments_columns" columns of table "user_book_reads" */
 export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Stddev_Samp_Arguments_Columns =
   /** column name */
-  'progress';
+  | 'progress';
 
 /** select "user_book_reads_aggregate_bool_exp_sum_arguments_columns" columns of table "user_book_reads" */
 export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Sum_Arguments_Columns =
   /** column name */
-  'progress';
+  | 'progress';
 
 /** select "user_book_reads_aggregate_bool_exp_var_samp_arguments_columns" columns of table "user_book_reads" */
 export type User_Book_Reads_Select_Column_User_Book_Reads_Aggregate_Bool_Exp_Var_Samp_Arguments_Columns =
   /** column name */
-  'progress';
+  | 'progress';
 
 /** aggregate stddev on columns */
 export type User_Book_Reads_Stddev_Fields = {
@@ -16925,6 +17462,7 @@ export type User_Book_Statuses = {
   user_books_aggregate: User_Books_Aggregate;
 };
 
+
 /** columns and relationships of "user_book_statuses" */
 export type User_Book_StatusesUser_BooksArgs = {
   distinct_on?: InputMaybe<Array<User_Books_Select_Column>>;
@@ -16933,6 +17471,7 @@ export type User_Book_StatusesUser_BooksArgs = {
   order_by?: InputMaybe<Array<User_Books_Order_By>>;
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
+
 
 /** columns and relationships of "user_book_statuses" */
 export type User_Book_StatusesUser_Books_AggregateArgs = {
@@ -16965,6 +17504,7 @@ export type User_Book_Statuses_Aggregate_Fields = {
   var_samp?: Maybe<User_Book_Statuses_Var_Samp_Fields>;
   variance?: Maybe<User_Book_Statuses_Variance_Fields>;
 };
+
 
 /** aggregate fields of "user_book_statuses" */
 export type User_Book_Statuses_Aggregate_FieldsCountArgs = {
@@ -17159,6 +17699,7 @@ export type User_Books = {
   user_id: Scalars['Int']['output'];
 };
 
+
 /** columns and relationships of "user_books" */
 export type User_BooksFollowersArgs = {
   distinct_on?: InputMaybe<Array<Followed_Users_Select_Column>>;
@@ -17167,6 +17708,7 @@ export type User_BooksFollowersArgs = {
   order_by?: InputMaybe<Array<Followed_Users_Order_By>>;
   where?: InputMaybe<Followed_Users_Bool_Exp>;
 };
+
 
 /** columns and relationships of "user_books" */
 export type User_BooksLikesArgs = {
@@ -17177,6 +17719,7 @@ export type User_BooksLikesArgs = {
   where?: InputMaybe<Likes_Bool_Exp>;
 };
 
+
 /** columns and relationships of "user_books" */
 export type User_BooksReading_JournalsArgs = {
   distinct_on?: InputMaybe<Array<Reading_Journals_Select_Column>>;
@@ -17186,10 +17729,12 @@ export type User_BooksReading_JournalsArgs = {
   where?: InputMaybe<Reading_Journals_Bool_Exp>;
 };
 
+
 /** columns and relationships of "user_books" */
 export type User_BooksReview_SlateArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "user_books" */
 export type User_BooksUser_Book_ReadsArgs = {
@@ -17200,6 +17745,7 @@ export type User_BooksUser_Book_ReadsArgs = {
   where?: InputMaybe<User_Book_Reads_Bool_Exp>;
 };
 
+
 /** columns and relationships of "user_books" */
 export type User_BooksUser_Book_Reads_AggregateArgs = {
   distinct_on?: InputMaybe<Array<User_Book_Reads_Select_Column>>;
@@ -17209,6 +17755,7 @@ export type User_BooksUser_Book_Reads_AggregateArgs = {
   where?: InputMaybe<User_Book_Reads_Bool_Exp>;
 };
 
+
 /** columns and relationships of "user_books" */
 export type User_BooksUser_BooksArgs = {
   distinct_on?: InputMaybe<Array<User_Books_Select_Column>>;
@@ -17217,6 +17764,7 @@ export type User_BooksUser_BooksArgs = {
   order_by?: InputMaybe<Array<User_Books_Order_By>>;
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
+
 
 /** columns and relationships of "user_books" */
 export type User_BooksUser_Books_AggregateArgs = {
@@ -17276,6 +17824,7 @@ export type User_Books_Aggregate_Fields = {
   var_samp?: Maybe<User_Books_Var_Samp_Fields>;
   variance?: Maybe<User_Books_Variance_Fields>;
 };
+
 
 /** aggregate fields of "user_books" */
 export type User_Books_Aggregate_FieldsCountArgs = {
@@ -18252,7 +18801,7 @@ export type User_Flags_Sum_Order_By = {
 /** placeholder for update columns of table "user_flags" (current role has no relevant permissions) */
 export type User_Flags_Update_Column =
   /** placeholder (do not use) */
-  '_PLACEHOLDER';
+  | '_PLACEHOLDER';
 
 /** order by var_pop() on columns of table "user_flags" */
 export type User_Flags_Var_Pop_Order_By = {
@@ -18364,6 +18913,7 @@ export type User_Statuses = {
   /** An array relationship */
   users: Array<Users>;
 };
+
 
 /** columns and relationships of "user_statuses" */
 export type User_StatusesUsersArgs = {
@@ -18517,6 +19067,7 @@ export type Users = {
   username?: Maybe<Scalars['citext']['output']>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersActivitiesArgs = {
   distinct_on?: InputMaybe<Array<Activities_Select_Column>>;
@@ -18525,6 +19076,7 @@ export type UsersActivitiesArgs = {
   order_by?: InputMaybe<Array<Activities_Order_By>>;
   where?: InputMaybe<Activities_Bool_Exp>;
 };
+
 
 /** columns and relationships of "users" */
 export type UsersBlocked_UsersArgs = {
@@ -18535,20 +19087,24 @@ export type UsersBlocked_UsersArgs = {
   where?: InputMaybe<User_Blocks_Bool_Exp>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersCached_CoverArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "users" */
 export type UsersCached_GenresArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersCached_ImageArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "users" */
 export type UsersCollection_ImportsArgs = {
@@ -18559,6 +19115,7 @@ export type UsersCollection_ImportsArgs = {
   where?: InputMaybe<Collection_Imports_Bool_Exp>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersFollowed_By_UsersArgs = {
   distinct_on?: InputMaybe<Array<Followed_Users_Select_Column>>;
@@ -18567,6 +19124,7 @@ export type UsersFollowed_By_UsersArgs = {
   order_by?: InputMaybe<Array<Followed_Users_Order_By>>;
   where?: InputMaybe<Followed_Users_Bool_Exp>;
 };
+
 
 /** columns and relationships of "users" */
 export type UsersFollowed_ListsArgs = {
@@ -18577,6 +19135,7 @@ export type UsersFollowed_ListsArgs = {
   where?: InputMaybe<Followed_Lists_Bool_Exp>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersFollowed_PromptsArgs = {
   distinct_on?: InputMaybe<Array<Followed_Prompts_Select_Column>>;
@@ -18585,6 +19144,7 @@ export type UsersFollowed_PromptsArgs = {
   order_by?: InputMaybe<Array<Followed_Prompts_Order_By>>;
   where?: InputMaybe<Followed_Prompts_Bool_Exp>;
 };
+
 
 /** columns and relationships of "users" */
 export type UsersFollowed_UsersArgs = {
@@ -18595,6 +19155,7 @@ export type UsersFollowed_UsersArgs = {
   where?: InputMaybe<Followed_Users_Bool_Exp>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersFollowsArgs = {
   distinct_on?: InputMaybe<Array<Follows_Select_Column>>;
@@ -18603,6 +19164,7 @@ export type UsersFollowsArgs = {
   order_by?: InputMaybe<Array<Follows_Order_By>>;
   where?: InputMaybe<Follows_Bool_Exp>;
 };
+
 
 /** columns and relationships of "users" */
 export type UsersFollows_AggregateArgs = {
@@ -18613,6 +19175,7 @@ export type UsersFollows_AggregateArgs = {
   where?: InputMaybe<Follows_Bool_Exp>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersGoalsArgs = {
   distinct_on?: InputMaybe<Array<Goals_Select_Column>>;
@@ -18622,10 +19185,12 @@ export type UsersGoalsArgs = {
   where?: InputMaybe<Goals_Bool_Exp>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersLibrarian_RolesArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
+
 
 /** columns and relationships of "users" */
 export type UsersListsArgs = {
@@ -18636,6 +19201,7 @@ export type UsersListsArgs = {
   where?: InputMaybe<Lists_Bool_Exp>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersLists_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Lists_Select_Column>>;
@@ -18644,6 +19210,7 @@ export type UsersLists_AggregateArgs = {
   order_by?: InputMaybe<Array<Lists_Order_By>>;
   where?: InputMaybe<Lists_Bool_Exp>;
 };
+
 
 /** columns and relationships of "users" */
 export type UsersNotification_DeliveriesArgs = {
@@ -18654,6 +19221,7 @@ export type UsersNotification_DeliveriesArgs = {
   where?: InputMaybe<Notification_Deliveries_Bool_Exp>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersNotification_Deliveries_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Notification_Deliveries_Select_Column>>;
@@ -18662,6 +19230,7 @@ export type UsersNotification_Deliveries_AggregateArgs = {
   order_by?: InputMaybe<Array<Notification_Deliveries_Order_By>>;
   where?: InputMaybe<Notification_Deliveries_Bool_Exp>;
 };
+
 
 /** columns and relationships of "users" */
 export type UsersPrompt_AnswersArgs = {
@@ -18672,6 +19241,7 @@ export type UsersPrompt_AnswersArgs = {
   where?: InputMaybe<Prompt_Answers_Bool_Exp>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersPrompt_Answers_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Prompt_Answers_Select_Column>>;
@@ -18680,6 +19250,7 @@ export type UsersPrompt_Answers_AggregateArgs = {
   order_by?: InputMaybe<Array<Prompt_Answers_Order_By>>;
   where?: InputMaybe<Prompt_Answers_Bool_Exp>;
 };
+
 
 /** columns and relationships of "users" */
 export type UsersPromptsArgs = {
@@ -18690,6 +19261,7 @@ export type UsersPromptsArgs = {
   where?: InputMaybe<Prompts_Bool_Exp>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersReferrered_UsersArgs = {
   distinct_on?: InputMaybe<Array<User_Books_Select_Column>>;
@@ -18698,6 +19270,7 @@ export type UsersReferrered_UsersArgs = {
   order_by?: InputMaybe<Array<User_Books_Order_By>>;
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
+
 
 /** columns and relationships of "users" */
 export type UsersReferrered_Users_AggregateArgs = {
@@ -18708,6 +19281,7 @@ export type UsersReferrered_Users_AggregateArgs = {
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersReported_User_FlagsArgs = {
   distinct_on?: InputMaybe<Array<User_Flags_Select_Column>>;
@@ -18716,6 +19290,7 @@ export type UsersReported_User_FlagsArgs = {
   order_by?: InputMaybe<Array<User_Flags_Order_By>>;
   where?: InputMaybe<User_Flags_Bool_Exp>;
 };
+
 
 /** columns and relationships of "users" */
 export type UsersTaggingsArgs = {
@@ -18726,6 +19301,7 @@ export type UsersTaggingsArgs = {
   where?: InputMaybe<Taggings_Bool_Exp>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersTaggings_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Taggings_Select_Column>>;
@@ -18734,6 +19310,7 @@ export type UsersTaggings_AggregateArgs = {
   order_by?: InputMaybe<Array<Taggings_Order_By>>;
   where?: InputMaybe<Taggings_Bool_Exp>;
 };
+
 
 /** columns and relationships of "users" */
 export type UsersUser_BooksArgs = {
@@ -18744,6 +19321,7 @@ export type UsersUser_BooksArgs = {
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
 
+
 /** columns and relationships of "users" */
 export type UsersUser_Books_AggregateArgs = {
   distinct_on?: InputMaybe<Array<User_Books_Select_Column>>;
@@ -18752,6 +19330,7 @@ export type UsersUser_Books_AggregateArgs = {
   order_by?: InputMaybe<Array<User_Books_Order_By>>;
   where?: InputMaybe<User_Books_Bool_Exp>;
 };
+
 
 /** columns and relationships of "users" */
 export type UsersUser_FlagsArgs = {
@@ -19341,42 +19920,29 @@ export type GetBooksByIdsQueryVariables = Exact<{
   ids?: InputMaybe<Array<Scalars['Int']['input']> | Scalars['Int']['input']>;
 }>;
 
-export type GetBooksByIdsQuery = {
-  __typename?: 'query_root';
-  books: Array<{
-    __typename?: 'books';
-    id: number;
-    title?: string | null;
-    subtitle?: string | null;
-    description?: string | null;
-    release_date?: unknown | null;
-    pages?: number | null;
-    image?: { __typename?: 'images'; url?: string | null; width?: number | null; height?: number | null } | null;
-    featured_book_series?: {
-      __typename?: 'book_series';
-      position?: unknown | null;
-      series?: { __typename?: 'series'; id: number; name: string; books_count: number } | null;
-    } | null;
-    contributions: Array<{
-      __typename?: 'contributions';
-      contribution?: string | null;
-      author?: { __typename?: 'authors'; name: string } | null;
-    }>;
-  }>;
-};
+
+export type GetBooksByIdsQuery = { __typename?: 'query_root', books: Array<{ __typename?: 'books', id: number, title?: string | null, subtitle?: string | null, description?: string | null, release_date?: unknown | null, pages?: number | null, image?: { __typename?: 'images', url?: string | null, width?: number | null, height?: number | null } | null, featured_book_series?: { __typename?: 'book_series', position?: unknown | null, series?: { __typename?: 'series', id: number, name: string, books_count: number } | null } | null, contributions: Array<{ __typename?: 'contributions', contribution?: string | null, author?: { __typename?: 'authors', name: string } | null }> }> };
+
+export type GetSeriesByIdQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type GetSeriesByIdQuery = { __typename?: 'query_root', book_series: Array<{ __typename?: 'book_series', position?: unknown | null, series?: { __typename?: 'series', id: number, name: string, books_count: number } | null, book?: { __typename?: 'books', id: number, title?: string | null, subtitle?: string | null, description?: string | null, release_date?: unknown | null, pages?: number | null, image?: { __typename?: 'images', url?: string | null, width?: number | null, height?: number | null } | null, featured_book_series?: { __typename?: 'book_series', position?: unknown | null, series?: { __typename?: 'series', id: number, name: string, books_count: number } | null } | null, contributions: Array<{ __typename?: 'contributions', contribution?: string | null, author?: { __typename?: 'authors', name: string } | null }> } | null }> };
 
 export type SearchBooksQueryVariables = Exact<{
   query: Scalars['String']['input'];
 }>;
 
-export type SearchBooksQuery = {
-  __typename?: 'query_root';
-  search?: { __typename?: 'SearchOutput'; ids?: Array<number | null> | null } | null;
-};
+
+export type SearchBooksQuery = { __typename?: 'query_root', search?: { __typename?: 'SearchOutput', ids?: Array<number | null> | null } | null };
+
 
 export const GetBooksByIdsDocument = gql`
     query GetBooksByIds($ids: [Int!]) {
-  books(where: {id: {_in: $ids}}) {
+  books(
+    where: {id: {_in: $ids}, canonical_id: {_is_null: true}, book_status_id: {_eq: 1}, is_partial_book: {_eq: false}}
+  ) {
     id
     title
     subtitle
@@ -19405,6 +19971,49 @@ export const GetBooksByIdsDocument = gql`
   }
 }
     `;
+export const GetSeriesByIdDocument = gql`
+    query GetSeriesById($id: Int!) {
+  book_series(
+    distinct_on: position
+    order_by: [{position: asc}]
+    where: {series_id: {_eq: $id}, book: {canonical_id: {_is_null: true}, is_partial_book: {_eq: false}}, compilation: {_eq: false}}
+  ) {
+    position
+    series {
+      id
+      name
+      books_count
+    }
+    book {
+      id
+      title
+      subtitle
+      description
+      release_date
+      image {
+        url
+        width
+        height
+      }
+      featured_book_series {
+        series {
+          id
+          name
+          books_count
+        }
+        position
+      }
+      pages
+      contributions {
+        contribution
+        author {
+          name
+        }
+      }
+    }
+  }
+}
+    `;
 export const SearchBooksDocument = gql`
     query SearchBooks($query: String!) {
   search(
@@ -19416,23 +20025,18 @@ export const SearchBooksDocument = gql`
   }
 }
     `;
-export type Requester<C = {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>;
+export type Requester<C = {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>
 export function getSdk<C>(requester: Requester<C>) {
   return {
     GetBooksByIds(variables?: GetBooksByIdsQueryVariables, options?: C): Promise<GetBooksByIdsQuery> {
-      return requester<GetBooksByIdsQuery, GetBooksByIdsQueryVariables>(
-        GetBooksByIdsDocument,
-        variables,
-        options,
-      ) as Promise<GetBooksByIdsQuery>;
+      return requester<GetBooksByIdsQuery, GetBooksByIdsQueryVariables>(GetBooksByIdsDocument, variables, options) as Promise<GetBooksByIdsQuery>;
+    },
+    GetSeriesById(variables: GetSeriesByIdQueryVariables, options?: C): Promise<GetSeriesByIdQuery> {
+      return requester<GetSeriesByIdQuery, GetSeriesByIdQueryVariables>(GetSeriesByIdDocument, variables, options) as Promise<GetSeriesByIdQuery>;
     },
     SearchBooks(variables: SearchBooksQueryVariables, options?: C): Promise<SearchBooksQuery> {
-      return requester<SearchBooksQuery, SearchBooksQueryVariables>(
-        SearchBooksDocument,
-        variables,
-        options,
-      ) as Promise<SearchBooksQuery>;
-    },
+      return requester<SearchBooksQuery, SearchBooksQueryVariables>(SearchBooksDocument, variables, options) as Promise<SearchBooksQuery>;
+    }
   };
 }
 export type Sdk = ReturnType<typeof getSdk>;

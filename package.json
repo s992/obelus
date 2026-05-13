@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "pnpm -r --parallel dev",
     "build": "pnpm -r build",
+    "checks": "pnpm typecheck && pnpm format:check && pnpm lint:check",
     "typecheck": "pnpm -r --parallel typecheck",
     "format:check": "biome check --assist-enabled=true",
     "format:fix": "biome check --assist-enabled=true --write",

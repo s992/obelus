@@ -85,7 +85,3 @@ export const loadingContainer = style({
   justifyContent: 'center',
   alignItems: 'center',
 });
-
-export const alertBody = style({
-  margin: `${vars.space.s2} 0 0 0`,
-});

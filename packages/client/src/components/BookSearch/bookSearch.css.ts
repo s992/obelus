@@ -44,19 +44,3 @@ globalStyle(
     background: vars.color.tint,
   },
 );
-
-export const verticalCenter = style({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-});
-
-export const bookTitle = style([typography.bookTitle]);
-
-export const bookAuthor = style([typography.author]);
-
-export const spinnerContainer = style({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-});

@@ -1,13 +1,18 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
   "files": {
-    "includes": ["**", "!**/storybook-static/**", "!**/routeTree.gen.ts"]
+    "includes": ["**", "!**/storybook-static/**", "!**/routeTree.gen.ts", "!packages/api/src/gql/graphql.ts"]
   },
   "formatter": {
     "indentStyle": "space",
     "indentWidth": 2,
     "trailingNewline": true,
     "lineWidth": 120
+  },
+  "graphql": {
+    "formatter": {
+      "enabled": false
+    }
   },
   "javascript": {
     "formatter": {

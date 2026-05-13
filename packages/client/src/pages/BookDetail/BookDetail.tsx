@@ -1,17 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
-import dayjs from 'dayjs';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import { useTRPC } from '../../client';
-import { Alert } from '../../components/Alert';
+import { FormattedAlert } from '../../components/Alert';
 import { BookCover } from '../../components/BookCover';
 import { Button } from '../../components/Button';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
+import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';
 import { typography } from '../../style';
 import {
   actions,
-  alertBody,
   author,
   container,
   coverWrapper,
@@ -27,9 +26,9 @@ import {
 
 export function BookDetail() {
   const { bookId } = useParams({ from: '/_authenticated/book/$bookId' });
-  const intl = useIntl();
   const trpc = useTRPC();
   const { data: book, isLoading, isError } = useQuery(trpc.book.byId.queryOptions({ id: parseInt(bookId) }));
+  const formatPublishDate = useFormatPublishYear();
 
   if (isLoading) {
     return (
@@ -41,21 +40,13 @@ export function BookDetail() {
 
   if (isError || !book) {
     return (
-      <Alert variant="error">
-        <strong>
-          <FormattedMessage defaultMessage="Failed to load book." />
-        </strong>
-        <p className={alertBody}>
-          <FormattedMessage defaultMessage="Please refresh your browser window to try again." />
-        </p>
-      </Alert>
+      <FormattedAlert
+        variant="error"
+        title={<FormattedMessage defaultMessage="Failed to load book." />}
+        message={<FormattedMessage defaultMessage="Please refresh your browser window to try again." />}
+      />
     );
   }
-
-  const publishDate = dayjs(book.releaseDate, 'YYYY-MM-DD');
-  const formattedPublishDate = publishDate.isValid()
-    ? publishDate.format('YYYY')
-    : intl.formatMessage({ defaultMessage: 'N/A' });
 
   return (
     <div className={container}>
@@ -68,7 +59,7 @@ export function BookDetail() {
             <dt className={typography.label}>
               <FormattedMessage defaultMessage="published" />
             </dt>
-            <dd className={typography.metaItalic}>{formattedPublishDate}</dd>
+            <dd className={typography.metaItalic}>{formatPublishDate(book.releaseDate)}</dd>
           </div>
           <div className={metaRow}>
             <dt className={typography.label}>
@@ -83,7 +74,7 @@ export function BookDetail() {
           <h1 className={title}>{book.title}</h1>
           <p className={author}>{book.author}</p>
           {book.series && (
-            <Link to="/" className={seriesLink}>
+            <Link to="/series/$seriesId" params={{ seriesId: book.series.id?.toString() ?? '' }} className={seriesLink}>
               <FormattedMessage
                 defaultMessage="{name}: {position} of {total}"
                 values={{ name: book.series.name, position: book.series.position, total: book.series.bookCount }}
@@ -93,14 +84,14 @@ export function BookDetail() {
         </div>
         <pre className={description}>{book.description}</pre>
         <div className={actions}>
-          <Button variant="secondary">
-            <FormattedMessage defaultMessage="Mark read" />
+          <Button variant="underlined">
+            <FormattedMessage defaultMessage="mark read" />
           </Button>
-          <Button variant="secondary">
-            <FormattedMessage defaultMessage="Add to planned" />
+          <Button variant="underlined">
+            <FormattedMessage defaultMessage="add to planned" />
           </Button>
-          <Button>
-            <FormattedMessage defaultMessage="Start reading" />
+          <Button variant="underlined">
+            <FormattedMessage defaultMessage="start reading" />
           </Button>
         </div>
       </div>

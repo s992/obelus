@@ -1,6 +1,5 @@
 import { useEvent } from '@react-aria/utils';
 import { useQuery } from '@tanstack/react-query';
-import dayjs from 'dayjs';
 import { useCallback, useRef, useState } from 'react';
 import { GridList, GridListItem } from 'react-aria-components';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -8,19 +7,13 @@ import { useIntl } from 'react-intl';
 import { useDebounceValue, useEventListener } from 'usehooks-ts';
 
 import { useTRPC } from '../../client';
+import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';
+import { flex } from '../../style';
 import { BookCover } from '../BookCover';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Search } from '../Search';
-import {
-  bookAuthor,
-  bookTitle,
-  container,
-  gridRow,
-  resultContainer,
-  resultHeader,
-  spinnerContainer,
-  verticalCenter,
-} from './bookSearch.css';
+import { TitleAuthorStack } from '../TitleAuthorStack';
+import { container, gridRow, resultContainer, resultHeader } from './bookSearch.css';
 
 export function BookSearch() {
   const intl = useIntl();
@@ -36,6 +29,7 @@ export function BookSearch() {
   const { data: results, isLoading } = useQuery(
     trpc.book.search.queryOptions({ query: actualQuery }, { enabled: actualQuery.length > 0 }),
   );
+  const formatPublishDate = useFormatPublishYear();
 
   const setRowRef = useCallback(
     (index: number) => (el: HTMLElement | null) => {
@@ -101,7 +95,7 @@ export function BookSearch() {
         autoFocus
       />
       {isLoading && (
-        <div className={spinnerContainer}>
+        <div className={flex.verticalCenter}>
           <LoadingSpinner size="large" />
         </div>
       )}
@@ -115,10 +109,7 @@ export function BookSearch() {
           </div>
           <GridList aria-label={intl.formatMessage({ defaultMessage: 'Search results for "{query}"' }, { query })}>
             {results?.map((book, idx) => {
-              const publishDate = dayjs(book.releaseDate, 'YYYY-MM-DD');
-              const formattedPublishDate = publishDate.isValid()
-                ? publishDate.format('YYYY')
-                : intl.formatMessage({ defaultMessage: 'N/A' });
+              const formattedPublishDate = formatPublishDate(book.releaseDate);
 
               return (
                 <GridListItem
@@ -137,12 +128,11 @@ export function BookSearch() {
                   href={`/book/${book.id}`}
                 >
                   <BookCover book={book} />
-                  <div className={verticalCenter}>
-                    <div className={bookTitle}>{book.title}</div>
-                    <div className={bookAuthor}>{book.author}</div>
+                  <div className={flex.verticalCenter}>
+                    <TitleAuthorStack title={book.title} author={book.author} />
                   </div>
-                  <div className={verticalCenter}>{formattedPublishDate}</div>
-                  <div className={verticalCenter}>unread</div>
+                  <div className={flex.verticalCenter}>{formattedPublishDate}</div>
+                  <div className={flex.verticalCenter}>unread</div>
                 </GridListItem>
               );
             })}

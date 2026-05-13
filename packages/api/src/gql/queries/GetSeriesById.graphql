@@ -1,0 +1,50 @@
+query GetSeriesById($id:Int!) {
+  book_series(
+    distinct_on: position,
+    order_by: [
+      {position: asc}
+    ],
+    where: {
+      series_id: {_eq: $id},
+      book: {
+        canonical_id: {_is_null: true},
+        is_partial_book: {_eq: false}
+      },
+      compilation: {_eq: false}
+		}
+  ) {
+    position
+    series {
+      id
+      name
+      books_count
+    }
+    book {
+      id
+      title
+      subtitle
+      description
+      release_date
+      image {
+        url
+        width
+        height
+      }
+      featured_book_series {
+        series {
+          id
+          name
+          books_count
+        }
+        position
+      }
+      pages
+      contributions {
+        contribution
+        author {
+          name
+        }
+      }
+    }
+  }
+}

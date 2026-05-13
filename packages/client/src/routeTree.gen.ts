@@ -17,6 +17,7 @@ import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedReadRouteImport } from './routes/_authenticated/read'
 import { Route as AuthenticatedPlannedRouteImport } from './routes/_authenticated/planned'
+import { Route as AuthenticatedSeriesSeriesIdRouteImport } from './routes/_authenticated/series/$seriesId'
 import { Route as AuthenticatedBookBookIdRouteImport } from './routes/_authenticated/book/$bookId'
 
 const AuthRoute = AuthRouteImport.update({
@@ -58,6 +59,12 @@ const AuthenticatedPlannedRoute = AuthenticatedPlannedRouteImport.update({
   path: '/planned',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedSeriesSeriesIdRoute =
+  AuthenticatedSeriesSeriesIdRouteImport.update({
+    id: '/series/$seriesId',
+    path: '/series/$seriesId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedBookBookIdRoute = AuthenticatedBookBookIdRouteImport.update({
   id: '/book/$bookId',
   path: '/book/$bookId',
@@ -73,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/book/$bookId': typeof AuthenticatedBookBookIdRoute
+  '/series/$seriesId': typeof AuthenticatedSeriesSeriesIdRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
@@ -83,6 +91,7 @@ export interface FileRoutesByTo {
   '/auth/register': typeof AuthRegisterRoute
   '/': typeof AuthenticatedIndexRoute
   '/book/$bookId': typeof AuthenticatedBookBookIdRoute
+  '/series/$seriesId': typeof AuthenticatedSeriesSeriesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -95,6 +104,7 @@ export interface FileRoutesById {
   '/auth/register': typeof AuthRegisterRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/book/$bookId': typeof AuthenticatedBookBookIdRoute
+  '/_authenticated/series/$seriesId': typeof AuthenticatedSeriesSeriesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/book/$bookId'
+    | '/series/$seriesId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/'
     | '/book/$bookId'
+    | '/series/$seriesId'
   id:
     | '__root__'
     | '/_authenticated'
@@ -128,6 +140,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/_authenticated/'
     | '/_authenticated/book/$bookId'
+    | '/_authenticated/series/$seriesId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -193,6 +206,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPlannedRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/series/$seriesId': {
+      id: '/_authenticated/series/$seriesId'
+      path: '/series/$seriesId'
+      fullPath: '/series/$seriesId'
+      preLoaderRoute: typeof AuthenticatedSeriesSeriesIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/book/$bookId': {
       id: '/_authenticated/book/$bookId'
       path: '/book/$bookId'
@@ -209,6 +229,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedBookBookIdRoute: typeof AuthenticatedBookBookIdRoute
+  AuthenticatedSeriesSeriesIdRoute: typeof AuthenticatedSeriesSeriesIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -217,6 +238,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedBookBookIdRoute: AuthenticatedBookBookIdRoute,
+  AuthenticatedSeriesSeriesIdRoute: AuthenticatedSeriesSeriesIdRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

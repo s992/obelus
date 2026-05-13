@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import { vars } from '../../style';
 import { alert } from './alert.css';
 
-type Props = {
+export type Props = {
   children: ReactNode;
   className?: string;
   variant: keyof typeof alert;

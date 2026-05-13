@@ -27,3 +27,7 @@ export const alert = styleVariants({
     },
   ],
 });
+
+export const formattedAlertBody = style({
+  margin: `${vars.space.s2} 0 0 0`,
+});
