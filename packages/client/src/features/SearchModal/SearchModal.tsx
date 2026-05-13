@@ -1,7 +1,7 @@
 import { Dialog, Modal } from 'react-aria-components';
 import { useIntl } from 'react-intl';
 
-import { BookSearch } from '../BookSearch';
+import { BookSearch } from './BookSearch';
 import { modal } from './searchModal.css';
 
 type Props = {

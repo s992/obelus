@@ -30,3 +30,20 @@ export const Default: Story = {
     );
   },
 };
+
+export const WithValue: Story = {
+  args: { label: 'search by title or author', value: 'Cradle' },
+  render: (args) => {
+    const [, setArgs] = useArgs();
+
+    return (
+      <Search
+        {...args}
+        onChange={(value) => {
+          args.onChange(value);
+          setArgs({ value });
+        }}
+      />
+    );
+  },
+};

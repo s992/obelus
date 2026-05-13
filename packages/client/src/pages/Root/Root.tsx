@@ -7,13 +7,14 @@ import { Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useLocalStorage } from 'usehooks-ts';
 
 import { Button } from '../../components/Button';
 import { IconButton } from '../../components/IconButton';
 import { Link } from '../../components/Link';
-import { SearchModal } from '../../components/SearchModal';
 import { type Theme, ThemeToggle } from '../../components/ThemeToggle';
 import { useAuthContext } from '../../context';
+import { SearchModal } from '../../features/SearchModal';
 import { darkTheme, lightTheme } from '../../style';
 import { brand, container, headerContainer, navSection, obelusMark, pageWrapper, searchButton } from './root.css';
 
@@ -22,7 +23,7 @@ export function Root() {
   const navigate = useNavigate();
   const router = useRouter();
   const { isAuthenticated, logout } = useAuthContext();
-  const [theme, setTheme] = useState<Theme>('light');
+  const [theme, setTheme] = useLocalStorage<Theme>('theme', 'light');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useHotkeys('mod+k', () => setIsSearchOpen((current) => !current), { preventDefault: true, enableOnFormTags: true });

@@ -6,13 +6,13 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { useIntl } from 'react-intl';
 import { useDebounceValue, useEventListener } from 'usehooks-ts';
 
-import { useTRPC } from '../../client';
-import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';
-import { flex } from '../../style';
-import { BookCover } from '../BookCover';
-import { LoadingSpinner } from '../LoadingSpinner';
-import { Search } from '../Search';
-import { TitleAuthorStack } from '../TitleAuthorStack';
+import { useTRPC } from '../../../client';
+import { BookCover } from '../../../components/BookCover';
+import { LoadingSpinner } from '../../../components/LoadingSpinner';
+import { Search } from '../../../components/Search';
+import { TitleAuthorStack } from '../../../components/TitleAuthorStack';
+import { useFormatPublishYear } from '../../../hooks/useFormatPublishYear';
+import { flex } from '../../../style';
 import { container, gridRow, resultContainer, resultHeader } from './bookSearch.css';
 
 export function BookSearch() {
@@ -95,7 +95,7 @@ export function BookSearch() {
         autoFocus
       />
       {isLoading && (
-        <div className={flex.verticalCenter}>
+        <div className={flex.center}>
           <LoadingSpinner size="large" />
         </div>
       )}

@@ -15,3 +15,7 @@ type Story = StoryObj<typeof meta>;
 export const Tertiary: Story = {
   args: { 'aria-label': 'close', children: <X /> },
 };
+
+export const Disabled: Story = {
+  args: { 'aria-label': 'close', children: <X />, isDisabled: true },
+};

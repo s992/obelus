@@ -1,6 +1,6 @@
 import { globalStyle, style } from '@vanilla-extract/css';
 
-import { typography, vars } from '../../style';
+import { typography, vars } from '../../../style';
 
 const GRID_TEMPLATE_COLUMNS = '56px 1fr 0.5fr 0.5fr';
 const HEADER_HEIGHT = 24;
