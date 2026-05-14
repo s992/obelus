@@ -123,12 +123,20 @@ export const textArea = style({ background: 'transparent', width: '100%', minHei
 
 export const addNoteButton = style({ width: 'fit-content' });
 
-// export const noteList = style({ listStyle: 'none', margin: 0, padding: 0 });
+export const noteList = style({ listStyle: 'none', margin: 0, padding: 0 });
 
-// export const noteListItem = style({
-//   padding: `${vars.space.s5} 0`,
-//   display: 'grid',
-//   gridTemplateColumns: '140px 1fr',
-//   gap: 28,
-//   alignItems: 'start',
-// });
+export const noteListItem = style({
+  padding: `${vars.space.s5} 0`,
+  display: 'grid',
+  gridTemplateColumns: '140px 1fr',
+  gap: 28,
+  alignItems: 'start',
+});
+
+export const renderedNote = style([
+  typography.body,
+  {
+    whiteSpace: 'pre-wrap',
+    margin: 0,
+  },
+]);
