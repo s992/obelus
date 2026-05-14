@@ -1,9 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/_authenticated/')({
-  component: RouteComponent,
-});
+import { CurrentlyReading } from '../../pages/CurrentlyReading';
 
-function RouteComponent() {
-  return null;
-}
+export const Route = createFileRoute('/_authenticated/')({
+  component: CurrentlyReading,
+});

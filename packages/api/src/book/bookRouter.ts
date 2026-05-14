@@ -1,13 +1,12 @@
 import { book } from '@obelus/shared/schema';
-import type { Book } from '@obelus/shared/types';
 import { TRPCError } from '@trpc/server';
 import { and, eq, inArray } from 'drizzle-orm';
 import z from 'zod';
 
+import { formatBook } from '../bookRecord/collateRecordsAndBooks';
 import { db } from '../db/db';
 import { recordTable } from '../db/schema';
 import { client } from '../gql/client';
-import type { GetBooksByIdsQuery } from '../gql/graphql';
 import { privateProcedure, router } from '../trpc/trpc';
 
 export const bookRouter = router({
@@ -59,11 +58,15 @@ export const bookRouter = router({
         throw new TRPCError({ code: 'NOT_FOUND' });
       }
 
+      if (!ctx.currentUser.id) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
+      }
+
       const ids = bookSeries.map(({ book }) => book?.id).filter((id) => id !== undefined);
       const records = await db
         .select()
         .from(recordTable)
-        .where(and(eq(recordTable.userId, ctx.currentUser.id!), inArray(recordTable.bookId, ids)));
+        .where(and(eq(recordTable.userId, ctx.currentUser.id), inArray(recordTable.bookId, ids)));
 
       const books = bookSeries
         .map(({ book }) => {
@@ -91,35 +94,3 @@ export const bookRouter = router({
       };
     }),
 });
-
-function formatBook(book: GetBooksByIdsQuery['books'][number], record?: typeof recordTable.$inferSelect): Book {
-  const author = book.contributions.find(({ contribution }) => contribution === null || contribution === 'Author');
-
-  return {
-    id: book.id,
-    title: book.title ?? null,
-    author: author?.author?.name ?? null,
-    coverImage: book.image?.url ?? null,
-    description: book.description ?? null,
-    pages: book.pages ?? null,
-    releaseDate: book.release_date as string,
-    series: book.featured_book_series
-      ? {
-          bookCount: book.featured_book_series.series?.books_count ?? null,
-          id: book.featured_book_series.series?.id ?? null,
-          name: book.featured_book_series.series?.name ?? null,
-          position: book.featured_book_series.position as number,
-        }
-      : null,
-    subTitle: book.subtitle ?? null,
-    record: record
-      ? {
-          ...record,
-          createdAt: record.createdAt.toISOString(),
-          updatedAt: record.updatedAt.toISOString(),
-          startedAt: record.startedAt?.toISOString() ?? null,
-          finishedAt: record.finishedAt?.toISOString() ?? null,
-        }
-      : null,
-  };
-}

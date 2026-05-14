@@ -1,5 +1,5 @@
-import type { Book } from '@obelus/shared/types';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { Book, Note } from '@obelus/shared/types';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { TextArea } from 'react-aria-components';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -23,20 +23,21 @@ import {
 
 type Props = {
   book: Book;
+  notes?: Note[];
 };
 
-export function RecordContent({ book }: Props) {
+export function RecordContent({ book, notes }: Props) {
   const intl = useIntl();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
   const formatLongDate = useFormatLongDate();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [noteContent, setNoteContent] = useState('');
-  const { data: notes } = useQuery(trpc.note.list.queryOptions({ recordId: book.record?.id ?? '' }));
   const { mutate: createNote, isPending: isCreatingNote } = useMutation(
     trpc.note.create.mutationOptions({
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: trpc.note.list.queryKey({ recordId: book.record?.id ?? '' }) });
+        await queryClient.invalidateQueries({ queryKey: trpc.book.byId.queryKey({ id: book.id }) });
         setNoteContent('');
       },
       onError: () => {

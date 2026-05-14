@@ -5,7 +5,7 @@ import { createInsertSchema } from 'drizzle-zod';
 import z from 'zod';
 
 import { db } from '../db/db';
-import { noteTable } from '../db/schema';
+import { noteTable, recordTable } from '../db/schema';
 import { privateProcedure, router } from '../trpc/trpc';
 
 const noteSchema = createInsertSchema(noteTable);
@@ -30,6 +30,10 @@ export const noteRouter = router({
       if (!note) {
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
       }
+
+      db.update(recordTable)
+        .set({ updatedAt: new Date() })
+        .where(and(eq(noteTable.recordId, input.recordId), eq(noteTable.userId, ctx.currentUser.id)));
 
       return {
         id: note.id,

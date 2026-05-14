@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
+import dayjs from 'dayjs';
 import { FormattedMessage } from 'react-intl';
 
 import { useTRPC } from '../../client';
@@ -29,6 +30,9 @@ export function BookDetail() {
   const { bookId } = useParams({ from: '/_authenticated/book/$bookId' });
   const trpc = useTRPC();
   const { data: book, isLoading, isError } = useQuery(trpc.book.byId.queryOptions({ id: parseInt(bookId) }));
+  const { data: notes } = useQuery(
+    trpc.note.list.queryOptions({ recordId: book?.record?.id ?? '' }, { enabled: !!book?.record?.id }),
+  );
   const formatPublishDate = useFormatPublishYear();
   const formatLongDate = useFormatLongDate();
 
@@ -50,6 +54,10 @@ export function BookDetail() {
     );
   }
 
+  const lastTouched = dayjs(book?.record?.createdAt).isAfter(notes?.[0]?.createdAt)
+    ? book?.record?.createdAt
+    : notes?.[0]?.createdAt;
+
   return (
     <div className={container}>
       <div className={sidebar}>
@@ -69,7 +77,7 @@ export function BookDetail() {
                 <dt className={typography.label}>
                   <FormattedMessage defaultMessage="last touched" />
                 </dt>
-                <dd className={typography.metaItalic}>{formatLongDate(book.record.updatedAt)}</dd>
+                <dd className={typography.metaItalic}>{formatLongDate(lastTouched)}</dd>
               </div>
             </>
           )}
@@ -102,7 +110,7 @@ export function BookDetail() {
         </div>
         <pre className={description}>{book.description}</pre>
         {book.record ? (
-          <RecordContent book={book} />
+          <RecordContent book={book} notes={notes} />
         ) : (
           <div className={actions}>
             <StatusCell bookId={book.id} seriesId={book.series?.id} layout="horizontal" />
