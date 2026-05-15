@@ -5,7 +5,8 @@ select
   created_at
 from note
 where user_id = sqlc.arg('userId')
-and record_id = sqlc.arg('recordId');
+and record_id = sqlc.arg('recordId')
+order by created_at desc;
 
 -- name: CreateNote :exec
 insert into note (

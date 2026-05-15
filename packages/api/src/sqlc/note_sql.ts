@@ -11,7 +11,8 @@ select
   created_at
 from note
 where user_id = $1
-and record_id = $2`;
+and record_id = $2
+order by created_at desc`;
 
 export interface ListNotesArgs {
   userid: string;
