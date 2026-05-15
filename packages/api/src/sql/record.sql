@@ -51,7 +51,7 @@ update record
 set
   finished_at = coalesce(sqlc.narg('finishedAt')::timestamp, finished_at),
   started_at = coalesce(sqlc.narg('startedAt')::timestamp, started_at),
-  judgment = coalesce(sqlc.narg('judgment')::judgment, judgment),
+  judgment = sqlc.narg('judgment')::judgment,
   status = coalesce(sqlc.narg('status')::record_status, status)
 where id = sqlc.arg('id')
 and user_id = sqlc.arg('userId');

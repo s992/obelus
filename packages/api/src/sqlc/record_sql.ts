@@ -111,7 +111,7 @@ update record
 set
   finished_at = coalesce($1::timestamp, finished_at),
   started_at = coalesce($2::timestamp, started_at),
-  judgment = coalesce($3::judgment, judgment),
+  judgment = $3::judgment,
   status = coalesce($4::record_status, status)
 where id = $5
 and user_id = $6`;

@@ -140,3 +140,13 @@ export const renderedNote = style([
     margin: 0,
   },
 ]);
+
+export const revisionContainer = style([
+  flex.container,
+  {
+    gap: vars.space.s4,
+    padding: `${vars.space.s5} ${vars.space.s4}`,
+    background: vars.color.tint,
+    border: `1px solid ${vars.color.fieldRule}`,
+  },
+]);
