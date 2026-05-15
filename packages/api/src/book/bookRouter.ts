@@ -81,8 +81,9 @@ export const bookRouter = router({
           }
 
           const record = records.find(({ bookId }) => bookId === book.id);
+          const parsedRecord = RecordSchema.safeParse(record);
 
-          return formatBook(book, RecordSchema.parse(record));
+          return formatBook(book, parsedRecord.success ? parsedRecord.data : undefined);
         })
         .filter((book) => book !== null);
 
