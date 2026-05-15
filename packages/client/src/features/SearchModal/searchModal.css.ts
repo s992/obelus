@@ -22,4 +22,12 @@ export const modal = style({
       animation: `${zoom} 150ms ease`,
     },
   },
+  '@media': {
+    '(max-width: 900px)': {
+      top: '90px',
+      marginLeft: 40,
+      translate: '-20px 0',
+      maxHeight: 'calc(var(--visual-viewport-height) * 0.9)',
+    },
+  },
 });

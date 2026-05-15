@@ -11,7 +11,15 @@ export const container = style({
   gap: vars.space.s5,
 });
 
-export const resultContainer = style({ overflowY: 'auto', maxHeight: '655px' });
+export const resultContainer = style({
+  overflowY: 'auto',
+  maxHeight: 'calc(var(--visual-viewport-height) * 0.5)',
+  '@media': {
+    '(max-width: 900px)': {
+      maxHeight: 'calc(var(--visual-viewport-height) * 0.7)',
+    },
+  },
+});
 
 export const resultHeader = style([
   typography.label,
