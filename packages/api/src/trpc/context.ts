@@ -1,9 +1,10 @@
 import type { Maybe } from '@obelus/shared/types';
 import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
 
+import { db } from '../db/db';
 import { logger } from '../log';
+import { getUserById } from '../sqlc/user_sql';
 import type { JWTPayload } from '../types';
-import { getUserById } from '../user/user';
 
 export async function createContext(opts: CreateFastifyContextOptions) {
   const { req, res } = opts;
@@ -22,6 +23,7 @@ async function loadUserFromCookie({ req }: CreateFastifyContextOptions) {
   const unsigned = req.unsignCookie(tokenCookie);
 
   if (!unsigned.valid) {
+    logger.debug('bailing because cookie is invalid');
     return null;
   }
 
@@ -34,13 +36,15 @@ async function loadUserFromCookie({ req }: CreateFastifyContextOptions) {
   }
 
   if (!verified?.id) {
+    logger.debug('bailing because jwt is missing id');
     return null;
   }
 
   try {
-    const user = await getUserById(verified.id);
+    const user = await getUserById(db, { userid: verified.id });
 
     if (!user) {
+      logger.debug(verified, 'bailing because we could not find the user');
       return null;
     }
 

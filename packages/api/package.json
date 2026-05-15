@@ -8,11 +8,10 @@
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "db:gen": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
     "gql:gen": "graphql-codegen",
-    "typecheck": "tsc -p ./tsconfig.json --noEmit"
+    "typecheck": "tsc -p ./tsconfig.json --noEmit",
+    "sql:gen": "dotenvx run -f ../../.env -- sqlc generate && pnpm sql:fix",
+    "sql:fix": "tsx codemod/fix-sqlc.ts"
   },
   "dependencies": {
     "@fastify/cookie": "catalog:",
@@ -22,8 +21,6 @@
     "@trpc/server": "catalog:",
     "argon2": "catalog:",
     "dotenv": "catalog:",
-    "drizzle-orm": "catalog:",
-    "drizzle-zod": "catalog:",
     "fastify": "catalog:",
     "graphql": "catalog:",
     "graphql-tag": "catalog:",
@@ -39,7 +36,6 @@
     "@graphql-codegen/typescript-operations": "catalog:",
     "@graphql-typed-document-node/core": "catalog:",
     "@types/pg": "catalog:",
-    "drizzle-kit": "catalog:",
     "pino-pretty": "catalog:",
     "tsx": "catalog:"
   }

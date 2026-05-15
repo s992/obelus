@@ -1,7 +1,8 @@
 import { TRPCError } from '@trpc/server';
 
+import { db } from '../db/db';
+import { getUserById } from '../sqlc/user_sql';
 import { privateProcedure, router } from '../trpc/trpc';
-import { getUserById } from './user';
 
 export const userRouter = router({
   me: privateProcedure.query(({ ctx }) => {
@@ -9,6 +10,6 @@ export const userRouter = router({
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
 
-    return getUserById(ctx.currentUser.id);
+    return getUserById(db, { userid: ctx.currentUser.id });
   }),
 });

@@ -1,14 +1,18 @@
 import { z } from 'zod';
 
-import type { book, note, record, series } from '../schema';
+import type { BookSchema, NoteJsonSchema, NoteSchema, RecordJsonSchema, RecordSchema, SeriesSchema } from '../schema';
 
-export type Book = z.infer<typeof book>;
+export type Book = z.infer<typeof BookSchema>;
 
-export type Series = z.infer<typeof series>;
+export type Series = z.infer<typeof SeriesSchema>;
 
-export type Note = z.infer<typeof note>;
+export type Note = z.infer<typeof NoteSchema>;
 
-export type Record = z.infer<typeof record>;
+export type NoteJson = z.infer<typeof NoteJsonSchema>;
+
+export type Record = z.infer<typeof RecordSchema>;
+
+export type RecordJson = z.infer<typeof RecordJsonSchema>;
 
 export type Status = 'planned' | 'finished' | 'reading';
 

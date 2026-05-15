@@ -36,6 +36,7 @@
     "knip": "catalog:",
     "lint-staged": "catalog:",
     "oxlint": "catalog:",
+    "ts-morph": "catalog:",
     "typescript": "catalog:"
   }
 }

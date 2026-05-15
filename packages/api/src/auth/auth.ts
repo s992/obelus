@@ -1,37 +1,34 @@
 import { TRPCError } from '@trpc/server';
 import * as argon2 from 'argon2';
-import { DrizzleQueryError } from 'drizzle-orm';
 import { DatabaseError } from 'pg';
 
+import { db } from '../db/db';
 import { logger } from '../log';
-import { createUser, getUserByUserName } from '../user/user';
+import { createUser, getUserByUserName } from '../sqlc/user_sql';
 
 export async function register(userName: string, password: string) {
   const hashed = await hashPassword(password);
 
   try {
-    const user = await createUser({ userName, passwordHash: hashed });
+    const user = await createUser(db, { username: userName, passwordhash: hashed });
 
-    return user;
+    return user?.id;
   } catch (err) {
-    if (!(err instanceof DrizzleQueryError)) {
+    logger.error(err);
+    if (!(err instanceof DatabaseError)) {
       throw err;
     }
 
-    if (!(err.cause instanceof DatabaseError)) {
-      throw err.cause;
-    }
-
-    if (err.cause.code === '23505') {
+    if (err.code === '23505') {
       throw new TRPCError({ code: 'CONFLICT' });
     }
 
-    throw err.cause;
+    throw err;
   }
 }
 
 export async function login(userName: string, password: string) {
-  const user = await getUserByUserName(userName);
+  const user = await getUserByUserName(db, { username: userName });
 
   if (!user) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });

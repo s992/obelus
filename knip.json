@@ -4,7 +4,8 @@
   "workspaces": {
     ".": {}
   },
-  "ignore": ["packages/api/src/gql/graphql.ts", "packages/client/src/client/trpc.ts"],
+  "ignore": ["packages/api/src/gql/graphql.ts", "packages/client/src/client/trpc.ts", "packages/api/src/sqlc/*.ts"],
+  "ignoreBinaries": ["sqlc"],
   "rules": {
     "devDependencies": "off"
   }

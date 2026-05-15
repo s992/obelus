@@ -1,12 +1,26 @@
 import z from 'zod';
 
-export const record = z.object({
+import { JudgmentEnumSchema, RecordStatusEnumSchema } from './enum';
+
+export const RecordSchema = z.object({
   id: z.uuidv4(),
-  createdAt: z.iso.datetime(),
-  updatedAt: z.iso.datetime(),
   bookId: z.number(),
+  startedAt: z.date().nullable(),
+  finishedAt: z.date().nullable(),
+  judgment: JudgmentEnumSchema.nullable(),
+  status: RecordStatusEnumSchema,
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const RecordJsonSchema = RecordSchema.omit({
+  startedAt: true,
+  finishedAt: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
   startedAt: z.iso.datetime().nullable(),
   finishedAt: z.iso.datetime().nullable(),
-  judgment: z.enum(['accepted', 'mixed', 'rejected']).nullable(),
-  status: z.enum(['planned', 'finished', 'reading']),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
 });

@@ -1,4 +1,4 @@
-import type { Judgment, Maybe, Record } from '@obelus/shared/types';
+import type { Judgment, Maybe, RecordJson } from '@obelus/shared/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
@@ -9,7 +9,7 @@ import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 
 type Props = {
-  record: Maybe<Record>;
+  record: Maybe<RecordJson>;
 };
 
 export function ActionCell({ record }: Props) {
@@ -51,7 +51,7 @@ export function ActionCell({ record }: Props) {
         <Button
           variant="underlined"
           onPress={() => {
-            updateRecord({ id: record.id, status: 'reading', startedAt: new Date() });
+            updateRecord({ id: record.id, status: 'reading', startedAt: new Date().toISOString() });
           }}
         >
           <FormattedMessage defaultMessage="start reading" />
@@ -59,7 +59,12 @@ export function ActionCell({ record }: Props) {
         <Button
           variant="underlined"
           onPress={() => {
-            updateRecord({ id: record.id, status: 'finished', startedAt: new Date(), finishedAt: new Date() });
+            updateRecord({
+              id: record.id,
+              status: 'finished',
+              startedAt: new Date().toISOString(),
+              finishedAt: new Date().toISOString(),
+            });
           }}
         >
           <FormattedMessage defaultMessage="mark read" />
@@ -78,7 +83,7 @@ export function ActionCell({ record }: Props) {
         id: record.id,
         status: 'finished',
         judgment,
-        finishedAt: new Date(),
+        finishedAt: new Date().toISOString(),
       });
 
     return (

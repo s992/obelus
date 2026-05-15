@@ -22,13 +22,13 @@ export const authRouter = router({
   register: publicProcedure
     .input(z.object({ userName: z.string().nonempty(), password: z.string().nonempty() }))
     .mutation(async ({ input, ctx }) => {
-      const [user] = await register(input.userName, input.password);
+      const userId = await register(input.userName, input.password);
 
-      if (!user) {
+      if (!userId) {
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
       }
 
-      ctx.res.cookie('token', ctx.req.server.jwt.sign({ id: user.id }, JWT_OPTS), COOKIE_OPTS);
+      ctx.res.cookie('token', ctx.req.server.jwt.sign({ id: userId }, JWT_OPTS), COOKIE_OPTS);
     }),
   login: publicProcedure
     .input(z.object({ userName: z.string().nonempty(), password: z.string().nonempty() }))

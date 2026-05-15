@@ -1,4 +1,4 @@
-import type { Book, Note } from '@obelus/shared/types';
+import type { Book, Maybe, NoteJson } from '@obelus/shared/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { TextArea } from 'react-aria-components';
@@ -23,7 +23,7 @@ import {
 
 type Props = {
   book: Book;
-  notes?: Note[];
+  notes?: Maybe<NoteJson[]>;
 };
 
 export function RecordContent({ book, notes }: Props) {
@@ -36,7 +36,7 @@ export function RecordContent({ book, notes }: Props) {
   const { mutate: createNote, isPending: isCreatingNote } = useMutation(
     trpc.note.create.mutationOptions({
       onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: trpc.note.list.queryKey({ recordId: book.record?.id ?? '' }) });
+        await queryClient.invalidateQueries({ queryKey: trpc.note.list.queryKey({ id: book.record?.id ?? '' }) });
         await queryClient.invalidateQueries({ queryKey: trpc.book.byId.queryKey({ id: book.id }) });
         setNoteContent('');
       },
@@ -97,7 +97,7 @@ export function RecordContent({ book, notes }: Props) {
           />
           <Button
             className={addNoteButton}
-            onPress={() => createNote({ content: noteContent, recordId: book.record?.id ?? '' })}
+            onPress={() => createNote({ content: noteContent, id: book.record?.id ?? '' })}
             isProcessing={isCreatingNote}
           >
             <FormattedMessage defaultMessage="add note" />

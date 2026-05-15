@@ -1,36 +1,31 @@
+import { JudgmentEnumSchema, RecordJsonSchema, RecordSchema, RecordStatusEnumSchema } from '@obelus/shared/schema';
 import type { Maybe } from '@obelus/shared/types';
 import { TRPCError } from '@trpc/server';
-import { and, desc, eq, lt } from 'drizzle-orm';
-import { createInsertSchema } from 'drizzle-zod';
 import z from 'zod';
 
 import { collateRecordsAndBooks } from '../bookRecord/collateRecordsAndBooks';
 import { db } from '../db/db';
-import { recordStatusEnum, recordTable } from '../db/schema';
 import { client } from '../gql/client';
+import { createRecord, listRecords, updateRecord } from '../sqlc/record_sql';
 import { privateProcedure, router } from '../trpc/trpc';
 
-const recordSchema = createInsertSchema(recordTable);
 const PAGE_SIZE = 20;
 
 export const recordRouter = router({
   list: privateProcedure
-    .input(z.object({ status: z.enum(recordStatusEnum.enumValues), cursor: z.string().optional() }))
+    .input(z.object({ status: RecordStatusEnumSchema, cursor: z.string().optional() }))
     .query(async ({ input, ctx }) => {
       if (!ctx.currentUser.id) {
-        throw new TRPCError({ code: 'UNAUTHORIZED' });
+        return;
       }
 
-      const cursor = decodeCursor(input.cursor);
-      const eqCurrentUser = eq(recordTable.userId, ctx.currentUser.id);
-      const cursorCondition = cursor ? and(eqCurrentUser, lt(recordTable.updatedAt, cursor)) : eqCurrentUser;
+      const records = await listRecords(db, {
+        cursor: decodeCursor(input.cursor),
+        pagesize: PAGE_SIZE + 1,
+        status: input.status,
+        userid: ctx.currentUser.id,
+      });
 
-      const records = await db
-        .select()
-        .from(recordTable)
-        .where(and(cursorCondition, eq(recordTable.status, input.status)))
-        .orderBy(desc(recordTable.updatedAt))
-        .limit(PAGE_SIZE + 1);
       const hasMore = records.length > PAGE_SIZE;
 
       if (hasMore) {
@@ -41,51 +36,56 @@ export const recordRouter = router({
       const { books } = await client.GetBooksByIds({ ids: bookIds });
 
       return {
-        books: collateRecordsAndBooks(records, books),
+        books: collateRecordsAndBooks(z.array(RecordSchema).parse(records), books),
         hasNextPage: hasMore,
         nextPageToken: hasMore ? encodeCursor(records[records.length - 1]?.updatedAt) : null,
       };
     }),
-  create: privateProcedure.input(recordSchema.pick({ bookId: true, status: true })).mutation(async ({ input, ctx }) => {
-    const shouldDefaultStartedAt = input.status === 'reading' || input.status === 'finished';
-
+  create: privateProcedure.input(RecordSchema.pick({ bookId: true, status: true })).mutation(async ({ input, ctx }) => {
     if (!ctx.currentUser.id) {
-      throw new TRPCError({ code: 'UNAUTHORIZED' });
+      return;
     }
 
-    const record = await db
-      .insert(recordTable)
-      .values({
-        bookId: input.bookId,
-        status: input.status,
-        userId: ctx.currentUser.id,
-        startedAt: shouldDefaultStartedAt ? new Date() : undefined,
-        finishedAt: input.status === 'finished' ? new Date() : undefined,
-      })
-      .returning();
+    const shouldDefaultStartedAt = input.status === 'reading' || input.status === 'finished';
 
-    return record;
+    await createRecord(db, {
+      bookid: input.bookId,
+      finishedat: input.status === 'finished' ? new Date() : null,
+      startedat: shouldDefaultStartedAt ? new Date() : null,
+      status: input.status,
+      userid: ctx.currentUser.id,
+    });
   }),
   update: privateProcedure
-    .input(recordSchema.omit({ bookId: true, createdAt: true, updatedAt: true, userId: true }))
+    .input(
+      RecordJsonSchema.omit({ bookId: true, createdAt: true, updatedAt: true }).extend({
+        judgment: JudgmentEnumSchema.optional(),
+        finishedAt: z.iso.datetime().optional(),
+        startedAt: z.iso.datetime().optional(),
+      }),
+    )
     .mutation(async ({ input, ctx }) => {
-      const { id, ...params } = input;
-
       if (!ctx.currentUser.id) {
-        throw new TRPCError({ code: 'UNAUTHORIZED' });
+        return;
       }
+
+      const { id, ...params } = input;
 
       if (!id) {
         throw new TRPCError({ code: 'BAD_REQUEST' });
       }
 
-      const record = await db
-        .update(recordTable)
-        .set(params)
-        .where(and(eq(recordTable.id, id), eq(recordTable.userId, ctx.currentUser.id)))
-        .returning();
+      const start = params.startedAt ? new Date(params.startedAt) : null;
+      const finish = params.finishedAt ? new Date(params.finishedAt) : null;
 
-      return record;
+      await updateRecord(db, {
+        id,
+        finishedat: finish,
+        judgment: params.judgment ?? null,
+        startedat: start,
+        status: params.status,
+        userid: ctx.currentUser.id,
+      });
     }),
 });
 

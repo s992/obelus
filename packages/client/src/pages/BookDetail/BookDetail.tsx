@@ -31,7 +31,7 @@ export function BookDetail() {
   const trpc = useTRPC();
   const { data: book, isLoading, isError } = useQuery(trpc.book.byId.queryOptions({ id: parseInt(bookId) }));
   const { data: notes } = useQuery(
-    trpc.note.list.queryOptions({ recordId: book?.record?.id ?? '' }, { enabled: !!book?.record?.id }),
+    trpc.note.list.queryOptions({ id: book?.record?.id ?? '' }, { enabled: !!book?.record?.id }),
   );
   const formatPublishDate = useFormatPublishYear();
   const formatLongDate = useFormatLongDate();

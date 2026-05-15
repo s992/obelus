@@ -1,9 +1,10 @@
-import type { Book } from '@obelus/shared/types';
+import type { RecordSchema } from '@obelus/shared/schema';
+import type { Book, Maybe } from '@obelus/shared/types';
+import type z from 'zod';
 
-import { recordTable } from '../db/schema';
 import type { GetBooksByIdsQuery } from '../gql/graphql';
 
-type Record = typeof recordTable.$inferSelect;
+type Record = z.infer<typeof RecordSchema>;
 
 export function collateRecordsAndBooks(records: Record[], books: GetBooksByIdsQuery['books']) {
   return records
@@ -19,7 +20,7 @@ export function collateRecordsAndBooks(records: Record[], books: GetBooksByIdsQu
     .filter((book) => book !== null);
 }
 
-export function formatBook(book: GetBooksByIdsQuery['books'][number], record?: Record): Book {
+export function formatBook(book: GetBooksByIdsQuery['books'][number], record?: Maybe<Record>): Book {
   const author = book.contributions.find(({ contribution }) => contribution === null || contribution === 'Author');
 
   return {

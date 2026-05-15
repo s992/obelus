@@ -1,17 +1,17 @@
 import { z } from 'zod';
 
-import { record } from './record';
-import { series } from './series';
+import { RecordJsonSchema } from './record';
+import { SeriesSchema } from './series';
 
-export const book = z.object({
+export const BookSchema = z.object({
   id: z.number(),
   author: z.string().nullable(),
   coverImage: z.string().nullable(),
   description: z.string().nullable(),
   pages: z.number().nullable(),
   releaseDate: z.string().nullable(),
-  series: series.nullable(),
+  series: SeriesSchema.nullable(),
   subTitle: z.string().nullable(),
   title: z.string().nullable(),
-  record: record.nullable(),
+  record: RecordJsonSchema.nullable(),
 });

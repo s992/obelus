@@ -1,7 +1,9 @@
-import { z } from 'zod';
+import z from 'zod';
 
-export const note = z.object({
+export const NoteSchema = z.object({
   id: z.uuidv4(),
-  createdAt: z.iso.datetime(),
   content: z.string(),
+  createdAt: z.date(),
 });
+
+export const NoteJsonSchema = NoteSchema.omit({ createdAt: true }).extend({ createdAt: z.iso.datetime() });

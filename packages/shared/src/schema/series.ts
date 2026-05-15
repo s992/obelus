@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const series = z.object({
+export const SeriesSchema = z.object({
   id: z.number().nullable(),
   name: z.string().nullable(),
   position: z.number().nullable(),
