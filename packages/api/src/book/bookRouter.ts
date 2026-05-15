@@ -41,7 +41,7 @@ export const bookRouter = router({
 
       const record = await getRecordByBookId(db, { bookid: input.id, userid: ctx.currentUser.id });
 
-      return formatBook(book, RecordSchema.parse(record));
+      return formatBook(book, RecordSchema.safeParse(record).data);
     }),
   seriesById: privateProcedure
     .input(z.object({ id: z.number() }))
@@ -81,9 +81,8 @@ export const bookRouter = router({
           }
 
           const record = records.find(({ bookId }) => bookId === book.id);
-          const parsedRecord = RecordSchema.safeParse(record);
 
-          return formatBook(book, parsedRecord.success ? parsedRecord.data : undefined);
+          return formatBook(book, RecordSchema.safeParse(record).data);
         })
         .filter((book) => book !== null);
 
