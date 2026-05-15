@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import dayjs from 'dayjs';
+import { useSyncExternalStore } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useTRPC } from '../../client';
@@ -18,6 +19,7 @@ import {
   coverWrapper,
   description,
   header,
+  mainContent,
   meta,
   metaRow,
   seriesLink,
@@ -26,7 +28,14 @@ import {
 } from './bookDetail.css';
 import { RecordContent } from './RecordContent';
 
+const mobileQuery = window.matchMedia('(max-width: 800px)');
+const subscribe = (cb: () => void) => {
+  mobileQuery.addEventListener('change', cb);
+  return () => mobileQuery.removeEventListener('change', cb);
+};
+
 export function BookDetail() {
+  const isMobile = useSyncExternalStore(subscribe, () => mobileQuery.matches);
   const { bookId } = useParams({ from: '/_authenticated/book/$bookId' });
   const trpc = useTRPC();
   const { data: book, isLoading, isError } = useQuery(trpc.book.byId.queryOptions({ id: parseInt(bookId) }));
@@ -62,7 +71,7 @@ export function BookDetail() {
     <div className={container}>
       <div className={sidebar}>
         <div className={coverWrapper}>
-          <BookCover book={book} size="xlarge" />
+          <BookCover book={book} size={isMobile ? 'large' : 'xlarge'} />
         </div>
         <dl className={meta}>
           {book.record && (
@@ -95,7 +104,7 @@ export function BookDetail() {
           </div>
         </dl>
       </div>
-      <div>
+      <div className={mainContent}>
         <div className={header}>
           <h1 className={title}>{book.title}</h1>
           <p className={author}>{book.author}</p>

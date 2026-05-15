@@ -12,6 +12,7 @@ import { judgment as judgmentCss, typography } from '../../style';
 import {
   addNoteButton,
   entryCount,
+  noteDate,
   noteList,
   noteListItem,
   noteTextAreaContainer,
@@ -159,7 +160,7 @@ export function RecordContent({ book, notes }: Props) {
         <ol className={noteList}>
           {notes?.map((note) => (
             <li key={note.id} className={noteListItem}>
-              <div>{formatLongDate(note.createdAt)}</div>
+              <div className={noteDate}>{formatLongDate(note.createdAt)}</div>
               <pre className={renderedNote}>{note.content}</pre>
             </li>
           ))}

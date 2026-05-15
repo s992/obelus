@@ -2,10 +2,17 @@ import { style } from '@vanilla-extract/css';
 
 import { flex, typography, vars } from '../../style';
 
+const mobile = '(max-width: 800px)' as const;
+
 export const container = style({
   display: 'grid',
   gridTemplateColumns: '220px 1fr',
   gap: vars.space.s7,
+  '@media': {
+    [mobile]: {
+      gridTemplateColumns: 'max-content 1fr',
+    },
+  },
 });
 
 export const sidebar = style({
@@ -15,11 +22,23 @@ export const sidebar = style({
   position: 'sticky',
   top: 32,
   alignSelf: 'start',
+  '@media': {
+    [mobile]: {
+      display: 'contents',
+    },
+  },
 });
 
 export const coverWrapper = style({
   display: 'flex',
   justifyContent: 'center',
+  '@media': {
+    [mobile]: {
+      gridColumn: 1,
+      gridRow: 1,
+      alignSelf: 'start',
+    },
+  },
 });
 
 export const meta = style({
@@ -29,6 +48,12 @@ export const meta = style({
   gap: vars.space.s3,
   paddingTop: vars.space.s4,
   borderTop: `1px solid ${vars.color.rule}`,
+  '@media': {
+    [mobile]: {
+      gridColumn: '1 / -1',
+      gridRow: '2',
+    },
+  },
 });
 
 export const metaRow = style({
@@ -41,6 +66,15 @@ export const metaRow = style({
 export const header = style({
   paddingBottom: vars.space.s6,
   borderBottom: `1px solid ${vars.color.rule}`,
+  '@media': {
+    [mobile]: {
+      gridColumn: 2,
+      gridRow: 1,
+      alignSelf: 'start',
+      borderBottom: 'none',
+      paddingBottom: 0,
+    },
+  },
 });
 
 export const title = style([
@@ -71,12 +105,22 @@ export const description = style([
   typography.body,
   {
     textWrap: 'wrap',
+    '@media': {
+      [mobile]: {
+        gridColumn: '1 / -1',
+      },
+    },
   },
 ]);
 
 export const actions = style({
   display: 'flex',
   justifyContent: 'flex-end',
+  '@media': {
+    [mobile]: {
+      gridColumn: '1 / -1',
+    },
+  },
 });
 
 export const sectionHeader = style([
@@ -104,6 +148,11 @@ export const recordContainer = style([
   flex.column,
   {
     gap: vars.space.s7,
+    '@media': {
+      [mobile]: {
+        gridColumn: '1 / -1',
+      },
+    },
   },
 ]);
 
@@ -131,7 +180,21 @@ export const noteListItem = style({
   gridTemplateColumns: '140px 1fr',
   gap: 28,
   alignItems: 'start',
+  '@media': {
+    [mobile]: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: vars.space.s3,
+    },
+  },
 });
+
+export const noteDate = style([
+  typography.metaMono,
+  {
+    color: vars.color.ink3,
+  },
+]);
 
 export const renderedNote = style([
   typography.body,
@@ -144,9 +207,18 @@ export const renderedNote = style([
 export const revisionContainer = style([
   flex.container,
   {
+    flexWrap: 'wrap',
     gap: vars.space.s4,
     padding: `${vars.space.s5} ${vars.space.s4}`,
     background: vars.color.tint,
     border: `1px solid ${vars.color.fieldRule}`,
   },
 ]);
+
+export const mainContent = style({
+  '@media': {
+    [mobile]: {
+      display: 'contents',
+    },
+  },
+});

@@ -15,10 +15,10 @@ const baseCover = style({
 });
 
 export const cover = styleVariants({
-  medium: [baseCover, { minWidth: BOOK_COVER_MEDIUM_WIDTH }],
-  large: [baseCover, { minWidth: BOOK_COVER_LARGE_WIDTH }],
+  medium: [baseCover, { minWidth: BOOK_COVER_MEDIUM_WIDTH, width: BOOK_COVER_MEDIUM_WIDTH }],
+  large: [baseCover, { minWidth: BOOK_COVER_LARGE_WIDTH, width: BOOK_COVER_LARGE_WIDTH }],
   // TODO: need xlarge font size too
-  xlarge: [baseCover, { minWidth: BOOK_COVER_XLARGE_WIDTH }],
+  xlarge: [baseCover, { minWidth: BOOK_COVER_XLARGE_WIDTH, width: BOOK_COVER_XLARGE_WIDTH }],
 });
 
 export const placeholderCover = style({
