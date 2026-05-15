@@ -1,15 +1,16 @@
 import type { Book } from '@obelus/shared/types';
 import { Link } from '@tanstack/react-router';
-import type { ReactNode } from 'react';
-import { FormattedMessage } from 'react-intl';
+import type { CSSProperties, ReactNode } from 'react';
+import { GridList, GridListItem } from 'react-aria-components';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useFormatLongDate } from '../../hooks/useFormatLongDate';
 import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';
+import { flex, typography } from '../../style';
 import { BookCover } from '../BookCover';
-import { Table } from '../Table';
 import { TitleAuthorStack } from '../TitleAuthorStack';
 import { ActionCell } from './ActionCell';
-import { link, smallCell } from './booksTable.css';
+import { gridRow, header, link, smallCell, wrapper } from './booksTable.css';
 
 type Columns = {
   started?: boolean;
@@ -25,59 +26,103 @@ type Props = {
 };
 
 export function BooksTable({ books, label, renderEmptyState, columns }: Props) {
+  const intl = useIntl();
   const formatPublishYear = useFormatPublishYear();
   const formatLongDate = useFormatLongDate();
 
+  if (books.length === 0) {
+    return <span className={typography.metaItalic}>{renderEmptyState()}</span>;
+  }
+
+  const gridStyle = { '--grid-template': buildGridTemplate(columns) } as CSSProperties;
+
   return (
-    <Table aria-label={label}>
-      <Table.Header>
-        <Table.Column />
-        <Table.Column isRowHeader>
+    <div className={wrapper} style={gridStyle}>
+      <div className={header}>
+        <div />
+        <div>
           <FormattedMessage defaultMessage="title · author" />
-        </Table.Column>
-        <Table.Column>
+        </div>
+        <div>
           <FormattedMessage defaultMessage="published" />
-        </Table.Column>
+        </div>
         {columns?.added !== false && (
-          <Table.Column>
+          <div>
             <FormattedMessage defaultMessage="added" />
-          </Table.Column>
+          </div>
         )}
         {columns?.started !== false && (
-          <Table.Column>
+          <div>
             <FormattedMessage defaultMessage="started" />
-          </Table.Column>
+          </div>
         )}
         {columns?.finished !== false && (
-          <Table.Column>
+          <div>
             <FormattedMessage defaultMessage="finished" />
-          </Table.Column>
+          </div>
         )}
-        <Table.Column>
+        <div>
           <FormattedMessage defaultMessage="judgment" />
-        </Table.Column>
-      </Table.Header>
-      <Table.Body items={books} renderEmptyState={renderEmptyState}>
-        {(book) => (
-          <Table.Row>
-            <Table.Cell className={smallCell}>
-              <BookCover book={book} />
-            </Table.Cell>
-            <Table.Cell>
-              <Link to="/book/$bookId" params={{ bookId: book.id.toString() }} className={link}>
-                <TitleAuthorStack title={book.title} author={book.author} />
-              </Link>
-            </Table.Cell>
-            <Table.Cell>{formatPublishYear(book.releaseDate)}</Table.Cell>
-            {columns?.added !== false && <Table.Cell>{formatLongDate(book.record?.createdAt)}</Table.Cell>}
-            {columns?.started !== false && <Table.Cell>{formatLongDate(book.record?.startedAt)}</Table.Cell>}
-            {columns?.finished !== false && <Table.Cell>{formatLongDate(book.record?.finishedAt)}</Table.Cell>}
-            <Table.Cell>
-              <ActionCell record={book.record} />
-            </Table.Cell>
-          </Table.Row>
-        )}
-      </Table.Body>
-    </Table>
+        </div>
+      </div>
+      <GridList aria-label={label}>
+        {books.map((book) => {
+          const publishYear = formatPublishYear(book.releaseDate);
+
+          return (
+            <GridListItem
+              key={book.id}
+              textValue={intl.formatMessage(
+                { defaultMessage: '{title} by {author}, published {publishYear}' },
+                { title: book.title, author: book.author, publishYear },
+              )}
+              className={gridRow}
+            >
+              <div className={smallCell}>
+                <BookCover book={book} />
+              </div>
+              <div className={flex.verticalCenter}>
+                <Link className={link} to="/book/$bookId" params={{ bookId: book.id.toString() }}>
+                  <TitleAuthorStack title={book.title} author={book.author} />
+                </Link>
+              </div>
+              <div className={flex.verticalCenter}>{publishYear}</div>
+              {columns?.added !== false && (
+                <div className={flex.verticalCenter}>{formatLongDate(book.record?.createdAt)}</div>
+              )}
+              {columns?.started !== false && (
+                <div className={flex.verticalCenter}>{formatLongDate(book.record?.startedAt)}</div>
+              )}
+              {columns?.finished !== false && (
+                <div className={flex.verticalCenter}>{formatLongDate(book.record?.finishedAt)}</div>
+              )}
+              <div className={flex.verticalCenter}>
+                <ActionCell record={book.record} />
+              </div>
+            </GridListItem>
+          );
+        })}
+      </GridList>
+    </div>
   );
+}
+
+function buildGridTemplate(columns?: Columns): string {
+  const parts = ['90px', '1fr', '0.5fr'];
+
+  if (columns?.added !== false) {
+    parts.push('0.5fr');
+  }
+
+  if (columns?.started !== false) {
+    parts.push('0.5fr');
+  }
+
+  if (columns?.finished !== false) {
+    parts.push('0.5fr');
+  }
+
+  parts.push('0.5fr');
+
+  return parts.join(' ');
 }
