@@ -1,18 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
-import clsx from 'clsx';
+import { GridList, GridListItem } from 'react-aria-components';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTRPC } from '../../client';
 import { FormattedAlert } from '../../components/Alert';
 import { BookCover } from '../../components/BookCover';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
-import { Table } from '../../components/Table';
 import { TitleAuthorStack } from '../../components/TitleAuthorStack';
 import { StatusCell } from '../../features/StatusCell';
 import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';
 import { flex, typography } from '../../style';
-import { link, pageContainer, position, smallCell } from './seriesDetail.css';
+import { gridRow, header, link, pageContainer, position, smallCell } from './seriesDetail.css';
 
 export function SeriesDetail() {
   const { seriesId } = useParams({ from: '/_authenticated/series/$seriesId' });
@@ -46,53 +45,64 @@ export function SeriesDetail() {
   return (
     <div className={pageContainer}>
       <h1 className={typography.display}>{series.series.name}</h1>
-      <Table
-        aria-label={intl.formatMessage(
-          { defaultMessage: 'Books from the series "{series}"' },
-          { series: series.series.name },
-        )}
-      >
-        <Table.Header>
-          <Table.Column />
-          <Table.Column />
-          <Table.Column isRowHeader>
+      <div>
+        <div className={header}>
+          <div />
+          <div />
+          <div>
             <FormattedMessage defaultMessage="title · author" />
-          </Table.Column>
-          <Table.Column>
+          </div>
+          <div>
             <FormattedMessage defaultMessage="published" />
-          </Table.Column>
-          <Table.Column>
+          </div>
+          <div>
             <FormattedMessage defaultMessage="judgment" />
-          </Table.Column>
-        </Table.Header>
-        <Table.Body items={series.books}>
-          {(book) => (
-            <Table.Row>
-              <Table.Cell className={clsx(position, smallCell)}>
-                <div className={flex.center}>{book.series?.position}</div>
-              </Table.Cell>
-              <Table.Cell className={smallCell}>
-                <BookCover book={book} />
-              </Table.Cell>
-              <Table.Cell>
-                <Link to="/book/$bookId" params={{ bookId: book.id.toString() }} className={link}>
-                  <TitleAuthorStack title={book.title} author={book.author} />
-                </Link>
-              </Table.Cell>
-              <Table.Cell>{formatPublishYear(book.releaseDate)}</Table.Cell>
-              <Table.Cell>
-                <StatusCell
-                  bookId={book.id}
-                  seriesId={book.series?.id}
-                  layout="vertical"
-                  status={book.record?.status}
-                  judgment={book.record?.judgment}
-                />
-              </Table.Cell>
-            </Table.Row>
+          </div>
+        </div>
+        <GridList
+          aria-label={intl.formatMessage(
+            { defaultMessage: 'Books from the series "{series}"' },
+            { series: series.series.name },
           )}
-        </Table.Body>
-      </Table>
+        >
+          {series.books.map((book) => {
+            const publishYear = formatPublishYear(book.releaseDate);
+
+            return (
+              <GridListItem
+                key={book.id}
+                textValue={intl.formatMessage(
+                  { defaultMessage: '{title} by {author}, published {publishYear}' },
+                  { title: book.title, author: book.author, publishYear },
+                )}
+                className={gridRow}
+              >
+                <div className={`${position} ${smallCell}`}>
+                  <div className={flex.center}>{book.series?.position}</div>
+                </div>
+                <div className={smallCell}>
+                  <BookCover book={book} />
+                </div>
+                <div className={flex.verticalCenter}>
+                  <Link className={link} to="/book/$bookId" params={{ bookId: book.id.toString() }}>
+                    <TitleAuthorStack title={book.title} author={book.author} />
+                  </Link>
+                </div>
+                <div className={flex.verticalCenter}>{publishYear}</div>
+                <div className={flex.verticalCenter}>
+                  <StatusCell
+                    bookId={book.id}
+                    seriesId={book.series?.id}
+                    layout="vertical"
+                    status={book.record?.status}
+                    judgment={book.record?.judgment}
+                  />
+                </div>
+              </GridListItem>
+            );
+          })}
+        </GridList>
+      </div>
     </div>
   );
 }
