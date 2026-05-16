@@ -1,5 +1,6 @@
 import type { Book } from '@obelus/shared/types';
 import { Link } from '@tanstack/react-router';
+import clsx from 'clsx';
 import type { CSSProperties, ReactNode } from 'react';
 import { GridList, GridListItem } from 'react-aria-components';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -10,7 +11,7 @@ import { flex, typography } from '../../style';
 import { BookCover } from '../BookCover';
 import { TitleAuthorStack } from '../TitleAuthorStack';
 import { ActionCell } from './ActionCell';
-import { gridRow, header, link, smallCell, wrapper } from './booksTable.css';
+import { actions, gridCell, gridRow, header, inlineLabel, link, smallCell, wrapper } from './booksTable.css';
 
 type Columns = {
   started?: boolean;
@@ -86,17 +87,37 @@ export function BooksTable({ books, label, renderEmptyState, columns }: Props) {
                   <TitleAuthorStack title={book.title} author={book.author} />
                 </Link>
               </div>
-              <div className={flex.verticalCenter}>{publishYear}</div>
+              <div className={gridCell}>
+                <span className={inlineLabel}>
+                  <FormattedMessage defaultMessage="published" />
+                </span>
+                {publishYear}
+              </div>
               {columns?.added !== false && (
-                <div className={flex.verticalCenter}>{formatLongDate(book.record?.createdAt)}</div>
+                <div className={gridCell}>
+                  <span className={inlineLabel}>
+                    <FormattedMessage defaultMessage="added" />
+                  </span>
+                  {formatLongDate(book.record?.createdAt)}
+                </div>
               )}
               {columns?.started !== false && (
-                <div className={flex.verticalCenter}>{formatLongDate(book.record?.startedAt)}</div>
+                <div className={gridCell}>
+                  <span className={inlineLabel}>
+                    <FormattedMessage defaultMessage="started" />
+                  </span>
+                  {formatLongDate(book.record?.startedAt)}
+                </div>
               )}
               {columns?.finished !== false && (
-                <div className={flex.verticalCenter}>{formatLongDate(book.record?.finishedAt)}</div>
+                <div className={gridCell}>
+                  <span className={inlineLabel}>
+                    <FormattedMessage defaultMessage="finished" />
+                  </span>
+                  {formatLongDate(book.record?.finishedAt)}
+                </div>
               )}
-              <div className={flex.verticalCenter}>
+              <div className={clsx(flex.verticalCenter, actions)}>
                 <ActionCell record={book.record} />
               </div>
             </GridListItem>
