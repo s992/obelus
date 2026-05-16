@@ -10,16 +10,16 @@ export const wrapper = style([
   },
 ]);
 
-export const header = style([gridHeader, { gridTemplateColumns: 'var(--grid-template)' }]);
+export const header = style([gridHeader, { gridTemplateColumns: 'var(--grid-template-cols)' }]);
 
 export const gridRow = style([
   gridRowBase,
   {
-    gridTemplateColumns: 'var(--grid-template)',
+    gridTemplateColumns: 'var(--grid-template-cols)',
     '@media': {
       [mediaQuery.mobile]: {
         gridTemplateColumns: '56px 1fr',
-        gridTemplateRows: '1fr 0.5fr 0.5fr',
+        gridTemplateRows: 'var(--grid-template-rows)',
         columnGap: vars.space.s4,
         rowGap: 0,
         selectors: {
@@ -57,6 +57,7 @@ export const gridCell = style([
         flexDirection: 'row',
         justifyContent: 'start',
         gap: vars.space.s1,
+        gridColumn: '2',
       },
     },
   },

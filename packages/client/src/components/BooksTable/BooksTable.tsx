@@ -35,7 +35,10 @@ export function BooksTable({ books, label, renderEmptyState, columns }: Props) {
     return <span className={typography.metaItalic}>{renderEmptyState()}</span>;
   }
 
-  const gridStyle = { '--grid-template': buildGridTemplate(columns) } as CSSProperties;
+  const gridStyle = {
+    '--grid-template-cols': buildGridTemplateColumns(columns),
+    '--grid-template-rows': buildGridTemplateRows(columns),
+  } as CSSProperties;
 
   return (
     <div className={wrapper} style={gridStyle}>
@@ -128,7 +131,7 @@ export function BooksTable({ books, label, renderEmptyState, columns }: Props) {
   );
 }
 
-function buildGridTemplate(columns?: Columns): string {
+function buildGridTemplateColumns(columns?: Columns): string {
   const parts = ['90px', '1fr', '0.5fr'];
 
   if (columns?.added !== false) {
@@ -144,6 +147,24 @@ function buildGridTemplate(columns?: Columns): string {
   }
 
   parts.push('0.5fr');
+
+  return parts.join(' ');
+}
+
+function buildGridTemplateRows(columns?: Columns): string {
+  const parts = ['1fr', '0.5fr'];
+
+  if (columns?.added !== false) {
+    parts.push('0.5fr');
+  }
+
+  if (columns?.started !== false) {
+    parts.push('0.5fr');
+  }
+
+  if (columns?.finished !== false) {
+    parts.push('0.5fr');
+  }
 
   return parts.join(' ');
 }
