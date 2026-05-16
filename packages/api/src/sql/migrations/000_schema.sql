@@ -1,6 +1,12 @@
-CREATE TYPE judgment AS ENUM('accepted', 'rejected', 'mixed');
+DO $$ BEGIN
+  CREATE TYPE judgment AS ENUM('accepted', 'rejected', 'mixed');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE TYPE record_status AS ENUM('planned', 'reading', 'finished');
+DO $$ BEGIN
+  CREATE TYPE record_status AS ENUM('planned', 'reading', 'finished');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
@@ -47,20 +53,40 @@ CREATE TABLE IF NOT EXISTS goodreads_import_failure (
   author TEXT NOT NULL
 );
 
-ALTER TABLE note
-ADD CONSTRAINT note_record_id_record_id_fkey FOREIGN key (record_id) REFERENCES record (id);
+CREATE TABLE IF NOT EXISTS migration (
+  name TEXT PRIMARY KEY,
+  applied_at TIMESTAMPTZ DEFAULT NOW()
+);
 
-ALTER TABLE note
-ADD CONSTRAINT note_user_id_user_id_fkey FOREIGN key (user_id) REFERENCES users (id);
+DO $$ BEGIN
+  ALTER TABLE note ADD CONSTRAINT note_record_id_record_id_fkey FOREIGN KEY (record_id) REFERENCES record (id);
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-ALTER TABLE record
-ADD CONSTRAINT record_user_id_user_id_fkey FOREIGN key (user_id) REFERENCES users (id);
+DO $$ BEGIN
+  ALTER TABLE note ADD CONSTRAINT note_record_id_record_id_fkey FOREIGN KEY (record_id) REFERENCES record (id);
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-ALTER TABLE goodreads_import
-ADD CONSTRAINT goodreads_import_user_id_user_id_fkey FOREIGN key (user_id) REFERENCES users (id);
+DO $$ BEGIN
+  ALTER TABLE note ADD CONSTRAINT note_user_id_user_id_fkey FOREIGN KEY (user_id) REFERENCES users (id);
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-ALTER TABLE goodreads_import_failure
-ADD CONSTRAINT goodreads_import_failure_import_id_fky FOREIGN key (import_id) REFERENCES goodreads_import (id);
+DO $$ BEGIN
+  ALTER TABLE record ADD CONSTRAINT record_user_id_user_id_fkey FOREIGN KEY (user_id) REFERENCES users (id);
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$ BEGIN
+  ALTER TABLE goodreads_import ADD CONSTRAINT goodreads_import_user_id_user_id_fkey FOREIGN KEY (user_id) REFERENCES users (id);
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+DO $$ BEGIN
+  ALTER TABLE goodreads_import_failure ADD CONSTRAINT goodreads_import_failure_import_id_fky FOREIGN KEY (import_id) REFERENCES goodreads_import (id);
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 CREATE OR REPLACE FUNCTION set_updated_at()
 RETURNS trigger AS $$

@@ -11,7 +11,8 @@
     "gql:gen": "graphql-codegen",
     "typecheck": "tsc -p ./tsconfig.json --noEmit",
     "sql:gen": "dotenvx run -f ../../.env -- sqlc generate && pnpm sql:fix",
-    "sql:fix": "tsx codemod/fix-sqlc.ts"
+    "sql:fix": "tsx codemod/fix-sqlc.ts",
+    "sql:migrate": "tsx ./src/migrate.ts"
   },
   "dependencies": {
     "@fastify/cookie": "catalog:",
