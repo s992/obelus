@@ -1,0 +1,8 @@
+query FindBookIdsByISBN13($isbns: [String!]) {
+  editions(where: { isbn_13: { _in: $isbns } }) {
+    isbn_13
+    book {
+      id
+    }
+  }
+}

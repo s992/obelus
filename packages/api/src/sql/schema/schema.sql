@@ -32,6 +32,21 @@ CREATE TABLE IF NOT EXISTS note (
   content TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS goodreads_import (
+  id UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
+  created_at TIMESTAMP DEFAULT NOW() NOT NULL,
+  completed_at TIMESTAMP DEFAULT NULL,
+  job_id TEXT NOT NULL,
+  user_id UUID NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS goodreads_import_failure (
+  id UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
+  import_id UUID NOT NULL,
+  title TEXT NOT NULL,
+  author TEXT NOT NULL
+);
+
 ALTER TABLE note
 ADD CONSTRAINT note_record_id_record_id_fkey FOREIGN key (record_id) REFERENCES record (id);
 
@@ -40,6 +55,12 @@ ADD CONSTRAINT note_user_id_user_id_fkey FOREIGN key (user_id) REFERENCES users 
 
 ALTER TABLE record
 ADD CONSTRAINT record_user_id_user_id_fkey FOREIGN key (user_id) REFERENCES users (id);
+
+ALTER TABLE goodreads_import
+ADD CONSTRAINT goodreads_import_user_id_user_id_fkey FOREIGN key (user_id) REFERENCES users (id);
+
+ALTER TABLE goodreads_import_failure
+ADD CONSTRAINT goodreads_import_failure_import_id_fky FOREIGN key (import_id) REFERENCES goodreads_import (id);
 
 CREATE OR REPLACE FUNCTION set_updated_at()
 RETURNS trigger AS $$

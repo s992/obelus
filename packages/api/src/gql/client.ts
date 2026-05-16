@@ -26,7 +26,7 @@ async function gqlFetch<R, V>(doc: DocumentNode, variables: V): Promise<R> {
     }
   }
 
-  const response = await fetch('https://api.hardcover.app/v1/graphql', {
+  const response = await fetchWithRetry('https://api.hardcover.app/v1/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -42,12 +42,35 @@ async function gqlFetch<R, V>(doc: DocumentNode, variables: V): Promise<R> {
   }
 
   try {
-    await redis.setEx(cacheKey, CACHE_TIME, JSON.stringify(data));
+    await redis.setex(cacheKey, CACHE_TIME, JSON.stringify(data));
   } catch (err) {
     logger.error(err, 'failed to store cached content');
   }
 
   return data;
+}
+
+async function fetchWithRetry(
+  url: string,
+  options: RequestInit,
+  attempt = 0,
+  maxRetries = 5,
+  baseDelay = 1000,
+): Promise<Response> {
+  const response = await fetch(url, options);
+
+  if (response.status !== 429 || attempt >= maxRetries) {
+    return response;
+  }
+
+  const retryAfter = response.headers.get('Retry-After');
+  const delay = retryAfter ? parseInt(retryAfter) * 1000 : baseDelay * 2 ** attempt + Math.random() * 500;
+
+  logger.warn(`rate limited, retrying in ${Math.round(delay)}ms (attempt ${attempt + 1}/${maxRetries}`);
+
+  await new Promise((resolve) => setTimeout(resolve, delay));
+
+  return fetchWithRetry(url, options, attempt + 1, maxRetries, baseDelay);
 }
 
 export const client = getSdk(gqlFetch);

@@ -93,11 +93,14 @@ export type BookDtoType = {
   characters?: InputMaybe<Array<InputMaybe<CharacterDtoInput>>>;
   collection_book_ids?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   compilation?: InputMaybe<Scalars['Boolean']['input']>;
+  content_warnings?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   description?: InputMaybe<Scalars['String']['input']>;
+  genres?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   headline?: InputMaybe<Scalars['String']['input']>;
   is_partial_book?: InputMaybe<Scalars['Boolean']['input']>;
   librarian_tags?: InputMaybe<Array<InputMaybe<TagsDtoInput>>>;
   literary_type_id?: InputMaybe<Scalars['Int']['input']>;
+  moods?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   parent_book_id?: InputMaybe<Scalars['Int']['input']>;
   release_date?: InputMaybe<Scalars['date']['input']>;
   series?: InputMaybe<Array<InputMaybe<BookSeriesDtoInput>>>;
@@ -109,6 +112,7 @@ export type BookIdType = {
   book?: Maybe<Books>;
   errors?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   id?: Maybe<Scalars['Int']['output']>;
+  warnings?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
 };
 
 export type BookInput = {
@@ -545,6 +549,7 @@ export type ReportOutput = {
   complete?: Maybe<Scalars['Boolean']['output']>;
   created?: Maybe<Scalars['Boolean']['output']>;
   errors?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  review_message?: Maybe<Scalars['String']['output']>;
 };
 
 export type SearchOutput = {
@@ -19916,6 +19921,20 @@ export type Users_Variance_Order_By = {
   status_id?: InputMaybe<Order_By>;
 };
 
+export type FindBookIdsByIsbn10QueryVariables = Exact<{
+  isbns?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
+
+
+export type FindBookIdsByIsbn10Query = { __typename?: 'query_root', editions: Array<{ __typename?: 'editions', isbn_10?: string | null, book: { __typename?: 'books', id: number } }> };
+
+export type FindBookIdsByIsbn13QueryVariables = Exact<{
+  isbns?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
+
+
+export type FindBookIdsByIsbn13Query = { __typename?: 'query_root', editions: Array<{ __typename?: 'editions', isbn_13?: string | null, book: { __typename?: 'books', id: number } }> };
+
 export type GetBooksByIdsQueryVariables = Exact<{
   ids?: InputMaybe<Array<Scalars['Int']['input']> | Scalars['Int']['input']>;
 }>;
@@ -19937,7 +19956,34 @@ export type SearchBooksQueryVariables = Exact<{
 
 export type SearchBooksQuery = { __typename?: 'query_root', search?: { __typename?: 'SearchOutput', ids?: Array<number | null> | null } | null };
 
+export type SearchBooksForImportQueryVariables = Exact<{
+  query: Scalars['String']['input'];
+}>;
 
+
+export type SearchBooksForImportQuery = { __typename?: 'query_root', search?: { __typename?: 'SearchOutput', ids?: Array<number | null> | null, results?: unknown | null } | null };
+
+
+export const FindBookIdsByIsbn10Document = gql`
+    query FindBookIdsByISBN10($isbns: [String!]) {
+  editions(where: {isbn_10: {_in: $isbns}}) {
+    isbn_10
+    book {
+      id
+    }
+  }
+}
+    `;
+export const FindBookIdsByIsbn13Document = gql`
+    query FindBookIdsByISBN13($isbns: [String!]) {
+  editions(where: {isbn_13: {_in: $isbns}}) {
+    isbn_13
+    book {
+      id
+    }
+  }
+}
+    `;
 export const GetBooksByIdsDocument = gql`
     query GetBooksByIds($ids: [Int!]) {
   books(
@@ -20025,9 +20071,23 @@ export const SearchBooksDocument = gql`
   }
 }
     `;
+export const SearchBooksForImportDocument = gql`
+    query SearchBooksForImport($query: String!) {
+  search(query: $query, sort: "users_count:desc", query_type: "book") {
+    ids
+    results
+  }
+}
+    `;
 export type Requester<C = {}> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>
 export function getSdk<C>(requester: Requester<C>) {
   return {
+    FindBookIdsByISBN10(variables?: FindBookIdsByIsbn10QueryVariables, options?: C): Promise<FindBookIdsByIsbn10Query> {
+      return requester<FindBookIdsByIsbn10Query, FindBookIdsByIsbn10QueryVariables>(FindBookIdsByIsbn10Document, variables, options) as Promise<FindBookIdsByIsbn10Query>;
+    },
+    FindBookIdsByISBN13(variables?: FindBookIdsByIsbn13QueryVariables, options?: C): Promise<FindBookIdsByIsbn13Query> {
+      return requester<FindBookIdsByIsbn13Query, FindBookIdsByIsbn13QueryVariables>(FindBookIdsByIsbn13Document, variables, options) as Promise<FindBookIdsByIsbn13Query>;
+    },
     GetBooksByIds(variables?: GetBooksByIdsQueryVariables, options?: C): Promise<GetBooksByIdsQuery> {
       return requester<GetBooksByIdsQuery, GetBooksByIdsQueryVariables>(GetBooksByIdsDocument, variables, options) as Promise<GetBooksByIdsQuery>;
     },
@@ -20036,6 +20096,9 @@ export function getSdk<C>(requester: Requester<C>) {
     },
     SearchBooks(variables: SearchBooksQueryVariables, options?: C): Promise<SearchBooksQuery> {
       return requester<SearchBooksQuery, SearchBooksQueryVariables>(SearchBooksDocument, variables, options) as Promise<SearchBooksQuery>;
+    },
+    SearchBooksForImport(variables: SearchBooksForImportQueryVariables, options?: C): Promise<SearchBooksForImportQuery> {
+      return requester<SearchBooksForImportQuery, SearchBooksForImportQueryVariables>(SearchBooksForImportDocument, variables, options) as Promise<SearchBooksForImportQuery>;
     }
   };
 }
