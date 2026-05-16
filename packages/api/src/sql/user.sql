@@ -17,3 +17,10 @@ insert into users (
   sqlc.arg('passwordHash')
 )
 returning id;
+
+-- name: UpdateUser :exec
+update users
+set
+  password_hash = coalesce(sqlc.narg('passwordHash'), password_hash),
+  public = coalesce(sqlc.narg('public')::boolean, public)
+where id = sqlc.arg('userId');

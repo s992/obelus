@@ -43,11 +43,11 @@ export async function login(userName: string, password: string) {
   return user;
 }
 
-function hashPassword(password: string) {
+export function hashPassword(password: string) {
   return argon2.hash(password);
 }
 
-async function verifyPassword(hash: string, password: string) {
+export async function verifyPassword(hash: string, password: string) {
   try {
     return await argon2.verify(hash, password);
   } catch (err) {

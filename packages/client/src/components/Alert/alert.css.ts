@@ -26,6 +26,14 @@ export const alert = styleVariants({
       backgroundColor: `color-mix(in oklab, ${vars.color.bad} 6%, ${vars.color.surface})`,
     },
   ],
+  success: [
+    baseAlert,
+    {
+      borderColor: `color-mix(in oklab, ${vars.color.good} 35%, ${vars.color.rule})`,
+      borderLeftColor: vars.color.good,
+      backgroundColor: `color-mix(in oklab, ${vars.color.good} 6%, ${vars.color.surface})`,
+    },
+  ],
 });
 
 export const formattedAlertBody = style({

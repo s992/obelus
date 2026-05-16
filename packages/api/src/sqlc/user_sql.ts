@@ -116,3 +116,24 @@ export async function createUser(client: Client, args: CreateUserArgs): Promise<
     id: row?.[0],
   };
 }
+
+export const updateUserQuery = `-- name: UpdateUser :exec
+update users
+set
+  password_hash = coalesce($1, password_hash),
+  public = coalesce($2::boolean, public)
+where id = $3`;
+
+export interface UpdateUserArgs {
+  passwordhash: string | null;
+  public: boolean | null;
+  userid: string;
+}
+
+export async function updateUser(client: Client, args: UpdateUserArgs): Promise<void> {
+  await client.query({
+    text: updateUserQuery,
+    values: [args.passwordhash, args.public, args.userid],
+    rowMode: 'array',
+  });
+}
