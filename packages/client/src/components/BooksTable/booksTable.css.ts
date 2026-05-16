@@ -10,7 +10,10 @@ export const wrapper = style([
   },
 ]);
 
-export const header = style([gridHeader, { gridTemplateColumns: 'var(--grid-template-cols)' }]);
+export const header = style([
+  gridHeader,
+  { gridTemplateColumns: 'var(--grid-template-cols)', textTransform: 'uppercase' },
+]);
 
 export const gridRow = style([
   gridRowBase,

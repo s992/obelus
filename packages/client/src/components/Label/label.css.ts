@@ -3,7 +3,7 @@ import { style, styleVariants } from '@vanilla-extract/css';
 import { typography, vars } from '../../style';
 
 const baseLabel = style([
-  typography.metaMono,
+  typography.label,
   {
     textTransform: 'uppercase',
     color: vars.color.ink3,

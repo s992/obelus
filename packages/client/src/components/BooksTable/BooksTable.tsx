@@ -32,7 +32,7 @@ export function BooksTable({ books, label, renderEmptyState, columns }: Props) {
   const formatLongDate = useFormatLongDate();
 
   if (books.length === 0) {
-    return <span className={typography.metaItalic}>{renderEmptyState()}</span>;
+    return <span className={typography.body}>{renderEmptyState()}</span>;
   }
 
   const gridStyle = {

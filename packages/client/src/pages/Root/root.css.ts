@@ -22,7 +22,7 @@ export const headerContainer = style({
 });
 
 export const brand = style([
-  typography.brand,
+  typography.display,
   {
     display: 'flex',
     alignItems: 'center',

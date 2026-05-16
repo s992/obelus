@@ -41,51 +41,27 @@ export const vars = createThemeContract({
   // `bookTitle` always means "the size used for a book title in a list row".
   // If you find yourself reaching for an in-between value, fix the layout.
   fontSize: {
-    coverLabel: null, // 7.5  — uppercase author on cover placeholder
-    coverTitle: null, // 9    — italic title on cover placeholder
-    label: null, // 10.5 — caps mono labels (.lbl, col headers)
-    labelLg: null, // 11   — caps labels at slightly more presence
-    //        (top meta, section number, swatch var,
-    //         scale-row keys, card meta)
-    metaMono: null, // 12   — mono meta line ("started … last touched …")
-    chip: null, // 12   — judgment chip text
-    translator: null, // 12.5 — italic translator under publish year
-    cardAuthor: null, // 13   — author line in card variant
-    button: null, // 13.5 — button label
-    metaItalic: null, // 13.5 — italic meta, book-row author/date
-    body: null, // 14   — base body copy, nav, judg word, notes,
-    //        field placeholders, sec-sub
-    bodyLg: null, // 15   — preferred reading size (specimen body,
-    //        published year)
-    cardTitle: null, // 16   — card-variant book title
-    bookTitle: null, // 18   — book-row title (list)
-    h2: null, // 22   — H2, brand wordmark
-    sectionH: null, // 28   — section header
-    display: null, // 40   — type specimen display
+    label: null,
+    body: null,
+    title: null,
+    h2: null,
+    h1: null,
+    display: null,
   },
 
   lineHeight: {
-    coverTitle: null, // 1.1   — italic placeholder cover
-    bookTitle: null, // 1.15  — list-row title
-    h2: null, // 1.2   — H2 + button line-height
-    chip: null, // 1.4   — chip wraps tightly
-    body: null, // 1.5   — base body / nav
-    long: null, // 1.55  — long-form body, notes
-    display: null, // 1.05  — display
+    tight: null,
+    normal: null,
   },
 
   fontWeight: {
-    regular: null, // 400
-    display: null, // 500 (editorial uses 500; modern flips to 600 if added)
-    medium: null, // 500 — swatch name, body emphasis
+    regular: null,
+    display: null,
   },
 
   letterSpacing: {
-    display: null, // -0.005em — display, all serif headings/titles
-    body: null, // 0
-    metaMono: null, // 0.01em — slightly opened mono meta
-    label: null, // 0.06em — caps mono labels
-    coverCap: null, // 0.08em — extra-tight caps on cover author
+    display: null,
+    label: null,
   },
 
   /* ─────────── Spacing ─────────── */

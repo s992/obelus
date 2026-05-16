@@ -1,7 +1,9 @@
 import type { Book, Judgment, Maybe, NoteJson, Status } from '@obelus/shared/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
+import clsx from 'clsx';
+import { useState } from 'react';
 import { TextArea } from 'react-aria-components';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTRPC } from '../../client';
@@ -12,6 +14,7 @@ import { judgment as judgmentCss, typography } from '../../style';
 import {
   addNoteButton,
   entryCount,
+  metaLabel,
   noteDate,
   noteList,
   noteListItem,
@@ -33,7 +36,6 @@ export function RecordContent({ book, notes }: Props) {
   const queryClient = useQueryClient();
   const trpc = useTRPC();
   const formatLongDate = useFormatLongDate();
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [noteContent, setNoteContent] = useState('');
   const [isRevising, setIsRevising] = useState(false);
   const { mutate: createNote, isPending: isCreatingNote } = useMutation(
@@ -60,6 +62,8 @@ export function RecordContent({ book, notes }: Props) {
     }),
   );
 
+  const submitRef = useHotkeys('mod+enter', () => submitNote(), { enableOnFormTags: true });
+
   const { record } = book;
   const formattedUpdateDate = formatLongDate(record?.updatedAt);
   const judgmentHighlight = record?.judgment ? judgmentCss[record.judgment] : undefined;
@@ -77,19 +81,27 @@ export function RecordContent({ book, notes }: Props) {
 
     updateRecord({ id: record.id, status });
   };
+  const submitNote = () => {
+    console.log('fired');
+    if (!book.record || !noteContent.trim()) {
+      return;
+    }
+
+    createNote({ content: noteContent, id: book.record.id });
+  };
 
   return (
     <div className={recordContainer}>
       <div>
         <div className={sectionHeader}>
-          <h2 className={typography.labelLg}>
+          <h2 className={clsx(typography.label, metaLabel)}>
             <FormattedMessage defaultMessage="judgment" />
           </h2>
           <Button variant="underlined" onPress={() => setIsRevising((current) => !current)}>
             <FormattedMessage defaultMessage="revise" />
           </Button>
         </div>
-        <p className={typography.bodyLg}>
+        <p className={typography.body}>
           <FormattedMessage
             defaultMessage="<highlight>{judgment}</highlight> as of {updatedAt}"
             values={{
@@ -121,7 +133,7 @@ export function RecordContent({ book, notes }: Props) {
       </div>
       <div>
         <div className={sectionHeader}>
-          <h2 className={typography.labelLg}>
+          <h2 className={clsx(typography.label, metaLabel)}>
             <FormattedMessage defaultMessage="notes" />
           </h2>
           <span className={entryCount}>
@@ -133,7 +145,7 @@ export function RecordContent({ book, notes }: Props) {
         </div>
         <label className={noteTextAreaContainer}>
           <TextArea
-            ref={textAreaRef}
+            ref={submitRef}
             className={textArea}
             rows={3}
             placeholder={intl.formatMessage({
@@ -143,11 +155,7 @@ export function RecordContent({ book, notes }: Props) {
             onChange={(e) => setNoteContent(e.target.value)}
             disabled={isCreatingNote}
           />
-          <Button
-            className={addNoteButton}
-            onPress={() => createNote({ content: noteContent, id: book.record?.id ?? '' })}
-            isProcessing={isCreatingNote}
-          >
+          <Button className={addNoteButton} onPress={submitNote} isProcessing={isCreatingNote}>
             <FormattedMessage defaultMessage="add note" />
           </Button>
         </label>

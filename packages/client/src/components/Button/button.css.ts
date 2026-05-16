@@ -4,7 +4,7 @@ import { vars } from '../../style';
 import { typography } from '../../style/typography.css';
 
 const baseButton = style([
-  typography.button,
+  typography.body,
   {
     display: 'flex',
     justifyContent: 'center',

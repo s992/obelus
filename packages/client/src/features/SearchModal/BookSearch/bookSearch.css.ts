@@ -31,6 +31,7 @@ export const resultHeader = style([
     top: 0,
     background: vars.color.bg,
     height: HEADER_HEIGHT,
+    textTransform: 'uppercase',
   },
 ]);
 

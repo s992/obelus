@@ -11,7 +11,7 @@ export const pageContainer = style([
   },
 ]);
 
-export const header = style([gridHeader, { gridTemplateColumns: GRID_TEMPLATE_COLUMNS }]);
+export const header = style([gridHeader, { gridTemplateColumns: GRID_TEMPLATE_COLUMNS, textTransform: 'uppercase' }]);
 
 export const gridRow = style([
   gridRowBase,

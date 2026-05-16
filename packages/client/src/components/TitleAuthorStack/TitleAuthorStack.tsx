@@ -15,8 +15,8 @@ export function TitleAuthorStack({ title, author }: Props) {
 
   return (
     <div className={flex.column}>
-      <span className={clsx(text, typography.bookTitle)}>{title || placeholder}</span>
-      <span className={clsx(text, typography.author)}>{author || placeholder}</span>
+      <span className={clsx(text, typography.title)}>{title || placeholder}</span>
+      <span className={clsx(text, typography.body)}>{author || placeholder}</span>
     </div>
   );
 }

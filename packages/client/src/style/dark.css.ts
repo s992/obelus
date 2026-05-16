@@ -31,47 +31,27 @@ export const darkTheme = createTheme(vars, {
   },
 
   fontSize: {
-    coverLabel: '7.5px',
-    coverTitle: '9px',
-    label: '10.5px',
-    labelLg: '11px',
-    metaMono: '12px',
-    chip: '12px',
-    translator: '12.5px',
-    cardAuthor: '13px',
-    button: '13.5px',
-    metaItalic: '13.5px',
+    label: '11px',
     body: '14px',
-    bodyLg: '15px',
-    cardTitle: '16px',
-    bookTitle: '18px',
+    title: '18px',
     h2: '22px',
-    sectionH: '28px',
+    h1: '28px',
     display: '40px',
   },
 
   lineHeight: {
-    coverTitle: '1.1',
-    bookTitle: '1.15',
-    h2: '1.2',
-    chip: '1.4',
-    body: '1.5',
-    long: '1.55',
-    display: '1.05',
+    tight: '1.15',
+    normal: '1.5',
   },
 
   fontWeight: {
     regular: '400',
     display: '500',
-    medium: '500',
   },
 
   letterSpacing: {
     display: '-0.005em',
-    body: '0',
-    metaMono: '0.01em',
     label: '0.06em',
-    coverCap: '0.08em',
   },
 
   space: {

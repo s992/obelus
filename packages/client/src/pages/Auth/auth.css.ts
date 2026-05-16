@@ -38,7 +38,7 @@ export const formContainer = style({
 });
 
 export const userNameHighlight = style([
-  typography.metaMono,
+  typography.label,
   {
     background: vars.color.tint,
     padding: '1px 5px',

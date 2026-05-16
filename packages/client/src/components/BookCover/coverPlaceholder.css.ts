@@ -31,6 +31,6 @@ export const placeholderCover = style({
   overflow: 'hidden',
 });
 
-export const title = style([typography.coverTitle, { maxHeight: '70%', overflow: 'clip' }]);
+export const title = style([typography.title, { maxHeight: '70%', overflow: 'clip' }]);
 
-export const author = style([typography.coverLabel]);
+export const author = style([typography.body]);

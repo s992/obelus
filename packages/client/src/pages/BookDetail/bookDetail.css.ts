@@ -191,7 +191,7 @@ export const noteListItem = style({
 });
 
 export const noteDate = style([
-  typography.metaMono,
+  typography.label,
   {
     color: vars.color.ink3,
   },
@@ -222,4 +222,8 @@ export const mainContent = style({
       display: 'contents',
     },
   },
+});
+
+export const metaLabel = style({
+  textTransform: 'uppercase',
 });

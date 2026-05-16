@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useCallback, useRef, useState } from 'react';
 import { GridList, GridListItem } from 'react-aria-components';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { useDebounceValue, useEventListener } from 'usehooks-ts';
 
 import { useTRPC } from '../../../client';
@@ -103,9 +103,15 @@ export function BookSearch() {
         <div className={resultContainer}>
           <div className={resultHeader}>
             <div />
-            <div>title / author</div>
-            <div>published</div>
-            <div>judgment</div>
+            <div>
+              <FormattedMessage defaultMessage="title · author" />
+            </div>
+            <div>
+              <FormattedMessage defaultMessage="published" />
+            </div>
+            <div>
+              <FormattedMessage defaultMessage="judgment" />
+            </div>
           </div>
           <GridList aria-label={intl.formatMessage({ defaultMessage: 'Search results for "{query}"' }, { query })}>
             {results?.map((book, idx) => {
