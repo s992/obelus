@@ -13,3 +13,12 @@ export const button = style({
   justifyContent: 'flex-start',
   width: 'fit-content',
 });
+
+export const responsive = style({
+  '@media': {
+    '(max-width: 640px)': {
+      flexDirection: 'row',
+      gap: vars.space.s3,
+    },
+  },
+});

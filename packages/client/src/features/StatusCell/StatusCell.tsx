@@ -1,12 +1,13 @@
 import type { Judgment, Maybe, Status } from '@obelus/shared/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { useIntl } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTRPC } from '../../client';
 import { toastQueue } from '../../components/Toast';
 import { UnreadBookActions, type Props as UnreadBookActionsProps } from '../../components/UnreadBookActions';
-import { judgment as judgmentCss, typography } from '../../style';
+import { judgment as judgmentCss } from '../../style';
+import { responsiveLabel, statusOrJudgment } from './statusCell.css';
 
 type Props = {
   bookId: number;
@@ -50,8 +51,22 @@ export function StatusCell({ bookId, seriesId, layout, status, judgment }: Props
   }
 
   if (!judgment) {
-    return <span className={typography.body}>{status}</span>;
+    return (
+      <span className={statusOrJudgment}>
+        <span className={responsiveLabel}>
+          <FormattedMessage defaultMessage="status" />
+        </span>
+        {status}
+      </span>
+    );
   }
 
-  return <span className={clsx(typography.body, judgmentCss[judgment])}>{judgment}</span>;
+  return (
+    <span className={clsx(statusOrJudgment, judgmentCss[judgment])}>
+      <span className={responsiveLabel}>
+        <FormattedMessage defaultMessage="judgment" />
+      </span>
+      {judgment}
+    </span>
+  );
 }

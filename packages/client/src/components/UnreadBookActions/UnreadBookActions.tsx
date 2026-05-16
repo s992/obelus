@@ -1,10 +1,11 @@
 import type { Status } from '@obelus/shared/types';
+import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
 
 import { flex } from '../../style';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { button, container } from './unreadBookActions.css';
+import { button, container, responsive } from './unreadBookActions.css';
 
 export type Props = {
   layout: keyof typeof container;
@@ -14,7 +15,7 @@ export type Props = {
 
 export function UnreadBookActions({ layout, onAction, isProcessing }: Props) {
   return (
-    <div className={container[layout]}>
+    <div className={clsx(container[layout], responsive)}>
       {isProcessing ? (
         <div className={flex.center}>
           <LoadingSpinner size="small" />

@@ -20,6 +20,11 @@ export const header = style([
     padding: `0 0 ${vars.space.s2} 0`,
     textAlign: 'left',
     fontWeight: 400,
+    '@media': {
+      '(max-width: 640px)': {
+        display: 'none',
+      },
+    },
   },
 ]);
 
@@ -33,6 +38,14 @@ export const gridRow = style([
     borderTop: `1px solid ${vars.color.rule}`,
     textDecoration: 'none',
     color: 'inherit',
+    '@media': {
+      '(max-width: 640px)': {
+        gridTemplateColumns: '56px 1fr',
+        gridTemplateRows: '1fr 0.5fr 0.5fr',
+        columnGap: vars.space.s4,
+        rowGap: 0,
+      },
+    },
   },
 ]);
 
@@ -40,11 +53,21 @@ export const position = style([
   typography.display,
   {
     color: vars.color.rule,
+    '@media': {
+      '(max-width: 640px)': {
+        display: 'none',
+      },
+    },
   },
 ]);
 
 export const smallCell = style({
   width: 90,
+  '@media': {
+    '(max-width: 640px)': {
+      gridRow: 'span 2 / span 2',
+    },
+  },
 });
 
 export const link = style({
@@ -57,3 +80,39 @@ export const link = style({
     textUnderlineOffset: vars.space.s1,
   },
 });
+
+export const gridCell = style([
+  flex.verticalCenter,
+  {
+    '@media': {
+      '(max-width: 640px)': {
+        justifyContent: 'start',
+      },
+    },
+  },
+]);
+
+export const publishDate = style([
+  flex.verticalCenter,
+  {
+    '@media': {
+      '(max-width: 640px)': {
+        gridColumnStart: 2,
+        gridRowStart: 2,
+        justifyContent: 'start',
+      },
+    },
+  },
+]);
+
+export const statusCell = style([
+  flex.verticalCenter,
+  {
+    '@media': {
+      '(max-width: 640px)': {
+        gridColumn: 'span 2 / span 2',
+        gridRowStart: 3,
+      },
+    },
+  },
+]);

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
+import clsx from 'clsx';
 import { GridList, GridListItem } from 'react-aria-components';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -11,7 +12,17 @@ import { TitleAuthorStack } from '../../components/TitleAuthorStack';
 import { StatusCell } from '../../features/StatusCell';
 import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';
 import { flex, typography } from '../../style';
-import { gridRow, header, link, pageContainer, position, smallCell } from './seriesDetail.css';
+import {
+  gridCell,
+  gridRow,
+  header,
+  link,
+  pageContainer,
+  position,
+  publishDate,
+  smallCell,
+  statusCell,
+} from './seriesDetail.css';
 
 export function SeriesDetail() {
   const { seriesId } = useParams({ from: '/_authenticated/series/$seriesId' });
@@ -77,19 +88,19 @@ export function SeriesDetail() {
                 )}
                 className={gridRow}
               >
-                <div className={`${position} ${smallCell}`}>
+                <div className={clsx(position, smallCell)}>
                   <div className={flex.center}>{book.series?.position}</div>
                 </div>
                 <div className={smallCell}>
                   <BookCover book={book} />
                 </div>
-                <div className={flex.verticalCenter}>
+                <div className={gridCell}>
                   <Link className={link} to="/book/$bookId" params={{ bookId: book.id.toString() }}>
                     <TitleAuthorStack title={book.title} author={book.author} />
                   </Link>
                 </div>
-                <div className={flex.verticalCenter}>{publishYear}</div>
-                <div className={flex.verticalCenter}>
+                <div className={publishDate}>{publishYear}</div>
+                <div className={statusCell}>
                   <StatusCell
                     bookId={book.id}
                     seriesId={book.series?.id}
