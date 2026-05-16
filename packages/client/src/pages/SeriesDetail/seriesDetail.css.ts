@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { flex, typography, vars } from '../../style';
+import { flex, gridHeader, gridRow as gridRowBase, mediaQuery, typography, vars } from '../../style';
 
 const GRID_TEMPLATE_COLUMNS = '90px 90px 1fr 0.5fr 0.5fr';
 
@@ -11,35 +11,15 @@ export const pageContainer = style([
   },
 ]);
 
-export const header = style([
-  typography.label,
-  {
-    display: 'grid',
-    gridTemplateColumns: GRID_TEMPLATE_COLUMNS,
-    gap: vars.space.s4,
-    padding: `0 0 ${vars.space.s2} 0`,
-    textAlign: 'left',
-    fontWeight: 400,
-    '@media': {
-      '(max-width: 640px)': {
-        display: 'none',
-      },
-    },
-  },
-]);
+export const header = style([gridHeader, { gridTemplateColumns: GRID_TEMPLATE_COLUMNS }]);
 
 export const gridRow = style([
+  gridRowBase,
   typography.body,
   {
-    display: 'grid',
     gridTemplateColumns: GRID_TEMPLATE_COLUMNS,
-    gap: vars.space.s4,
-    padding: `${vars.space.s3} 0`,
-    borderTop: `1px solid ${vars.color.rule}`,
-    textDecoration: 'none',
-    color: 'inherit',
     '@media': {
-      '(max-width: 640px)': {
+      [mediaQuery.mobile]: {
         gridTemplateColumns: '56px 1fr',
         gridTemplateRows: '1fr 0.5fr 0.5fr',
         columnGap: vars.space.s4,
@@ -54,7 +34,7 @@ export const position = style([
   {
     color: vars.color.rule,
     '@media': {
-      '(max-width: 640px)': {
+      [mediaQuery.mobile]: {
         display: 'none',
       },
     },
@@ -64,20 +44,9 @@ export const position = style([
 export const smallCell = style({
   width: 90,
   '@media': {
-    '(max-width: 640px)': {
+    [mediaQuery.mobile]: {
       gridRow: 'span 2 / span 2',
     },
-  },
-});
-
-export const link = style({
-  textDecoration: 'none',
-  width: 'fit-content',
-  display: 'inline-block',
-  ':hover': {
-    textDecoration: 'underline',
-    textDecorationColor: vars.color.fieldRule,
-    textUnderlineOffset: vars.space.s1,
   },
 });
 
@@ -85,7 +54,7 @@ export const gridCell = style([
   flex.verticalCenter,
   {
     '@media': {
-      '(max-width: 640px)': {
+      [mediaQuery.mobile]: {
         justifyContent: 'start',
       },
     },
@@ -96,7 +65,7 @@ export const publishDate = style([
   flex.verticalCenter,
   {
     '@media': {
-      '(max-width: 640px)': {
+      [mediaQuery.mobile]: {
         gridColumnStart: 2,
         gridRowStart: 2,
         justifyContent: 'start',
@@ -109,7 +78,7 @@ export const statusCell = style([
   flex.verticalCenter,
   {
     '@media': {
-      '(max-width: 640px)': {
+      [mediaQuery.mobile]: {
         gridColumn: 'span 2 / span 2',
         gridRowStart: 3,
       },

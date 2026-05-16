@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { Link, useParams } from '@tanstack/react-router';
+import { useParams } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { GridList, GridListItem } from 'react-aria-components';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTRPC } from '../../client';
-import { FormattedAlert } from '../../components/Alert';
 import { BookCover } from '../../components/BookCover';
-import { LoadingSpinner } from '../../components/LoadingSpinner';
+import { FullPageSpinner } from '../../components/FullPageSpinner';
+import { Link } from '../../components/Link';
+import { LoadError } from '../../components/LoadError';
 import { TitleAuthorStack } from '../../components/TitleAuthorStack';
 import { StatusCell } from '../../features/StatusCell';
 import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';
@@ -16,7 +17,6 @@ import {
   gridCell,
   gridRow,
   header,
-  link,
   pageContainer,
   position,
   publishDate,
@@ -36,21 +36,11 @@ export function SeriesDetail() {
   } = useQuery(trpc.book.seriesById.queryOptions({ id: parseInt(seriesId) }));
 
   if (isLoading) {
-    return (
-      <div className={flex.center}>
-        <LoadingSpinner size="xlarge" />
-      </div>
-    );
+    return <FullPageSpinner />;
   }
 
   if (isLoadError || !series) {
-    return (
-      <FormattedAlert
-        variant="error"
-        title={<FormattedMessage defaultMessage="Failed to load series." />}
-        message={<FormattedMessage defaultMessage="Please refresh your browser window to try again." />}
-      />
-    );
+    return <LoadError title={<FormattedMessage defaultMessage="Failed to load series." />} />;
   }
 
   return (
@@ -95,7 +85,7 @@ export function SeriesDetail() {
                   <BookCover book={book} />
                 </div>
                 <div className={gridCell}>
-                  <Link className={link} to="/book/$bookId" params={{ bookId: book.id.toString() }}>
+                  <Link to="/book/$bookId" params={{ bookId: book.id.toString() }}>
                     <TitleAuthorStack title={book.title} author={book.author} />
                   </Link>
                 </div>

@@ -2,7 +2,7 @@ import type { Maybe } from '@obelus/shared/types';
 import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
 
-import { typography } from '../../style';
+import { flex, typography } from '../../style';
 import { text } from './titleAuthorStack.css';
 
 type Props = {
@@ -14,9 +14,9 @@ export function TitleAuthorStack({ title, author }: Props) {
   const placeholder = <FormattedMessage defaultMessage="N/A" />;
 
   return (
-    <>
+    <div className={flex.column}>
       <span className={clsx(text, typography.bookTitle)}>{title || placeholder}</span>
       <span className={clsx(text, typography.author)}>{author || placeholder}</span>
-    </>
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 import { keyframes, style } from '@vanilla-extract/css';
 
-import { vars } from '../../style';
+import { mediaQuery, vars } from '../../style';
 
 const zoom = keyframes({
   '0%': { transform: 'scale(0.8)' },
@@ -23,7 +23,7 @@ export const modal = style({
     },
   },
   '@media': {
-    '(max-width: 900px)': {
+    [mediaQuery.search]: {
       top: '90px',
       marginLeft: 40,
       translate: '-20px 0',

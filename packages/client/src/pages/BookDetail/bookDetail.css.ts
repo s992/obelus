@@ -1,15 +1,13 @@
 import { style } from '@vanilla-extract/css';
 
-import { flex, typography, vars } from '../../style';
-
-const mobile = '(max-width: 800px)' as const;
+import { flex, mediaQuery, typography, vars } from '../../style';
 
 export const container = style({
   display: 'grid',
   gridTemplateColumns: '220px 1fr',
   gap: vars.space.s7,
   '@media': {
-    [mobile]: {
+    [mediaQuery.tablet]: {
       gridTemplateColumns: 'max-content 1fr',
     },
   },
@@ -23,7 +21,7 @@ export const sidebar = style({
   top: 32,
   alignSelf: 'start',
   '@media': {
-    [mobile]: {
+    [mediaQuery.tablet]: {
       display: 'contents',
     },
   },
@@ -33,7 +31,7 @@ export const coverWrapper = style({
   display: 'flex',
   justifyContent: 'center',
   '@media': {
-    [mobile]: {
+    [mediaQuery.tablet]: {
       gridColumn: 1,
       gridRow: 1,
       alignSelf: 'start',
@@ -49,7 +47,7 @@ export const meta = style({
   paddingTop: vars.space.s4,
   borderTop: `1px solid ${vars.color.rule}`,
   '@media': {
-    [mobile]: {
+    [mediaQuery.tablet]: {
       gridColumn: '1 / -1',
       gridRow: '2',
     },
@@ -65,14 +63,16 @@ export const metaRow = style({
 
 export const header = style({
   paddingBottom: vars.space.s6,
+  marginBottom: vars.space.s4,
   borderBottom: `1px solid ${vars.color.rule}`,
   '@media': {
-    [mobile]: {
+    [mediaQuery.tablet]: {
       gridColumn: 2,
       gridRow: 1,
       alignSelf: 'start',
       borderBottom: 'none',
       paddingBottom: 0,
+      marginBottom: 0,
     },
   },
 });
@@ -104,9 +104,10 @@ export const seriesLink = style({
 export const description = style([
   typography.body,
   {
-    textWrap: 'wrap',
+    whiteSpace: 'pre-wrap',
+    marginBottom: vars.space.s6,
     '@media': {
-      [mobile]: {
+      [mediaQuery.tablet]: {
         gridColumn: '1 / -1',
       },
     },
@@ -117,7 +118,7 @@ export const actions = style({
   display: 'flex',
   justifyContent: 'flex-end',
   '@media': {
-    [mobile]: {
+    [mediaQuery.tablet]: {
       gridColumn: '1 / -1',
     },
   },
@@ -149,7 +150,7 @@ export const recordContainer = style([
   {
     gap: vars.space.s7,
     '@media': {
-      [mobile]: {
+      [mediaQuery.tablet]: {
         gridColumn: '1 / -1',
       },
     },
@@ -181,7 +182,7 @@ export const noteListItem = style({
   gap: 28,
   alignItems: 'start',
   '@media': {
-    [mobile]: {
+    [mediaQuery.tablet]: {
       display: 'flex',
       flexDirection: 'column',
       gap: vars.space.s3,
@@ -217,7 +218,7 @@ export const revisionContainer = style([
 
 export const mainContent = style({
   '@media': {
-    [mobile]: {
+    [mediaQuery.tablet]: {
       display: 'contents',
     },
   },

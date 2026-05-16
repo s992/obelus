@@ -1,5 +1,4 @@
 import type { Book } from '@obelus/shared/types';
-import { Link } from '@tanstack/react-router';
 import clsx from 'clsx';
 import type { CSSProperties, ReactNode } from 'react';
 import { GridList, GridListItem } from 'react-aria-components';
@@ -9,9 +8,10 @@ import { useFormatLongDate } from '../../hooks/useFormatLongDate';
 import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';
 import { flex, typography } from '../../style';
 import { BookCover } from '../BookCover';
+import { Link } from '../Link';
 import { TitleAuthorStack } from '../TitleAuthorStack';
 import { ActionCell } from './ActionCell';
-import { actions, gridCell, gridRow, header, inlineLabel, link, smallCell, wrapper } from './booksTable.css';
+import { actions, gridCell, gridRow, header, inlineLabel, smallCell, wrapper } from './booksTable.css';
 
 type Columns = {
   started?: boolean;
@@ -83,7 +83,7 @@ export function BooksTable({ books, label, renderEmptyState, columns }: Props) {
                 <BookCover book={book} />
               </div>
               <div className={flex.verticalCenter}>
-                <Link className={link} to="/book/$bookId" params={{ bookId: book.id.toString() }}>
+                <Link to="/book/$bookId" params={{ bookId: book.id.toString() }}>
                   <TitleAuthorStack title={book.title} author={book.author} />
                 </Link>
               </div>

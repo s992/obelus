@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { typography, vars } from '../../style';
+import { mediaQuery, typography, vars } from '../../style';
 
 export const pageWrapper = style({
   backgroundColor: vars.color.bg,
@@ -40,7 +40,7 @@ export const navSection = style({
   alignItems: 'center',
   gap: vars.space.s5,
   '@media': {
-    '(max-width: 640px)': {
+    [mediaQuery.mobile]: {
       background: vars.color.bg,
       border: `1px solid ${vars.color.rule}`,
       flexDirection: 'column',
@@ -66,10 +66,10 @@ export const searchButton = style({
 
 export const navToggle = style({
   '@media': {
-    '(min-width: 641px)': {
+    [mediaQuery.mobileUp]: {
       display: 'none',
     },
-    '(max-width: 640px)': {
+    [mediaQuery.mobile]: {
       display: 'inline-flex',
     },
   },

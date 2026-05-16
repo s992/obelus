@@ -1,6 +1,6 @@
 import { style, styleVariants } from '@vanilla-extract/css';
 
-import { flex, vars } from '../../style';
+import { flex, mediaQuery, vars } from '../../style';
 
 const baseContainer = style({ width: 'fit-content' });
 
@@ -16,7 +16,7 @@ export const button = style({
 
 export const responsive = style({
   '@media': {
-    '(max-width: 640px)': {
+    [mediaQuery.mobile]: {
       flexDirection: 'row',
       gap: vars.space.s3,
     },

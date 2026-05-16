@@ -11,6 +11,7 @@ const baseButton = style([
     borderRadius: vars.radius.sm,
     padding: `${vars.space.s2} ${vars.space.s4}`,
     transition: 'background-color .15s ease, border-color .15s ease',
+    width: 'fit-content',
   },
 ]);
 

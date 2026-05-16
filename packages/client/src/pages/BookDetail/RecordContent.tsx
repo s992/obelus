@@ -6,7 +6,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTRPC } from '../../client';
 import { Button } from '../../components/Button';
-import { toastQueue } from '../../components/Toast';
+import { showMutationError } from '../../components/Toast';
 import { useFormatLongDate } from '../../hooks/useFormatLongDate';
 import { judgment as judgmentCss, typography } from '../../style';
 import {
@@ -44,11 +44,7 @@ export function RecordContent({ book, notes }: Props) {
         setNoteContent('');
       },
       onError: () => {
-        toastQueue.add({
-          variant: 'error',
-          title: intl.formatMessage({ defaultMessage: 'Failed to create note' }),
-          message: intl.formatMessage({ defaultMessage: 'Please refresh your browser window and try again.' }),
-        });
+        showMutationError(intl, intl.formatMessage({ defaultMessage: 'Failed to create note' }));
       },
     }),
   );
@@ -59,11 +55,7 @@ export function RecordContent({ book, notes }: Props) {
         setIsRevising(false);
       },
       onError: () => {
-        toastQueue.add({
-          variant: 'error',
-          title: intl.formatMessage({ defaultMessage: 'Failed to revise judgment' }),
-          message: intl.formatMessage({ defaultMessage: 'Please refresh your browser window and try again.' }),
-        });
+        showMutationError(intl, intl.formatMessage({ defaultMessage: 'Failed to revise judgment' }));
       },
     }),
   );
@@ -139,12 +131,14 @@ export function RecordContent({ book, notes }: Props) {
             />
           </span>
         </div>
-        <div className={noteTextAreaContainer} onClick={() => textAreaRef.current?.focus()}>
+        <label className={noteTextAreaContainer}>
           <TextArea
             ref={textAreaRef}
             className={textArea}
             rows={3}
-            placeholder="Add a note. It will not be edited; notes are appended below."
+            placeholder={intl.formatMessage({
+              defaultMessage: 'Add a note. It will not be edited; notes are appended below.',
+            })}
             value={noteContent}
             onChange={(e) => setNoteContent(e.target.value)}
             disabled={isCreatingNote}
@@ -156,12 +150,12 @@ export function RecordContent({ book, notes }: Props) {
           >
             <FormattedMessage defaultMessage="add note" />
           </Button>
-        </div>
+        </label>
         <ol className={noteList}>
           {notes?.map((note) => (
             <li key={note.id} className={noteListItem}>
               <div className={noteDate}>{formatLongDate(note.createdAt)}</div>
-              <pre className={renderedNote}>{note.content}</pre>
+              <div className={renderedNote}>{note.content}</div>
             </li>
           ))}
         </ol>

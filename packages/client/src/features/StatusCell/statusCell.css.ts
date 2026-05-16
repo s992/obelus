@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { flex, typography, vars } from '../../style';
+import { flex, mediaQuery, typography, vars } from '../../style';
 
 export const statusOrJudgment = style([
   flex.container,
@@ -12,7 +12,7 @@ export const statusOrJudgment = style([
 
 export const responsiveLabel = style({
   '@media': {
-    '(min-width: 640px)': {
+    [mediaQuery.mobileUp]: {
       display: 'none',
     },
   },

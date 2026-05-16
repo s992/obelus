@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTRPC } from '../../client';
-import { toastQueue } from '../../components/Toast';
+import { showMutationError } from '../../components/Toast';
 import { UnreadBookActions, type Props as UnreadBookActionsProps } from '../../components/UnreadBookActions';
 import { judgment as judgmentCss } from '../../style';
 import { responsiveLabel, statusOrJudgment } from './statusCell.css';
@@ -31,11 +31,7 @@ export function StatusCell({ bookId, seriesId, layout, status, judgment }: Props
         await queryClient.invalidateQueries({ queryKey: trpc.book.byId.queryKey({ id: bookId }) });
       },
       onError: () => {
-        toastQueue.add({
-          variant: 'error',
-          title: intl.formatMessage({ defaultMessage: 'Failed to update record.' }),
-          message: intl.formatMessage({ defaultMessage: 'Please refresh your browser window and try again. ' }),
-        });
+        showMutationError(intl, intl.formatMessage({ defaultMessage: 'Failed to update record.' }));
       },
     }),
   );
@@ -54,7 +50,7 @@ export function StatusCell({ bookId, seriesId, layout, status, judgment }: Props
     return (
       <span className={statusOrJudgment}>
         <span className={responsiveLabel}>
-          <FormattedMessage defaultMessage="status" />
+          <FormattedMessage defaultMessage="status: " />
         </span>
         {status}
       </span>
@@ -64,7 +60,7 @@ export function StatusCell({ bookId, seriesId, layout, status, judgment }: Props
   return (
     <span className={clsx(statusOrJudgment, judgmentCss[judgment])}>
       <span className={responsiveLabel}>
-        <FormattedMessage defaultMessage="judgment" />
+        <FormattedMessage defaultMessage="judgment: " />
       </span>
       {judgment}
     </span>

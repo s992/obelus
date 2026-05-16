@@ -3,9 +3,7 @@ import clsx from 'clsx';
 
 import { link } from './link.css';
 
-type Props = {
-  isActive?: boolean;
-} & LinkComponentProps;
+type Props = {} & LinkComponentProps;
 
 export function Link({ className, ...rest }: Props) {
   return <RouterLink {...rest} className={clsx(link, className)} />;

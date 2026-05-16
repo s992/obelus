@@ -1,6 +1,6 @@
 import { globalStyle, style } from '@vanilla-extract/css';
 
-import { typography, vars } from '../../../style';
+import { mediaQuery, typography, vars } from '../../../style';
 
 const GRID_TEMPLATE_COLUMNS = '56px 1fr 0.5fr 0.5fr';
 const HEADER_HEIGHT = 24;
@@ -15,7 +15,7 @@ export const resultContainer = style({
   overflowY: 'auto',
   maxHeight: 'calc(var(--visual-viewport-height) * 0.5)',
   '@media': {
-    '(max-width: 900px)': {
+    [mediaQuery.search]: {
       maxHeight: 'calc(var(--visual-viewport-height) * 0.7)',
     },
   },

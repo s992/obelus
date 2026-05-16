@@ -12,17 +12,24 @@ export const bookRouter = router({
   search: privateProcedure
     .input(z.object({ query: z.string().nonempty() }))
     .output(z.array(BookSchema))
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const searchResult = await client.SearchBooks({ query: input.query });
       const ids = (searchResult.search?.ids ?? []).filter((id) => id !== null);
 
-      if (!ids) {
+      if (!ids || !ctx.currentUser.id) {
         return [];
       }
 
-      const { books } = await client.GetBooksByIds({ ids });
+      const [{ books }, records] = await Promise.all([
+        client.GetBooksByIds({ ids }),
+        listRecordsByBookIds(db, { bookids: ids, userid: ctx.currentUser.id }),
+      ]);
 
-      return books.map((book) => formatBook(book));
+      return books.map((book) => {
+        const maybeRecord = records.find((record) => record.bookId === book.id);
+
+        return formatBook(book, RecordSchema.safeParse(maybeRecord).data);
+      });
     }),
   byId: privateProcedure
     .input(z.object({ id: z.number() }))

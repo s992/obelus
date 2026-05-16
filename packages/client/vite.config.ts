@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       tanstackRouter({
         target: 'react',
-        autoCodeSplitting: true,
+        autoCodeSplitting: false,
       }),
       vanillaExtractPlugin(),
       formatjs({

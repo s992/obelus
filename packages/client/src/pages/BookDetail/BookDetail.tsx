@@ -1,17 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import dayjs from 'dayjs';
-import { useSyncExternalStore } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useTRPC } from '../../client';
-import { FormattedAlert } from '../../components/Alert';
 import { BookCover } from '../../components/BookCover';
-import { LoadingSpinner } from '../../components/LoadingSpinner';
+import { FullPageSpinner } from '../../components/FullPageSpinner';
+import { LoadError } from '../../components/LoadError';
 import { StatusCell } from '../../features/StatusCell';
 import { useFormatLongDate } from '../../hooks/useFormatLongDate';
 import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';
-import { flex, typography } from '../../style';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { mediaQuery, typography } from '../../style';
 import {
   actions,
   author,
@@ -28,14 +28,8 @@ import {
 } from './bookDetail.css';
 import { RecordContent } from './RecordContent';
 
-const mobileQuery = window.matchMedia('(max-width: 800px)');
-const subscribe = (cb: () => void) => {
-  mobileQuery.addEventListener('change', cb);
-  return () => mobileQuery.removeEventListener('change', cb);
-};
-
 export function BookDetail() {
-  const isMobile = useSyncExternalStore(subscribe, () => mobileQuery.matches);
+  const isMobile = useMediaQuery(mediaQuery.tablet);
   const { bookId } = useParams({ from: '/_authenticated/book/$bookId' });
   const trpc = useTRPC();
   const { data: book, isLoading, isError } = useQuery(trpc.book.byId.queryOptions({ id: parseInt(bookId) }));
@@ -46,21 +40,11 @@ export function BookDetail() {
   const formatLongDate = useFormatLongDate();
 
   if (isLoading) {
-    return (
-      <div className={flex.center}>
-        <LoadingSpinner size="xlarge" />
-      </div>
-    );
+    return <FullPageSpinner />;
   }
 
   if (isError || !book) {
-    return (
-      <FormattedAlert
-        variant="error"
-        title={<FormattedMessage defaultMessage="Failed to load book." />}
-        message={<FormattedMessage defaultMessage="Please refresh your browser window to try again." />}
-      />
-    );
+    return <LoadError title={<FormattedMessage defaultMessage="Failed to load book." />} />;
   }
 
   const lastTouched = dayjs(book?.record?.createdAt).isAfter(notes?.[0]?.createdAt)
@@ -117,7 +101,7 @@ export function BookDetail() {
             </Link>
           )}
         </div>
-        <pre className={description}>{book.description}</pre>
+        <div className={description}>{book.description}</div>
         {book.record ? (
           <RecordContent book={book} notes={notes} />
         ) : (

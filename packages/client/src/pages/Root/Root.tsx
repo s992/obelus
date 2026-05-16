@@ -17,7 +17,8 @@ import { type Theme, ThemeToggle } from '../../components/ThemeToggle';
 import { ToastRegion } from '../../components/Toast';
 import { useAuthContext } from '../../context';
 import { SearchModal } from '../../features/SearchModal';
-import { darkTheme, lightTheme } from '../../style';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { darkTheme, lightTheme, mediaQuery } from '../../style';
 import {
   brand,
   container,
@@ -38,6 +39,7 @@ export function Root() {
   const [theme, setTheme] = useLocalStorage<Theme>('theme', 'light');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const isDesktop = useMediaQuery(mediaQuery.mobileUp);
   const navRef = useRef<HTMLDivElement>(null!);
 
   useHotkeys('mod+k', () => setIsSearchOpen((current) => !current), { preventDefault: true, enableOnFormTags: true });
@@ -60,17 +62,10 @@ export function Root() {
   }, [router]);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(min-width: 641px)');
-    const onChange = () => {
-      if (mediaQuery.matches) {
-        setIsNavOpen(false);
-      }
-    };
-
-    mediaQuery.addEventListener('change', onChange);
-
-    return () => mediaQuery.removeEventListener('change', onChange);
-  });
+    if (isDesktop) {
+      setIsNavOpen(false);
+    }
+  }, [isDesktop]);
 
   useOnClickOutside(navRef, () => {
     setIsNavOpen(false);
