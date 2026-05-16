@@ -1,5 +1,5 @@
 import type { Status } from '@obelus/shared/types';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 
 import { useTRPC } from '../../client';
@@ -21,11 +21,28 @@ type Props = {
 
 export function BookList({ status, label, columns, renderEmptyState }: Props) {
   const trpc = useTRPC();
-  const { data, isLoading } = useQuery(trpc.record.list.queryOptions({ status }));
+  const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery(
+    trpc.record.list.infiniteQueryOptions(
+      { status },
+      {
+        getNextPageParam: (data) => data?.nextPageToken,
+      },
+    ),
+  );
+  const books = data?.pages.flatMap((page) => page?.books).filter((book) => book !== undefined);
 
   if (isLoading) {
     return <FullPageSpinner />;
   }
 
-  return <BooksTable books={data?.books ?? []} label={label} columns={columns} renderEmptyState={renderEmptyState} />;
+  return (
+    <BooksTable
+      books={books ?? []}
+      label={label}
+      columns={columns}
+      fetchNextPage={fetchNextPage}
+      hasNextPage={hasNextPage}
+      renderEmptyState={renderEmptyState}
+    />
+  );
 }

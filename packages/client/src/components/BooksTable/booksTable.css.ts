@@ -7,12 +7,19 @@ export const wrapper = style([
   {
     width: '100%',
     display: 'grid',
+    position: 'relative',
   },
 ]);
 
 export const header = style([
   gridHeader,
-  { gridTemplateColumns: 'var(--grid-template-cols)', textTransform: 'uppercase' },
+  {
+    gridTemplateColumns: 'var(--grid-template-cols)',
+    textTransform: 'uppercase',
+    position: 'sticky',
+    top: 0,
+    background: vars.color.bg,
+  },
 ]);
 
 export const gridRow = style([
