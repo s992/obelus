@@ -17,7 +17,6 @@ const baseCover = style({
 export const cover = styleVariants({
   medium: [baseCover, { minWidth: BOOK_COVER_MEDIUM_WIDTH, width: BOOK_COVER_MEDIUM_WIDTH }],
   large: [baseCover, { minWidth: BOOK_COVER_LARGE_WIDTH, width: BOOK_COVER_LARGE_WIDTH }],
-  // TODO: need xlarge font size too
   xlarge: [baseCover, { minWidth: BOOK_COVER_XLARGE_WIDTH, width: BOOK_COVER_XLARGE_WIDTH }],
 });
 
@@ -31,6 +30,12 @@ export const placeholderCover = style({
   overflow: 'hidden',
 });
 
-export const title = style([typography.title, { maxHeight: '70%', overflow: 'clip' }]);
+const baseTitle = style([typography.title, { maxHeight: '70%', overflow: 'clip' }]);
+
+export const title = styleVariants({
+  medium: [baseTitle, { fontSize: '9px' }],
+  large: [baseTitle, { fontSize: '11px' }],
+  xlarge: [baseTitle, {}],
+});
 
 export const author = style([typography.body]);

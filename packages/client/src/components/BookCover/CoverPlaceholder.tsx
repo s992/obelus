@@ -11,7 +11,7 @@ type Props = {
 export function CoverPlaceholder({ title, author, size = 'medium' }: Props) {
   return (
     <div className={clsx(cover[size], placeholderCover)}>
-      <div className={titleCss}>{title}</div>
+      <div className={titleCss[size]}>{title}</div>
       <div className={authorCss}>{author}</div>
     </div>
   );
