@@ -81,6 +81,10 @@ export function RecordContent({ book, notes }: Props) {
     createNote({ content: noteContent, id: book.record.id });
   };
 
+  if (!record) {
+    return null;
+  }
+
   return (
     <div className={recordContainer}>
       <div>
@@ -175,7 +179,7 @@ export function RecordContent({ book, notes }: Props) {
               <Button slot="close" variant="secondary">
                 <FormattedMessage defaultMessage="Cancel" />
               </Button>
-              <Button slot="close" onPress={() => deleteRecord({ bookId: book.id })}>
+              <Button slot="close" onPress={() => deleteRecord({ id: record.id })}>
                 <FormattedMessage defaultMessage="Delete Record" />
               </Button>
             </div>

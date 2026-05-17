@@ -24,12 +24,19 @@ export function ActionCell({ record }: Props) {
       },
     }),
   );
+  const { mutate: deleteRecord, isPending: isDeletingRecord } = useMutation(
+    trpc.record.delete.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey });
+      },
+    }),
+  );
 
   if (!record) {
     return null;
   }
 
-  if (isUpdatingRecord) {
+  if (isUpdatingRecord || isDeletingRecord) {
     return (
       <div className={flex.verticalCenter}>
         <LoadingSpinner size="small" />
@@ -98,10 +105,14 @@ export function ActionCell({ record }: Props) {
         >
           <FormattedMessage defaultMessage="mark read" />
         </Button>
-        {/*TODO: delete support*/}
-        {/*<Button variant="underlined">
+        <Button
+          variant="underlined"
+          onPress={() => {
+            deleteRecord({ id: record.id });
+          }}
+        >
           <FormattedMessage defaultMessage="delete" />
-        </Button>*/}
+        </Button>
       </>
     );
   }

@@ -90,5 +90,5 @@ and user_id = sqlc.arg('userId');
 -- name: DeleteRecord :exec
 delete
 from record
-where book_id = sqlc.arg('bookId')::integer
+where id = sqlc.arg('id')
 and user_id = sqlc.arg('userId');

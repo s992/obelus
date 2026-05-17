@@ -101,12 +101,12 @@ export const recordRouter = router({
         userid: ctx.currentUser.id,
       });
     }),
-  delete: privateProcedure.input(RecordSchema.pick({ bookId: true })).mutation(async ({ input, ctx }) => {
+  delete: privateProcedure.input(RecordSchema.pick({ id: true })).mutation(async ({ input, ctx }) => {
     if (!ctx.currentUser.id) {
       return;
     }
 
-    await deleteRecord(db, { bookid: input.bookId, userid: ctx.currentUser.id });
+    await deleteRecord(db, { id: input.id, userid: ctx.currentUser.id });
   }),
 });
 

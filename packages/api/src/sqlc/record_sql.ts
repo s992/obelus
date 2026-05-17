@@ -253,18 +253,18 @@ export async function listRecordsByBookIds(
 export const deleteRecordQuery = `-- name: DeleteRecord :exec
 delete
 from record
-where book_id = $1::integer
+where id = $1
 and user_id = $2`;
 
 export interface DeleteRecordArgs {
-  bookid: number;
+  id: string;
   userid: string;
 }
 
 export async function deleteRecord(client: Client, args: DeleteRecordArgs): Promise<void> {
   await client.query({
     text: deleteRecordQuery,
-    values: [args.bookid, args.userid],
+    values: [args.id, args.userid],
     rowMode: 'array',
   });
 }
