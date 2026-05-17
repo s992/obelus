@@ -34,10 +34,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.output.labels }}
-      - name: notify
-        run: |
-          curl \
-            -H "obelus: publish complete" \
-            -H "Content-Type: text/plain" \
-            -d $'Repo: ${{ github.repository }}\nCommit: ${{ github.sha }}\nRef: ${{ github.ref }}\nStatus: ${{ job.status }}' \
-            ${{ secrets.NTFY_URL }}

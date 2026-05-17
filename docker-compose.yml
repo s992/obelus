@@ -26,8 +26,7 @@ services:
       retries: 10
 
   migrate:
-    build:
-      context: .
+    image: ghcr.io/s992/obelus:latest
     env_file: .env
     entrypoint: ["node", "/app/api/dist/migrate.cjs"]
     depends_on:
@@ -35,8 +34,7 @@ services:
         condition: service_healthy
 
   app:
-    build:
-      context: .
+    image: ghcr.io/s992/obelus:latest
     ports:
       - "80:80"
     env_file: .env
