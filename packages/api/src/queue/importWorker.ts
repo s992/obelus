@@ -5,16 +5,20 @@ import { db } from '../db/db';
 import { client as gqlClient } from '../gql/client';
 import { logger } from '../log';
 import { client } from '../redis';
-import { createGoodreadsImportFailure, getGoodreadsImportIdByJobId } from '../sqlc/goodreads_import_sql';
+import {
+  createGoodreadsImportFailure,
+  finishGoodreadsImport,
+  getGoodreadsImportIdByJobId,
+} from '../sqlc/goodreads_import_sql';
 import { createRecord } from '../sqlc/record_sql';
-import { csvRowSchema } from './schema';
+import { CsvRowSchema, ProgressSchema } from './schema';
 
 type JobArgs = {
   records: Record<string, string>[];
   userId: string;
 };
 
-const schemaWithHardcoverId = z.object({ hardcoverId: z.number(), goodreads: csvRowSchema });
+const schemaWithHardcoverId = z.object({ hardcoverId: z.number(), goodreads: CsvRowSchema });
 
 export const worker = new Worker<JobArgs>(
   'import',
@@ -24,7 +28,7 @@ export const worker = new Worker<JobArgs>(
     }
 
     const formatted = job.data.records.map((record) =>
-      csvRowSchema.parse({
+      CsvRowSchema.parse({
         id: record['Book Id'],
         title: record['Title'],
         author: record['Author'],
@@ -38,7 +42,7 @@ export const worker = new Worker<JobArgs>(
     );
     const total = formatted.length;
     const found = new Map<number, z.infer<typeof schemaWithHardcoverId>>();
-    const failed = new Map<number, z.infer<typeof csvRowSchema>>();
+    const failed = new Map<number, z.infer<typeof CsvRowSchema>>();
     const importIdResult = await getGoodreadsImportIdByJobId(db, { jobid: job.id });
     const importId = importIdResult?.id;
 
@@ -46,7 +50,11 @@ export const worker = new Worker<JobArgs>(
       throw new Error(`no job record available for ${job.id}`);
     }
 
-    job.updateProgress({ total, succeeded: 0, failed: 0 });
+    const updateProgress = (progress: z.infer<typeof ProgressSchema>) => {
+      job.updateProgress(ProgressSchema.parse(progress));
+    };
+
+    updateProgress({ total, found: 0, succeeded: 0, failed: 0 });
 
     const withIsbn10 = formatted.filter((row) => !!row.isbn10);
 
@@ -67,6 +75,8 @@ export const worker = new Worker<JobArgs>(
           hardcoverId,
           goodreads,
         });
+
+        updateProgress({ total, succeeded: 0, failed: 0, found: found.size });
       }
     }
 
@@ -89,6 +99,8 @@ export const worker = new Worker<JobArgs>(
           hardcoverId,
           goodreads,
         });
+
+        updateProgress({ total, succeeded: 0, failed: 0, found: found.size });
       }
     }
 
@@ -102,7 +114,7 @@ export const worker = new Worker<JobArgs>(
 
         if (!id || !Object.keys(cover).length) {
           failed.set(candidate.id, candidate);
-          job.updateProgress({ total, failed: failed.size, succeeded: 0 });
+          updateProgress({ total, failed: failed.size, found: found.size, succeeded: 0 });
           continue;
         }
 
@@ -111,6 +123,8 @@ export const worker = new Worker<JobArgs>(
             hardcoverId: id,
             goodreads: candidate,
           });
+
+          updateProgress({ total, succeeded: 0, failed: 0, found: found.size });
         }
       }
     }
@@ -150,23 +164,25 @@ export const worker = new Worker<JobArgs>(
           userid: job.data.userId,
         });
         succeeded++;
-        job.updateProgress({ total, failed: failed.size, succeeded });
+        updateProgress({ total, failed: failed.size, succeeded, found: found.size });
       } catch (err) {
         logger.error(err, 'failed to insert record');
         failed.set(book.goodreads.id, book.goodreads);
-        job.updateProgress({ total, failed: failed.size, succeeded });
+        updateProgress({ total, failed: failed.size, succeeded, found: found.size });
       }
     }
 
-    job.updateProgress({ total, failed: failed.size, succeeded, failedBooks: failed });
+    updateProgress({ total, failed: failed.size, succeeded, found: found.size });
 
     for (const book of failed.values()) {
-      createGoodreadsImportFailure(db, {
+      await createGoodreadsImportFailure(db, {
         author: book.author ?? '',
         title: book.title ?? '',
         importid: importId,
       });
     }
+
+    finishGoodreadsImport(db, { jobid: job.id, successcount: succeeded });
   },
   { connection: client },
 );

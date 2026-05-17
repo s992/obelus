@@ -10,6 +10,7 @@ import { FullPageSpinner } from '../../components/FullPageSpinner';
 import { IconButton } from '../../components/IconButton';
 import { toastQueue } from '../../components/Toast';
 import { typography, vars } from '../../style';
+import { Imports } from './Imports';
 import { PasswordForm } from './PasswordForm';
 import { container, importsSection, privacyButton, recordUrlContainer, section } from './settings.css';
 
@@ -111,6 +112,7 @@ export function Settings() {
         <h2 className={typography.h2}>
           <FormattedMessage defaultMessage="Imports" />
         </h2>
+        <Imports />
       </div>
     </div>
   );

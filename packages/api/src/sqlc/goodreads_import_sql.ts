@@ -102,17 +102,65 @@ export async function getGoodreadsImportIdByJobId(
 export const finishGoodreadsImportQuery = `-- name: FinishGoodreadsImport :exec
 update goodreads_import
 set
-  completed_at = NOW()
-where id = $1`;
+  completed_at = NOW(),
+  success_count = $1::integer
+where job_id = $2`;
 
 export interface FinishGoodreadsImportArgs {
-  id: string;
+  successcount: number;
+  jobid: string;
 }
 
 export async function finishGoodreadsImport(client: Client, args: FinishGoodreadsImportArgs): Promise<void> {
   await client.query({
     text: finishGoodreadsImportQuery,
-    values: [args.id],
+    values: [args.successcount, args.jobid],
     rowMode: 'array',
+  });
+}
+
+export const listGoodreadsImportsQuery = `-- name: ListGoodreadsImports :many
+select
+  gi.id, gi.created_at, gi.completed_at, gi.success_count, gi.job_id, gi.user_id,
+  coalesce(json_agg(gif) filter (where gif.id is not null), '[]') as failures
+from goodreads_import gi
+left join goodreads_import_failure gif on gif.import_id = gi.id
+where gi.user_id = $1
+group by gi.id
+order by gi.created_at desc`;
+
+export interface ListGoodreadsImportsArgs {
+  userid: string;
+}
+
+export interface ListGoodreadsImportsRow {
+  id: string;
+  createdAt: Date;
+  completedAt: Date | null;
+  successCount: number | null;
+  jobId: string;
+  userId: string;
+  failures: any | null;
+}
+
+export async function listGoodreadsImports(
+  client: Client,
+  args: ListGoodreadsImportsArgs,
+): Promise<ListGoodreadsImportsRow[]> {
+  const result = await client.query({
+    text: listGoodreadsImportsQuery,
+    values: [args.userid],
+    rowMode: 'array',
+  });
+  return result.rows.map((row) => {
+    return {
+      id: row[0],
+      createdAt: row[1],
+      completedAt: row[2],
+      successCount: row[3],
+      jobId: row[4],
+      userId: row[5],
+      failures: row[6],
+    };
   });
 }

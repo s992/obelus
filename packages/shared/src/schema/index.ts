@@ -1,6 +1,7 @@
 export * from './book';
 export * from './enum';
 export * from './env';
+export * from './importFailure';
 export * from './note';
 export * from './record';
 export * from './series';
