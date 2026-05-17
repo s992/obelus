@@ -16,6 +16,24 @@ const baseButton = style({
 });
 
 export const button = styleVariants({
+  secondary: [
+    baseButton,
+    {
+      border: `1px solid ${vars.color.fieldRule}`,
+      background: vars.color.surface,
+      ':hover': {
+        background: vars.color.tint,
+      },
+      selectors: {
+        '&[data-disabled=true]': {
+          color: vars.color.ink3,
+          backgroundColor: vars.color.surface,
+          borderColor: vars.color.rule,
+          cursor: 'not-allowed',
+        },
+      },
+    },
+  ],
   tertiary: [
     baseButton,
     {

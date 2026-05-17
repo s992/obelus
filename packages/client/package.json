@@ -12,6 +12,7 @@
     "typecheck": "tsc -p tsconfig.app.json --noEmit"
   },
   "dependencies": {
+    "@internationalized/date": "catalog:",
     "@obelus/api": "workspace:*",
     "@obelus/shared": "workspace:*",
     "@react-aria/utils": "catalog:",
@@ -26,6 +27,7 @@
     "@trpc/client": "catalog:",
     "@trpc/tanstack-react-query": "catalog:",
     "@vanilla-extract/css": "catalog:",
+    "@vanilla-extract/css-utils": "catalog:",
     "clsx": "catalog:",
     "dayjs": "catalog:",
     "lucide-react": "catalog:",

@@ -42,13 +42,15 @@ const body = style({
   color: vars.color.ink,
 });
 
-const label = style({
+export const labelBase = {
   fontSize: vars.fontSize.label,
   lineHeight: vars.lineHeight.normal,
   letterSpacing: vars.letterSpacing.label,
   fontFamily: vars.font.mono,
   color: vars.color.ink3,
-});
+};
+
+const label = style(labelBase);
 
 export const typography = {
   display,
