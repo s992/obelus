@@ -1,18 +1,21 @@
 import type { Book, Maybe, NoteJson } from '@obelus/shared/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
+import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
-import { TextArea } from 'react-aria-components';
+import { DialogTrigger, Heading, TextArea } from 'react-aria-components';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTRPC } from '../../client';
 import { Button } from '../../components/Button';
+import { Modal } from '../../components/Modal';
 import { showMutationError } from '../../components/Toast';
 import { useFormatLongDate } from '../../hooks/useFormatLongDate';
 import { judgment as judgmentCss, typography } from '../../style';
 import {
   addNoteButton,
+  confirmModalButtons,
   entryCount,
   metaLabel,
   noteDate,
@@ -40,15 +43,28 @@ export function RecordContent({ book, notes }: Props) {
   const formatLongDate = useFormatLongDate();
   const [noteContent, setNoteContent] = useState('');
   const [isRevising, setIsRevising] = useState(false);
+  const invalidate = async () => {
+    await queryClient.invalidateQueries({ queryKey: trpc.note.list.queryKey({ id: book.record?.id ?? '' }) });
+    await queryClient.invalidateQueries({ queryKey: trpc.book.byId.queryKey({ id: book.id }) });
+  };
   const { mutate: createNote, isPending: isCreatingNote } = useMutation(
     trpc.note.create.mutationOptions({
       onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: trpc.note.list.queryKey({ id: book.record?.id ?? '' }) });
-        await queryClient.invalidateQueries({ queryKey: trpc.book.byId.queryKey({ id: book.id }) });
+        await invalidate();
         setNoteContent('');
       },
       onError: () => {
         showMutationError(intl, intl.formatMessage({ defaultMessage: 'Failed to create note' }));
+      },
+    }),
+  );
+  const { mutate: deleteRecord, isPending: isDeleting } = useMutation(
+    trpc.record.delete.mutationOptions({
+      onSuccess: async () => {
+        await invalidate();
+      },
+      onError: () => {
+        showMutationError(intl, intl.formatMessage({ defaultMessage: 'Failed to delete record' }));
       },
     }),
   );
@@ -133,6 +149,38 @@ export function RecordContent({ book, notes }: Props) {
             </li>
           ))}
         </ol>
+      </div>
+      <div>
+        <div className={sectionHeader}>
+          <h2 className={clsx(typography.label, metaLabel)}>
+            <FormattedMessage defaultMessage="danger" />
+          </h2>
+          <AlertCircle height={16} />
+        </div>
+        <DialogTrigger>
+          <Button isProcessing={isDeleting}>
+            <FormattedMessage defaultMessage="Delete Record" />
+          </Button>
+          <Modal label={intl.formatMessage({ defaultMessage: 'Delete record confirmation' })}>
+            <Heading slot="title" className={typography.h1}>
+              <FormattedMessage defaultMessage="Delete Record" />
+            </Heading>
+            <p className={typography.body}>
+              <FormattedMessage
+                defaultMessage="Are you sure you want to permanently delete your reading record for {title}? All notes will also be permanently deleted."
+                values={{ title: book.title }}
+              />
+            </p>
+            <div className={confirmModalButtons}>
+              <Button slot="close" variant="secondary">
+                <FormattedMessage defaultMessage="Cancel" />
+              </Button>
+              <Button slot="close" onPress={() => deleteRecord({ bookId: book.id })}>
+                <FormattedMessage defaultMessage="Delete Record" />
+              </Button>
+            </div>
+          </Modal>
+        </DialogTrigger>
       </div>
     </div>
   );

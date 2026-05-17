@@ -249,3 +249,22 @@ export async function listRecordsByBookIds(
     };
   });
 }
+
+export const deleteRecordQuery = `-- name: DeleteRecord :exec
+delete
+from record
+where book_id = $1::integer
+and user_id = $2`;
+
+export interface DeleteRecordArgs {
+  bookid: number;
+  userid: string;
+}
+
+export async function deleteRecord(client: Client, args: DeleteRecordArgs): Promise<void> {
+  await client.query({
+    text: deleteRecordQuery,
+    values: [args.bookid, args.userid],
+    rowMode: 'array',
+  });
+}

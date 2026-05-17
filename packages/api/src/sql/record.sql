@@ -86,3 +86,9 @@ select *
 from record
 where book_id = any(sqlc.arg('bookIds')::integer[])
 and user_id = sqlc.arg('userId');
+
+-- name: DeleteRecord :exec
+delete
+from record
+where book_id = sqlc.arg('bookId')::integer
+and user_id = sqlc.arg('userId');

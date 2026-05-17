@@ -1,8 +1,7 @@
-import { Dialog, Modal } from 'react-aria-components';
 import { useIntl } from 'react-intl';
 
+import { Modal } from '../../components/Modal';
 import { BookSearch } from './BookSearch';
-import { modal } from './searchModal.css';
 
 type Props = {
   onClose?: () => void;
@@ -20,11 +19,9 @@ export function SearchModal({ onClose }: Props) {
           onClose?.();
         }
       }}
-      className={modal}
+      label={intl.formatMessage({ defaultMessage: 'Search' })}
     >
-      <Dialog aria-label={intl.formatMessage({ defaultMessage: 'Search' })}>
-        <BookSearch />
-      </Dialog>
+      <BookSearch />
     </Modal>
   );
 }

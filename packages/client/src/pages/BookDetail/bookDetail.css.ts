@@ -222,3 +222,11 @@ export const mainContent = style({
 export const metaLabel = style({
   textTransform: 'uppercase',
 });
+
+export const confirmModalButtons = style([
+  flex.container,
+  {
+    gap: vars.space.s4,
+    justifyContent: 'flex-end',
+  },
+]);

@@ -12,7 +12,7 @@ import z from 'zod';
 import { collateRecordsAndBooks } from '../bookRecord/collateRecordsAndBooks';
 import { db } from '../db/db';
 import { client } from '../gql/client';
-import { createRecord, type ListRecordsRow, listRecords, updateRecord } from '../sqlc/record_sql';
+import { createRecord, deleteRecord, type ListRecordsRow, listRecords, updateRecord } from '../sqlc/record_sql';
 import { privateProcedure, router } from '../trpc/trpc';
 
 const PAGE_SIZE = 20;
@@ -101,6 +101,13 @@ export const recordRouter = router({
         userid: ctx.currentUser.id,
       });
     }),
+  delete: privateProcedure.input(RecordSchema.pick({ bookId: true })).mutation(async ({ input, ctx }) => {
+    if (!ctx.currentUser.id) {
+      return;
+    }
+
+    await deleteRecord(db, { bookid: input.bookId, userid: ctx.currentUser.id });
+  }),
 });
 
 function encodeCursor(row: Maybe<ListRecordsRow>, sortField: SortField) {
