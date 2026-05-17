@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "NODE_ENV=production tsup src/server.ts",
+    "build": "NODE_ENV=production tsup",
     "gql:gen": "graphql-codegen",
     "typecheck": "tsc -p ./tsconfig.json --noEmit",
     "sql:gen": "dotenvx run -f ../../.env -- sqlc generate && pnpm sql:fix",

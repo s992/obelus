@@ -32,6 +32,7 @@ WORKDIR /app
 
 COPY --from=build /deploy/api ./api
 COPY --from=build /repo/packages/api/dist ./api/dist
+COPY --from=build /repo/packages/api/src/sql/migrations ./api/dist/sql/migrations
 COPY --from=build /repo/packages/client/dist ./client
 
 COPY docker/nginx.conf.template /etc/nginx/nginx.conf.template

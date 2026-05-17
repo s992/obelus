@@ -10,9 +10,14 @@ import { createMigration, listMigrations } from './sqlc/migrations_sql';
 async function migrate() {
   await db.query('select pg_advisory_lock(1)');
 
+  const baseDir = join(__dirname, 'sql/migrations');
+  const schemaFile = await readFile(join(baseDir, '000_schema.sql'), 'utf8');
+
+  // apply schema unconditionally so we have the tables we need on fresh boot
+  await db.query(schemaFile);
+
   const applied = await listMigrations(db);
   const appliedSet = new Set(applied.map((row) => row.name));
-  const baseDir = join(__dirname, 'sql/migrations');
   const migrationFiles = (await readdir(baseDir)).filter((file) => file.endsWith('.sql')).sort();
 
   for (const file of migrationFiles) {

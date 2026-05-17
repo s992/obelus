@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: obelus
+      POSTGRES_PASSWORD: obelus
+      POSTGRES_DB: obelus
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U obelus"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    build:
+      context: .
+      args:
+        OBELUS_BASE_URL: ${OBELUS_BASE_URL}
+    env_file: .env
+    entrypoint: ["node", "/app/api/dist/migrate.cjs"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  app:
+    build:
+      context: .
+      args:
+        OBELUS_BASE_URL: ${OBELUS_BASE_URL}
+    ports:
+      - "80:80"
+    env_file: .env
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+
+volumes:
+  pgdata:
