@@ -1,4 +1,4 @@
-import type { Book, Judgment, Maybe, NoteJson, Status } from '@obelus/shared/types';
+import type { Book, Maybe, NoteJson } from '@obelus/shared/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useState } from 'react';
@@ -25,6 +25,7 @@ import {
   sectionHeader,
   textArea,
 } from './bookDetail.css';
+import { RevisionForm } from './RevisionForm';
 
 type Props = {
   book: Book;
@@ -32,6 +33,7 @@ type Props = {
 };
 
 export function RecordContent({ book, notes }: Props) {
+  const { record } = book;
   const intl = useIntl();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
@@ -50,37 +52,10 @@ export function RecordContent({ book, notes }: Props) {
       },
     }),
   );
-  const { mutate: updateRecord, isPending: isUpdatingRecord } = useMutation(
-    trpc.record.update.mutationOptions({
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: trpc.book.byId.queryKey({ id: book.id }) });
-        setIsRevising(false);
-      },
-      onError: () => {
-        showMutationError(intl, intl.formatMessage({ defaultMessage: 'Failed to revise judgment' }));
-      },
-    }),
-  );
 
   const submitRef = useHotkeys('mod+enter', () => submitNote(), { enableOnFormTags: true });
-
-  const { record } = book;
   const formattedUpdateDate = formatLongDate(record?.updatedAt);
   const judgmentHighlight = record?.judgment ? judgmentCss[record.judgment] : undefined;
-  const updateJudgment = (judgment: Judgment) => () => {
-    if (!record) {
-      return;
-    }
-
-    updateRecord({ id: record.id, status: 'finished', judgment });
-  };
-  const updateStatus = (status: Status) => () => {
-    if (!record) {
-      return;
-    }
-
-    updateRecord({ id: record.id, status });
-  };
   const submitNote = () => {
     console.log('fired');
     if (!book.record || !noteContent.trim()) {
@@ -111,23 +86,9 @@ export function RecordContent({ book, notes }: Props) {
             }}
           />
         </p>
-        {isRevising && !isUpdatingRecord && (
+        {isRevising && record && (
           <div className={revisionContainer}>
-            <Button variant="secondary" onPress={updateJudgment('accepted')}>
-              <FormattedMessage defaultMessage="accepted" />
-            </Button>
-            <Button variant="secondary" onPress={updateJudgment('rejected')}>
-              <FormattedMessage defaultMessage="rejected" />
-            </Button>
-            <Button variant="secondary" onPress={updateJudgment('mixed')}>
-              <FormattedMessage defaultMessage="mixed" />
-            </Button>
-            <Button variant="secondary" onPress={updateStatus('reading')}>
-              <FormattedMessage defaultMessage="reading" />
-            </Button>
-            <Button variant="secondary" onPress={updateStatus('planned')}>
-              <FormattedMessage defaultMessage="planned" />
-            </Button>
+            <RevisionForm bookId={book.id} record={record} />
           </div>
         )}
       </div>
@@ -155,8 +116,13 @@ export function RecordContent({ book, notes }: Props) {
             onChange={(e) => setNoteContent(e.target.value)}
             disabled={isCreatingNote}
           />
-          <Button className={addNoteButton} onPress={submitNote} isProcessing={isCreatingNote}>
-            <FormattedMessage defaultMessage="add note" />
+          <Button
+            className={addNoteButton}
+            onPress={submitNote}
+            isProcessing={isCreatingNote}
+            isDisabled={!noteContent.trim().length}
+          >
+            <FormattedMessage defaultMessage="Add Note" />
           </Button>
         </label>
         <ol className={noteList}>

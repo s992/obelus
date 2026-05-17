@@ -14,6 +14,7 @@ export const field = style([
 export const input = style([
   typography.body,
   {
+    flex: 1,
     border: `1px solid ${vars.color.fieldRule}`,
     background: vars.color.surface,
     borderRadius: vars.radius.sm,
