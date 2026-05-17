@@ -1,11 +1,16 @@
 import { globalStyle, style } from '@vanilla-extract/css';
 
-import { flex, typography, vars } from '../../style';
+import { flex, mediaQuery, typography, vars } from '../../style';
 
 export const container = style({
   display: 'grid',
   gridTemplate: 'auto 1fr / repeat(2, 1fr)',
   gap: vars.space.s6,
+  '@media': {
+    [mediaQuery.mobile]: {
+      gridTemplate: 'repeat(3, auto) / 1fr',
+    },
+  },
 });
 
 export const section = style([
@@ -18,11 +23,27 @@ export const section = style([
   },
 ]);
 
+export const publicUrlSection = style([
+  section,
+  {
+    '@media': {
+      [mediaQuery.mobile]: {
+        gridRowStart: 2,
+      },
+    },
+  },
+]);
+
 export const importsSection = style([
   section,
   {
     gridColumn: 'span 2 / span 2',
     gridRowStart: 2,
+    '@media': {
+      [mediaQuery.mobile]: {
+        gridRowStart: 3,
+      },
+    },
   },
 ]);
 
@@ -35,6 +56,14 @@ export const recordUrlContainer = style([
   {
     gap: vars.space.s3,
     alignItems: 'center',
+    wordBreak: 'break-all',
+  },
+]);
+
+export const importSection = style([
+  flex.column,
+  {
+    gap: vars.space.s6,
   },
 ]);
 
@@ -93,12 +122,36 @@ export const importSectionHeaderH3 = style([
 
 export const importSectionHeaderMeta = style({
   color: vars.color.ink3,
+  '@media': {
+    [mediaQuery.mobile]: {
+      display: 'none',
+    },
+  },
+});
+
+export const importSectionRow = style({
+  width: '100%',
+  display: 'flex',
+  gap: vars.space.s5,
+  alignItems: 'baseline',
+  '@media': {
+    [mediaQuery.mobile]: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      alignItems: 'center',
+    },
+  },
 });
 
 export const importSectionMetricContainer = style([
   flex.column,
   {
     gap: vars.space.s2,
+    '@media': {
+      [mediaQuery.mobile]: {
+        gridRowStart: 2,
+      },
+    },
   },
 ]);
 

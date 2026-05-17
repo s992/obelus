@@ -12,7 +12,14 @@ import { toastQueue } from '../../components/Toast';
 import { typography, vars } from '../../style';
 import { Imports } from './Imports';
 import { PasswordForm } from './PasswordForm';
-import { container, importsSection, privacyButton, recordUrlContainer, section } from './settings.css';
+import {
+  container,
+  importsSection,
+  privacyButton,
+  publicUrlSection,
+  recordUrlContainer,
+  section,
+} from './settings.css';
 
 type CopyState = 'pending' | 'success' | 'error';
 
@@ -78,7 +85,7 @@ export function Settings() {
           />
         </div>
       </div>
-      <div className={section}>
+      <div className={publicUrlSection}>
         <h2 className={typography.h2}>
           <FormattedMessage defaultMessage="Privacy" />
         </h2>

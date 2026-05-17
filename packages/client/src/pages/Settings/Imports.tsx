@@ -7,27 +7,37 @@ import { Button, Disclosure, DisclosurePanel, DropZone, FileTrigger } from 'reac
 import { FormattedMessage } from 'react-intl';
 
 import { useTRPC } from '../../client';
+import { FormattedAlert } from '../../components/Alert';
 import { useFormatDate } from '../../hooks/useFormatDate';
-import { typography, vars } from '../../style';
+import { typography } from '../../style';
 import {
   disclosure,
   disclosureButton,
   dropZone,
   dropZoneButton,
+  importSection,
   importSectionHeader,
   importSectionHeaderH3,
   importSectionHeaderMeta,
   importSectionMetric,
   importSectionMetricContainer,
   importSectionMetricLabel,
+  importSectionRow,
 } from './settings.css';
 
 export function Imports() {
   const trpc = useTRPC();
   const [expandedSections, setExpandedSections] = useState(new Map());
+  const [startedUpload, setStartedUpload] = useState(false);
   const { data: importRecords } = useQuery(trpc.import.list.queryOptions());
-  const { mutate: uploadFile } = useMutation({
+  const {
+    mutate: uploadFile,
+    isPending: isUploading,
+    isError: isFailedUpload,
+  } = useMutation({
     mutationFn: (file: File) => {
+      setStartedUpload(true);
+
       const form = new FormData();
       form.append('file', file);
 
@@ -52,7 +62,7 @@ export function Imports() {
       <p className={typography.body}>
         <FormattedMessage defaultMessage="Upload a Goodreads library export. Each row becomes a book in the record, preserving shelves as planned, read, or finished. Editions are matched against the catalog; ambiguous matches and missing metadata are reported below." />
       </p>
-      <div>
+      <div className={importSection}>
         <div className={importSectionHeader}>
           <h3 className={importSectionHeaderH3}>
             <FormattedMessage defaultMessage="New Import" />
@@ -61,6 +71,20 @@ export function Imports() {
             <FormattedMessage defaultMessage="accepts csv - goodreads format" />
           </span>
         </div>
+        {startedUpload && !isUploading && !isFailedUpload && (
+          <FormattedAlert
+            variant="success"
+            title={<FormattedMessage defaultMessage="Import started" />}
+            message={<FormattedMessage defaultMessage="Check back in a few minutes." />}
+          />
+        )}
+        {startedUpload && !isUploading && isFailedUpload && (
+          <FormattedAlert
+            variant="error"
+            title={<FormattedMessage defaultMessage="Import failed" />}
+            message={<FormattedMessage defaultMessage="Double check your file format and try again." />}
+          />
+        )}
         <DropZone
           className={dropZone}
           onDrop={async (e) => {
@@ -119,7 +143,7 @@ export function Imports() {
             }}
           >
             <Button slot="trigger" className={disclosureButton}>
-              <div style={{ width: '100%', display: 'flex', gap: vars.space.s5, alignItems: 'baseline' }}>
+              <div className={importSectionRow}>
                 <span className={typography.label}>{formatDate(record.createdAt)}</span>
                 <span className={typography.label}>{formatTime(record.createdAt)}</span>
                 <div className={importSectionMetricContainer}>
