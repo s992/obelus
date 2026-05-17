@@ -41,7 +41,7 @@ export function Imports() {
       const form = new FormData();
       form.append('file', file);
 
-      return fetch(`${import.meta.env.OBELUS_BASE_URL}/api/import`, { method: 'POST', body: form });
+      return fetch(`${window.location.origin}/api/import`, { method: 'POST', body: form });
     },
   });
   const formatDate = useFormatDate('D MMM YYYY');
@@ -175,7 +175,7 @@ export function Imports() {
               </span>
               <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
                 {record.failures.map((failure) => (
-                  <li className={typography.body}>
+                  <li key={failure.title} className={typography.body}>
                     <FormattedMessage
                       defaultMessage="{title} · {author}"
                       values={{ title: failure.title, author: failure.author }}

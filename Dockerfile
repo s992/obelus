@@ -18,9 +18,6 @@ COPY packages/api packages/api
 COPY packages/client packages/client
 
 RUN pnpm --filter @obelus/api build
-
-ARG OBELUS_BASE_URL
-ENV OBELUS_BASE_URL=$OBELUS_BASE_URL
 RUN pnpm --filter @obelus/client build
 
 RUN pnpm deploy --filter @obelus/api --prod --legacy /deploy/api

@@ -28,8 +28,6 @@ services:
   migrate:
     build:
       context: .
-      args:
-        OBELUS_BASE_URL: ${OBELUS_BASE_URL}
     env_file: .env
     entrypoint: ["node", "/app/api/dist/migrate.cjs"]
     depends_on:
@@ -39,8 +37,6 @@ services:
   app:
     build:
       context: .
-      args:
-        OBELUS_BASE_URL: ${OBELUS_BASE_URL}
     ports:
       - "80:80"
     env_file: .env

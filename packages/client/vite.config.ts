@@ -4,17 +4,10 @@ import { devtools } from '@tanstack/devtools-vite';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
-import { createJiti } from 'jiti';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
-const jiti = createJiti(import.meta.url);
-const { env: envSchema } = (await jiti.import('@obelus/shared/schema')) as typeof import('@obelus/shared/schema');
-
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, '../..', '');
-  const parsed = envSchema.pick({ OBELUS_BASE_URL: true }).parse(env);
-
+export default defineConfig(() => {
   return {
     plugins: [
       tanstackRouter({
@@ -40,8 +33,5 @@ export default defineConfig(({ mode }) => {
       },
     },
     envDir: '../..',
-    define: {
-      'import.meta.env.OBELUS_BASE_URL': JSON.stringify(parsed.OBELUS_BASE_URL),
-    },
   };
 });

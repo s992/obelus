@@ -9,13 +9,13 @@ export const trpcClient = createTRPCClient<AppRouter>({
     splitLink({
       condition: (op) => op.type === 'subscription',
       true: httpSubscriptionLink({
-        url: `${import.meta.env.OBELUS_BASE_URL}/api/trpc`,
+        url: `${window.location.origin}/api/trpc`,
         eventSourceOptions() {
           return { withCredentials: true };
         },
       }),
       false: httpBatchLink({
-        url: `${import.meta.env.OBELUS_BASE_URL}/api/trpc`,
+        url: `${window.location.origin}/api/trpc`,
         fetch(url, options) {
           return fetch(url, { ...options, credentials: 'include' });
         },

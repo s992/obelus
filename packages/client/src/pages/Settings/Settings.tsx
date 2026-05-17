@@ -49,7 +49,7 @@ export function Settings() {
   );
 
   const [, copy] = useCopyToClipboard();
-  const recordUrl = `${import.meta.env.OBELUS_BASE_URL}/record/${user?.id}`;
+  const recordUrl = `${window.location.origin}/record/${user?.id}`;
 
   const clearCopyState = () => {
     setTimeout(() => {
