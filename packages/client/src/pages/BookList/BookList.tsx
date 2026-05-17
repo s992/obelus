@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { useTRPC } from '../../client';
 import { BooksTable } from '../../components/BooksTable';
 import { FullPageSpinner } from '../../components/FullPageSpinner';
+import { BookListContextProvider } from './context';
 
 type Columns = {
   started?: boolean;
@@ -37,13 +38,15 @@ export function BookList({ status, label, sortField, columns, renderEmptyState }
   }
 
   return (
-    <BooksTable
-      books={books ?? []}
-      label={label}
-      columns={columns}
-      fetchNextPage={fetchNextPage}
-      hasNextPage={hasNextPage}
-      renderEmptyState={renderEmptyState}
-    />
+    <BookListContextProvider value={{ queryKey: trpc.record.list.infiniteQueryKey({ status, sortField }) }}>
+      <BooksTable
+        books={books ?? []}
+        label={label}
+        columns={columns}
+        fetchNextPage={fetchNextPage}
+        hasNextPage={hasNextPage}
+        renderEmptyState={renderEmptyState}
+      />
+    </BookListContextProvider>
   );
 }

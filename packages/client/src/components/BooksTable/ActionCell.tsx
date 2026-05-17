@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
 
 import { useTRPC } from '../../client';
+import { useBookListContext } from '../../pages/BookList/context';
 import { flex, judgment as judgmentCss, typography } from '../../style';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -15,10 +16,11 @@ type Props = {
 export function ActionCell({ record }: Props) {
   const queryClient = useQueryClient();
   const trpc = useTRPC();
+  const { queryKey } = useBookListContext();
   const { mutate: updateRecord, isPending: isUpdatingRecord } = useMutation(
     trpc.record.update.mutationOptions({
       onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: trpc.record.list.queryKey() });
+        await queryClient.invalidateQueries({ queryKey });
       },
     }),
   );
@@ -39,7 +41,34 @@ export function ActionCell({ record }: Props) {
     const judgment = record.judgment;
 
     if (!judgment) {
-      return <FormattedMessage defaultMessage="unjudged" />;
+      return (
+        <>
+          <Button
+            variant="underlined"
+            onPress={() => {
+              updateRecord({ id: record.id, judgment: 'accepted', status: record.status });
+            }}
+          >
+            <FormattedMessage defaultMessage="mark accepted" />
+          </Button>
+          <Button
+            variant="underlined"
+            onPress={() => {
+              updateRecord({ id: record.id, judgment: 'mixed', status: record.status });
+            }}
+          >
+            <FormattedMessage defaultMessage="mark mixed" />
+          </Button>
+          <Button
+            variant="underlined"
+            onPress={() => {
+              updateRecord({ id: record.id, judgment: 'rejected', status: record.status });
+            }}
+          >
+            <FormattedMessage defaultMessage="mark rejected" />
+          </Button>
+        </>
+      );
     }
 
     return <span className={clsx(typography.body, judgmentCss[judgment])}>{judgment}</span>;
