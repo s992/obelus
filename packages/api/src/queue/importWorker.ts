@@ -1,3 +1,4 @@
+import type { Judgment } from '@obelus/shared/types';
 import { Worker } from 'bullmq';
 import z from 'zod';
 
@@ -19,6 +20,13 @@ type JobArgs = {
 };
 
 const schemaWithHardcoverId = z.object({ hardcoverId: z.number(), goodreads: CsvRowSchema });
+const ratingMap: Record<number, Judgment> = {
+  1: 'rejected',
+  2: 'rejected',
+  3: 'mixed',
+  4: 'accepted',
+  5: 'accepted',
+};
 
 export const worker = new Worker<JobArgs>(
   'import',
@@ -162,6 +170,7 @@ export const worker = new Worker<JobArgs>(
           startedat: start,
           status,
           userid: job.data.userId,
+          judgment: ratingMap[book.goodreads.rating ?? 0] ?? null,
         });
         succeeded++;
         updateProgress({ total, failed: failed.size, succeeded, found: found.size });

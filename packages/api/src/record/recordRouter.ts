@@ -67,6 +67,7 @@ export const recordRouter = router({
       startedat: shouldDefaultStartedAt ? new Date() : null,
       status: input.status,
       userid: ctx.currentUser.id,
+      judgment: null,
     });
   }),
   update: privateProcedure

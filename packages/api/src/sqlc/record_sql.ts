@@ -99,13 +99,15 @@ insert into record (
   user_id,
   status,
   started_at,
-  finished_at
+  finished_at,
+  judgment
 ) values (
   $1::integer,
   $2,
   $3,
   $4,
-  $5
+  $5,
+  $6
 )`;
 
 export interface CreateRecordArgs {
@@ -114,12 +116,13 @@ export interface CreateRecordArgs {
   status: string;
   startedat: Date | null;
   finishedat: Date | null;
+  judgment: string | null;
 }
 
 export async function createRecord(client: Client, args: CreateRecordArgs): Promise<void> {
   await client.query({
     text: createRecordQuery,
-    values: [args.bookid, args.userid, args.status, args.startedat, args.finishedat],
+    values: [args.bookid, args.userid, args.status, args.startedat, args.finishedat, args.judgment],
     rowMode: 'array',
   });
 }

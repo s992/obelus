@@ -54,13 +54,15 @@ insert into record (
   user_id,
   status,
   started_at,
-  finished_at
+  finished_at,
+  judgment
 ) values (
   sqlc.arg('bookId')::integer,
   sqlc.arg('userId'),
   sqlc.arg('status'),
   sqlc.arg('startedAt'),
-  sqlc.arg('finishedAt')
+  sqlc.arg('finishedAt'),
+  sqlc.narg('judgment')
 );
 
 -- name: UpdateRecord :exec
