@@ -129,22 +129,24 @@ export function Root() {
           </IconButton>
         </header>
         <Outlet />
-        <TanStackDevtools
-          plugins={[
-            {
-              name: 'Query',
-              render: <ReactQueryDevtoolsPanel />,
-            },
-            {
-              name: 'Form',
-              render: <FormDevtoolsPanel />,
-            },
-            {
-              name: 'Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
+        {import.meta.env.MODE !== 'production' && (
+          <TanStackDevtools
+            plugins={[
+              {
+                name: 'Query',
+                render: <ReactQueryDevtoolsPanel />,
+              },
+              {
+                name: 'Form',
+                render: <FormDevtoolsPanel />,
+              },
+              {
+                name: 'Router',
+                render: <TanStackRouterDevtoolsPanel />,
+              },
+            ]}
+          />
+        )}
       </div>
       {isSearchOpen && <SearchModal onClose={() => setIsSearchOpen(false)} />}
       <ToastRegion />
