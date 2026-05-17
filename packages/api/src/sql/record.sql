@@ -26,9 +26,26 @@ select
 from records_with_notes
 where (
   sqlc.narg('cursor')::timestamp is null
-  or last_activity < sqlc.arg('cursor')::timestamp
+  or (
+    case sqlc.arg('sortField')::text
+      when 'started_at' then started_at
+      when 'finished_at' then finished_at
+      else last_activity
+    end
+  ) < sqlc.arg('cursor')::timestamp
+  or (
+    sqlc.arg('sortField')::text in ('started_at', 'finished_at')
+    and case sqlc.arg('sortField')::text
+      when 'started_at' then started_at is null
+      when 'finished_at' then finished_at is null
+    end
+  )
 )
-order by last_activity desc
+order by
+  case when sqlc.arg('sortField')::text = 'started_at' then started_at
+       when sqlc.arg('sortField')::text = 'finished_at' then finished_at
+  end desc nulls last,
+  last_activity desc
 limit sqlc.arg('pageSize')::integer;
 
 -- name: CreateRecord :exec

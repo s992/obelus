@@ -10,6 +10,7 @@ function CurrentlyReading() {
     <BookList
       status="reading"
       label={intl.formatMessage({ defaultMessage: 'Currently reading' })}
+      sortField="started_at"
       columns={{ finished: false, added: false }}
       renderEmptyState={() => <FormattedMessage defaultMessage="Not currently reading any books." />}
     />

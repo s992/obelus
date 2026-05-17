@@ -10,6 +10,7 @@ function Planned() {
     <BookList
       status="planned"
       label={intl.formatMessage({ defaultMessage: 'Planned' })}
+      sortField="last_activity"
       columns={{ started: false, finished: false }}
       renderEmptyState={() => <FormattedMessage defaultMessage="You haven't planned any future reads." />}
     />

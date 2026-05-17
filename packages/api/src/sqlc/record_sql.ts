@@ -16,8 +16,8 @@ with records_with_notes as (
     greatest(r.updated_at, coalesce(max(n.created_at), r.updated_at)) as last_activity
   from record r
   left join note n on n.record_id = r.id
-  where r.user_id = $3
-  and r.status = $4
+  where r.user_id = $4
+  and r.status = $5
   group by r.id
 )
 select
@@ -32,13 +32,31 @@ select
 from records_with_notes
 where (
   $1::timestamp is null
-  or last_activity < $1::timestamp
+  or (
+    case $2::text
+      when 'started_at' then started_at
+      when 'finished_at' then finished_at
+      else last_activity
+    end
+  ) < $1::timestamp
+  or (
+    $2::text in ('started_at', 'finished_at')
+    and case $2::text
+      when 'started_at' then started_at is null
+      when 'finished_at' then finished_at is null
+    end
+  )
 )
-order by last_activity desc
-limit $2::integer`;
+order by
+  case when $2::text = 'started_at' then started_at
+       when $2::text = 'finished_at' then finished_at
+  end desc nulls last,
+  last_activity desc
+limit $3::integer`;
 
 export interface ListRecordsArgs {
   cursor: Date | null;
+  sortfield: string;
   pagesize: number;
   userid: string;
   status: string;
@@ -58,7 +76,7 @@ export interface ListRecordsRow {
 export async function listRecords(client: Client, args: ListRecordsArgs): Promise<ListRecordsRow[]> {
   const result = await client.query({
     text: listRecordsQuery,
-    values: [args.cursor, args.pagesize, args.userid, args.status],
+    values: [args.cursor, args.sortfield, args.pagesize, args.userid, args.status],
     rowMode: 'array',
   });
   return result.rows.map((row) => {

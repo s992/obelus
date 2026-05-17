@@ -1,19 +1,31 @@
-import { JudgmentEnumSchema, RecordJsonSchema, RecordSchema, RecordStatusEnumSchema } from '@obelus/shared/schema';
-import type { Maybe } from '@obelus/shared/types';
+import {
+  JudgmentEnumSchema,
+  RecordJsonSchema,
+  RecordSchema,
+  RecordStatusEnumSchema,
+  SortFieldSchema,
+} from '@obelus/shared/schema';
+import type { Maybe, SortField } from '@obelus/shared/types';
 import { TRPCError } from '@trpc/server';
 import z from 'zod';
 
 import { collateRecordsAndBooks } from '../bookRecord/collateRecordsAndBooks';
 import { db } from '../db/db';
 import { client } from '../gql/client';
-import { createRecord, listRecords, updateRecord } from '../sqlc/record_sql';
+import { createRecord, type ListRecordsRow, listRecords, updateRecord } from '../sqlc/record_sql';
 import { privateProcedure, router } from '../trpc/trpc';
 
 const PAGE_SIZE = 20;
 
 export const recordRouter = router({
   list: privateProcedure
-    .input(z.object({ status: RecordStatusEnumSchema, cursor: z.string().optional() }))
+    .input(
+      z.object({
+        status: RecordStatusEnumSchema,
+        cursor: z.string().optional(),
+        sortField: SortFieldSchema,
+      }),
+    )
     .query(async ({ input, ctx }) => {
       if (!ctx.currentUser.id) {
         return;
@@ -24,6 +36,7 @@ export const recordRouter = router({
         pagesize: PAGE_SIZE + 1,
         status: input.status,
         userid: ctx.currentUser.id,
+        sortfield: input.sortField,
       });
 
       const hasMore = records.length > PAGE_SIZE;
@@ -38,7 +51,7 @@ export const recordRouter = router({
       return {
         books: collateRecordsAndBooks(z.array(RecordSchema).parse(records), books),
         hasNextPage: hasMore,
-        nextPageToken: hasMore ? encodeCursor(records[records.length - 1]?.updatedAt) : null,
+        nextPageToken: hasMore ? encodeCursor(records[records.length - 1], input.sortField) : null,
       };
     }),
   create: privateProcedure.input(RecordSchema.pick({ bookId: true, status: true })).mutation(async ({ input, ctx }) => {
@@ -89,7 +102,24 @@ export const recordRouter = router({
     }),
 });
 
-function encodeCursor(date: Maybe<Date>) {
+function encodeCursor(row: Maybe<ListRecordsRow>, sortField: SortField) {
+  if (!row) {
+    return null;
+  }
+
+  let date: Date | null;
+
+  switch (sortField) {
+    case 'finished_at':
+      date = row.finishedAt;
+      break;
+    case 'started_at':
+      date = row.startedAt;
+      break;
+    default:
+      date = row.updatedAt;
+  }
+
   if (!date) {
     return null;
   }

@@ -1,6 +1,14 @@
 import { z } from 'zod';
 
-import type { BookSchema, NoteJsonSchema, NoteSchema, RecordJsonSchema, RecordSchema, SeriesSchema } from '../schema';
+import type {
+  BookSchema,
+  NoteJsonSchema,
+  NoteSchema,
+  RecordJsonSchema,
+  RecordSchema,
+  SeriesSchema,
+  SortFieldSchema,
+} from '../schema';
 
 export type Book = z.infer<typeof BookSchema>;
 
@@ -13,6 +21,8 @@ export type NoteJson = z.infer<typeof NoteJsonSchema>;
 export type Record = z.infer<typeof RecordSchema>;
 
 export type RecordJson = z.infer<typeof RecordJsonSchema>;
+
+export type SortField = z.infer<typeof SortFieldSchema>;
 
 export type Status = 'planned' | 'finished' | 'reading';
 

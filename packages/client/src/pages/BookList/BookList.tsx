@@ -1,4 +1,4 @@
-import type { Status } from '@obelus/shared/types';
+import type { SortField, Status } from '@obelus/shared/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 
@@ -15,15 +15,16 @@ type Columns = {
 type Props = {
   status: Status;
   label: string;
+  sortField: SortField;
   columns?: Columns;
   renderEmptyState: () => ReactNode;
 };
 
-export function BookList({ status, label, columns, renderEmptyState }: Props) {
+export function BookList({ status, label, sortField, columns, renderEmptyState }: Props) {
   const trpc = useTRPC();
   const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery(
     trpc.record.list.infiniteQueryOptions(
-      { status },
+      { status, sortField },
       {
         getNextPageParam: (data) => data?.nextPageToken,
       },

@@ -10,6 +10,7 @@ function Read() {
     <BookList
       status="finished"
       label={intl.formatMessage({ defaultMessage: 'Finished' })}
+      sortField="finished_at"
       columns={{ added: false }}
       renderEmptyState={() => <FormattedMessage defaultMessage="You haven't finished any books yet." />}
     />

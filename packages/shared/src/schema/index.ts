@@ -5,4 +5,5 @@ export * from './importFailure';
 export * from './note';
 export * from './record';
 export * from './series';
+export * from './sortField';
 export * from './user';
