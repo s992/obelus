@@ -194,13 +194,13 @@ export function Imports() {
 function Elapsed({ d1, d2 }: { d1: string; d2: string }) {
   const d1Parsed = dayjs(d1);
   const d2Parsed = dayjs(d2);
-  let diff = d1Parsed.diff(d2Parsed, 'second');
+  let diff = Math.abs(d1Parsed.diff(d2Parsed, 'second'));
 
   if (diff < 60) {
-    return <FormattedMessage defaultMessage="{diff}s" values={{ diff }} />;
+    return <FormattedMessage defaultMessage="{diff}sec" values={{ diff }} />;
   }
 
-  diff = d1Parsed.diff(d2Parsed, 'minute');
+  diff = Math.abs(d1Parsed.diff(d2Parsed, 'minute'));
 
-  return <FormattedMessage defaultMessage="{diff}m" values={{ diff }} />;
+  return <FormattedMessage defaultMessage="{diff}min" values={{ diff }} />;
 }

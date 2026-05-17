@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
+    "build": "NODE_ENV=production tsup src/server.ts",
     "gql:gen": "graphql-codegen",
     "typecheck": "tsc -p ./tsconfig.json --noEmit",
     "sql:gen": "dotenvx run -f ../../.env -- sqlc generate && pnpm sql:fix",
@@ -31,6 +32,7 @@
     "ioredis": "catalog:",
     "pg": "catalog:",
     "pino": "catalog:",
+    "pino-pretty": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
@@ -40,7 +42,7 @@
     "@graphql-codegen/typescript-operations": "catalog:",
     "@graphql-typed-document-node/core": "catalog:",
     "@types/pg": "catalog:",
-    "pino-pretty": "catalog:",
+    "tsup": "catalog:",
     "tsx": "catalog:"
   }
 }

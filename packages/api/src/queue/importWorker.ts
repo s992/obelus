@@ -4,13 +4,13 @@ import z from 'zod';
 import { db } from '../db/db';
 import { client as gqlClient } from '../gql/client';
 import { logger } from '../log';
-import { client } from '../redis';
 import {
   createGoodreadsImportFailure,
   finishGoodreadsImport,
   getGoodreadsImportIdByJobId,
 } from '../sqlc/goodreads_import_sql';
 import { createRecord } from '../sqlc/record_sql';
+import { connection } from './connection';
 import { CsvRowSchema, ProgressSchema } from './schema';
 
 type JobArgs = {
@@ -184,5 +184,5 @@ export const worker = new Worker<JobArgs>(
 
     finishGoodreadsImport(db, { jobid: job.id, successcount: succeeded });
   },
-  { connection: client },
+  { connection },
 );

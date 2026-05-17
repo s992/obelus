@@ -13,7 +13,7 @@ const { env: envSchema } = (await jiti.import('@obelus/shared/schema')) as typeo
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '../..', '');
-  const parsed = envSchema.parse(env);
+  const parsed = envSchema.pick({ OBELUS_BASE_URL: true }).parse(env);
 
   return {
     plugins: [
