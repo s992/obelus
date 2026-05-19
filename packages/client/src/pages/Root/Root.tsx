@@ -53,7 +53,7 @@ export function Root() {
   }, [theme]);
 
   useEffect(() => {
-    const unsubscribe = router.subscribe('onBeforeNavigate', () => {
+    const unsubscribe = router.subscribe('onBeforeLoad', () => {
       setIsSearchOpen(false);
       setIsNavOpen(false);
     });
