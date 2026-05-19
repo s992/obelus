@@ -12,10 +12,11 @@ import { IntlProvider } from 'react-intl';
 
 import { getQueryClient, TRPCProvider, trpcClient } from './client';
 import { AuthContextProvider, useAuthContext } from './context';
+import { NotFound } from './pages/NotFound';
 
 dayjs.extend(customParseFormat);
 
-const router = createRouter({ routeTree, context: { auth: undefined! } });
+const router = createRouter({ routeTree, context: { auth: undefined! }, defaultNotFoundComponent: NotFound });
 
 declare module '@tanstack/react-router' {
   interface Register {

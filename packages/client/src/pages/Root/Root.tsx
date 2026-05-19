@@ -115,6 +115,11 @@ export function Root() {
                 </Button>
               </>
             )}
+            {!isAuthenticated && (
+              <Link to="/auth/login">
+                <FormattedMessage defaultMessage="log in" />
+              </Link>
+            )}
             <ThemeToggle currentTheme={theme} onChange={setTheme} />
           </nav>
           <IconButton
