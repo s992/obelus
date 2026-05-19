@@ -16,7 +16,7 @@ import { importQueue } from './queue/queue';
 import { createGoodreadsImport } from './sqlc/goodreads_import_sql';
 import { createContext } from './trpc/context';
 
-const server = fastify({
+export const server = fastify({
   loggerInstance: logger,
 });
 

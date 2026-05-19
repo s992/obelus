@@ -1,10 +1,9 @@
-import type { Maybe } from '@obelus/shared/types';
 import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
 
+import { parseJwt } from '../auth/jwt';
 import { db } from '../db/db';
 import { logger } from '../log';
 import { getUserById } from '../sqlc/user_sql';
-import type { JWTPayload } from '../types';
 
 export async function createContext(opts: CreateFastifyContextOptions) {
   const { req, res } = opts;
@@ -14,37 +13,18 @@ export async function createContext(opts: CreateFastifyContextOptions) {
 }
 
 async function loadUserFromCookie({ req }: CreateFastifyContextOptions) {
-  const tokenCookie = req.cookies['token'];
+  const jwt = await parseJwt(req.cookies['token']);
 
-  if (!tokenCookie) {
-    return null;
-  }
-
-  const unsigned = req.unsignCookie(tokenCookie);
-
-  if (!unsigned.valid) {
-    logger.debug('bailing because cookie is invalid');
-    return null;
-  }
-
-  let verified: Maybe<JWTPayload>;
-
-  try {
-    verified = req.server.jwt.verify<JWTPayload>(unsigned.value);
-  } catch (err) {
-    logger.error(err, 'failed to verify jwt');
-  }
-
-  if (!verified?.id) {
+  if (!jwt?.id) {
     logger.debug('bailing because jwt is missing id');
     return null;
   }
 
   try {
-    const user = await getUserById(db, { userid: verified.id });
+    const user = await getUserById(db, { userid: jwt.id });
 
     if (!user) {
-      logger.debug(verified, 'bailing because we could not find the user');
+      logger.debug(jwt, 'bailing because we could not find the user');
       return null;
     }
 
