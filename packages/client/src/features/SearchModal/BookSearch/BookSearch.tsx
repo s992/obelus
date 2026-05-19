@@ -1,3 +1,4 @@
+import type { Maybe, RecordJson } from '@obelus/shared/types';
 import { useEvent } from '@react-aria/utils';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useRef, useState } from 'react';
@@ -12,7 +13,7 @@ import { LoadingSpinner } from '../../../components/LoadingSpinner';
 import { Search } from '../../../components/Search';
 import { TitleAuthorStack } from '../../../components/TitleAuthorStack';
 import { useFormatPublishYear } from '../../../hooks/useFormatPublishYear';
-import { flex } from '../../../style';
+import { flex, judgment } from '../../../style';
 import { container, gridRow, resultContainer, resultHeader } from './bookSearch.css';
 
 export function BookSearch() {
@@ -138,7 +139,9 @@ export function BookSearch() {
                     <TitleAuthorStack title={book.title} author={book.author} />
                   </div>
                   <div className={flex.verticalCenter}>{formattedPublishDate}</div>
-                  <div className={flex.verticalCenter}>unread</div>
+                  <div className={flex.verticalCenter}>
+                    <StatusCell record={book.record} />
+                  </div>
                 </GridListItem>
               );
             })}
@@ -147,4 +150,16 @@ export function BookSearch() {
       )}
     </div>
   );
+}
+
+function StatusCell({ record }: { record: Maybe<RecordJson> }) {
+  if (!record) {
+    return <FormattedMessage defaultMessage="unread" />;
+  }
+
+  if (record.status === 'finished' && record.judgment) {
+    return <span className={judgment[record.judgment]}>{record.judgment}</span>;
+  }
+
+  return record.status;
 }
