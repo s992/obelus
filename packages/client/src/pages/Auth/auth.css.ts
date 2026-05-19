@@ -1,12 +1,17 @@
 import { style } from '@vanilla-extract/css';
 
 import { button } from '../../components/Button/button.css';
-import { typography, vars } from '../../style';
+import { mediaQuery, typography, vars } from '../../style';
 
 export const tabContainer = style({
   width: '50%',
   margin: '0 auto',
   paddingTop: vars.space.s7,
+  '@media': {
+    [mediaQuery.mobile]: {
+      width: '100%',
+    },
+  },
 });
 
 export const tabContent = style({
