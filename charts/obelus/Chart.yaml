@@ -1,0 +1,16 @@
+apiVersion: v2
+name: obelus
+description: A self-hosted book tracking application
+version: 0.1.0
+appVersion: "latest"
+type: application
+
+dependencies:
+  - name: postgresql
+    version: ~18.6.0
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+  - name: redis
+    version: ~25.5.0
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled

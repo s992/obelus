@@ -1,0 +1,18 @@
+Obelus has been deployed!
+
+{{- if .Values.ingress.enabled }}
+
+Access your instance at:
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ .host }}
+{{- end }}
+
+{{- else }}
+
+To access Obelus, run:
+
+  kubectl port-forward svc/{{ include "obelus.fullname" . }} 8080:{{ .Values.service.port }}
+
+Then open http://localhost:8080 in your browser.
+
+{{- end }}

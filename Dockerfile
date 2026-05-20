@@ -23,6 +23,7 @@ RUN pnpm --filter @obelus/client build
 RUN pnpm deploy --filter @obelus/api --prod --legacy /deploy/api
 
 FROM node:${NODE_VERSION}-alpine AS runtime
+ENV NODE_ENV=production
 RUN apk add --no-cache nginx gettext tini
 
 WORKDIR /app

@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "obelus.fullname" . }}
+  labels:
+    {{- include "obelus.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "obelus.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "obelus.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "obelus.serviceAccountName" . }}
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox:1.37
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z {{ .Release.Name }}-postgresql 5432; do
+                echo "waiting for postgres..."
+                sleep 2
+              done
+        {{- if .Values.migration.enabled }}
+        - name: migrate
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["node", "/app/api/dist/migrate.cjs"]
+          envFrom:
+            - configMapRef:
+                name: {{ include "obelus.fullname" . }}
+          env:
+            - name: OBELUS_AUTH_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "obelus.secretName" . }}
+                  key: auth-token-secret
+            - name: OBELUS_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "obelus.secretName" . }}
+                  key: cookie-secret
+            - name: OBELUS_HARDCOVER_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "obelus.secretName" . }}
+                  key: hardcover-api-token
+            - name: OBELUS_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "obelus.secretName" . }}
+                  key: database-url
+        {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "obelus.fullname" . }}
+          env:
+            - name: OBELUS_AUTH_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "obelus.secretName" . }}
+                  key: auth-token-secret
+            - name: OBELUS_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "obelus.secretName" . }}
+                  key: cookie-secret
+            - name: OBELUS_HARDCOVER_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "obelus.secretName" . }}
+                  key: hardcover-api-token
+            - name: OBELUS_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "obelus.secretName" . }}
+                  key: database-url
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}

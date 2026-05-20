@@ -16,6 +16,7 @@ i'm not a big fan of robots writing code, so i only feel it's fair to call out w
 - code review: similar to the above, sometimes i'll bug a robot to find bad code. then i fix it myself.
 - docker compose: the initial docker compose file was written by a robot. i haven't changed it much.
 - the github publish workflow might be written by a robot. i'm not really sure, i just copied it from another project i have.
+- the entire helm chart is robot-generated.
 
 ## getting started
 
@@ -44,4 +45,5 @@ spin it up with `docker compose up -d`. when that doesn't work, [let me know](ht
 hit the url and start tracking your books!
 
 ### k8s
-coming soon™
+
+there is a helm chart + documentation located in [`charts/obelus`](charts/obelus).

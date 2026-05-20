@@ -28,3 +28,5 @@ storybook-static
 tmp
 yarn-debug.log*
 yarn-error.log*
+charts/*/charts/
+charts/*/Chart.lock

@@ -13,6 +13,7 @@ import { config } from './config';
 import { db } from './db/db';
 import { logger } from './log';
 import { importQueue } from './queue/queue';
+import { client as redis } from './redis';
 import { createGoodreadsImport } from './sqlc/goodreads_import_sql';
 import { createContext } from './trpc/context';
 
@@ -32,8 +33,16 @@ server.register(fastifyTRPCPlugin, {
   } satisfies FastifyTRPCPluginOptions<AppRouter>['trpcOptions'],
 });
 
-server.get('/healthz', () => ({ ok: true }));
 server.get('/livez', () => ({ ok: true }));
+
+server.get('/readyz', async (_req, res) => {
+  try {
+    await Promise.all([db.query('SELECT 1'), redis.ping()]);
+    return { ok: true };
+  } catch {
+    return res.code(503).send({ ok: false });
+  }
+});
 
 server.post('/import', async (req, res) => {
   const ctx = await createContext({ req, res, info: {} as TRPCRequestInfo });

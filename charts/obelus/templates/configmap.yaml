@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "obelus.fullname" . }}
+  labels:
+    {{- include "obelus.labels" . | nindent 4 }}
+data:
+  OBELUS_API_PORT: {{ .Values.config.apiPort | quote }}
+  OBELUS_CLIENT_PORT: {{ .Values.config.clientPort | quote }}
+  OBELUS_BASE_URL: {{ .Values.config.baseUrl | quote }}
+  OBELUS_LOG_LEVEL: {{ .Values.config.logLevel | quote }}
+  OBELUS_REDIS_URL: {{ include "obelus.redisUrl" . | quote }}

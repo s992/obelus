@@ -26,18 +26,26 @@ services:
       retries: 10
 
   migrate:
+    build: .
     image: ghcr.io/s992/obelus:latest
-    env_file: .env
+    env_file: ${ENV_FILE:-.env}
     entrypoint: ["node", "/app/api/dist/migrate.cjs"]
     depends_on:
       postgres:
         condition: service_healthy
 
   app:
+    build: .
     image: ghcr.io/s992/obelus:latest
     ports:
       - "80:80"
-    env_file: .env
+    env_file: ${ENV_FILE:-.env}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/api/readyz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     depends_on:
       migrate:
         condition: service_completed_successfully

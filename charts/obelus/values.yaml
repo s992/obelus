@@ -1,0 +1,95 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/s992/obelus
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+# -- App configuration (non-secret)
+config:
+  apiPort: 3000
+  clientPort: 80
+  baseUrl: "http://localhost"
+  logLevel: "info"
+  # Override if using external Redis. Otherwise auto-constructed from subchart.
+  redisUrl: ""
+
+# -- Secrets configuration
+secrets:
+  # Set to a Secret name to use an existing secret instead of creating one.
+  # The secret must contain keys: auth-token-secret, cookie-secret,
+  # hardcover-api-token, database-url
+  existingSecret: ""
+  # Only used when existingSecret is empty:
+  authTokenSecret: ""
+  cookieSecret: ""
+  hardcoverApiToken: ""
+  # Override if using external PostgreSQL. Otherwise auto-constructed.
+  databaseUrl: ""
+
+# -- Migration (runs as init container on the app deployment)
+migration:
+  enabled: true
+
+# -- Service
+service:
+  type: ClusterIP
+  port: 80
+
+# -- Ingress
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: obelus.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# -- Resource limits
+resources: {}
+
+# -- Probes
+livenessProbe:
+  httpGet:
+    path: /api/livez
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /api/readyz
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+# -- Bitnami PostgreSQL subchart
+postgresql:
+  enabled: true
+  auth:
+    username: obelus
+    password: obelus
+    database: obelus
+  primary:
+    persistence:
+      size: 1Gi
+
+# -- Bitnami Redis subchart
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      size: 1Gi
