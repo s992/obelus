@@ -28,6 +28,11 @@ export const brand = style([
     alignItems: 'center',
     gap: vars.space.s4,
     textDecoration: 'none',
+    color: vars.color.ink3,
+    transition: 'color .15s',
+    ':hover': {
+      color: vars.color.ink,
+    },
   },
 ]);
 
