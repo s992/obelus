@@ -12,7 +12,7 @@ import { BookCover } from '../BookCover';
 import { Link } from '../Link';
 import { TitleAuthorStack } from '../TitleAuthorStack';
 import { ActionCell } from './ActionCell';
-import { actions, gridCell, gridRow, header, inlineLabel, smallCell, wrapper } from './booksTable.css';
+import { actions, bookLink, gridCell, gridRow, header, inlineLabel, smallCell, wrapper } from './booksTable.css';
 
 type Columns = {
   started?: boolean;
@@ -100,7 +100,7 @@ export function BooksTable({ books, label, renderEmptyState, fetchNextPage, hasN
                 <BookCover book={book} />
               </div>
               <div className={flex.verticalCenter}>
-                <Link to="/book/$bookId" params={{ bookId: book.id.toString() }}>
+                <Link className={bookLink} to="/book/$bookId" params={{ bookId: book.id.toString() }}>
                   <TitleAuthorStack title={book.title} author={book.author} />
                 </Link>
               </div>

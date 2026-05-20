@@ -80,3 +80,19 @@ export const inlineLabel = style({
     },
   },
 });
+
+export const bookLink = style({
+  borderBottom: 'none !important',
+  selectors: {
+    '&:hover': {
+      textDecoration: 'underline',
+      textDecorationColor: vars.color.ink3,
+      textUnderlineOffset: vars.space.s1,
+    },
+    '&:active': {
+      textDecoration: 'underline',
+      textDecorationColor: vars.color.ink3,
+      textUnderlineOffset: vars.space.s1,
+    },
+  },
+});

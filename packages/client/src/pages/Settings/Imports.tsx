@@ -1,5 +1,6 @@
 import type { Maybe } from '@obelus/shared/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { Minus, Plus } from 'lucide-react';
 import { useState } from 'react';
@@ -16,6 +17,8 @@ import {
   dropZone,
   dropZoneButton,
   importSection,
+  importSectionDate,
+  importSectionExpandIcon,
   importSectionHeader,
   importSectionHeaderH3,
   importSectionHeaderMeta,
@@ -144,7 +147,7 @@ export function Imports() {
           >
             <Button slot="trigger" className={disclosureButton}>
               <div className={importSectionRow}>
-                <span className={typography.label}>{formatDate(record.createdAt)}</span>
+                <span className={clsx(typography.label, importSectionDate)}>{formatDate(record.createdAt)}</span>
                 <span className={typography.label}>{formatTime(record.createdAt)}</span>
                 <div className={importSectionMetricContainer}>
                   <span className={importSectionMetric}>{record.successCount + record.failures.length}</span>
@@ -167,7 +170,9 @@ export function Imports() {
                   </span>
                 </div>
               </div>
-              {expandedSections.get(record.completedAt) ? <Minus /> : <Plus />}
+              <div className={importSectionExpandIcon}>
+                {expandedSections.get(record.completedAt) ? <Minus /> : <Plus />}
+              </div>
             </Button>
             <DisclosurePanel>
               <span className={typography.label}>

@@ -8,7 +8,8 @@ export const container = style({
   gap: vars.space.s6,
   '@media': {
     [mediaQuery.mobile]: {
-      gridTemplate: 'repeat(3, auto) / 1fr',
+      display: 'flex',
+      flexDirection: 'column',
     },
   },
 });
@@ -179,6 +180,26 @@ export const disclosureButton = style([
     ':hover': {
       background: vars.color.tint,
       cursor: 'pointer',
+    },
+  },
+]);
+
+export const importSectionDate = style({
+  '@media': {
+    [mediaQuery.mobile]: {
+      gridColumn: 'span 2 / span 2',
+    },
+  },
+});
+
+export const importSectionExpandIcon = style([
+  flex.center,
+  {
+    color: vars.color.ink,
+    '@media': {
+      [mediaQuery.mobile]: {
+        display: 'none',
+      },
     },
   },
 ]);
