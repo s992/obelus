@@ -31,6 +31,7 @@ export const gridRow = style([
 
 export const position = style([
   typography.display,
+  flex.center,
   {
     color: vars.color.rule,
     '@media': {
