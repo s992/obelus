@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { BookList } from '../../pages/BookList';
+import { BookList } from '../../../pages/BookList';
 
 function Planned() {
   const intl = useIntl();
@@ -17,6 +17,6 @@ function Planned() {
   );
 }
 
-export const Route = createFileRoute('/_authenticated/planned')({
+export const Route = createFileRoute('/_layout/_authenticated/planned')({
   component: Planned,
 });

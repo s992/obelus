@@ -26,7 +26,7 @@ import {
 } from './seriesDetail.css';
 
 export function SeriesDetail() {
-  const { seriesId } = useParams({ from: '/_authenticated/series/$seriesId' });
+  const { seriesId } = useParams({ from: '/_layout/_authenticated/series/$seriesId' });
   const intl = useIntl();
   const trpc = useTRPC();
   const formatPublishYear = useFormatPublishYear();

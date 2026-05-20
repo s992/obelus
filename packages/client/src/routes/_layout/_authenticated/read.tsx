@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { BookList } from '../../pages/BookList';
+import { BookList } from '../../../pages/BookList';
 
 function Read() {
   const intl = useIntl();
@@ -17,6 +17,6 @@ function Read() {
   );
 }
 
-export const Route = createFileRoute('/_authenticated/read')({
+export const Route = createFileRoute('/_layout/_authenticated/read')({
   component: Read,
 });

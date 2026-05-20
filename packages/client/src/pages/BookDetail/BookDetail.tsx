@@ -32,7 +32,7 @@ import { RecordContent } from './RecordContent';
 
 export function BookDetail() {
   const isMobile = useMediaQuery(mediaQuery.tablet);
-  const { bookId } = useParams({ from: '/_authenticated/book/$bookId' });
+  const { bookId } = useParams({ from: '/_layout/_authenticated/book/$bookId' });
   const trpc = useTRPC();
   const { data: book, isLoading, isError } = useQuery(trpc.book.byId.queryOptions({ id: parseInt(bookId) }));
   const { data: notes } = useQuery(
