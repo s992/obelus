@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LayoutRouteImport } from './routes/_layout'
+import { Route as UUserNameRouteImport } from './routes/u/$userName'
 import { Route as LayoutAuthRouteImport } from './routes/_layout/auth'
 import { Route as LayoutAuthenticatedRouteImport } from './routes/_layout/_authenticated'
 import { Route as LayoutAuthenticatedIndexRouteImport } from './routes/_layout/_authenticated/index'
@@ -23,6 +24,11 @@ import { Route as LayoutAuthenticatedBookBookIdRouteImport } from './routes/_lay
 
 const LayoutRoute = LayoutRouteImport.update({
   id: '/_layout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UUserNameRoute = UUserNameRouteImport.update({
+  id: '/u/$userName',
+  path: '/u/$userName',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LayoutAuthRoute = LayoutAuthRouteImport.update({
@@ -83,6 +89,7 @@ const LayoutAuthenticatedBookBookIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof LayoutAuthenticatedIndexRoute
   '/auth': typeof LayoutAuthRouteWithChildren
+  '/u/$userName': typeof UUserNameRoute
   '/planned': typeof LayoutAuthenticatedPlannedRoute
   '/read': typeof LayoutAuthenticatedReadRoute
   '/settings': typeof LayoutAuthenticatedSettingsRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof LayoutAuthenticatedIndexRoute
   '/auth': typeof LayoutAuthRouteWithChildren
+  '/u/$userName': typeof UUserNameRoute
   '/planned': typeof LayoutAuthenticatedPlannedRoute
   '/read': typeof LayoutAuthenticatedReadRoute
   '/settings': typeof LayoutAuthenticatedSettingsRoute
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/_layout': typeof LayoutRouteWithChildren
   '/_layout/_authenticated': typeof LayoutAuthenticatedRouteWithChildren
   '/_layout/auth': typeof LayoutAuthRouteWithChildren
+  '/u/$userName': typeof UUserNameRoute
   '/_layout/_authenticated/planned': typeof LayoutAuthenticatedPlannedRoute
   '/_layout/_authenticated/read': typeof LayoutAuthenticatedReadRoute
   '/_layout/_authenticated/settings': typeof LayoutAuthenticatedSettingsRoute
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/u/$userName'
     | '/planned'
     | '/read'
     | '/settings'
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/u/$userName'
     | '/planned'
     | '/read'
     | '/settings'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/_layout'
     | '/_layout/_authenticated'
     | '/_layout/auth'
+    | '/u/$userName'
     | '/_layout/_authenticated/planned'
     | '/_layout/_authenticated/read'
     | '/_layout/_authenticated/settings'
@@ -156,6 +168,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   LayoutRoute: typeof LayoutRouteWithChildren
+  UUserNameRoute: typeof UUserNameRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -165,6 +178,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof LayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/u/$userName': {
+      id: '/u/$userName'
+      path: '/u/$userName'
+      fullPath: '/u/$userName'
+      preLoaderRoute: typeof UUserNameRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_layout/auth': {
@@ -291,6 +311,7 @@ const LayoutRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   LayoutRoute: LayoutRouteWithChildren,
+  UUserNameRoute: UUserNameRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

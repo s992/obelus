@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link } from '@tanstack/react-router';
 import { Copy, CopyCheck, CopyX } from 'lucide-react';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -8,6 +9,7 @@ import { useTRPC } from '../../client';
 import { Button } from '../../components/Button';
 import { FullPageSpinner } from '../../components/FullPageSpinner';
 import { IconButton } from '../../components/IconButton';
+import { NotFound } from '../../components/NotFound';
 import { toastQueue } from '../../components/Toast';
 import { typography, vars } from '../../style';
 import { Imports } from './Imports';
@@ -49,7 +51,7 @@ export function Settings() {
   );
 
   const [, copy] = useCopyToClipboard();
-  const recordUrl = `${window.location.origin}/record/${user?.id}`;
+  const recordUrl = `${window.location.origin}/u/${user?.userName}`;
 
   const clearCopyState = () => {
     setTimeout(() => {
@@ -70,6 +72,10 @@ export function Settings() {
 
   if (isLoading) {
     return <FullPageSpinner />;
+  }
+
+  if (!user) {
+    return <NotFound />;
   }
 
   return (
@@ -93,12 +99,12 @@ export function Settings() {
           <FormattedMessage
             defaultMessage="Your record is currently {isPublic, select, true {public} other {private}}. <btn>Click here</btn> to make it {isPublic, select, true {private} other {public}}."
             values={{
-              isPublic: user?.public,
+              isPublic: user.public,
               btn: (chunks) => (
                 <Button
                   variant="underlined"
                   className={privacyButton}
-                  onPress={() => updateUser({ public: !user?.public })}
+                  onPress={() => updateUser({ public: !user.public })}
                 >
                   {chunks}
                 </Button>
@@ -107,9 +113,9 @@ export function Settings() {
           />
         </span>
         <div className={recordUrlContainer}>
-          <a href={recordUrl} className={typography.label}>
+          <Link to="/u/$userName" params={{ userName: user.userName }} className={typography.label}>
             {recordUrl}
-          </a>
+          </Link>
           <IconButton aria-label={intl.formatMessage({ defaultMessage: 'Copy record URL' })} onPress={copyToClipboard}>
             <CopyIcon state={copyState} />
           </IconButton>

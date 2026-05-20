@@ -5,6 +5,7 @@ import { typography, vars } from '../../style';
 export const headerContainer = style({
   display: 'flex',
   justifyContent: 'space-between',
+  alignItems: 'center',
   borderBottom: `1px solid ${vars.color.rule}`,
   paddingBottom: vars.space.s4,
   marginBottom: vars.space.s6,

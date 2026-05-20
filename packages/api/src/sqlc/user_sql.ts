@@ -137,3 +137,70 @@ export async function updateUser(client: Client, args: UpdateUserArgs): Promise<
     rowMode: 'array',
   });
 }
+
+export const getUserPublicProfileQuery = `-- name: GetUserPublicProfile :one
+select
+  u.id,
+  u.user_name,
+  u.public,
+  count(r.id) as total_records,
+  count(
+    case when r.finished_at >= date_trunc('year', current_date) then 1 end
+  ) as finished_this_year,
+  count(case when r.status = 'reading' then 1 end) as reading_count,
+  count(case when r.status = 'finished' then 1 end) as finished_count,
+  count(case when r.status = 'planned' then 1 end) as planned_count,
+  least(
+    coalesce(min(r.created_at), 'infinity'),
+    coalesce(min(r.started_at), 'infinity'),
+    coalesce(min(r.finished_at), 'infinity')
+  ) as oldest_record,
+  max(r.updated_at) as last_updated
+from users u
+left join record r on r.user_id = u.id
+where u.user_name = $1
+group by u.id, u.user_name, u.public`;
+
+export interface GetUserPublicProfileArgs {
+  username: string;
+}
+
+export interface GetUserPublicProfileRow {
+  id: string;
+  userName: string;
+  public: boolean;
+  totalRecords: string;
+  finishedThisYear: string;
+  readingCount: string;
+  finishedCount: string;
+  plannedCount: string;
+  oldestRecord: Date | null;
+  lastUpdated: Date;
+}
+
+export async function getUserPublicProfile(
+  client: Client,
+  args: GetUserPublicProfileArgs,
+): Promise<GetUserPublicProfileRow | null> {
+  const result = await client.query({
+    text: getUserPublicProfileQuery,
+    values: [args.username],
+    rowMode: 'array',
+  });
+  if (result.rows.length !== 1) {
+    return null;
+  }
+  const row = result.rows[0];
+  return {
+    id: row?.[0],
+    userName: row?.[1],
+    public: row?.[2],
+    totalRecords: row?.[3],
+    finishedThisYear: row?.[4],
+    readingCount: row?.[5],
+    finishedCount: row?.[6],
+    plannedCount: row?.[7],
+    oldestRecord: row?.[8],
+    lastUpdated: row?.[9],
+  };
+}
