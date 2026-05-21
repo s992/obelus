@@ -8,6 +8,7 @@ const display = style({
   letterSpacing: vars.letterSpacing.display,
   fontFamily: vars.font.display,
   color: vars.color.ink,
+  fontWeight: vars.fontWeight.display,
 });
 
 const h1 = style({

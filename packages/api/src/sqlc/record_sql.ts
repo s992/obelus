@@ -17,8 +17,21 @@ with records_with_notes as (
   from record r
   left join note n on n.record_id = r.id
   where r.user_id = $4
-  and r.status = $5
+  and (
+    $5::record_status is null
+    or r.status = $5
+  )
+  and (
+    $6::judgment is null
+    or r.judgment = $6
+  )
   group by r.id
+),
+filtered as (
+  select
+    id, created_at, updated_at, user_id, book_id, finished_at, judgment, started_at, status, notes, last_activity,
+    count(*) over () as total_count
+  from records_with_notes
 )
 select
   id,
@@ -28,8 +41,9 @@ select
   last_activity as updated_at,
   judgment,
   status,
-  created_at
-from records_with_notes
+  created_at,
+  total_count
+from filtered
 where (
   $1::timestamp is null
   or (
@@ -59,7 +73,8 @@ export interface ListRecordsArgs {
   sortfield: string;
   pagesize: number;
   userid: string;
-  status: string;
+  status: string | null;
+  judgment: string | null;
 }
 
 export interface ListRecordsRow {
@@ -71,12 +86,13 @@ export interface ListRecordsRow {
   judgment: string | null;
   status: string;
   createdAt: Date;
+  totalCount: string;
 }
 
 export async function listRecords(client: Client, args: ListRecordsArgs): Promise<ListRecordsRow[]> {
   const result = await client.query({
     text: listRecordsQuery,
-    values: [args.cursor, args.sortfield, args.pagesize, args.userid, args.status],
+    values: [args.cursor, args.sortfield, args.pagesize, args.userid, args.status, args.judgment],
     rowMode: 'array',
   });
   return result.rows.map((row) => {
@@ -89,6 +105,7 @@ export async function listRecords(client: Client, args: ListRecordsArgs): Promis
       judgment: row[5],
       status: row[6],
       createdAt: row[7],
+      totalCount: row[8],
     };
   });
 }

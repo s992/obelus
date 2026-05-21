@@ -6,7 +6,6 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTRPC } from '../../client';
 import { BookCover } from '../../components/BookCover';
-import { bookLink } from '../../components/BooksTable/booksTable.css';
 import { FullPageSpinner } from '../../components/FullPageSpinner';
 import { Link } from '../../components/Link';
 import { LoadError } from '../../components/LoadError';
@@ -86,7 +85,7 @@ export function SeriesDetail() {
                   <BookCover book={book} />
                 </div>
                 <div className={gridCell}>
-                  <Link className={bookLink} to="/book/$bookId" params={{ bookId: book.id.toString() }}>
+                  <Link to="/book/$bookId" params={{ bookId: book.id.toString() }}>
                     <TitleAuthorStack title={book.title} author={book.author} />
                   </Link>
                 </div>

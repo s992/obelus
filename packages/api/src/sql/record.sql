@@ -11,8 +11,21 @@ with records_with_notes as (
   from record r
   left join note n on n.record_id = r.id
   where r.user_id = sqlc.arg('userId')
-  and r.status = sqlc.arg('status')
+  and (
+    sqlc.narg('status')::record_status is null
+    or r.status = sqlc.narg('status')
+  )
+  and (
+    sqlc.narg('judgment')::judgment is null
+    or r.judgment = sqlc.narg('judgment')
+  )
   group by r.id
+),
+filtered as (
+  select
+    *,
+    count(*) over () as total_count
+  from records_with_notes
 )
 select
   id,
@@ -22,8 +35,9 @@ select
   last_activity as updated_at,
   judgment,
   status,
-  created_at
-from records_with_notes
+  created_at,
+  total_count
+from filtered
 where (
   sqlc.narg('cursor')::timestamp is null
   or (

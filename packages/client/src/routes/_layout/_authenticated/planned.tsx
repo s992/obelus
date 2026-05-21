@@ -1,17 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
-import { BookList } from '../../../pages/BookList';
+import { ListPage } from '../../../pages/ListPage';
 
 function Planned() {
-  const intl = useIntl();
-
   return (
-    <BookList
+    <ListPage
       status="planned"
-      label={intl.formatMessage({ defaultMessage: 'Planned' })}
       sortField="last_activity"
-      columns={{ started: false, finished: false }}
       renderEmptyState={() => <FormattedMessage defaultMessage="You haven't planned any future reads." />}
     />
   );

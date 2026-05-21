@@ -1,17 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
-import { BookList } from '../../../pages/BookList';
+import { ListPage } from '../../../pages/ListPage';
 
 function Read() {
-  const intl = useIntl();
-
   return (
-    <BookList
+    <ListPage
       status="finished"
-      label={intl.formatMessage({ defaultMessage: 'Finished' })}
       sortField="finished_at"
-      columns={{ added: false }}
       renderEmptyState={() => <FormattedMessage defaultMessage="You haven't finished any books yet." />}
     />
   );

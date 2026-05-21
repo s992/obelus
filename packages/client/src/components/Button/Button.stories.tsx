@@ -31,6 +31,10 @@ export const Underlined: Story = {
   args: { variant: 'underlined' },
 };
 
+export const Chip: Story = {
+  args: { variant: 'chip' },
+};
+
 export const Disabled: Story = {
   args: { isDisabled: true },
 };

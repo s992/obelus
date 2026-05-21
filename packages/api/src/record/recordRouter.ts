@@ -22,6 +22,7 @@ export const recordRouter = router({
     .input(
       z.object({
         status: RecordStatusEnumSchema,
+        judgment: JudgmentEnumSchema.nullable(),
         cursor: z.string().optional(),
         sortField: SortFieldSchema,
       }),
@@ -35,6 +36,7 @@ export const recordRouter = router({
         cursor: decodeCursor(input.cursor),
         pagesize: PAGE_SIZE + 1,
         status: input.status,
+        judgment: input.judgment,
         userid: ctx.currentUser.id,
         sortfield: input.sortField,
       });
@@ -47,11 +49,13 @@ export const recordRouter = router({
 
       const bookIds = records.map((record) => record.bookId);
       const { books } = await client.GetBooksByIds({ ids: bookIds });
+      const count = records[0]?.totalCount;
 
       return {
         books: collateRecordsAndBooks(z.array(RecordSchema).parse(records), books),
         hasNextPage: hasMore,
         nextPageToken: hasMore ? encodeCursor(records[records.length - 1], input.sortField) : null,
+        totalCount: count ? parseInt(count) : 0,
       };
     }),
   create: privateProcedure.input(RecordSchema.pick({ bookId: true, status: true })).mutation(async ({ input, ctx }) => {
