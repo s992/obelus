@@ -1,6 +1,6 @@
 import { globalStyle, style } from '@vanilla-extract/css';
 
-import { flex, mediaQuery, typography, vars } from '../../style';
+import { flex, mediaQuery, sectionDivider, typography, vars } from '../../style';
 
 export const container = style({
   display: 'grid',
@@ -20,7 +20,7 @@ export const section = style([
     gap: vars.space.s5,
     padding: vars.space.s5,
     background: vars.color.surface,
-    border: `1px solid ${vars.color.rule}`,
+    border: sectionDivider,
   },
 ]);
 
@@ -85,7 +85,7 @@ export const dropZoneButton = style({
   position: 'absolute',
   inset: vars.space.s2,
   background: vars.color.bg,
-  border: `1px solid ${vars.color.rule}`,
+  border: sectionDivider,
   gap: vars.space.s3,
   selectors: {
     '&:hover': {
@@ -105,7 +105,7 @@ export const importSectionHeader = style([
   {
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderBottom: `1px solid ${vars.color.rule}`,
+    borderBottom: sectionDivider,
     marginBottom: vars.space.s4,
     paddingBottom: vars.space.s2,
     marginTop: vars.space.s7,

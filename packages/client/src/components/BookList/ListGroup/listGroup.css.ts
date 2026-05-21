@@ -1,13 +1,13 @@
 import { globalStyle, style, styleVariants } from '@vanilla-extract/css';
 
-import { flex, mediaQuery, typography, vars } from '../../../style';
+import { flex, mediaQuery, sectionDivider, typography, vars } from '../../../style';
 
 export const group = style({
   display: 'grid',
   gridTemplateColumns: '96px 1fr',
   gap: vars.space.s5,
   padding: `${vars.space.s5} 0`,
-  borderTop: `1px solid ${vars.color.rule}`,
+  borderTop: sectionDivider,
   '@media': {
     [mediaQuery.mobile]: {
       gridTemplateColumns: '1fr',
@@ -30,22 +30,15 @@ export const gutter = style([
         flexDirection: 'row',
         alignItems: 'baseline',
         gap: vars.space.s3,
-        borderBottom: `1px solid ${vars.color.rule}`,
+        borderBottom: sectionDivider,
       },
     },
   },
 ]);
 
-const gutterDate = style([
-  typography.label,
-  {
-    textTransform: 'uppercase',
-  },
-]);
+export const gutterMonth = style([typography.uppercaseLabel, { color: vars.color.ink2 }]);
 
-export const gutterMonth = style([gutterDate, { color: vars.color.ink2 }]);
-
-export const gutterYear = style([gutterDate, { color: vars.color.ink3 }]);
+export const gutterYear = style([typography.uppercaseLabel, { color: vars.color.ink3 }]);
 
 export const gutterCount = style([
   typography.label,
@@ -61,7 +54,7 @@ export const listRow = style({
   gridTemplateColumns: '64px 1fr',
   gap: vars.space.s6,
   padding: `${vars.space.s5} 0`,
-  borderTop: `1px solid ${vars.color.rule}`,
+  borderTop: sectionDivider,
   selectors: {
     '&:first-child': {
       borderTop: 0,

@@ -1,12 +1,12 @@
 import { FormattedMessage } from 'react-intl';
 
+import { typography } from '../../style';
 import {
   badUrl,
   card,
   cardFooter,
   cardFooterStrong,
   cardHeader,
-  cardKey,
   cardRow,
   cardValue,
   cardValueEmphasis,
@@ -56,21 +56,21 @@ export function NotFound() {
             <FormattedMessage defaultMessage="discarded" />
           </span>
           <div className={cardHeader}>
-            <span className={cardKey}>
+            <span className={typography.uppercaseLabel}>
               <FormattedMessage defaultMessage="catalog card" />
             </span>
-            <span className={cardKey}>
+            <span className={typography.uppercaseLabel}>
               <FormattedMessage defaultMessage="no. 000-404" />
             </span>
           </div>
           <div className={cardRow}>
-            <span className={cardKey}>
+            <span className={typography.uppercaseLabel}>
               <FormattedMessage defaultMessage="title" />
             </span>
             <span className={cardValueStrike}>{url}</span>
           </div>
           <div className={cardRow}>
-            <span className={cardKey}>
+            <span className={typography.uppercaseLabel}>
               <FormattedMessage defaultMessage="author" />
             </span>
             <span className={cardValue}>
@@ -80,13 +80,13 @@ export function NotFound() {
             </span>
           </div>
           <div className={cardRow}>
-            <span className={cardKey}>
+            <span className={typography.uppercaseLabel}>
               <FormattedMessage defaultMessage="published" />
             </span>
             <span className={cardValue}>—</span>
           </div>
           <div className={cardRow}>
-            <span className={cardKey}>
+            <span className={typography.uppercaseLabel}>
               <FormattedMessage defaultMessage="shelf" />
             </span>
             <span className={cardValue}>
@@ -94,7 +94,7 @@ export function NotFound() {
             </span>
           </div>
           <div className={cardRow}>
-            <span className={cardKey}>
+            <span className={typography.uppercaseLabel}>
               <FormattedMessage defaultMessage="judgment" />
             </span>
             <span className={cardValue}>

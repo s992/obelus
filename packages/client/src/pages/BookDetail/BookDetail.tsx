@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
-import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { FormattedMessage } from 'react-intl';
 
@@ -22,7 +21,6 @@ import {
   header,
   mainContent,
   meta,
-  metaLabel,
   metaRow,
   seriesLink,
   sidebar,
@@ -63,13 +61,13 @@ export function BookDetail() {
           {book.record && (
             <>
               <div className={metaRow}>
-                <dt className={clsx(typography.label, metaLabel)}>
+                <dt className={typography.uppercaseLabel}>
                   <FormattedMessage defaultMessage="first entered" />
                 </dt>
                 <dd className={typography.label}>{formatLongDate(book.record.createdAt)}</dd>
               </div>
               <div className={metaRow}>
-                <dt className={clsx(typography.label, metaLabel)}>
+                <dt className={typography.uppercaseLabel}>
                   <FormattedMessage defaultMessage="last touched" />
                 </dt>
                 <dd className={typography.label}>{formatLongDate(lastTouched)}</dd>
@@ -77,13 +75,13 @@ export function BookDetail() {
             </>
           )}
           <div className={metaRow}>
-            <dt className={clsx(typography.label, metaLabel)}>
+            <dt className={typography.uppercaseLabel}>
               <FormattedMessage defaultMessage="published" />
             </dt>
             <dd className={typography.label}>{formatPublishDate(book.releaseDate)}</dd>
           </div>
           <div className={metaRow}>
-            <dt className={clsx(typography.label, metaLabel)}>
+            <dt className={typography.uppercaseLabel}>
               <FormattedMessage defaultMessage="pages" />
             </dt>
             <dd className={typography.label}>{book.pages}</dd>

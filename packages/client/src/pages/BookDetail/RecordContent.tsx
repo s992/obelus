@@ -1,6 +1,5 @@
 import type { Book, Maybe, NoteJson } from '@obelus/shared/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import clsx from 'clsx';
 import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { DialogTrigger, Heading, TextArea } from 'react-aria-components';
@@ -17,7 +16,6 @@ import {
   addNoteButton,
   confirmModalButtons,
   entryCount,
-  metaLabel,
   noteDate,
   noteList,
   noteListItem,
@@ -89,7 +87,7 @@ export function RecordContent({ book, notes }: Props) {
     <div className={recordContainer}>
       <div>
         <div className={sectionHeader}>
-          <h2 className={clsx(typography.label, metaLabel)}>
+          <h2 className={typography.uppercaseLabel}>
             <FormattedMessage defaultMessage="judgment" />
           </h2>
           <Button variant="underlined" onPress={() => setIsRevising((current) => !current)}>
@@ -114,7 +112,7 @@ export function RecordContent({ book, notes }: Props) {
       </div>
       <div>
         <div className={sectionHeader}>
-          <h2 className={clsx(typography.label, metaLabel)}>
+          <h2 className={typography.uppercaseLabel}>
             <FormattedMessage defaultMessage="notes" />
           </h2>
           <span className={entryCount}>
@@ -156,7 +154,7 @@ export function RecordContent({ book, notes }: Props) {
       </div>
       <div>
         <div className={sectionHeader}>
-          <h2 className={clsx(typography.label, metaLabel)}>
+          <h2 className={typography.uppercaseLabel}>
             <FormattedMessage defaultMessage="danger" />
           </h2>
           <AlertCircle height={16} />

@@ -2,8 +2,6 @@ import { globalStyle, style } from '@vanilla-extract/css';
 
 import { flex, typography, vars } from '../../style';
 
-export const label = style([typography.label, { textTransform: 'uppercase' }]);
-
 export const radioGroup = style([
   flex.container,
   {

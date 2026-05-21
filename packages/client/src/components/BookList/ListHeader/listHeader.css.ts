@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { flex, typography, vars } from '../../../style';
+import { flex, sectionDivider, vars } from '../../../style';
 
 export const header = style([
   flex.column,
@@ -8,7 +8,7 @@ export const header = style([
     gap: vars.space.s4,
     paddingBottom: vars.space.s4,
     marginBottom: vars.space.s6,
-    borderBottom: `1px solid ${vars.color.rule}`,
+    borderBottom: sectionDivider,
   },
 ]);
 export const title = style([
@@ -16,13 +16,5 @@ export const title = style([
   {
     alignItems: 'baseline',
     gap: vars.space.s4,
-  },
-]);
-
-export const headerCount = style([
-  typography.label,
-  {
-    color: vars.color.ink3,
-    textTransform: 'uppercase',
   },
 ]);

@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { flex, mediaQuery, typography, vars } from '../../style';
+import { flex, mediaQuery, sectionDivider, typography, vars } from '../../style';
 
 export const headerContainer = style({
   display: 'inline-flex',
@@ -12,14 +12,6 @@ export const headerSeparator = style({
   color: vars.color.ink3,
 });
 
-export const handle = style([
-  typography.label,
-  {
-    color: vars.color.ink3,
-    textTransform: 'uppercase',
-  },
-]);
-
 export const identity = style({
   display: 'grid',
   gridTemplateColumns: '1fr auto',
@@ -27,7 +19,7 @@ export const identity = style({
   alignItems: 'end',
   paddingBottom: vars.space.s6,
   marginBottom: vars.space.s6,
-  borderBottom: `1px solid ${vars.color.rule}`,
+  borderBottom: sectionDivider,
 });
 
 export const bio = style([
@@ -40,10 +32,8 @@ export const bio = style([
 
 export const meta = style([
   flex.column,
-  typography.label,
+  typography.uppercaseLabel,
   {
-    textTransform: 'uppercase',
-    color: vars.color.ink3,
     gap: vars.space.s2,
     textAlign: 'right',
     '@media': {
@@ -64,15 +54,13 @@ export const metaValue = style({ color: vars.color.ink });
 
 export const footer = style([
   flex.container,
-  typography.label,
+  typography.uppercaseLabel,
   {
     justifyContent: 'space-between',
     alignItems: 'baseline',
     marginTop: vars.space.s7,
     paddingTop: vars.space.s5,
-    borderTop: `1px solid ${vars.color.rule}`,
-    textTransform: 'uppercase',
-    color: vars.color.ink3,
+    borderTop: sectionDivider,
   },
 ]);
 
@@ -93,7 +81,7 @@ export const tabList = style([
   flex.container,
   {
     gap: vars.space.s6,
-    borderBottom: `1px solid ${vars.color.rule}`,
+    borderBottom: sectionDivider,
     marginBottom: vars.space.s6,
   },
 ]);

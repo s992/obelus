@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { typography } from '../../../style';
-import { header, headerCount, title as titleCss } from './listHeader.css';
+import { header, title as titleCss } from './listHeader.css';
 
 type Props = {
   title: ReactNode;
@@ -15,7 +15,7 @@ export function ListHeader({ title, count, children }: Props) {
     <header className={header}>
       <div className={titleCss}>
         <h1 className={typography.display}>{title}</h1>
-        <span className={headerCount}>
+        <span className={typography.uppercaseLabel}>
           <FormattedMessage defaultMessage="{count} entries" values={{ count }} />
         </span>
       </div>

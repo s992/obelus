@@ -22,7 +22,7 @@ export const resultContainer = style({
 });
 
 export const resultHeader = style([
-  typography.label,
+  typography.uppercaseLabel,
   {
     display: 'grid',
     gridTemplateColumns: GRID_TEMPLATE_COLUMNS,
@@ -31,7 +31,6 @@ export const resultHeader = style([
     top: 0,
     background: vars.color.bg,
     height: HEADER_HEIGHT,
-    textTransform: 'uppercase',
   },
 ]);
 

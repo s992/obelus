@@ -97,18 +97,16 @@ export const button = styleVariants({
     },
   ],
   chip: [
-    typography.label,
+    typography.uppercaseLabel,
     {
       display: 'inline-flex',
       alignItems: 'center',
       gap: vars.space.s2,
-      color: vars.color.ink3,
       padding: `${vars.space.s2} ${vars.space.s3}`,
       border: `1px solid ${vars.color.fieldRule}`,
       borderRadius: vars.radius.pill,
       background: 'transparent',
       cursor: 'pointer',
-      textTransform: 'uppercase',
       transition: 'color .15s, border-color .15s',
       ':hover': {
         color: vars.color.ink,

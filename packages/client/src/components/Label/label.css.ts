@@ -1,16 +1,8 @@
-import { style, styleVariants } from '@vanilla-extract/css';
+import { styleVariants } from '@vanilla-extract/css';
 
 import { typography, vars } from '../../style';
 
-const baseLabel = style([
-  typography.label,
-  {
-    textTransform: 'uppercase',
-    color: vars.color.ink3,
-  },
-]);
-
 export const label = styleVariants({
-  default: [baseLabel],
-  error: [baseLabel, { color: vars.color.bad }],
+  default: [typography.uppercaseLabel],
+  error: [typography.uppercaseLabel, { color: vars.color.bad }],
 });

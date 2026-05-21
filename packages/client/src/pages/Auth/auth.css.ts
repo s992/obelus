@@ -1,7 +1,7 @@
 import { style } from '@vanilla-extract/css';
 
 import { button } from '../../components/Button/button.css';
-import { mediaQuery, typography, vars } from '../../style';
+import { mediaQuery, sectionDivider, typography, vars } from '../../style';
 
 export const tabContainer = style({
   width: '50%',
@@ -21,7 +21,7 @@ export const tabContent = style({
 export const tabList = style({
   display: 'flex',
   gap: vars.space.s4,
-  borderBottom: `1px solid ${vars.color.rule}`,
+  borderBottom: sectionDivider,
 });
 
 export const tab = style([

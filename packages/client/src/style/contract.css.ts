@@ -91,3 +91,5 @@ export const vars = createThemeContract({
   // meaningfully changes across screens / density presets.
   rowPaddingY: null,
 });
+
+export const sectionDivider = `${vars.borderWidth.hairline} solid ${vars.color.rule}`;

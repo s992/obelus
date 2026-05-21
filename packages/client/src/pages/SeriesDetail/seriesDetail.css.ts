@@ -1,12 +1,12 @@
 import { style } from '@vanilla-extract/css';
 
-import { flex, mediaQuery, typography, vars } from '../../style';
+import { flex, mediaQuery, sectionDivider, typography, vars } from '../../style';
 
 export const row = style({
   display: 'grid',
   gridTemplateColumns: '96px 1fr',
   gap: vars.space.s5,
-  borderTop: `1px solid ${vars.color.rule}`,
+  borderTop: sectionDivider,
   '@media': {
     [mediaQuery.mobile]: {
       gridTemplateColumns: '1fr',

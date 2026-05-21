@@ -53,6 +53,8 @@ export const labelBase = {
 
 const label = style(labelBase);
 
+const uppercaseLabel = style([label, { textTransform: 'uppercase' } as const]);
+
 export const typography = {
   display,
   h1,
@@ -60,4 +62,5 @@ export const typography = {
   title,
   body,
   label,
+  uppercaseLabel,
 };

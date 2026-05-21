@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { mediaQuery, vars } from '../../style';
+import { mediaQuery, sectionDivider, vars } from '../../style';
 
 export const navSection = style({
   display: 'flex',
@@ -9,7 +9,7 @@ export const navSection = style({
   '@media': {
     [mediaQuery.mobile]: {
       background: vars.color.bg,
-      border: `1px solid ${vars.color.rule}`,
+      border: sectionDivider,
       flexDirection: 'column',
       insetBlock: 0,
       insetInlineEnd: 0,

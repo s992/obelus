@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { flex, mediaQuery, typography, vars } from '../../style';
+import { flex, mediaQuery, sectionDivider, typography, vars } from '../../style';
 
 export const container = style({
   display: 'grid',
@@ -45,7 +45,7 @@ export const meta = style({
   flexDirection: 'column',
   gap: vars.space.s3,
   paddingTop: vars.space.s4,
-  borderTop: `1px solid ${vars.color.rule}`,
+  borderTop: sectionDivider,
   '@media': {
     [mediaQuery.tablet]: {
       gridColumn: '1 / -1',
@@ -64,7 +64,7 @@ export const metaRow = style({
 export const header = style({
   paddingBottom: vars.space.s6,
   marginBottom: vars.space.s4,
-  borderBottom: `1px solid ${vars.color.rule}`,
+  borderBottom: sectionDivider,
   '@media': {
     [mediaQuery.tablet]: {
       gridColumn: 2,
@@ -127,7 +127,7 @@ export const actions = style({
 export const sectionHeader = style([
   flex.container,
   {
-    borderBottom: `1px solid ${vars.color.rule}`,
+    borderBottom: sectionDivider,
     justifyContent: 'space-between',
     alignItems: 'baseline',
     paddingBottom: vars.space.s2,
@@ -217,10 +217,6 @@ export const mainContent = style({
       display: 'contents',
     },
   },
-});
-
-export const metaLabel = style({
-  textTransform: 'uppercase',
 });
 
 export const confirmModalButtons = style([

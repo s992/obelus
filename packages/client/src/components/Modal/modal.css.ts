@@ -1,6 +1,6 @@
 import { keyframes, style } from '@vanilla-extract/css';
 
-import { mediaQuery, vars } from '../../style';
+import { mediaQuery, sectionDivider, vars } from '../../style';
 
 const zoom = keyframes({
   '0%': { transform: 'scale(0.8)' },
@@ -15,7 +15,7 @@ export const modal = style({
   translate: '-50% 0%',
   padding: vars.space.s6,
   backgroundColor: vars.color.bg,
-  border: `1px solid ${vars.color.rule}`,
+  border: sectionDivider,
   borderRadius: vars.radius.sm,
   selectors: {
     '&[data-entering]': {

@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { flex, mediaQuery, typography, vars } from '../../style';
+import { flex, mediaQuery, sectionDivider, typography, vars } from '../../style';
 
 export const container = style({ display: 'grid', placeItems: 'center', padding: vars.space.s7, flex: 1 });
 
@@ -26,10 +26,8 @@ export const copy = style([
 ]);
 
 export const eyebrow = style([
-  typography.label,
+  typography.uppercaseLabel,
   {
-    textTransform: 'uppercase',
-    color: vars.color.ink3,
     display: 'inline-flex',
     alignItems: 'baseline',
     gap: vars.space.s2,
@@ -104,7 +102,7 @@ export const badUrl = style([
 ]);
 
 export const card = style({
-  border: `1px solid ${vars.color.rule}`,
+  border: sectionDivider,
   borderRadius: vars.radius.sm,
   background: vars.color.surface,
   padding: vars.space.s5,
@@ -123,9 +121,8 @@ export const card = style({
 });
 
 export const stamp = style([
-  typography.label,
+  typography.uppercaseLabel,
   {
-    textTransform: 'uppercase',
     position: 'absolute',
     top: 14,
     right: -10,
@@ -145,16 +142,8 @@ export const cardHeader = style([
     alignItems: 'baseline',
     justifyContent: 'space-between',
     paddingBottom: vars.space.s3,
-    borderBottom: `1px solid ${vars.color.rule}`,
+    borderBottom: sectionDivider,
     marginBottom: vars.space.s3,
-  },
-]);
-
-export const cardKey = style([
-  typography.label,
-  {
-    color: vars.color.ink3,
-    textTransform: 'uppercase',
   },
 ]);
 
@@ -198,15 +187,13 @@ export const cardRow = style({
 
 export const cardFooter = style([
   flex.container,
-  typography.label,
+  typography.uppercaseLabel,
   {
     marginTop: vars.space.s4,
     paddingTop: vars.space.s4,
-    borderTop: `1px solid ${vars.color.rule}`,
+    borderTop: sectionDivider,
     alignItems: 'center',
     justifyContent: 'space-between',
-    color: vars.color.ink3,
-    textTransform: 'uppercase',
   },
 ]);
 

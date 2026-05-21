@@ -2,7 +2,7 @@ import type { Maybe } from '@obelus/shared/types';
 import dayjs from 'dayjs';
 import { useIntl } from 'react-intl';
 
-export function useFormatDate(format: string) {
+export function useFormatDate(format: string, parseFormat?: string) {
   const intl = useIntl();
   const placeholder = intl.formatMessage({ defaultMessage: 'N/A' });
 
@@ -11,7 +11,7 @@ export function useFormatDate(format: string) {
       return placeholder;
     }
 
-    const parsed = dayjs(date);
+    const parsed = dayjs(date, parseFormat);
 
     return parsed.isValid() ? parsed.format(format).toLocaleLowerCase() : placeholder;
   };

@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
-import dayjs from 'dayjs';
-import type { ReactNode } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'react-aria-components';
 import { FormattedMessage } from 'react-intl';
 
@@ -9,12 +8,12 @@ import { useTRPC } from '../../client';
 import { AppHeader } from '../../components/AppHeader';
 import { FullPageSpinner } from '../../components/FullPageSpinner';
 import { NotFound } from '../../components/NotFound';
+import { useFormatDate } from '../../hooks/useFormatDate';
 import { typography } from '../../style';
 import { PublicBookList } from './PublicBookList';
 import {
   bio,
   footer,
-  handle,
   headerContainer,
   headerSeparator,
   identity,
@@ -32,6 +31,10 @@ export function PublicRecord() {
   const { userName } = useParams({ from: '/u/$userName' });
   const trpc = useTRPC();
   const { data: profile, isLoading, isError } = useQuery(trpc.publicRecord.profile.queryOptions({ userName }));
+  const formatYear = useFormatDate('YYYY');
+  const formatLongMonthYear = useFormatDate('MMMM YYYY');
+  const formatFullDate = useFormatDate('MMMM D, YYYY');
+  const today = useMemo(() => new Date().toISOString(), []);
 
   if (isLoading) {
     return <FullPageSpinner />;
@@ -46,14 +49,12 @@ export function PublicRecord() {
     );
   }
 
-  const oldestRecord = profile.oldestRecord ? dayjs(profile.oldestRecord) : null;
-
   return (
     <>
       <AppHeader>
         <div className={headerContainer}>
           <span className={headerSeparator}>/</span>
-          <span className={handle}>
+          <span className={typography.uppercaseLabel}>
             <FormattedMessage defaultMessage="{userName} · public" values={{ userName: profile.userName }} />
           </span>
         </div>
@@ -62,10 +63,10 @@ export function PublicRecord() {
         <div>
           <h1 className={typography.display}>{userName}</h1>
           <p className={bio}>
-            {oldestRecord ? (
+            {profile.oldestRecord ? (
               <FormattedMessage
                 defaultMessage="A reading record kept since {startYear}."
-                values={{ startYear: oldestRecord.format('YYYY') }}
+                values={{ startYear: formatYear(profile.oldestRecord) }}
               />
             ) : (
               <FormattedMessage defaultMessage="A reading record." />
@@ -75,14 +76,14 @@ export function PublicRecord() {
         <div className={meta}>
           <MetaRow
             title={<FormattedMessage defaultMessage="since" />}
-            value={oldestRecord ? oldestRecord.format('MMMM YYYY') : <FormattedMessage defaultMessage="N/A" />}
+            value={formatLongMonthYear(profile.oldestRecord)}
           />
           <MetaRow title={<FormattedMessage defaultMessage="entries" />} value={profile.totalRecords} />
           <MetaRow
             title={
               <FormattedMessage
                 defaultMessage="finished in {currentYear}"
-                values={{ currentYear: dayjs().format('YYYY') }}
+                values={{ currentYear: formatYear(today) }}
               />
             }
             value={profile.finishedThisYear}
@@ -147,7 +148,7 @@ export function PublicRecord() {
         <span>
           <FormattedMessage
             defaultMessage="read-only · last touched {lastUpdated}"
-            values={{ lastUpdated: dayjs(profile.lastUpdated).format('MMMM D, YYYY') }}
+            values={{ lastUpdated: formatFullDate(profile.lastUpdated) }}
           />
         </span>
       </footer>

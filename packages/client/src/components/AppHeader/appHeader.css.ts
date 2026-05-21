@@ -1,12 +1,12 @@
 import { style } from '@vanilla-extract/css';
 
-import { typography, vars } from '../../style';
+import { sectionDivider, typography, vars } from '../../style';
 
 export const headerContainer = style({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  borderBottom: `1px solid ${vars.color.rule}`,
+  borderBottom: sectionDivider,
   paddingBottom: vars.space.s4,
   marginBottom: vars.space.s6,
 });

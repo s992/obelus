@@ -10,8 +10,9 @@ import {
 } from 'react-aria-components';
 
 import { useFieldContext } from '../../form';
+import { typography } from '../../style';
 import { ValidationErrorList } from '../ValidationErrorList';
-import { label as labelCss, radio, radioGroup, radioLabel } from './radioGroup.css';
+import { radio, radioGroup, radioLabel } from './radioGroup.css';
 
 type Option = {
   value: string;
@@ -36,7 +37,7 @@ export function RadioGroup({ className, options, ...rest }: Props) {
 
   return (
     <AriaRadioGroup className={className} {...props}>
-      <Label className={labelCss}>{label}</Label>
+      <Label className={typography.uppercaseLabel}>{label}</Label>
       <div className={radioGroup}>
         {options.map((opt) => (
           <Radio key={opt.value} value={opt.value}>
