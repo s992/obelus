@@ -4,6 +4,7 @@ obelus is a self-hosted private reading record (think goodreads but probably bet
 
 |![List page view](https://raw.githubusercontent.com/s992/obelus/main/screenshots/list.png)|![Detail page view](https://raw.githubusercontent.com/s992/obelus/main/screenshots/detail.png)|
 |---------|-----------|
+|![Series view](https://raw.githubusercontent.com/s992/obelus/main/screenshots/series.png)|![Public profile](https://raw.githubusercontent.com/s992/obelus/main/screenshots/public.png)|
 
 ## ai disclaimer
 

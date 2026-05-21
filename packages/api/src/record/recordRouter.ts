@@ -5,17 +5,13 @@ import {
   RecordStatusEnumSchema,
   SortFieldSchema,
 } from '@obelus/shared/schema';
-import type { Maybe, SortField } from '@obelus/shared/types';
 import { TRPCError } from '@trpc/server';
 import z from 'zod';
 
-import { collateRecordsAndBooks } from '../bookRecord/collateRecordsAndBooks';
+import { listUserRecords } from '../bookRecord/listUserRecords';
 import { db } from '../db/db';
-import { client } from '../gql/client';
-import { createRecord, deleteRecord, type ListRecordsRow, listRecords, updateRecord } from '../sqlc/record_sql';
+import { createRecord, deleteRecord, updateRecord } from '../sqlc/record_sql';
 import { privateProcedure, router } from '../trpc/trpc';
-
-const PAGE_SIZE = 20;
 
 export const recordRouter = router({
   list: privateProcedure
@@ -32,31 +28,7 @@ export const recordRouter = router({
         return;
       }
 
-      const records = await listRecords(db, {
-        cursor: decodeCursor(input.cursor),
-        pagesize: PAGE_SIZE + 1,
-        status: input.status,
-        judgment: input.judgment,
-        userid: ctx.currentUser.id,
-        sortfield: input.sortField,
-      });
-
-      const hasMore = records.length > PAGE_SIZE;
-
-      if (hasMore) {
-        records?.pop();
-      }
-
-      const bookIds = records.map((record) => record.bookId);
-      const { books } = await client.GetBooksByIds({ ids: bookIds });
-      const count = records[0]?.totalCount;
-
-      return {
-        books: collateRecordsAndBooks(z.array(RecordSchema).parse(records), books),
-        hasNextPage: hasMore,
-        nextPageToken: hasMore ? encodeCursor(records[records.length - 1], input.sortField) : null,
-        totalCount: count ? parseInt(count) : 0,
-      };
+      return listUserRecords(ctx.currentUser.id, input.cursor, input.sortField, input.status, input.judgment);
     }),
   create: privateProcedure.input(RecordSchema.pick({ bookId: true, status: true })).mutation(async ({ input, ctx }) => {
     if (!ctx.currentUser.id) {
@@ -113,36 +85,3 @@ export const recordRouter = router({
     await deleteRecord(db, { id: input.id, userid: ctx.currentUser.id });
   }),
 });
-
-function encodeCursor(row: Maybe<ListRecordsRow>, sortField: SortField) {
-  if (!row) {
-    return null;
-  }
-
-  let date: Date | null;
-
-  switch (sortField) {
-    case 'finished_at':
-      date = row.finishedAt;
-      break;
-    case 'started_at':
-      date = row.startedAt;
-      break;
-    default:
-      date = row.updatedAt;
-  }
-
-  if (!date) {
-    return null;
-  }
-
-  return Buffer.from(date.toISOString()).toString('base64url');
-}
-
-function decodeCursor(cursor: Maybe<string>) {
-  if (!cursor) {
-    return null;
-  }
-
-  return new Date(Buffer.from(cursor, 'base64url').toString());
-}

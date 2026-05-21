@@ -121,13 +121,13 @@ export function PublicRecord() {
         </TabList>
         <TabPanels>
           <TabPanel id="reading">
-            <PublicBookList status="reading" />
+            <PublicBookList userName={userName} status="reading" sortField="started_at" />
           </TabPanel>
           <TabPanel id="finished">
-            <PublicBookList status="finished" />
+            <PublicBookList userName={userName} status="finished" sortField="finished_at" />
           </TabPanel>
           <TabPanel id="planned">
-            <PublicBookList status="planned" />
+            <PublicBookList userName={userName} status="planned" sortField="last_activity" />
           </TabPanel>
         </TabPanels>
       </Tabs>
