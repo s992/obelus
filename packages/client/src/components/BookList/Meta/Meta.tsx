@@ -1,4 +1,4 @@
-import type { Book } from '@obelus/shared/types';
+import type { Book, Status } from '@obelus/shared/types';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -8,15 +8,14 @@ import { useFormatDateDistance } from '../../../hooks/useFormatDateDistance';
 import { useFormatPublishYear } from '../../../hooks/useFormatPublishYear';
 import { judgment } from '../../../style';
 import { separator } from '../bookList.css';
-import { useBookListContext } from '../context';
 import { container, judgmentMeta } from './meta.css';
 
 type Props = {
   book: Book;
+  variant: Status | 'untracked';
 };
 
-export function Meta({ book }: Props) {
-  const { variant } = useBookListContext();
+export function Meta({ book, variant }: Props) {
   const formatYear = useFormatPublishYear();
   const formatDate = useFormatDate('MMM DD');
   const formatDistance = useFormatDateDistance();
@@ -67,6 +66,16 @@ export function Meta({ book }: Props) {
             startedAt: formatDate(book.record?.startedAt),
             distance: formatDistance(book.record?.startedAt),
             sep: (chunks) => <span className={separator}>{chunks}</span>,
+          }}
+        />
+      );
+      break;
+    case 'untracked':
+      content = (
+        <FormattedMessage
+          defaultMessage="pub {publishDate}"
+          values={{
+            publishDate: formatYear(book.releaseDate),
           }}
         />
       );

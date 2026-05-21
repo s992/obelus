@@ -1,34 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
-import clsx from 'clsx';
-import { GridList, GridListItem } from 'react-aria-components';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 import { useTRPC } from '../../client';
-import { BookCover } from '../../components/BookCover';
+import { ListGroupRow } from '../../components/BookList/ListGroup/ListGroupRow';
+import { ListHeader } from '../../components/BookList/ListHeader';
 import { FullPageSpinner } from '../../components/FullPageSpinner';
-import { Link } from '../../components/Link';
 import { LoadError } from '../../components/LoadError';
-import { TitleAuthorStack } from '../../components/TitleAuthorStack';
-import { StatusCell } from '../../features/StatusCell';
-import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';
-import { flex, typography } from '../../style';
-import {
-  gridCell,
-  gridRow,
-  header,
-  pageContainer,
-  position,
-  publishDate,
-  smallCell,
-  statusCell,
-} from './seriesDetail.css';
+import { ListPageContextProvider } from '../ListPage/context';
+import { bookItem, position, row } from './seriesDetail.css';
 
 export function SeriesDetail() {
   const { seriesId } = useParams({ from: '/_layout/_authenticated/series/$seriesId' });
-  const intl = useIntl();
   const trpc = useTRPC();
-  const formatPublishYear = useFormatPublishYear();
   const {
     data: series,
     isLoading,
@@ -44,66 +28,18 @@ export function SeriesDetail() {
   }
 
   return (
-    <div className={pageContainer}>
-      <h1 className={typography.display}>{series.series.name}</h1>
-      <div>
-        <div className={header}>
-          <div />
-          <div />
-          <div>
-            <FormattedMessage defaultMessage="title · author" />
+    <>
+      <ListHeader title={series.series.name} count={series.series.bookCount ?? 0} />
+      <ListPageContextProvider
+        value={{ fetchNextPage: () => {}, hasNextPage: false, queryKey: trpc.book.seriesById.queryKey() }}
+      >
+        {series.books.map((book) => (
+          <div key={book.id} className={row}>
+            <div className={position}>{book.series?.position}</div>
+            <ListGroupRow book={book} variant={book.record?.status ?? 'untracked'} className={bookItem} />
           </div>
-          <div>
-            <FormattedMessage defaultMessage="published" />
-          </div>
-          <div>
-            <FormattedMessage defaultMessage="judgment" />
-          </div>
-        </div>
-        <GridList
-          aria-label={intl.formatMessage(
-            { defaultMessage: 'Books from the series "{series}"' },
-            { series: series.series.name },
-          )}
-        >
-          {series.books.map((book) => {
-            const publishYear = formatPublishYear(book.releaseDate);
-
-            return (
-              <GridListItem
-                key={book.id}
-                textValue={intl.formatMessage(
-                  { defaultMessage: '{title} by {author}, published {publishYear}' },
-                  { title: book.title, author: book.author, publishYear },
-                )}
-                className={gridRow}
-              >
-                <div className={clsx(position, smallCell)}>
-                  <div className={flex.center}>{book.series?.position}</div>
-                </div>
-                <div className={smallCell}>
-                  <BookCover book={book} />
-                </div>
-                <div className={gridCell}>
-                  <Link to="/book/$bookId" params={{ bookId: book.id.toString() }}>
-                    <TitleAuthorStack title={book.title} author={book.author} />
-                  </Link>
-                </div>
-                <div className={publishDate}>{publishYear}</div>
-                <div className={statusCell}>
-                  <StatusCell
-                    bookId={book.id}
-                    seriesId={book.series?.id}
-                    layout="vertical"
-                    status={book.record?.status}
-                    judgment={book.record?.judgment}
-                  />
-                </div>
-              </GridListItem>
-            );
-          })}
-        </GridList>
-      </div>
-    </div>
+        ))}
+      </ListPageContextProvider>
+    </>
   );
 }

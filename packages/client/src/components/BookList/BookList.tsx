@@ -8,9 +8,10 @@ import { useIntersectionObserver } from 'usehooks-ts';
 import { useListPageContext } from '../../pages/ListPage/context';
 import { typography } from '../../style';
 import { Button } from '../Button';
-import { chipDot, filterBar, header, headerCount, title } from './bookList.css';
+import { chipDot, filterBar } from './bookList.css';
 import { BookListContextProvider } from './context';
 import { ListGroup } from './ListGroup';
+import { ListHeader } from './ListHeader';
 
 type Props = {
   variant: Status;
@@ -41,13 +42,7 @@ export function BookList({ variant, books, totalCount, renderEmptyState, filter,
     <BookListContextProvider value={{ variant, isPublic: !!isPublic }}>
       <section>
         {!isPublic && (
-          <header className={header}>
-            <div className={title}>
-              <h1 className={typography.display}>{headerI18n[variant]}</h1>
-              <span className={headerCount}>
-                <FormattedMessage defaultMessage="{count} entries" values={{ count: totalCount }} />
-              </span>
-            </div>
+          <ListHeader title={headerI18n[variant]} count={totalCount}>
             {variant === 'finished' && onFilterChanged && dates.length && (
               <div className={filterBar}>
                 <Button variant="chip" isSelected={!filter} onPress={() => onFilterChanged(null)}>
@@ -67,7 +62,7 @@ export function BookList({ variant, books, totalCount, renderEmptyState, filter,
                 </Button>
               </div>
             )}
-          </header>
+          </ListHeader>
         )}
         {dates.length ? (
           dates.map((date, idx) => (
