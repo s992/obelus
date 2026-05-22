@@ -1,5 +1,5 @@
+import { on } from 'node:events';
 import { ImportFailureSchema } from '@obelus/shared/schema';
-import type { Job, JobProgress } from 'bullmq';
 import z from 'zod';
 
 import { db } from '../db/db';
@@ -11,13 +11,11 @@ import { privateProcedure, router } from '../trpc/trpc';
 const outputSchema = z.array(
   z.object({
     createdAt: z.date(),
-    completedAt: z.date().nullable(),
+    completedAt: z.date().nullable().optional(),
     successCount: z.number(),
     failures: z.array(ImportFailureSchema),
   }),
 );
-
-type Progress = z.infer<typeof ProgressSchema>;
 
 export const importRouter = router({
   list: privateProcedure.query(async ({ ctx }) => {
@@ -29,51 +27,19 @@ export const importRouter = router({
 
     return outputSchema.safeParse(imports).data ?? [];
   }),
-  status: privateProcedure.subscription(async function* ({ ctx }) {
-    const channel = createChannel<Progress>();
-
-    const onProgress = (job: Job, progress: JobProgress) => {
-      if (job.data.userId === ctx.currentUser.id) {
-        const parsed = ProgressSchema.safeParse(progress);
-
-        if (parsed.success) {
-          channel.push(parsed.data);
-        }
+  status: privateProcedure.subscription(async function* ({ ctx, signal }) {
+    for await (const [job, progress] of on(worker, 'progress', { signal })) {
+      if (job.data.userId !== ctx.currentUser.id) {
+        continue;
       }
-    };
 
-    worker.on('progress', onProgress);
+      const parsed = ProgressSchema.safeParse(progress);
 
-    for await (const event of channel) {
-      yield event;
+      if (!parsed.success) {
+        continue;
+      }
+
+      yield parsed.data;
     }
   }),
 });
-
-function createChannel<T>() {
-  const queue: T[] = [];
-  let resolve: (() => void) | null = null;
-  let done = false;
-
-  return {
-    push(value: T) {
-      queue.push(value);
-      resolve?.();
-    },
-    end() {
-      done = true;
-      resolve?.();
-    },
-    async *[Symbol.asyncIterator]() {
-      while (true) {
-        if (queue.length > 0) {
-          yield queue.shift();
-        } else if (done) {
-          return;
-        } else {
-          await new Promise<void>((r) => (resolve = r));
-        }
-      }
-    },
-  };
-}

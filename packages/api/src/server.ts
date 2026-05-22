@@ -13,6 +13,7 @@ import { config } from './config';
 import { db } from './db/db';
 import { logger } from './log';
 import { importQueue } from './queue/queue';
+import { CsvRowSchema, type TCsvRowSchema } from './queue/schema';
 import { client as redis } from './redis';
 import { createGoodreadsImport } from './sqlc/goodreads_import_sql';
 import { createContext } from './trpc/context';
@@ -58,12 +59,24 @@ server.post('/import', async (req, res) => {
     return res.code(400).send();
   }
 
-  const records: Record<string, string>[] = [];
+  const records: TCsvRowSchema[] = [];
   const parser = file?.file.pipe(parse({ columns: true, skipEmptyLines: true, trim: true }));
 
   try {
     for await (const record of parser) {
-      records.push(record);
+      records.push(
+        CsvRowSchema.parse({
+          id: record['Book Id'],
+          title: record['Title'],
+          author: record['Author'],
+          isbn10: record['ISBN']?.replaceAll('"', '').replaceAll('=', ''),
+          isbn13: record['ISBN13']?.replaceAll('"', '').replaceAll('=', ''),
+          rating: record['My Rating'],
+          added: record['Date Added'],
+          finished: record['Date Read'],
+          shelf: record['Exclusive Shelf'],
+        }),
+      );
     }
   } catch (err) {
     logger.error(err, 'failed to parse csv');
@@ -87,6 +100,8 @@ server.post('/import', async (req, res) => {
   }
 
   createGoodreadsImport(db, { jobid: job.id, userid: userId });
+
+  return res.code(200).send({ total: records.length });
 });
 
 (async () => {

@@ -121,7 +121,10 @@ export async function finishGoodreadsImport(client: Client, args: FinishGoodread
 
 export const listGoodreadsImportsQuery = `-- name: ListGoodreadsImports :many
 select
-  gi.id, gi.created_at, gi.completed_at, gi.success_count, gi.job_id, gi.user_id,
+  gi.id,
+  gi.created_at,
+  gi.completed_at,
+  coalesce(gi.success_count, 0) as success_count,
   coalesce(json_agg(gif) filter (where gif.id is not null), '[]') as failures
 from goodreads_import gi
 left join goodreads_import_failure gif on gif.import_id = gi.id
@@ -137,9 +140,7 @@ export interface ListGoodreadsImportsRow {
   id: string;
   createdAt: Date;
   completedAt: Date | null;
-  successCount: number | null;
-  jobId: string;
-  userId: string;
+  successCount: number;
   failures: any | null;
 }
 
@@ -158,9 +159,7 @@ export async function listGoodreadsImports(
       createdAt: row[1],
       completedAt: row[2],
       successCount: row[3],
-      jobId: row[4],
-      userId: row[5],
-      failures: row[6],
+      failures: row[4],
     };
   });
 }

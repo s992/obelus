@@ -54,7 +54,7 @@ async function fetchWithRetry(
   url: string,
   options: RequestInit,
   attempt = 0,
-  maxRetries = 5,
+  maxRetries = 10,
   baseDelay = 1000,
 ): Promise<Response> {
   const response = await fetch(url, options);

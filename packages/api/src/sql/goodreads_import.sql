@@ -32,7 +32,10 @@ where job_id = sqlc.arg('jobId');
 
 -- name: ListGoodreadsImports :many
 select
-  gi.*,
+  gi.id,
+  gi.created_at,
+  gi.completed_at,
+  coalesce(gi.success_count, 0) as success_count,
   coalesce(json_agg(gif) filter (where gif.id is not null), '[]') as failures
 from goodreads_import gi
 left join goodreads_import_failure gif on gif.import_id = gi.id

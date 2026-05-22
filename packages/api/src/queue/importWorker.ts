@@ -12,10 +12,10 @@ import {
 } from '../sqlc/goodreads_import_sql';
 import { createRecord } from '../sqlc/record_sql';
 import { connection } from './connection';
-import { CsvRowSchema, ProgressSchema } from './schema';
+import { CsvRowSchema, ProgressSchema, type TCsvRowSchema } from './schema';
 
 type JobArgs = {
-  records: Record<string, string>[];
+  records: TCsvRowSchema[];
   userId: string;
 };
 
@@ -35,24 +35,18 @@ export const worker = new Worker<JobArgs>(
       throw new Error('job does not have an id');
     }
 
-    const formatted = job.data.records.map((record) =>
-      CsvRowSchema.parse({
-        id: record['Book Id'],
-        title: record['Title'],
-        author: record['Author'],
-        isbn10: record['ISBN']?.replaceAll('"', '').replaceAll('=', ''),
-        isbn13: record['ISBN13']?.replaceAll('"', '').replaceAll('=', ''),
-        rating: record['My Rating'],
-        added: record['Date Added'],
-        finished: record['Date Read'],
-        shelf: record['Exclusive Shelf'],
-      }),
-    );
-    const total = formatted.length;
+    const records = job.data.records;
+    const total = records.length;
     const found = new Map<number, z.infer<typeof schemaWithHardcoverId>>();
     const failed = new Map<number, z.infer<typeof CsvRowSchema>>();
     const importIdResult = await getGoodreadsImportIdByJobId(db, { jobid: job.id });
     const importId = importIdResult?.id;
+
+    // progress tracking
+    let pending = 0;
+    let failedLookup = 0;
+    let failedInsert = 0;
+    let succeeded = 0;
 
     if (!importId) {
       throw new Error(`no job record available for ${job.id}`);
@@ -62,9 +56,9 @@ export const worker = new Worker<JobArgs>(
       job.updateProgress(ProgressSchema.parse(progress));
     };
 
-    updateProgress({ total, found: 0, succeeded: 0, failed: 0 });
+    updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
 
-    const withIsbn10 = formatted.filter((row) => !!row.isbn10);
+    const withIsbn10 = records.filter((row) => !!row.isbn10);
 
     if (withIsbn10.length) {
       const isbn10Results = await gqlClient.FindBookIdsByISBN10({
@@ -79,16 +73,17 @@ export const worker = new Worker<JobArgs>(
           continue;
         }
 
+        pending++;
         found.set(goodreads.id, {
           hardcoverId,
           goodreads,
         });
 
-        updateProgress({ total, succeeded: 0, failed: 0, found: found.size });
+        updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
       }
     }
 
-    const withIsbn13 = formatted.filter((row) => !!row.isbn13 && !found.has(row.id));
+    const withIsbn13 = records.filter((row) => !!row.isbn13 && !found.has(row.id));
 
     if (withIsbn13.length) {
       const isbn13Results = await gqlClient.FindBookIdsByISBN13({
@@ -103,16 +98,17 @@ export const worker = new Worker<JobArgs>(
           continue;
         }
 
+        pending++;
         found.set(goodreads?.id, {
           hardcoverId,
           goodreads,
         });
 
-        updateProgress({ total, succeeded: 0, failed: 0, found: found.size });
+        updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
       }
     }
 
-    const basicSearchCandidates = formatted.filter((row) => !found.has(row.id));
+    const basicSearchCandidates = records.filter((row) => !found.has(row.id));
 
     if (basicSearchCandidates.length) {
       for (const candidate of basicSearchCandidates) {
@@ -121,23 +117,23 @@ export const worker = new Worker<JobArgs>(
         const cover = (searchResult.search?.results as any)?.hits?.[0]?.document?.image;
 
         if (!id || !Object.keys(cover).length) {
+          failedLookup++;
           failed.set(candidate.id, candidate);
-          updateProgress({ total, failed: failed.size, found: found.size, succeeded: 0 });
+          updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
           continue;
         }
 
         if (id) {
+          pending++;
           found.set(candidate.id, {
             hardcoverId: id,
             goodreads: candidate,
           });
 
-          updateProgress({ total, succeeded: 0, failed: 0, found: found.size });
+          updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
         }
       }
     }
-
-    let succeeded = 0;
 
     // no bulk insert with sqlc..
     for (const book of found.values()) {
@@ -163,6 +159,8 @@ export const worker = new Worker<JobArgs>(
         end = new Date(book.goodreads.finished);
       }
 
+      pending--;
+
       try {
         await createRecord(db, {
           bookid: book.hardcoverId,
@@ -173,15 +171,16 @@ export const worker = new Worker<JobArgs>(
           judgment: ratingMap[book.goodreads.rating ?? 0] ?? null,
         });
         succeeded++;
-        updateProgress({ total, failed: failed.size, succeeded, found: found.size });
+        updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
       } catch (err) {
         logger.error(err, 'failed to insert record');
+        failedInsert++;
         failed.set(book.goodreads.id, book.goodreads);
-        updateProgress({ total, failed: failed.size, succeeded, found: found.size });
+        updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
       }
     }
 
-    updateProgress({ total, failed: failed.size, succeeded, found: found.size });
+    updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
 
     for (const book of failed.values()) {
       await createGoodreadsImportFailure(db, {
