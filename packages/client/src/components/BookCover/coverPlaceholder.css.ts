@@ -38,4 +38,10 @@ export const title = styleVariants({
   xlarge: [baseTitle, {}],
 });
 
-export const author = style([typography.body]);
+const baseAuthor = style([typography.body]);
+
+export const author = styleVariants({
+  medium: [baseAuthor, { fontSize: '9px' }],
+  large: [baseAuthor, { fontSize: '11px' }],
+  xlarge: [baseAuthor, {}],
+});
