@@ -61,6 +61,13 @@ export const footer = style([
     marginTop: vars.space.s7,
     paddingTop: vars.space.s5,
     borderTop: sectionDivider,
+    '@media': {
+      [mediaQuery.mobile]: {
+        flexDirection: 'column-reverse',
+        alignItems: 'center',
+        gap: vars.space.s2,
+      },
+    },
   },
 ]);
 
