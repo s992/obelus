@@ -1,9 +1,9 @@
-import { flex } from '../../style';
 import { LoadingSpinner } from '../LoadingSpinner';
+import { container } from './fullPageSpinner.css';
 
 export function FullPageSpinner() {
   return (
-    <div className={flex.center}>
+    <div className={container}>
       <LoadingSpinner size="xlarge" />
     </div>
   );

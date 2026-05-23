@@ -113,3 +113,8 @@ export const tabLabelCount = style([
     color: vars.color.ink2,
   },
 ]);
+
+export const tabPanel = style({
+  position: 'relative',
+  minHeight: 100,
+});

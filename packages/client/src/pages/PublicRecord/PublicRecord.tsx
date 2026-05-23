@@ -24,6 +24,7 @@ import {
   tab,
   tabLabelCount,
   tabList,
+  tabPanel,
   tabs,
 } from './publicRecord.css';
 
@@ -121,13 +122,13 @@ export function PublicRecord() {
           </Tab>
         </TabList>
         <TabPanels>
-          <TabPanel id="reading">
+          <TabPanel id="reading" className={tabPanel}>
             <PublicBookList userName={userName} status="reading" sortField="started_at" />
           </TabPanel>
-          <TabPanel id="finished">
+          <TabPanel id="finished" className={tabPanel}>
             <PublicBookList userName={userName} status="finished" sortField="finished_at" />
           </TabPanel>
-          <TabPanel id="planned">
+          <TabPanel id="planned" className={tabPanel}>
             <PublicBookList userName={userName} status="planned" sortField="last_activity" />
           </TabPanel>
         </TabPanels>
