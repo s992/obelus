@@ -1,9 +1,8 @@
-import type { Maybe, RecordJson } from '@obelus/shared/types';
 import { useEvent } from '@react-aria/utils';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useRef, useState } from 'react';
-import { GridList, GridListItem } from 'react-aria-components';
-import { useHotkeys } from 'react-hotkeys-hook';
+import { type Options, useHotkeys } from 'react-hotkeys-hook';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDebounceValue, useEventListener } from 'usehooks-ts';
 
@@ -11,20 +10,37 @@ import { useTRPC } from '../../../client';
 import { BookCover } from '../../../components/BookCover';
 import { LoadingSpinner } from '../../../components/LoadingSpinner';
 import { Search } from '../../../components/Search';
-import { TitleAuthorStack } from '../../../components/TitleAuthorStack';
 import { useFormatPublishYear } from '../../../hooks/useFormatPublishYear';
-import { flex, judgment } from '../../../style';
-import { container, gridRow, resultContainer, resultHeader } from './bookSearch.css';
+import { flex, typography } from '../../../style';
+import { BookPreview } from './BookPreview';
+import {
+  authorPublished,
+  footer,
+  footerCount,
+  keyboard,
+  preview,
+  resultContainer,
+  row,
+  rowBar,
+  scrollContainer,
+  shortcutSegment,
+  shortcuts,
+  status,
+  title,
+  titleAuthorStack,
+} from './bookSearch.css';
+import { StatusCell } from './StatusCell';
 
 export function BookSearch() {
   const intl = useIntl();
   const trpc = useTRPC();
+  const routerNavigate = useNavigate();
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const rowRefs = useRef<Map<number, HTMLElement>>(new Map());
-  const navIndexRef = useRef(-1);
   const [modality, setModality] = useState<'mouse' | 'keyboard'>('mouse');
   const [query, setQuery] = useState('');
+  const [focusedIdx, setFocusedIdx] = useState(-1);
   const [debouncedQuery] = useDebounceValue(query, 500);
   const actualQuery = debouncedQuery.trim();
   const { data: results, isLoading } = useQuery(
@@ -43,13 +59,24 @@ export function BookSearch() {
     [],
   );
 
+  const goToBook = (id: number) => {
+    routerNavigate({ to: '/book/$bookId', params: { bookId: id.toString() } });
+  };
+
   useEvent(inputRef, 'focusin', () => {
     navigate(-1, -1);
   });
 
   const navigate = (direction: number, indexOverride?: number) => {
-    const navIndex = navIndexRef.current;
-    const next = indexOverride ?? Math.min(navIndex + direction, rowRefs.current.size - 1);
+    const navIndex = focusedIdx;
+    let boundedOverride = indexOverride;
+
+    if (boundedOverride !== undefined && boundedOverride !== -1) {
+      boundedOverride =
+        direction === 1 ? Math.min(boundedOverride, rowRefs.current.size - 1) : Math.max(boundedOverride, 0);
+    }
+
+    const next = boundedOverride ?? Math.min(navIndex + direction, rowRefs.current.size - 1);
 
     if (next === navIndex) {
       return;
@@ -61,32 +88,54 @@ export function BookSearch() {
       return;
     }
 
+    setFocusedIdx(next);
     nextEl.scrollIntoView({ block: 'nearest' });
     nextEl.focus();
-    navIndexRef.current = next;
   };
+
+  const hotkeyOpts = { enableOnFormTags: true, preventDefault: true } satisfies Options;
 
   useHotkeys(
     'ArrowDown',
     () => {
       navigate(1);
     },
-    { enableOnFormTags: true, preventDefault: true },
+    hotkeyOpts,
   );
-
   useHotkeys(
     'ArrowUp',
     () => {
       navigate(-1);
     },
-    { enableOnFormTags: true, preventDefault: true },
+    hotkeyOpts,
+  );
+  useHotkeys('Home', () => navigate(-1, 0), hotkeyOpts);
+  useHotkeys('End', () => navigate(1, rowRefs.current.size - 1), hotkeyOpts);
+  useHotkeys('PageUp', () => navigate(-1, focusedIdx - 5), hotkeyOpts);
+  useHotkeys('PageDown', () => navigate(1, focusedIdx + 5), hotkeyOpts);
+  useHotkeys(
+    'Enter',
+    () => {
+      if (focusedIdx === -1) {
+        return;
+      }
+
+      const book = results?.[focusedIdx];
+
+      if (!book) {
+        return;
+      }
+
+      goToBook(book.id);
+    },
+    hotkeyOpts,
   );
 
   useEventListener('mousemove', () => setModality('mouse'));
   useEventListener('keydown', () => setModality('keyboard'));
 
   return (
-    <div className={container} data-modality={modality}>
+    <div data-modality={modality}>
       <Search
         label={intl.formatMessage({ defaultMessage: 'search by title or author' })}
         value={query}
@@ -102,64 +151,65 @@ export function BookSearch() {
       )}
       {!isLoading && results && query && (
         <div className={resultContainer}>
-          <div className={resultHeader}>
-            <div />
-            <div>
-              <FormattedMessage defaultMessage="title · author" />
-            </div>
-            <div>
-              <FormattedMessage defaultMessage="published" />
-            </div>
-            <div>
-              <FormattedMessage defaultMessage="judgment" />
-            </div>
-          </div>
-          <GridList aria-label={intl.formatMessage({ defaultMessage: 'Search results for "{query}"' }, { query })}>
-            {results?.map((book, idx) => {
-              const formattedPublishDate = formatPublishDate(book.releaseDate);
+          <div className={scrollContainer}>
+            {results.map((book, idx) => {
+              const isFocused = focusedIdx === idx;
 
               return (
-                <GridListItem
-                  textValue={intl.formatMessage(
-                    { defaultMessage: '{title} by {author}, published {publishDate}, {judgment}' },
-                    {
-                      title: book.title,
-                      author: book.author,
-                      published: formattedPublishDate,
-                      judgment: 'unread',
-                    },
-                  )}
-                  ref={setRowRef(idx)}
+                <div
                   key={book.id}
-                  className={gridRow}
-                  href={`/book/${book.id}`}
+                  className={row}
+                  ref={setRowRef(idx)}
+                  onMouseEnter={() => setFocusedIdx(idx)}
+                  aria-selected={isFocused}
+                  aria-role="button"
+                  onClick={() => goToBook(book.id)}
                 >
+                  {isFocused && <div className={rowBar} />}
                   <BookCover book={book} />
-                  <div className={flex.verticalCenter}>
-                    <TitleAuthorStack title={book.title} author={book.author} />
+                  <div className={titleAuthorStack}>
+                    <div className={title}>{book.title}</div>
+                    <div className={authorPublished}>
+                      <span>{book.author}</span>
+                      <span className={typography.uppercaseLabel}>· {formatPublishDate(book.releaseDate)}</span>
+                    </div>
                   </div>
-                  <div className={flex.verticalCenter}>{formattedPublishDate}</div>
-                  <div className={flex.verticalCenter}>
+                  <div className={status}>
                     <StatusCell record={book.record} />
                   </div>
-                </GridListItem>
+                </div>
               );
             })}
-          </GridList>
+          </div>
+          <div className={preview}>{results[focusedIdx] && <BookPreview book={results[focusedIdx]} />}</div>
         </div>
       )}
+      <div className={footer}>
+        <div className={shortcuts}>
+          {results && (
+            <>
+              <span className={shortcutSegment}>
+                <kbd className={keyboard}>&uarr;</kbd>
+                <kbd className={keyboard}>&darr;</kbd>
+                <FormattedMessage defaultMessage="navigate" />
+              </span>
+              <span className={shortcutSegment}>
+                <kbd className={keyboard}>&crarr;</kbd>
+                <FormattedMessage defaultMessage="open" />
+              </span>
+            </>
+          )}
+          <span className={shortcutSegment}>
+            <kbd className={keyboard}>ESC</kbd>
+            <FormattedMessage defaultMessage="close" />
+          </span>
+        </div>
+        {results && (
+          <span className={footerCount}>
+            <FormattedMessage defaultMessage="{count} matches" values={{ count: results.length }} />
+          </span>
+        )}
+      </div>
     </div>
   );
-}
-
-function StatusCell({ record }: { record: Maybe<RecordJson> }) {
-  if (!record) {
-    return <FormattedMessage defaultMessage="unread" />;
-  }
-
-  if (record.status === 'finished' && record.judgment) {
-    return <span className={judgment[record.judgment]}>{record.judgment}</span>;
-  }
-
-  return record.status;
 }

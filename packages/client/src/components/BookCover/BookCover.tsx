@@ -9,7 +9,7 @@ type Props = {
   size?: keyof typeof cover;
 };
 
-export function BookCover({ book, size = 'medium' }: Props) {
+export function BookCover({ book, size = 'small' }: Props) {
   const intl = useIntl();
 
   if (book.coverImage) {

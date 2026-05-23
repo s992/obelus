@@ -1,54 +1,154 @@
-import { globalStyle, style } from '@vanilla-extract/css';
+import { style } from '@vanilla-extract/css';
 
-import { mediaQuery, typography, vars } from '../../../style';
-
-const GRID_TEMPLATE_COLUMNS = '56px 1fr 0.5fr 0.5fr';
-const HEADER_HEIGHT = 24;
-
-export const container = style({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: vars.space.s5,
-});
+import { flex, mediaQuery, sectionDivider, typography, vars } from '../../../style';
 
 export const resultContainer = style({
-  overflowY: 'auto',
-  maxHeight: 'calc(var(--visual-viewport-height) * 0.5)',
+  display: 'grid',
+  gridTemplateColumns: '1fr 300px',
+  minHeight: 440,
   '@media': {
-    [mediaQuery.search]: {
-      maxHeight: 'calc(var(--visual-viewport-height) * 0.7)',
+    [mediaQuery.tablet]: {
+      gridTemplateColumns: '1fr',
     },
   },
 });
 
-export const resultHeader = style([
-  typography.uppercaseLabel,
+export const scrollContainer = style({
+  padding: `${vars.space.s2} ${vars.space.s3}`,
+  borderRight: sectionDivider,
+  maxHeight: 500,
+  overflowY: 'auto',
+});
+
+export const preview = style([
+  flex.column,
   {
-    display: 'grid',
-    gridTemplateColumns: GRID_TEMPLATE_COLUMNS,
-    gap: vars.space.s4,
-    position: 'sticky',
-    top: 0,
+    padding: vars.space.s5,
+    gap: vars.space.s5,
     background: vars.color.bg,
-    height: HEADER_HEIGHT,
+    '@media': {
+      [mediaQuery.tablet]: {
+        display: 'none',
+      },
+    },
   },
 ]);
 
-export const gridRow = style([
+export const row = style({
+  position: 'relative',
+  display: 'grid',
+  gridTemplateColumns: '40px 1fr auto',
+  alignItems: 'center',
+  gap: vars.space.s6,
+  padding: `${vars.space.s3} ${vars.space.s4}`,
+  borderRadius: vars.radius.sm,
+  background: 'transparent',
+  cursor: 'pointer',
+  transition: 'background-color .15s',
+  selectors: {
+    '&[aria-selected=true]': {
+      background: vars.color.tint,
+    },
+  },
+});
+
+export const rowBar = style({
+  position: 'absolute',
+  top: 8,
+  bottom: 8,
+  left: 0,
+  width: 2,
+  background: vars.color.ink,
+  borderRadius: vars.radius.sm,
+});
+
+export const titleAuthorStack = style([
+  flex.column,
+  {
+    gap: vars.space.s1,
+    minWidth: 0,
+  },
+]);
+
+export const title = style([
+  typography.title,
+  {
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+  },
+]);
+
+export const authorPublished = style([
+  flex.container,
   typography.body,
   {
-    display: 'grid',
-    gridTemplateColumns: GRID_TEMPLATE_COLUMNS,
-    gap: vars.space.s4,
-    padding: `${vars.space.s2} 0`,
-    scrollMarginTop: HEADER_HEIGHT,
-    cursor: 'pointer',
+    alignItems: 'baseline',
+    gap: vars.space.s2,
+    color: vars.color.ink2,
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
   },
 ]);
 
-globalStyle(
-  `${container}[data-modality=mouse] ${gridRow}:hover, ${container}[data-modality=keyboard] ${gridRow}:focus`,
+export const status = style([
+  typography.uppercaseLabel,
   {
-    background: vars.color.tint,
+    textAlign: 'right',
+    minWidth: 60,
   },
-);
+]);
+
+export const footer = style([
+  flex.container,
+  typography.uppercaseLabel,
+  {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: `${vars.space.s4} ${vars.space.s5}`,
+    borderTop: sectionDivider,
+  },
+]);
+
+export const shortcuts = style([
+  flex.container,
+  {
+    gap: vars.space.s5,
+    alignItems: 'center',
+  },
+]);
+
+export const shortcutSegment = style([
+  flex.container,
+  {
+    gap: vars.space.s2,
+    alignItems: 'center',
+    lineHeight: 1,
+  },
+]);
+
+export const keyboard = style([
+  flex.center,
+  {
+    display: 'inline-flex',
+    minWidth: 18,
+    height: 18,
+    padding: `0 ${vars.space.s2}`,
+    border: sectionDivider,
+    background: vars.color.bg,
+    color: vars.color.ink2,
+    lineHeight: 1,
+  },
+]);
+
+export const footerCount = style([
+  typography.uppercaseLabel,
+  {
+    '@media': {
+      [mediaQuery.mobile]: {
+        display: 'none',
+      },
+    },
+  },
+]);

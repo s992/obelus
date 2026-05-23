@@ -1,18 +1,14 @@
 import { globalStyle, style } from '@vanilla-extract/css';
 
-import { typography, vars } from '../../style';
+import { flex, sectionDivider, typography, vars } from '../../style';
 
 export const wrapper = style([
-  typography.body,
+  flex.container,
   {
-    display: 'flex',
     alignItems: 'center',
-    gap: vars.space.s2,
-    border: 0,
-    borderBottom: `1px solid ${vars.color.fieldRule}`,
-    background: 'transparent',
-    padding: `${vars.space.s1} ${vars.space.s2}`,
-    transition: 'border-color .15s ease',
+    gap: vars.space.s3,
+    padding: `${vars.space.s4} ${vars.space.s5}`,
+    borderBottom: sectionDivider,
   },
 ]);
 
@@ -38,12 +34,6 @@ export const icon = style({
   transition: 'color .15s ease',
 });
 
-const focusSelector = `${wrapper}:has(input[data-focused=true])`;
-
-globalStyle(focusSelector, {
-  borderBottomColor: vars.color.ink,
-});
-
-globalStyle(`${focusSelector} ${icon}`, {
+globalStyle(`${wrapper}:has(input[data-focused=true]) ${icon}`, {
   color: vars.color.ink,
 });

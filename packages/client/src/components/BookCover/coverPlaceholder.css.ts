@@ -3,6 +3,7 @@ import { style, styleVariants } from '@vanilla-extract/css';
 import {
   BOOK_COVER_LARGE_WIDTH,
   BOOK_COVER_MEDIUM_WIDTH,
+  BOOK_COVER_SMALL_WIDTH,
   BOOK_COVER_XLARGE_WIDTH,
   typography,
   vars,
@@ -15,6 +16,7 @@ const baseCover = style({
 });
 
 export const cover = styleVariants({
+  small: [baseCover, { minWidth: BOOK_COVER_SMALL_WIDTH, width: BOOK_COVER_SMALL_WIDTH }],
   medium: [baseCover, { minWidth: BOOK_COVER_MEDIUM_WIDTH, width: BOOK_COVER_MEDIUM_WIDTH }],
   large: [baseCover, { minWidth: BOOK_COVER_LARGE_WIDTH, width: BOOK_COVER_LARGE_WIDTH }],
   xlarge: [baseCover, { minWidth: BOOK_COVER_XLARGE_WIDTH, width: BOOK_COVER_XLARGE_WIDTH }],
@@ -33,15 +35,17 @@ export const placeholderCover = style({
 const baseTitle = style([typography.title, { maxHeight: '70%', overflow: 'clip' }]);
 
 export const title = styleVariants({
-  medium: [baseTitle, { fontSize: '9px' }],
-  large: [baseTitle, { fontSize: '11px' }],
+  small: [baseTitle, { fontSize: '9px' }],
+  medium: [baseTitle, { fontSize: '11px' }],
+  large: [baseTitle, {}],
   xlarge: [baseTitle, {}],
 });
 
 const baseAuthor = style([typography.body]);
 
 export const author = styleVariants({
-  medium: [baseAuthor, { fontSize: '9px' }],
-  large: [baseAuthor, { fontSize: '11px' }],
+  small: [baseAuthor, { fontSize: '9px' }],
+  medium: [baseAuthor, { fontSize: '11px' }],
+  large: [baseAuthor, {}],
   xlarge: [baseAuthor, {}],
 });

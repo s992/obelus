@@ -55,7 +55,7 @@ export function BookDetail() {
     <div className={container}>
       <div className={sidebar}>
         <div className={coverWrapper}>
-          <BookCover book={book} size={isMobile ? 'large' : 'xlarge'} />
+          <BookCover book={book} size={isMobile ? 'medium' : 'xlarge'} />
         </div>
         <dl className={meta}>
           {book.record && (

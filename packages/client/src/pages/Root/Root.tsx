@@ -28,7 +28,7 @@ export function Root() {
   const router = useRouter();
   const { isAuthenticated, logout } = useAuthContext();
   const { theme, setTheme } = useThemeContext();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(true);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const isDesktop = useMediaQuery(mediaQuery.mobileUp);
   const navRef = useRef<HTMLDivElement>(null!);
