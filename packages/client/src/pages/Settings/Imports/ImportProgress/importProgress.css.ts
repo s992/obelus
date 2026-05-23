@@ -89,6 +89,7 @@ const shimmerKeyframes = keyframes({
 const baseSegment = style({
   display: 'block',
   height: '100%',
+  transition: 'width .15s',
 });
 
 export const segment = styleVariants({

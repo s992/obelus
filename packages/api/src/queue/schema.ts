@@ -12,12 +12,4 @@ export const CsvRowSchema = z.object({
   shelf: z.string().optional(),
 });
 
-export type TCsvRowSchema = z.infer<typeof CsvRowSchema>;
-
-export const ProgressSchema = z.object({
-  total: z.number(),
-  pending: z.number(),
-  failedLookup: z.number(),
-  failedInsert: z.number(),
-  succeeded: z.number(),
-});
+export type CsvRow = z.infer<typeof CsvRowSchema>;

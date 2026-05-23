@@ -1,21 +1,22 @@
+import { ImportProgressSchema } from '@obelus/shared/schema';
 import type { Judgment } from '@obelus/shared/types';
-import { Worker } from 'bullmq';
+import { Job, Worker } from 'bullmq';
 import z from 'zod';
 
 import { db } from '../db/db';
 import { client as gqlClient } from '../gql/client';
 import { logger } from '../log';
 import {
+  createGoodreadsImport,
   createGoodreadsImportFailure,
   finishGoodreadsImport,
-  getGoodreadsImportIdByJobId,
 } from '../sqlc/goodreads_import_sql';
 import { createRecord } from '../sqlc/record_sql';
 import { connection } from './connection';
-import { CsvRowSchema, ProgressSchema, type TCsvRowSchema } from './schema';
+import { type CsvRow, CsvRowSchema } from './schema';
 
 type JobArgs = {
-  records: TCsvRowSchema[];
+  records: CsvRow[];
   userId: string;
 };
 
@@ -28,169 +29,191 @@ const ratingMap: Record<number, Judgment> = {
   5: 'accepted',
 };
 
-export const worker = new Worker<JobArgs>(
-  'import',
-  async (job) => {
-    if (!job.id) {
-      throw new Error('job does not have an id');
+const jobFn = async (job: Job<JobArgs>) => {
+  if (!job.id) {
+    throw new Error('job does not have an id');
+  }
+
+  const records = job.data.records;
+  const total = records.length;
+  const found = new Map<number, z.infer<typeof schemaWithHardcoverId>>();
+  const failed = new Map<number, z.infer<typeof CsvRowSchema>>();
+  const importInsert = await createGoodreadsImport(db, { jobid: job.id, userid: job.data.userId });
+  const importId = importInsert?.id;
+  let inserts: Promise<void>[] = [];
+
+  // progress tracking
+  let pending = 0;
+  let failedLookup = 0;
+  let failedInsert = 0;
+  let succeeded = 0;
+
+  if (!importId) {
+    throw new Error(`no job record available for ${job.id}`);
+  }
+
+  const updateProgress = (progress: z.infer<typeof ImportProgressSchema>) => {
+    return job.updateProgress(ImportProgressSchema.parse(progress));
+  };
+
+  const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
+
+  const insertOnSuccess = async () => {
+    succeeded++;
+    pending--;
+    await updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
+  };
+
+  const insertOnError = (book: z.infer<typeof schemaWithHardcoverId>) => async (err: Error) => {
+    logger.error(err, 'failed to insert record');
+    failedInsert++;
+    pending--;
+    failed.set(book.goodreads.id, book.goodreads);
+    await updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
+  };
+
+  updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
+
+  const withIsbn10 = records.filter((row) => !!row.isbn10);
+
+  if (withIsbn10.length) {
+    const isbn10Results = await gqlClient.FindBookIdsByISBN10({
+      isbns: withIsbn10.map((row) => row.isbn10 as string),
+    });
+
+    for (const result of isbn10Results.editions) {
+      const hardcoverId = result.book.id;
+      const goodreads = withIsbn10.find((row) => row.isbn10 === result.isbn_10);
+
+      if (!goodreads) {
+        continue;
+      }
+
+      pending++;
+      const book = { hardcoverId, goodreads };
+      found.set(goodreads.id, book);
+
+      updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
+      inserts.push(
+        importBook(book.hardcoverId, book.goodreads, job.data.userId).then(insertOnSuccess).catch(insertOnError(book)),
+      );
+      await sleep();
     }
+  }
 
-    const records = job.data.records;
-    const total = records.length;
-    const found = new Map<number, z.infer<typeof schemaWithHardcoverId>>();
-    const failed = new Map<number, z.infer<typeof CsvRowSchema>>();
-    const importIdResult = await getGoodreadsImportIdByJobId(db, { jobid: job.id });
-    const importId = importIdResult?.id;
+  const withIsbn13 = records.filter((row) => !!row.isbn13 && !found.has(row.id));
 
-    // progress tracking
-    let pending = 0;
-    let failedLookup = 0;
-    let failedInsert = 0;
-    let succeeded = 0;
+  if (withIsbn13.length) {
+    const isbn13Results = await gqlClient.FindBookIdsByISBN13({
+      isbns: withIsbn13.map((row) => row.isbn13 as string),
+    });
 
-    if (!importId) {
-      throw new Error(`no job record available for ${job.id}`);
+    for (const result of isbn13Results.editions) {
+      const hardcoverId = result.book.id;
+      const goodreads = withIsbn13.find((row) => row.isbn13 === result.isbn_13);
+
+      if (!goodreads) {
+        continue;
+      }
+
+      pending++;
+      const book = { hardcoverId, goodreads };
+      found.set(goodreads.id, book);
+
+      updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
+      inserts.push(
+        importBook(book.hardcoverId, book.goodreads, job.data.userId).then(insertOnSuccess).catch(insertOnError(book)),
+      );
+      await sleep();
     }
+  }
 
-    const updateProgress = (progress: z.infer<typeof ProgressSchema>) => {
-      job.updateProgress(ProgressSchema.parse(progress));
-    };
+  const basicSearchCandidates = records.filter((row) => !found.has(row.id));
 
-    updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
+  if (basicSearchCandidates.length) {
+    for (const candidate of basicSearchCandidates) {
+      const searchResult = await gqlClient.SearchBooksForImport({ query: `${candidate.title} ${candidate.author}` });
+      const id = searchResult.search?.ids?.[0];
+      const cover = (searchResult.search?.results as any)?.hits?.[0]?.document?.image;
 
-    const withIsbn10 = records.filter((row) => !!row.isbn10);
+      if (!id || !Object.keys(cover).length) {
+        failedLookup++;
+        failed.set(candidate.id, candidate);
+        updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
+        continue;
+      }
 
-    if (withIsbn10.length) {
-      const isbn10Results = await gqlClient.FindBookIdsByISBN10({
-        isbns: withIsbn10.map((row) => row.isbn10 as string),
-      });
-
-      for (const result of isbn10Results.editions) {
-        const hardcoverId = result.book.id;
-        const goodreads = withIsbn10.find((row) => row.isbn10 === result.isbn_10);
-
-        if (!goodreads) {
-          continue;
-        }
-
+      if (id) {
+        const book = { hardcoverId: id, goodreads: candidate };
         pending++;
-        found.set(goodreads.id, {
-          hardcoverId,
-          goodreads,
-        });
+        found.set(candidate.id, book);
 
         updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
+        inserts.push(
+          importBook(book.hardcoverId, book.goodreads, job.data.userId)
+            .then(insertOnSuccess)
+            .catch(insertOnError(book)),
+        );
+        await sleep();
       }
     }
+  }
 
-    const withIsbn13 = records.filter((row) => !!row.isbn13 && !found.has(row.id));
+  await Promise.allSettled(inserts);
+  updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
 
-    if (withIsbn13.length) {
-      const isbn13Results = await gqlClient.FindBookIdsByISBN13({
-        isbns: withIsbn13.map((row) => row.isbn13 as string),
-      });
+  for (const book of failed.values()) {
+    await createGoodreadsImportFailure(db, {
+      author: book.author ?? '',
+      title: book.title ?? '',
+      importid: importId,
+    });
+  }
 
-      for (const result of isbn13Results.editions) {
-        const hardcoverId = result.book.id;
-        const goodreads = withIsbn13.find((row) => row.isbn13 === result.isbn_13);
+  await finishGoodreadsImport(db, { jobid: job.id, successcount: succeeded });
+};
 
-        if (!goodreads) {
-          continue;
-        }
+async function importBook(hardcoverId: number, goodreadsBook: CsvRow, userId: string) {
+  let status = 'finished';
 
-        pending++;
-        found.set(goodreads?.id, {
-          hardcoverId,
-          goodreads,
-        });
+  if (goodreadsBook.shelf === 'currently-reading') {
+    status = 'reading';
+  }
 
-        updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
-      }
-    }
+  if (goodreadsBook.shelf === 'to-read') {
+    status = 'planned';
+  }
 
-    const basicSearchCandidates = records.filter((row) => !found.has(row.id));
+  let start: Date | null = new Date();
 
-    if (basicSearchCandidates.length) {
-      for (const candidate of basicSearchCandidates) {
-        const searchResult = await gqlClient.SearchBooksForImport({ query: `${candidate.title} ${candidate.author}` });
-        const id = searchResult.search?.ids?.[0];
-        const cover = (searchResult.search?.results as any)?.hits?.[0]?.document?.image;
+  if (status !== 'planned' && goodreadsBook.added) {
+    start = new Date(goodreadsBook.added);
+  }
 
-        if (!id || !Object.keys(cover).length) {
-          failedLookup++;
-          failed.set(candidate.id, candidate);
-          updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
-          continue;
-        }
+  let end: Date | null = null;
 
-        if (id) {
-          pending++;
-          found.set(candidate.id, {
-            hardcoverId: id,
-            goodreads: candidate,
-          });
+  if (status === 'finished' && goodreadsBook.finished) {
+    end = new Date(goodreadsBook.finished);
+  }
 
-          updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
-        }
-      }
-    }
+  await createRecord(db, {
+    bookid: hardcoverId,
+    finishedat: end,
+    startedat: start,
+    status,
+    userid: userId,
+    judgment: ratingMap[goodreadsBook.rating ?? 0] ?? null,
+  });
+}
 
-    // no bulk insert with sqlc..
-    for (const book of found.values()) {
-      let status = 'finished';
+let worker: Worker<JobArgs> | null;
 
-      if (book.goodreads.shelf === 'currently-reading') {
-        status = 'reading';
-      }
+export function getWorker() {
+  if (worker) {
+    return worker;
+  }
 
-      if (book.goodreads.shelf === 'to-read') {
-        status = 'planned';
-      }
+  worker = new Worker('import', jobFn, { connection });
 
-      let start: Date | null = new Date();
-
-      if (status !== 'planned' && book.goodreads.added) {
-        start = new Date(book.goodreads.added);
-      }
-
-      let end: Date | null = null;
-
-      if (status === 'finished' && book.goodreads.finished) {
-        end = new Date(book.goodreads.finished);
-      }
-
-      pending--;
-
-      try {
-        await createRecord(db, {
-          bookid: book.hardcoverId,
-          finishedat: end,
-          startedat: start,
-          status,
-          userid: job.data.userId,
-          judgment: ratingMap[book.goodreads.rating ?? 0] ?? null,
-        });
-        succeeded++;
-        updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
-      } catch (err) {
-        logger.error(err, 'failed to insert record');
-        failedInsert++;
-        failed.set(book.goodreads.id, book.goodreads);
-        updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
-      }
-    }
-
-    updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
-
-    for (const book of failed.values()) {
-      await createGoodreadsImportFailure(db, {
-        author: book.author ?? '',
-        title: book.title ?? '',
-        importid: importId,
-      });
-    }
-
-    finishGoodreadsImport(db, { jobid: job.id, successcount: succeeded });
-  },
-  { connection },
-);
+  return worker;
+}

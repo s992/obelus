@@ -13,9 +13,8 @@ import { config } from './config';
 import { db } from './db/db';
 import { logger } from './log';
 import { importQueue } from './queue/queue';
-import { CsvRowSchema, type TCsvRowSchema } from './queue/schema';
+import { type CsvRow, CsvRowSchema } from './queue/schema';
 import { client as redis } from './redis';
-import { createGoodreadsImport } from './sqlc/goodreads_import_sql';
 import { createContext } from './trpc/context';
 
 export const server = fastify({
@@ -59,7 +58,7 @@ server.post('/import', async (req, res) => {
     return res.code(400).send();
   }
 
-  const records: TCsvRowSchema[] = [];
+  const records: CsvRow[] = [];
   const parser = file?.file.pipe(parse({ columns: true, skipEmptyLines: true, trim: true }));
 
   try {
@@ -98,8 +97,6 @@ server.post('/import', async (req, res) => {
   if (!job.id) {
     return res.code(500).send();
   }
-
-  createGoodreadsImport(db, { jobid: job.id, userid: userId });
 
   return res.code(200).send({ total: records.length });
 });

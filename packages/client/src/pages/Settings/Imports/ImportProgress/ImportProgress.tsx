@@ -1,3 +1,4 @@
+import type { ImportProgress, Maybe } from '@obelus/shared/types';
 import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
 
@@ -18,18 +19,16 @@ import {
 
 type Props = {
   fileName: string;
-  total: number;
-  pending: number;
-  succeeded: number;
-  failedInsert: number;
-  failedLookup: number;
+  progress: Maybe<ImportProgress>;
 };
 
-export function ImportProgress({ fileName, total, pending, succeeded, failedInsert, failedLookup }: Props) {
+export function ImportProgress({ fileName, progress }: Props) {
+  const { total = 0, pending = 0, succeeded = 0, failedInsert = 0, failedLookup = 0 } = progress ?? {};
   const succeededPercent = (succeeded / total) * 100;
   const failed = failedInsert + failedLookup;
   const erroredPercent = (failed / total) * 100;
   const pendingPercent = (pending / total) * 100;
+  const processedPercent = ((succeeded + failed) / total) * 100;
   const isDone = failed + succeeded === total;
 
   return (
@@ -44,7 +43,7 @@ export function ImportProgress({ fileName, total, pending, succeeded, failedInse
         </div>
         <span className={typography.uppercaseLabel}>
           <span className={metaNumber}>{succeeded}</span> · {total} ·{' '}
-          <span className={metaNumber}>{Math.round(succeededPercent)}</span>%
+          <span className={metaNumber}>{Math.round(Number.isNaN(processedPercent) ? 0 : processedPercent)}</span>%
         </span>
       </div>
       <div role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={succeeded} className={bar}>

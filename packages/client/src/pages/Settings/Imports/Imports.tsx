@@ -11,7 +11,7 @@ import { FormattedMessage } from 'react-intl';
 import { useTRPC } from '../../../client';
 import { FormattedAlert } from '../../../components/Alert';
 import { useFormatDate } from '../../../hooks/useFormatDate';
-import { typography } from '../../../style';
+import { flex, typography } from '../../../style';
 import { ImportProgress } from './ImportProgress';
 import {
   disclosure,
@@ -19,7 +19,6 @@ import {
   disclosureButtonHover,
   dropZone,
   dropZoneButton,
-  importSection,
   innerDropZone,
   sectionDate,
   sectionExpandIcon,
@@ -36,7 +35,6 @@ export function Imports() {
   const trpc = useTRPC();
   const [expandedSections, setExpandedSections] = useState(new Map());
   const [uploadedFile, setUploadedFile] = useState<string | null>(null);
-  const [initTotal, setInitTotal] = useState(0);
   const { data: importRecords } = useQuery(trpc.import.list.queryOptions());
   const {
     mutate: uploadFile,
@@ -55,13 +53,9 @@ export function Imports() {
       if (!res.ok) {
         throw new Error(`Upload failed: ${res.status}`);
       }
-
-      const { total } = await res.json();
-      setInitTotal(total);
     },
     onError: async () => {
       setUploadedFile(null);
-      setInitTotal(0);
     },
   });
   const { data: progress } = useSubscription(trpc.import.status.subscriptionOptions());
@@ -79,17 +73,23 @@ export function Imports() {
   }
 
   useEffect(() => {
-    if (progress?.total === initTotal) {
+    if (!progress) {
+      return;
+    }
+
+    const processed = progress.failedInsert + progress.failedLookup + progress.succeeded;
+
+    if (processed === progress.total) {
       queryClient.invalidateQueries({ queryKey: trpc.import.list.queryKey() });
     }
-  }, [progress, initTotal]);
+  }, [progress]);
 
   return (
     <div>
       <p className={typography.body}>
         <FormattedMessage defaultMessage="Upload a Goodreads library export. Each row becomes a book in the record, preserving shelves as planned, read, or finished. Editions are matched against the catalog; ambiguous matches and missing metadata are reported below." />
       </p>
-      <div className={importSection}>
+      <div className={flex.column}>
         <div className={sectionHeader}>
           <h3 className={sectionHeaderH3}>
             <FormattedMessage defaultMessage="New Import" />
@@ -105,17 +105,10 @@ export function Imports() {
             message={<FormattedMessage defaultMessage="Double check your file format and try again." />}
           />
         )}
-        {uploadedFile && isSuccessfulUpload ? (
+        {isSuccessfulUpload && uploadedFile ? (
           <div className={dropZone}>
             <div className={innerDropZone}>
-              <ImportProgress
-                fileName={uploadedFile}
-                total={progress?.total ?? initTotal}
-                succeeded={progress?.succeeded ?? 0}
-                failedInsert={progress?.failedInsert ?? 0}
-                failedLookup={progress?.failedLookup ?? 0}
-                pending={progress?.pending ?? 0}
-              />
+              <ImportProgress fileName={uploadedFile} progress={progress} />
             </div>
           </div>
         ) : (
@@ -169,7 +162,7 @@ export function Imports() {
         </div>
         {importRecords?.map((record) => (
           <Disclosure
-            key={record.completedAt}
+            key={`${record.createdAt}-${record.completedAt}`}
             className={disclosure}
             onExpandedChange={(expanded) => {
               setExpandedSections((current) => {
@@ -217,7 +210,7 @@ export function Imports() {
               </span>
               <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
                 {record.failures.map((failure) => (
-                  <li key={failure.title} className={typography.body}>
+                  <li key={failure.id} className={typography.body}>
                     <FormattedMessage
                       defaultMessage="{title} · {author}"
                       values={{ title: failure.title, author: failure.author }}

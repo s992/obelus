@@ -2,13 +2,6 @@ import { globalStyle, style } from '@vanilla-extract/css';
 
 import { flex, mediaQuery, sectionDivider, typography, vars } from '../../../style';
 
-export const importSection = style([
-  flex.column,
-  {
-    gap: vars.space.s6,
-  },
-]);
-
 export const dropZone = style({
   width: '100%',
   height: 190,
