@@ -1,9 +1,8 @@
 import { TRPCError } from '@trpc/server';
 import z from 'zod';
 
+import { COOKIE_OPTS, JWT_OPTS, login, register } from '../auth';
 import { publicProcedure, router } from '../trpc/trpc';
-import { login, register } from './auth';
-import { COOKIE_OPTS, JWT_OPTS } from './opts';
 
 export const authRouter = router({
   register: publicProcedure

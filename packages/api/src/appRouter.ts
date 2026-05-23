@@ -1,11 +1,13 @@
-import { authRouter } from './auth/authRouter';
-import { bookRouter } from './book/bookRouter';
-import { importRouter } from './import/importRouter';
-import { noteRouter } from './note/noteRouter';
-import { publicRecordRouter } from './publicRecord/publicRecordRouter';
-import { recordRouter } from './record/recordRouter';
+import {
+  authRouter,
+  bookRouter,
+  importRouter,
+  noteRouter,
+  publicRecordRouter,
+  recordRouter,
+  userRouter,
+} from './routers';
 import { router } from './trpc/trpc';
-import { userRouter } from './user/userRouter';
 
 export const appRouter = router({
   auth: authRouter,
