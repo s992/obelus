@@ -71,7 +71,6 @@ export function RecordContent({ book, notes }: Props) {
   const formattedUpdateDate = formatLongDate(record?.updatedAt);
   const judgmentHighlight = record?.judgment ? judgmentCss[record.judgment] : undefined;
   const submitNote = () => {
-    console.log('fired');
     if (!book.record || !noteContent.trim()) {
       return;
     }
