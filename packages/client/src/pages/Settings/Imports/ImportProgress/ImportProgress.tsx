@@ -18,7 +18,7 @@ import {
 } from './importProgress.css';
 
 type Props = {
-  fileName: string;
+  fileName: Maybe<string>;
   progress: Maybe<ImportProgress>;
 };
 
@@ -35,7 +35,7 @@ export function ImportProgress({ fileName, progress }: Props) {
     <div className={container}>
       <div className={headerRow}>
         <div className={headerLeft}>
-          <span className={headerFileName}>{fileName}</span>
+          {fileName && <span className={headerFileName}>{fileName}</span>}
           <span className={typography.uppercaseLabel}>
             <span className={clsx(bullet, { [pulse]: !isDone })} />
             {isDone ? <FormattedMessage defaultMessage="complete" /> : <FormattedMessage defaultMessage="importing" />}

@@ -105,7 +105,7 @@ export function Imports() {
             message={<FormattedMessage defaultMessage="Double check your file format and try again." />}
           />
         )}
-        {isSuccessfulUpload && uploadedFile ? (
+        {progress ? (
           <div className={dropZone}>
             <div className={innerDropZone}>
               <ImportProgress fileName={uploadedFile} progress={progress} />
