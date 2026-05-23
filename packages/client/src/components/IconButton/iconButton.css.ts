@@ -7,8 +7,6 @@ const baseButton = style({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: 32,
-  height: 32,
   padding: 0,
   border: '1px solid transparent',
   borderRadius: vars.radius.sm,
@@ -48,7 +46,17 @@ export const button = styleVariants({
   ],
 });
 
-globalStyle(`${baseButton} svg`, {
+export const buttonSize = styleVariants({
+  small: { width: 16, height: 16 },
+  default: { width: 32, height: 32 },
+});
+
+globalStyle(`${buttonSize.default} svg`, {
   width: 16,
   height: 16,
+});
+
+globalStyle(`${buttonSize.small} svg`, {
+  width: 14,
+  height: 14,
 });

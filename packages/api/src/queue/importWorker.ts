@@ -1,5 +1,5 @@
 import { ImportProgressSchema } from '@obelus/shared/schema';
-import type { Judgment } from '@obelus/shared/types';
+import type { ImportProgress, Judgment } from '@obelus/shared/types';
 import { Job, Worker } from 'bullmq';
 import z from 'zod';
 
@@ -52,11 +52,17 @@ const jobFn = async (job: Job<JobArgs>) => {
     throw new Error(`no job record available for ${job.id}`);
   }
 
-  const updateProgress = (progress: z.infer<typeof ImportProgressSchema>) => {
-    return job.updateProgress(ImportProgressSchema.parse(progress));
+  const updateProgress = (
+    progress: Omit<ImportProgress, 'status'>,
+    status: ImportProgress['status'] = 'in-progress',
+  ) => {
+    return job.updateProgress(ImportProgressSchema.parse({ ...progress, status }));
   };
 
-  const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
+  // we have rate limiting, but give hardcover a little breathing room to avoid
+  // getting stuck in exponential backoff hell too early. we call this after every
+  // API request in the worker
+  const sleep = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
   const insertOnSuccess = async () => {
     succeeded++;
@@ -97,8 +103,9 @@ const jobFn = async (job: Job<JobArgs>) => {
       inserts.push(
         importBook(book.hardcoverId, book.goodreads, job.data.userId).then(insertOnSuccess).catch(insertOnError(book)),
       );
-      await sleep();
     }
+
+    await sleep();
   }
 
   const withIsbn13 = records.filter((row) => !!row.isbn13 && !found.has(row.id));
@@ -124,8 +131,9 @@ const jobFn = async (job: Job<JobArgs>) => {
       inserts.push(
         importBook(book.hardcoverId, book.goodreads, job.data.userId).then(insertOnSuccess).catch(insertOnError(book)),
       );
-      await sleep();
     }
+
+    await sleep();
   }
 
   const basicSearchCandidates = records.filter((row) => !found.has(row.id));
@@ -171,6 +179,7 @@ const jobFn = async (job: Job<JobArgs>) => {
   }
 
   await finishGoodreadsImport(db, { jobid: job.id, successcount: succeeded });
+  updateProgress({ total, failedInsert, failedLookup, pending, succeeded }, 'complete');
 };
 
 async function importBook(hardcoverId: number, goodreadsBook: CsvRow, userId: string) {

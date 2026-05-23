@@ -2,7 +2,7 @@ import z from 'zod';
 
 export const CsvRowSchema = z.object({
   id: z.coerce.number(),
-  title: z.string().optional(),
+  title: z.string(),
   author: z.string().optional(),
   isbn10: z.string().optional(),
   isbn13: z.string().optional(),

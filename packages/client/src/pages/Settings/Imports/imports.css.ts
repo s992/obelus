@@ -58,14 +58,19 @@ export const sectionHeaderH3 = style([
   },
 ]);
 
-export const sectionHeaderMeta = style({
-  color: vars.color.ink3,
-  '@media': {
-    [mediaQuery.mobile]: {
-      display: 'none',
+export const sectionHeaderMeta = style([
+  flex.container,
+  {
+    alignItems: 'center',
+    gap: vars.space.s2,
+    color: vars.color.ink3,
+    '@media': {
+      [mediaQuery.mobile]: {
+        display: 'none',
+      },
     },
   },
-});
+]);
 
 export const sectionRow = style({
   width: '100%',
@@ -140,5 +145,15 @@ export const sectionExpandIcon = style([
         display: 'none',
       },
     },
+  },
+]);
+
+export const code = style([
+  typography.label,
+  {
+    fontSize: vars.fontSize.body,
+    padding: `0 ${vars.space.s2}`,
+    background: vars.color.tint,
+    borderRadius: vars.radius.sm,
   },
 ]);

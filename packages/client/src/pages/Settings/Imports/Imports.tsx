@@ -3,17 +3,20 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSubscription } from '@trpc/tanstack-react-query';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
-import { Minus, Plus } from 'lucide-react';
+import { CircleQuestionMark, Minus, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button, Disclosure, DisclosurePanel, DropZone, FileTrigger } from 'react-aria-components';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTRPC } from '../../../client';
 import { FormattedAlert } from '../../../components/Alert';
+import { IconButton } from '../../../components/IconButton';
+import { Modal } from '../../../components/Modal';
 import { useFormatDate } from '../../../hooks/useFormatDate';
 import { flex, typography } from '../../../style';
 import { ImportProgress } from './ImportProgress';
 import {
+  code,
   disclosure,
   disclosureButton,
   disclosureButtonHover,
@@ -31,16 +34,17 @@ import {
 } from './imports.css';
 
 export function Imports() {
+  const intl = useIntl();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
   const [expandedSections, setExpandedSections] = useState(new Map());
   const [uploadedFile, setUploadedFile] = useState<string | null>(null);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const { data: importRecords } = useQuery(trpc.import.list.queryOptions());
   const {
     mutate: uploadFile,
     isPending: isUploading,
     isError: isFailedUpload,
-    isSuccess: isSuccessfulUpload,
   } = useMutation({
     mutationFn: async (file: File) => {
       setUploadedFile(file.name);
@@ -77,9 +81,7 @@ export function Imports() {
       return;
     }
 
-    const processed = progress.failedInsert + progress.failedLookup + progress.succeeded;
-
-    if (processed === progress.total) {
+    if (progress.status === 'complete') {
       queryClient.invalidateQueries({ queryKey: trpc.import.list.queryKey() });
     }
   }, [progress]);
@@ -87,7 +89,7 @@ export function Imports() {
   return (
     <div>
       <p className={typography.body}>
-        <FormattedMessage defaultMessage="Upload a Goodreads library export. Each row becomes a book in the record, preserving shelves as planned, read, or finished. Editions are matched against the catalog; ambiguous matches and missing metadata are reported below." />
+        <FormattedMessage defaultMessage="Upload a Goodreads library export. Each row becomes a book in the record, preserving shelves as planned, read, or finished. Editions are matched against the catalog; ambiguous matches and missing metadata are reported below. Imports will take a minium of one second per CSV row due to Hardcover rate-limiting." />
       </p>
       <div className={flex.column}>
         <div className={sectionHeader}>
@@ -96,6 +98,14 @@ export function Imports() {
           </h3>
           <span className={sectionHeaderMeta}>
             <FormattedMessage defaultMessage="accepts csv - goodreads format" />
+            <IconButton
+              variant="tertiary"
+              aria-label={intl.formatMessage({ defaultMessage: 'Click for format help' })}
+              size="small"
+              onPress={() => setIsHelpModalOpen(true)}
+            >
+              <CircleQuestionMark />
+            </IconButton>
           </span>
         </div>
         {!isUploading && isFailedUpload && (
@@ -222,6 +232,52 @@ export function Imports() {
           </Disclosure>
         ))}
       </div>
+      <Modal
+        isOpen={isHelpModalOpen}
+        onOpenChange={(open) => setIsHelpModalOpen(open)}
+        isDismissable
+        label={intl.formatMessage({ defaultMessage: 'CSV Formatting/Import Help' })}
+      >
+        <p className={typography.body}>
+          <FormattedMessage
+            defaultMessage="The CSV columns Obelus looks for are: <code>Book Id</code>, <code>Title</code>, <code>Author</code>, <code>ISBN</code>, <code>ISBN13</code>, <code>My Rating</code>, <code>Date Added</code>, <code>Date Read</code>, and <code>Exclusive Shelf</code>. The only ones that are strictly required are <code>Book Id</code> and <code>Title</code>, but you'll have more success if an ISBN is provided."
+            values={{
+              code: (chunks) => <code className={code}>{chunks}</code>,
+            }}
+          />
+        </p>
+        <p className={typography.body}>
+          <FormattedMessage
+            defaultMessage="Book statuses are presumed to be finished unless the book's <code>Exclusive Shelf</code> is <code>currently-reading</code> or <code>to-read</code>, which are mapped to reading and planned statuses, respectively."
+            values={{
+              code: (chunks) => <code className={code}>{chunks}</code>,
+            }}
+          />
+        </p>
+        <p className={typography.body}>
+          <FormattedMessage defaultMessage="Ratings are mapped to judgments like this:" />
+        </p>
+        <ul className={typography.body}>
+          <li>
+            <FormattedMessage defaultMessage="{rating}: accepted" values={{ rating: 5 }} />
+          </li>
+          <li>
+            <FormattedMessage defaultMessage="{rating}: accepted" values={{ rating: 4 }} />
+          </li>
+          <li>
+            <FormattedMessage defaultMessage="{rating}: mixed" values={{ rating: 3 }} />
+          </li>
+          <li>
+            <FormattedMessage defaultMessage="{rating}: rejected" values={{ rating: 2 }} />
+          </li>
+          <li>
+            <FormattedMessage defaultMessage="{rating}: rejected" values={{ rating: 1 }} />
+          </li>
+          <li>
+            <FormattedMessage defaultMessage="No rating: unjudged" values={{ rating: 1 }} />
+          </li>
+        </ul>
+      </Modal>
     </div>
   );
 }
