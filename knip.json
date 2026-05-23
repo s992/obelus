@@ -6,6 +6,7 @@
   },
   "ignore": ["packages/api/src/gql/graphql.ts", "packages/client/src/client/trpc.ts", "packages/api/src/sqlc/*.ts"],
   "ignoreBinaries": ["sqlc"],
+  "ignoreDependencies": ["pino-pretty"],
   "rules": {
     "devDependencies": "off"
   }
