@@ -29,6 +29,27 @@ export const navSectionOpen = style({
 
 export const searchButton = style({
   transform: 'translateY(2px)', // better horizontal alignment
+  '@media': {
+    [mediaQuery.mobile]: {
+      display: 'none',
+    },
+  },
+});
+
+export const mobileButtons = style({
+  '@media': {
+    [mediaQuery.mobileUp]: {
+      display: 'contents',
+    },
+  },
+});
+
+export const mobileSearchButton = style({
+  '@media': {
+    [mediaQuery.mobileUp]: {
+      display: 'none',
+    },
+  },
 });
 
 export const navToggle = style({

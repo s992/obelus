@@ -20,7 +20,7 @@ import { useAuthContext, useThemeContext } from '../../context';
 import { SearchModal } from '../../features/SearchModal';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { mediaQuery } from '../../style';
-import { navSection, navSectionOpen, navToggle, searchButton } from './root.css';
+import { mobileButtons, mobileSearchButton, navSection, navSectionOpen, navToggle, searchButton } from './root.css';
 
 export function Root() {
   const intl = useIntl();
@@ -55,6 +55,11 @@ export function Root() {
     setIsNavOpen(false);
   });
 
+  const onSearchClicked = () => {
+    setIsSearchOpen(true);
+    setIsNavOpen(false);
+  };
+
   return (
     <>
       <AppHeader>
@@ -64,10 +69,7 @@ export function Root() {
               <IconButton
                 className={searchButton}
                 aria-label={intl.formatMessage({ defaultMessage: 'Search' })}
-                onPress={() => {
-                  setIsSearchOpen(true);
-                  setIsNavOpen(false);
-                }}
+                onPress={onSearchClicked}
               >
                 <Search />
               </IconButton>
@@ -101,16 +103,25 @@ export function Root() {
           )}
           <ThemeToggle currentTheme={theme} onChange={setTheme} />
         </nav>
-        <IconButton
-          aria-label={intl.formatMessage({ defaultMessage: 'Toggle navigation' })}
-          aria-expanded={isNavOpen}
-          aria-controls="nav-menu"
-          variant="tertiary"
-          className={navToggle}
-          onPress={() => setIsNavOpen((current) => !current)}
-        >
-          <Menu />
-        </IconButton>
+        <div className={mobileButtons}>
+          <IconButton
+            className={mobileSearchButton}
+            aria-label={intl.formatMessage({ defaultMessage: 'Search' })}
+            onPress={onSearchClicked}
+          >
+            <Search />
+          </IconButton>
+          <IconButton
+            aria-label={intl.formatMessage({ defaultMessage: 'Toggle navigation' })}
+            aria-expanded={isNavOpen}
+            aria-controls="nav-menu"
+            variant="tertiary"
+            className={navToggle}
+            onPress={() => setIsNavOpen((current) => !current)}
+          >
+            <Menu />
+          </IconButton>
+        </div>
       </AppHeader>
       <Outlet />
       {import.meta.env.MODE !== 'production' && (
