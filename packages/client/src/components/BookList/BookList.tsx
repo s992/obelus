@@ -43,7 +43,7 @@ export function BookList({ variant, books, totalCount, renderEmptyState, filter,
       <section>
         {!isPublic && (
           <ListHeader title={headerI18n[variant]} count={totalCount}>
-            {variant === 'finished' && onFilterChanged && dates.length && (
+            {variant === 'finished' && onFilterChanged && dates.length > 0 && (
               <div className={filterBar}>
                 <Button variant="chip" isSelected={!filter} onPress={() => onFilterChanged(null)}>
                   <FormattedMessage defaultMessage="all" />

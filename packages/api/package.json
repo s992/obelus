@@ -20,6 +20,7 @@
     "@fastify/helmet": "catalog:",
     "@fastify/jwt": "catalog:",
     "@fastify/multipart": "catalog:",
+    "@fastify/rate-limit": "catalog:",
     "@obelus/shared": "workspace:*",
     "@trpc/server": "catalog:",
     "argon2": "catalog:",

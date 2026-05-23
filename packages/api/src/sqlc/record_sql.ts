@@ -220,6 +220,52 @@ export async function getRecordByBookId(
   };
 }
 
+export const getRecordByIdQuery = `-- name: GetRecordById :one
+select id, created_at, updated_at, user_id, book_id, finished_at, judgment, started_at, status
+from record
+where id = $1
+and user_id = $2`;
+
+export interface GetRecordByIdArgs {
+  id: string;
+  userid: string;
+}
+
+export interface GetRecordByIdRow {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
+  bookId: number;
+  finishedAt: Date | null;
+  judgment: string | null;
+  startedAt: Date | null;
+  status: string;
+}
+
+export async function getRecordById(client: Client, args: GetRecordByIdArgs): Promise<GetRecordByIdRow | null> {
+  const result = await client.query({
+    text: getRecordByIdQuery,
+    values: [args.id, args.userid],
+    rowMode: 'array',
+  });
+  if (result.rows.length !== 1) {
+    return null;
+  }
+  const row = result.rows[0];
+  return {
+    id: row?.[0],
+    createdAt: row?.[1],
+    updatedAt: row?.[2],
+    userId: row?.[3],
+    bookId: row?.[4],
+    finishedAt: row?.[5],
+    judgment: row?.[6],
+    startedAt: row?.[7],
+    status: row?.[8],
+  };
+}
+
 export const listRecordsByBookIdsQuery = `-- name: ListRecordsByBookIds :many
 select id, created_at, updated_at, user_id, book_id, finished_at, judgment, started_at, status
 from record

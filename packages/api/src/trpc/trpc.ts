@@ -1,5 +1,6 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 
+import { checkRateLimit } from '../server';
 import type { Context } from './context';
 
 const t = initTRPC.context<Context>().create();
@@ -13,4 +14,14 @@ export const privateProcedure = publicProcedure.use(async ({ ctx, next }) => {
   }
 
   return next({ ctx });
+});
+
+export const rateLimitedPublicProcedure = publicProcedure.use(async ({ ctx, next }) => {
+  const rateLimit = await checkRateLimit(ctx.req);
+
+  if (!rateLimit.isAllowed && rateLimit.isExceeded) {
+    throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
+  }
+
+  return next();
 });

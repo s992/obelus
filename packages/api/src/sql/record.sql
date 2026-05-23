@@ -95,6 +95,12 @@ from record
 where book_id = sqlc.arg('bookId')::integer
 and user_id = sqlc.arg('userId');
 
+-- name: GetRecordById :one
+select *
+from record
+where id = sqlc.arg('id')
+and user_id = sqlc.arg('userId');
+
 -- name: ListRecordsByBookIds :many
 select *
 from record

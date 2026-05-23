@@ -6,13 +6,15 @@ interface Client {
 
 export const listNotesQuery = `-- name: ListNotes :many
 select
-  id,
-  content,
-  created_at
-from note
-where user_id = $1
-and record_id = $2
-order by created_at desc`;
+  n.id,
+  n.content,
+  n.created_at
+from note n
+inner join record r on r.id = n.record_id
+where n.user_id = $1
+and r.user_id = $1
+and n.record_id = $2
+order by n.created_at desc`;
 
 export interface ListNotesArgs {
   userid: string;

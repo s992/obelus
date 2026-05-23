@@ -1,14 +1,22 @@
 import { NoteJsonSchema } from '@obelus/shared/schema';
+import { TRPCError } from '@trpc/server';
 import z from 'zod';
 
 import { db } from '../db/db';
 import { createNote, listNotes } from '../sqlc/note_sql';
+import { getRecordById } from '../sqlc/record_sql';
 import { privateProcedure, router } from '../trpc/trpc';
 
 export const noteRouter = router({
   create: privateProcedure.input(NoteJsonSchema.pick({ id: true, content: true })).mutation(async ({ input, ctx }) => {
     if (!ctx.currentUser.id) {
       return;
+    }
+
+    const record = await getRecordById(db, { id: input.id, userid: ctx.currentUser.id });
+
+    if (!record) {
+      throw new TRPCError({ code: 'BAD_REQUEST' });
     }
 
     await createNote(db, { content: input.content, recordid: input.id, userid: ctx.currentUser.id });

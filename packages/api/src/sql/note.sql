@@ -1,12 +1,14 @@
 -- name: ListNotes :many
 select
-  id,
-  content,
-  created_at
-from note
-where user_id = sqlc.arg('userId')
-and record_id = sqlc.arg('recordId')
-order by created_at desc;
+  n.id,
+  n.content,
+  n.created_at
+from note n
+inner join record r on r.id = n.record_id
+where n.user_id = sqlc.arg('userId')
+and r.user_id = sqlc.arg('userId')
+and n.record_id = sqlc.arg('recordId')
+order by n.created_at desc;
 
 -- name: CreateNote :exec
 insert into note (

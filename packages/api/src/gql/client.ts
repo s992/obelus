@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { type DocumentNode, print } from 'graphql';
 
 import { config } from '../config';
@@ -8,7 +9,8 @@ import { getSdk } from './graphql';
 const CACHE_TIME = 24 * 60 * 60; // 24hr in seconds
 
 async function gqlFetch<R, V>(doc: DocumentNode, variables: V): Promise<R> {
-  const cacheKey = JSON.stringify({ query: print(doc), variables });
+  const query = JSON.stringify({ query: print(doc), variables });
+  const cacheKey = `gql:${createHash('sha256').update(query).digest('hex')}`;
   let cached;
 
   try {
@@ -32,7 +34,7 @@ async function gqlFetch<R, V>(doc: DocumentNode, variables: V): Promise<R> {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${config.OBELUS_HARDCOVER_API_TOKEN}`,
     },
-    body: cacheKey,
+    body: query,
   });
 
   const { data, errors } = (await response.json()) as { data: R; errors?: Array<{ message: string }> };

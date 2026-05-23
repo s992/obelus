@@ -10,6 +10,7 @@ catalog:
   '@fastify/helmet': ^13.0.2
   '@fastify/jwt': ^10.0.0
   '@fastify/multipart': ^10.0.0
+  '@fastify/rate-limit': ^10.3.0
   '@formatjs/unplugin': ^1.1.10
   "@graphql-codegen/cli": ^6.3.1
   "@graphql-codegen/typescript": ^5.0.10

@@ -12,5 +12,6 @@ export const COOKIE_OPTS = {
   sameSite: true,
   secure: protocol === 'https:',
   signed: true,
+  httpOnly: true,
   maxAge: 30 * 24 * 60 * 60, // 30 days, matches jwt
 } satisfies CookieSerializeOptions;

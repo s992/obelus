@@ -2,6 +2,7 @@ import fastifyCookie from '@fastify/cookie';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyJwt from '@fastify/jwt';
 import fastifyMultipart from '@fastify/multipart';
+import fastifyRateLimit from '@fastify/rate-limit';
 import { type FastifyTRPCPluginOptions, fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import type { TRPCRequestInfo } from '@trpc/server/http';
 import type { Job } from 'bullmq';
@@ -21,16 +22,33 @@ export const server = fastify({
   loggerInstance: logger,
 });
 
-server.register(fastifyHelmet, { global: true });
-server.register(fastifyJwt, { secret: config.OBELUS_AUTH_TOKEN_SECRET });
-server.register(fastifyCookie, { secret: config.OBELUS_COOKIE_SECRET });
-server.register(fastifyMultipart);
-server.register(fastifyTRPCPlugin, {
-  prefix: 'trpc',
-  trpcOptions: {
-    router: appRouter,
-    createContext,
-  } satisfies FastifyTRPCPluginOptions<AppRouter>['trpcOptions'],
+async function registerPlugins() {
+  await server.register(fastifyHelmet, { global: true });
+  await server.register(fastifyJwt, { secret: config.OBELUS_AUTH_TOKEN_SECRET });
+  await server.register(fastifyCookie, { secret: config.OBELUS_COOKIE_SECRET });
+  await server.register(fastifyMultipart);
+  await server.register(fastifyRateLimit, {
+    global: false,
+  });
+  await server.register(fastifyTRPCPlugin, {
+    prefix: 'trpc',
+    trpcOptions: {
+      router: appRouter,
+      createContext,
+    } satisfies FastifyTRPCPluginOptions<AppRouter>['trpcOptions'],
+  });
+}
+
+const pluginRegistration = registerPlugins();
+
+export let checkRateLimit: ReturnType<typeof server.createRateLimit>;
+
+pluginRegistration.then(() => {
+  checkRateLimit = server.createRateLimit({
+    max: 5,
+    timeWindow: '1 minute',
+    keyGenerator: (request) => (request.headers['x-real-ip'] as string) || request.ip,
+  });
 });
 
 server.get('/livez', () => ({ ok: true }));
@@ -101,11 +119,11 @@ server.post('/import', async (req, res) => {
   return res.code(200).send({ total: records.length });
 });
 
-(async () => {
+pluginRegistration.then(async () => {
   try {
     await server.listen({ port: config.OBELUS_API_PORT });
   } catch (err) {
     console.error(`failed to start: ${err}`);
     process.exit(1);
   }
-})();
+});

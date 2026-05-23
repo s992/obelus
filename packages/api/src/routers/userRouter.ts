@@ -26,7 +26,7 @@ export const userRouter = router({
     };
   }),
   changePassword: privateProcedure
-    .input(z.object({ currentPassword: z.string(), newPassword: z.string() }))
+    .input(z.object({ currentPassword: z.string(), newPassword: z.string().nonempty().min(8) }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.currentUser.id) {
         return;
