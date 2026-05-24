@@ -1,8 +1,8 @@
 import type { Book } from '@obelus/shared/types';
 import { useIntl } from 'react-intl';
 
+import { cover } from './bookCover.css';
 import { CoverPlaceholder } from './CoverPlaceholder';
-import { cover } from './coverPlaceholder.css';
 
 type Props = {
   book: Pick<Book, 'coverImage' | 'author' | 'title'>;

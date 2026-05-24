@@ -99,6 +99,10 @@ export const listEntry = style([
   },
 ]);
 
+export const coverLink = style({
+  textDecoration: 'none',
+});
+
 export const titleAndAuthor = style([
   flex.column,
   {

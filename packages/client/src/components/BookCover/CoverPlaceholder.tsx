@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-import { author as authorCss, cover, placeholderCover, title as titleCss } from './coverPlaceholder.css';
+import { author as authorCss, cover, placeholderCover, title as titleCss } from './bookCover.css';
 
 type Props = {
   title: string;

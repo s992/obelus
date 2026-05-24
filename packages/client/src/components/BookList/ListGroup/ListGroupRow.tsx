@@ -7,7 +7,16 @@ import { useAuthContext } from '../../../context';
 import { BookCover } from '../../BookCover';
 import { Meta } from '../Meta';
 import { JudgmentQuickActions, PlannedQuickActions, UntrackedQuickActions } from '../QuickActions';
-import { author, judgmentAccent, listEntry, listRow, title, titleAndAuthor, titleLink } from './listGroup.css';
+import {
+  author,
+  coverLink,
+  judgmentAccent,
+  listEntry,
+  listRow,
+  title,
+  titleAndAuthor,
+  titleLink,
+} from './listGroup.css';
 
 type Props = {
   book: Book;
@@ -22,7 +31,7 @@ export function ListGroupRow({ book, variant, isPublic, className }: Props) {
       {variant === 'finished' && (
         <span className={book.record?.judgment ? judgmentAccent[book.record.judgment] : judgmentAccent.undecided} />
       )}
-      <MaybeBookLink bookId={book.id}>
+      <MaybeBookLink bookId={book.id} classes={{ link: coverLink }}>
         <BookCover book={book} />
       </MaybeBookLink>
       <div className={listEntry}>
@@ -45,8 +54,8 @@ type MaybeBookLinkProps = {
   children: ReactNode;
   bookId: number;
   classes?: {
-    noLink: string;
-    link: string;
+    noLink?: string;
+    link?: string;
   };
 };
 
