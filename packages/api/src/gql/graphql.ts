@@ -1,12 +1,11 @@
+/** Internal type. DO NOT USE DIRECTLY. */
+type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+/** Internal type. DO NOT USE DIRECTLY. */
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 import type { DocumentNode } from 'graphql';
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -682,6 +681,7 @@ export type UserBookCreateInput = {
   status_id?: InputMaybe<Scalars['Int']['input']>;
   url?: InputMaybe<Scalars['String']['input']>;
   user_date?: InputMaybe<Scalars['date']['input']>;
+  user_start_date?: InputMaybe<Scalars['date']['input']>;
 };
 
 export type UserBookDeleteType = {
@@ -727,6 +727,7 @@ export type UserBookUpdateInput = {
   status_id?: InputMaybe<Scalars['Int']['input']>;
   url?: InputMaybe<Scalars['String']['input']>;
   user_date?: InputMaybe<Scalars['date']['input']>;
+  user_start_date?: InputMaybe<Scalars['date']['input']>;
 };
 
 export type UserBooksReadUpsertType = {
@@ -2676,7 +2677,7 @@ export type Books = {
   cached_featured_series?: Maybe<Scalars['jsonb']['output']>;
   cached_header_image: Scalars['jsonb']['output'];
   cached_image: Scalars['jsonb']['output'];
-  cached_tags: Scalars['json']['output'];
+  cached_tags: Scalars['jsonb']['output'];
   /** An object relationship */
   canonical?: Maybe<Books>;
   canonical_id?: Maybe<Scalars['Int']['output']>;
@@ -3160,7 +3161,7 @@ export type Books_Bool_Exp = {
   cached_featured_series?: InputMaybe<Jsonb_Comparison_Exp>;
   cached_header_image?: InputMaybe<Jsonb_Comparison_Exp>;
   cached_image?: InputMaybe<Jsonb_Comparison_Exp>;
-  cached_tags?: InputMaybe<Json_Comparison_Exp>;
+  cached_tags?: InputMaybe<Jsonb_Comparison_Exp>;
   canonical?: InputMaybe<Books_Bool_Exp>;
   canonical_id?: InputMaybe<Int_Comparison_Exp>;
   collection_import_results?: InputMaybe<Collection_Import_Results_Bool_Exp>;
@@ -3809,7 +3810,7 @@ export type Books_Stream_Cursor_Value_Input = {
   cached_featured_series?: InputMaybe<Scalars['jsonb']['input']>;
   cached_header_image?: InputMaybe<Scalars['jsonb']['input']>;
   cached_image?: InputMaybe<Scalars['jsonb']['input']>;
-  cached_tags?: InputMaybe<Scalars['json']['input']>;
+  cached_tags?: InputMaybe<Scalars['jsonb']['input']>;
   canonical_id?: InputMaybe<Scalars['Int']['input']>;
   compilation?: InputMaybe<Scalars['Boolean']['input']>;
   created_at?: InputMaybe<Scalars['timestamp']['input']>;
@@ -4360,12 +4361,12 @@ export type Collection_Import_Results = {
   author?: Maybe<Scalars['String']['output']>;
   /** An object relationship */
   book?: Maybe<Books>;
-  book_found_method?: Maybe<Scalars['String']['output']>;
   book_id?: Maybe<Scalars['Int']['output']>;
   /** An object relationship */
   collection_import: Collection_Imports;
   collection_import_id: Scalars['Int']['output'];
   contents: Scalars['jsonb']['output'];
+  error?: Maybe<Scalars['String']['output']>;
   external_id: Scalars['String']['output'];
   id: Scalars['Int']['output'];
   report?: Maybe<Scalars['Int']['output']>;
@@ -4409,11 +4410,11 @@ export type Collection_Import_Results_Bool_Exp = {
   _or?: InputMaybe<Array<Collection_Import_Results_Bool_Exp>>;
   author?: InputMaybe<String_Comparison_Exp>;
   book?: InputMaybe<Books_Bool_Exp>;
-  book_found_method?: InputMaybe<String_Comparison_Exp>;
   book_id?: InputMaybe<Int_Comparison_Exp>;
   collection_import?: InputMaybe<Collection_Imports_Bool_Exp>;
   collection_import_id?: InputMaybe<Int_Comparison_Exp>;
   contents?: InputMaybe<Jsonb_Comparison_Exp>;
+  error?: InputMaybe<String_Comparison_Exp>;
   external_id?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   report?: InputMaybe<Int_Comparison_Exp>;
@@ -4429,9 +4430,9 @@ export type Collection_Import_Results_Inc_Input = {
 /** order by max() on columns of table "collection_import_results" */
 export type Collection_Import_Results_Max_Order_By = {
   author?: InputMaybe<Order_By>;
-  book_found_method?: InputMaybe<Order_By>;
   book_id?: InputMaybe<Order_By>;
   collection_import_id?: InputMaybe<Order_By>;
+  error?: InputMaybe<Order_By>;
   external_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   report?: InputMaybe<Order_By>;
@@ -4442,9 +4443,9 @@ export type Collection_Import_Results_Max_Order_By = {
 /** order by min() on columns of table "collection_import_results" */
 export type Collection_Import_Results_Min_Order_By = {
   author?: InputMaybe<Order_By>;
-  book_found_method?: InputMaybe<Order_By>;
   book_id?: InputMaybe<Order_By>;
   collection_import_id?: InputMaybe<Order_By>;
+  error?: InputMaybe<Order_By>;
   external_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   report?: InputMaybe<Order_By>;
@@ -4465,11 +4466,11 @@ export type Collection_Import_Results_Mutation_Response = {
 export type Collection_Import_Results_Order_By = {
   author?: InputMaybe<Order_By>;
   book?: InputMaybe<Books_Order_By>;
-  book_found_method?: InputMaybe<Order_By>;
   book_id?: InputMaybe<Order_By>;
   collection_import?: InputMaybe<Collection_Imports_Order_By>;
   collection_import_id?: InputMaybe<Order_By>;
   contents?: InputMaybe<Order_By>;
+  error?: InputMaybe<Order_By>;
   external_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   report?: InputMaybe<Order_By>;
@@ -4487,13 +4488,13 @@ export type Collection_Import_Results_Select_Column =
   /** column name */
   | 'author'
   /** column name */
-  | 'book_found_method'
-  /** column name */
   | 'book_id'
   /** column name */
   | 'collection_import_id'
   /** column name */
   | 'contents'
+  /** column name */
+  | 'error'
   /** column name */
   | 'external_id'
   /** column name */
@@ -4546,10 +4547,10 @@ export type Collection_Import_Results_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Collection_Import_Results_Stream_Cursor_Value_Input = {
   author?: InputMaybe<Scalars['String']['input']>;
-  book_found_method?: InputMaybe<Scalars['String']['input']>;
   book_id?: InputMaybe<Scalars['Int']['input']>;
   collection_import_id?: InputMaybe<Scalars['Int']['input']>;
   contents?: InputMaybe<Scalars['jsonb']['input']>;
+  error?: InputMaybe<Scalars['String']['input']>;
   external_id?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['Int']['input']>;
   report?: InputMaybe<Scalars['Int']['input']>;
@@ -19922,46 +19923,46 @@ export type Users_Variance_Order_By = {
 };
 
 export type FindBookIdsByIsbn10QueryVariables = Exact<{
-  isbns?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  isbns?: Array<string> | string | null | undefined;
 }>;
 
 
-export type FindBookIdsByIsbn10Query = { __typename?: 'query_root', editions: Array<{ __typename?: 'editions', isbn_10?: string | null, book: { __typename?: 'books', id: number } }> };
+export type FindBookIdsByIsbn10Query = { editions: Array<{ isbn_10: string | null, book: { id: number } }> };
 
 export type FindBookIdsByIsbn13QueryVariables = Exact<{
-  isbns?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  isbns?: Array<string> | string | null | undefined;
 }>;
 
 
-export type FindBookIdsByIsbn13Query = { __typename?: 'query_root', editions: Array<{ __typename?: 'editions', isbn_13?: string | null, book: { __typename?: 'books', id: number } }> };
+export type FindBookIdsByIsbn13Query = { editions: Array<{ isbn_13: string | null, book: { id: number } }> };
 
 export type GetBooksByIdsQueryVariables = Exact<{
-  ids?: InputMaybe<Array<Scalars['Int']['input']> | Scalars['Int']['input']>;
+  ids?: Array<number> | number | null | undefined;
 }>;
 
 
-export type GetBooksByIdsQuery = { __typename?: 'query_root', books: Array<{ __typename?: 'books', id: number, title?: string | null, subtitle?: string | null, description?: string | null, release_date?: unknown | null, pages?: number | null, image?: { __typename?: 'images', url?: string | null, width?: number | null, height?: number | null } | null, featured_book_series?: { __typename?: 'book_series', position?: unknown | null, series?: { __typename?: 'series', id: number, name: string, books_count: number } | null } | null, contributions: Array<{ __typename?: 'contributions', contribution?: string | null, author?: { __typename?: 'authors', name: string } | null }> }> };
+export type GetBooksByIdsQuery = { books: Array<{ id: number, title: string | null, subtitle: string | null, description: string | null, release_date: unknown, pages: number | null, image: { url: string | null, width: number | null, height: number | null } | null, featured_book_series: { position: unknown, series: { id: number, name: string, books_count: number } | null } | null, contributions: Array<{ contribution: string | null, author: { name: string } | null }> }> };
 
 export type GetSeriesByIdQueryVariables = Exact<{
-  id: Scalars['Int']['input'];
+  id: number;
 }>;
 
 
-export type GetSeriesByIdQuery = { __typename?: 'query_root', book_series: Array<{ __typename?: 'book_series', position?: unknown | null, series?: { __typename?: 'series', id: number, name: string, books_count: number } | null, book?: { __typename?: 'books', id: number, title?: string | null, subtitle?: string | null, description?: string | null, release_date?: unknown | null, pages?: number | null, image?: { __typename?: 'images', url?: string | null, width?: number | null, height?: number | null } | null, featured_book_series?: { __typename?: 'book_series', position?: unknown | null, series?: { __typename?: 'series', id: number, name: string, books_count: number } | null } | null, contributions: Array<{ __typename?: 'contributions', contribution?: string | null, author?: { __typename?: 'authors', name: string } | null }> } | null }> };
+export type GetSeriesByIdQuery = { book_series: Array<{ position: unknown, series: { id: number, name: string, books_count: number } | null, book: { id: number, title: string | null, subtitle: string | null, description: string | null, release_date: unknown, pages: number | null, image: { url: string | null, width: number | null, height: number | null } | null, featured_book_series: { position: unknown, series: { id: number, name: string, books_count: number } | null } | null, contributions: Array<{ contribution: string | null, author: { name: string } | null }> } | null }> };
 
 export type SearchBooksQueryVariables = Exact<{
-  query: Scalars['String']['input'];
+  query: string;
 }>;
 
 
-export type SearchBooksQuery = { __typename?: 'query_root', search?: { __typename?: 'SearchOutput', ids?: Array<number | null> | null } | null };
+export type SearchBooksQuery = { search: { ids: Array<number | null> | null } | null };
 
 export type SearchBooksForImportQueryVariables = Exact<{
-  query: Scalars['String']['input'];
+  query: string;
 }>;
 
 
-export type SearchBooksForImportQuery = { __typename?: 'query_root', search?: { __typename?: 'SearchOutput', ids?: Array<number | null> | null, results?: unknown | null } | null };
+export type SearchBooksForImportQuery = { search: { ids: Array<number | null> | null, results: unknown } | null };
 
 
 export const FindBookIdsByIsbn10Document = gql`
