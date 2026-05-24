@@ -10,8 +10,11 @@ import { publicProcedure, router } from '../trpc/trpc';
 export const publicRecordRouter = router({
   profile: publicProcedure.input(z.object({ userName: z.string() })).query(async ({ input, ctx }) => {
     const user = await getUserPublicProfile(db, { username: input.userName });
+    const exists = !!user;
+    const isPublic = user?.public;
+    const isCurrentUser = user?.id === ctx.currentUser.id;
 
-    if (!user?.public && user?.id !== ctx.currentUser.id) {
+    if (!exists || (!isPublic && !isCurrentUser)) {
       throw new TRPCError({ code: 'NOT_FOUND' });
     }
 

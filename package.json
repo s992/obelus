@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "pnpm -r --parallel dev",
+    "test": "pnpm -r --parallel test",
     "build": "pnpm -r build",
     "checks": "pnpm typecheck && pnpm format:check && pnpm lint:check && pnpm knip",
     "typecheck": "pnpm -r --parallel typecheck",

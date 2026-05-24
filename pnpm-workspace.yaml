@@ -85,4 +85,5 @@ catalog:
   usehooks-ts: ^3.1.1
   vite: ^8.0.10
   vite-plugin-svgr: ^5.2.0
+  vitest: ^4.1.7
   zod: ^4.3.6

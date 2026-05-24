@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "NODE_ENV=production tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "gql:gen": "graphql-codegen",
     "typecheck": "tsc -p ./tsconfig.json --noEmit",
     "sql:gen": "dotenvx run -f ../../.env -- sqlc generate && pnpm sql:fix",
@@ -44,6 +46,7 @@
     "@graphql-typed-document-node/core": "catalog:",
     "@types/pg": "catalog:",
     "tsup": "catalog:",
-    "tsx": "catalog:"
+    "tsx": "catalog:",
+    "vitest": "catalog:"
   }
 }

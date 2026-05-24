@@ -41,7 +41,7 @@ export const userRouter = router({
       const isValidPassword = await verifyPassword(user.passwordHash, input.currentPassword);
 
       if (!isValidPassword) {
-        throw new TRPCError({ code: 'BAD_REQUEST' });
+        throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
 
       const newPasswordHash = await hashPassword(input.newPassword);
