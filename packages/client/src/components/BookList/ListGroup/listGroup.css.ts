@@ -1,6 +1,6 @@
 import { globalStyle, style, styleVariants } from '@vanilla-extract/css';
 
-import { flex, mediaQuery, sectionDivider, typography, vars } from '../../../style';
+import { flex, mediaQuery, sectionDivider, typography, vars } from '@/style';
 
 export const group = style({
   display: 'grid',

@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { FormDecorator } from '../_storybook/FormDecorator';
-import { Button } from '../Button';
+import { FormDecorator } from '@/components/_storybook/FormDecorator';
+import { Button } from '@/components/Button';
+
 import { Form } from './Form';
 
 const meta = {

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createContext, type ReactNode, useContext, useEffect } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 
-import { useTRPC } from '../client';
+import { useTRPC } from '@/client';
 
 export type AuthContext = {
   isAuthenticated: boolean;

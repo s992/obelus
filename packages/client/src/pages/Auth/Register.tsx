@@ -4,8 +4,9 @@ import { useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import z from 'zod';
 
-import { useTRPC } from '../../client';
-import { useAuthContext } from '../../context';
+import { useTRPC } from '@/client';
+import { useAuthContext } from '@/context';
+
 import { AuthError } from './AuthError';
 import { AuthForm } from './AuthForm';
 import { formContainer } from './auth.css';

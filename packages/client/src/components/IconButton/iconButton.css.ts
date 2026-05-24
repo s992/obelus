@@ -1,6 +1,6 @@
 import { globalStyle, style, styleVariants } from '@vanilla-extract/css';
 
-import { vars } from '../../style';
+import { vars } from '@/style';
 
 const baseButton = style({
   appearance: 'none',

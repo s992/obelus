@@ -1,6 +1,6 @@
 import { style, styleVariants } from '@vanilla-extract/css';
 
-import { vars } from '../../style';
+import { vars } from '@/style';
 
 const baseSpinner = style({ color: vars.color.ink });
 

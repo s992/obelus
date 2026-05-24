@@ -2,8 +2,9 @@ import { X } from 'lucide-react';
 import { UNSTABLE_ToastRegion as AriaToastRegion, UNSTABLE_ToastContent as ToastContent } from 'react-aria-components';
 import { useIntl } from 'react-intl';
 
-import { FormattedAlert } from '../Alert';
-import { IconButton } from '../IconButton';
+import { FormattedAlert } from '@/components/Alert';
+import { IconButton } from '@/components/IconButton';
+
 import { toastQueue } from './queue';
 import { Toast } from './Toast';
 import { closeButton, toastRegion } from './toast.css';

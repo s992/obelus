@@ -5,13 +5,14 @@ import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useCopyToClipboard } from 'usehooks-ts';
 
-import { useTRPC } from '../../client';
-import { Button } from '../../components/Button';
-import { FullPageSpinner } from '../../components/FullPageSpinner';
-import { IconButton } from '../../components/IconButton';
-import { NotFound } from '../../components/NotFound';
-import { toastQueue } from '../../components/Toast';
-import { typography, vars } from '../../style';
+import { useTRPC } from '@/client';
+import { Button } from '@/components/Button';
+import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { IconButton } from '@/components/IconButton';
+import { NotFound } from '@/components/NotFound';
+import { toastQueue } from '@/components/Toast';
+import { typography, vars } from '@/style';
+
 import { Imports } from './Imports';
 import { PasswordForm } from './PasswordForm';
 import {

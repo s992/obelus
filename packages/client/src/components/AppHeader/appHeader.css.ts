@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { sectionDivider, typography, vars } from '../../style';
+import { sectionDivider, typography, vars } from '@/style';
 
 export const headerContainer = style({
   display: 'flex',

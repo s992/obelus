@@ -3,10 +3,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { useTRPC } from '../../client';
-import { showMutationError } from '../../components/Toast';
-import { UnreadBookActions, type Props as UnreadBookActionsProps } from '../../components/UnreadBookActions';
-import { judgment as judgmentCss } from '../../style';
+import { useTRPC } from '@/client';
+import { showMutationError } from '@/components/Toast';
+import { UnreadBookActions, type Props as UnreadBookActionsProps } from '@/components/UnreadBookActions';
+import { judgment as judgmentCss } from '@/style';
+
 import { responsiveLabel, statusOrJudgment } from './statusCell.css';
 
 type Props = {

@@ -1,6 +1,6 @@
 import { createViewTransition, globalStyle, keyframes, style } from '@vanilla-extract/css';
 
-import { flex, vars } from '../../style';
+import { flex, vars } from '@/style';
 
 const slideOut = keyframes({
   to: {

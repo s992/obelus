@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { vars } from '../../../style';
+import { vars } from '@/style';
 
 export const container = style({
   display: 'inline-flex',

@@ -1,7 +1,7 @@
 import { globalStyle, style } from '@vanilla-extract/css';
 
-import { flex, typography, vars } from '../../style';
-import { labelBase } from '../../style/typography.css';
+import { flex, typography, vars } from '@/style';
+import { labelBase } from '@/style/typography.css';
 
 export const calendar = style([
   typography.body,

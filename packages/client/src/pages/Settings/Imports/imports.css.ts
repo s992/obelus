@@ -1,6 +1,6 @@
 import { globalStyle, style } from '@vanilla-extract/css';
 
-import { flex, mediaQuery, sectionDivider, typography, vars } from '../../../style';
+import { flex, mediaQuery, sectionDivider, typography, vars } from '@/style';
 
 export const dropZone = style({
   width: '100%',

@@ -1,7 +1,7 @@
 import { style } from '@vanilla-extract/css';
 import { calc } from '@vanilla-extract/css-utils';
 
-import { flex, typography, vars } from '../../style';
+import { flex, typography, vars } from '@/style';
 
 export const field = style([
   flex.container,

@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { flex, sectionDivider, typography, vars } from '../../../../style';
+import { flex, sectionDivider, typography, vars } from '@/style';
 
 export const coverContainer = style([
   flex.container,

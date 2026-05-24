@@ -7,7 +7,7 @@ import {
   BOOK_COVER_XLARGE_WIDTH,
   typography,
   vars,
-} from '../../style';
+} from '@/style';
 
 const baseCover = style({
   aspectRatio: '2 / 3',

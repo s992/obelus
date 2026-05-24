@@ -1,7 +1,7 @@
 import { style } from '@vanilla-extract/css';
 
-import { vars } from '../../style';
-import { button } from '../Button/button.css';
+import { button } from '@/components/Button/button.css';
+import { vars } from '@/style';
 
 export const link = style([
   button.underlined,

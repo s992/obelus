@@ -2,9 +2,10 @@ import type { Status } from '@obelus/shared/types';
 import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
 
-import { flex } from '../../style';
-import { Button } from '../Button';
-import { LoadingSpinner } from '../LoadingSpinner';
+import { Button } from '@/components/Button';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { flex } from '@/style';
+
 import { button, container, responsive } from './unreadBookActions.css';
 
 export type Props = {

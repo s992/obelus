@@ -2,8 +2,9 @@ import type { Book } from '@obelus/shared/types';
 import type { Ref } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { flex } from '../../../style';
-import { useBookListContext } from '../context';
+import { useBookListContext } from '@/components/BookList/context';
+import { flex } from '@/style';
+
 import { ListGroupRow } from './ListGroupRow';
 import { group, gutter, gutterCount, gutterMonth, gutterYear } from './listGroup.css';
 

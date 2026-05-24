@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { FormattedAlert } from '../Alert';
+import { FormattedAlert } from '@/components/Alert';
 
 type Props = {
   title?: ReactNode;

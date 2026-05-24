@@ -5,9 +5,10 @@ import type { ReactNode } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useIntersectionObserver } from 'usehooks-ts';
 
-import { useListPageContext } from '../../pages/ListPage/context';
-import { typography } from '../../style';
-import { Button } from '../Button';
+import { Button } from '@/components/Button';
+import { useListPageContext } from '@/pages/ListPage/context';
+import { typography } from '@/style';
+
 import { chipDot, filterBar } from './bookList.css';
 import { BookListContextProvider } from './context';
 import { ListGroup } from './ListGroup';

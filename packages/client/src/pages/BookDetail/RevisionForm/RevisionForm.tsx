@@ -5,10 +5,11 @@ import { useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import z from 'zod';
 
-import { useTRPC } from '../../../client';
-import { FormattedAlert } from '../../../components/Alert';
-import { Button } from '../../../components/Button';
-import { useForm } from '../../../form';
+import { useTRPC } from '@/client';
+import { FormattedAlert } from '@/components/Alert';
+import { Button } from '@/components/Button';
+import { useForm } from '@/form';
+
 import { container, formContainer, submitButton } from './revisionForm.css';
 
 type Props = {

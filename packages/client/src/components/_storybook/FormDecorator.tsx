@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { useForm } from '../../form/useForm';
+import { useForm } from '@/form/useForm';
 
 type Props = {
   defaultValues?: Record<string, unknown>;

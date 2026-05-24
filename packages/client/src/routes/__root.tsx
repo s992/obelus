@@ -1,8 +1,8 @@
 import { createRootRouteWithContext, Outlet, useNavigate } from '@tanstack/react-router';
 import { RouterProvider } from 'react-aria-components';
 
-import { type AuthContext, ThemeContextProvider } from '../context';
-import { container, pageWrapper } from '../style/page.css';
+import { type AuthContext, ThemeContextProvider } from '@/context';
+import { container, pageWrapper } from '@/style/page.css';
 
 type RouterContext = {
   auth: AuthContext;

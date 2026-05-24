@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { flex, mediaQuery, typography, vars } from '../../style';
+import { flex, mediaQuery, typography, vars } from '@/style';
 
 export const statusOrJudgment = style([
   flex.container,

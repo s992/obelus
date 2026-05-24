@@ -3,7 +3,8 @@ import clsx from 'clsx';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Calendar as AriaCalendar, CalendarCell, CalendarGrid, type CalendarProps } from 'react-aria-components';
 
-import { IconButton } from '../IconButton';
+import { IconButton } from '@/components/IconButton';
+
 import { calendar, calendarGrid, currentMonthYear, header, headerButtonsContainer, month, year } from './calendar.css';
 
 type Props = {} & CalendarProps<CalendarDate>;

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { FormattedMessage } from 'react-intl';
 
-import { ListPage } from '../../../pages/ListPage';
+import { ListPage } from '@/pages/ListPage';
 
 function CurrentlyReading() {
   return (

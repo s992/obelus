@@ -1,6 +1,6 @@
 import { style, styleVariants } from '@vanilla-extract/css';
 
-import { typography, vars } from '../../style';
+import { typography, vars } from '@/style';
 
 const baseAlert = style([
   typography.body,

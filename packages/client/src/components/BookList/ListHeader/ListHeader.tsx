@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { typography } from '../../../style';
+import { typography } from '@/style';
+
 import { header, title as titleCss } from './listHeader.css';
 
 type Props = {

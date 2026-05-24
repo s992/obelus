@@ -6,12 +6,13 @@ import { type Options, useHotkeys } from 'react-hotkeys-hook';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useDebounceValue, useEventListener } from 'usehooks-ts';
 
-import { useTRPC } from '../../../client';
-import { BookCover } from '../../../components/BookCover';
-import { LoadingSpinner } from '../../../components/LoadingSpinner';
-import { Search } from '../../../components/Search';
-import { useFormatPublishYear } from '../../../hooks/useFormatPublishYear';
-import { flex, typography } from '../../../style';
+import { useTRPC } from '@/client';
+import { BookCover } from '@/components/BookCover';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { Search } from '@/components/Search';
+import { useFormatPublishYear } from '@/hooks/useFormatPublishYear';
+import { flex, typography } from '@/style';
+
 import { BookPreview } from './BookPreview';
 import {
   authorPublished,

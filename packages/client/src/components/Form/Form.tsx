@@ -1,7 +1,8 @@
 import clsx from 'clsx';
 import { Form as AriaForm, type FormProps } from 'react-aria-components';
 
-import { useFormContext } from '../../form';
+import { useFormContext } from '@/form';
+
 import { form } from './form.css';
 
 type Props = {

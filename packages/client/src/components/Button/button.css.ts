@@ -1,7 +1,7 @@
 import { style, styleVariants } from '@vanilla-extract/css';
 
-import { vars } from '../../style';
-import { typography } from '../../style/typography.css';
+import { vars } from '@/style';
+import { typography } from '@/style/typography.css';
 
 const baseButton = style([
   typography.body,

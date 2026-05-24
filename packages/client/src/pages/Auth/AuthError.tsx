@@ -1,6 +1,7 @@
 import { FormattedMessage } from 'react-intl';
 
-import { FormattedAlert } from '../../components/Alert';
+import { FormattedAlert } from '@/components/Alert';
+
 import { userNameHighlight } from './auth.css';
 
 type Props = {

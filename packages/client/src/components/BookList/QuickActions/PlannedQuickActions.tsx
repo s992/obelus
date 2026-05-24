@@ -2,10 +2,11 @@ import type { Book, Status } from '@obelus/shared/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FormattedMessage } from 'react-intl';
 
-import { useTRPC } from '../../../client';
-import { useListPageContext } from '../../../pages/ListPage/context';
-import { Button } from '../../Button';
-import { separator } from '../bookList.css';
+import { useTRPC } from '@/client';
+import { separator } from '@/components/BookList/bookList.css';
+import { Button } from '@/components/Button';
+import { useListPageContext } from '@/pages/ListPage/context';
+
 import { container, removeButton } from './quickActions.css';
 
 type Props = {

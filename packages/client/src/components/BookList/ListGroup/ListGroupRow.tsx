@@ -3,10 +3,11 @@ import { Link } from '@tanstack/react-router';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
 
-import { useAuthContext } from '../../../context';
-import { BookCover } from '../../BookCover';
-import { Meta } from '../Meta';
-import { JudgmentQuickActions, PlannedQuickActions, UntrackedQuickActions } from '../QuickActions';
+import { BookCover } from '@/components/BookCover';
+import { Meta } from '@/components/BookList/Meta';
+import { JudgmentQuickActions, PlannedQuickActions, UntrackedQuickActions } from '@/components/BookList/QuickActions';
+import { useAuthContext } from '@/context';
+
 import {
   author,
   coverLink,

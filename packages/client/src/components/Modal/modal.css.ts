@@ -1,6 +1,6 @@
 import { keyframes, style } from '@vanilla-extract/css';
 
-import { mediaQuery, sectionDivider, vars } from '../../style';
+import { mediaQuery, sectionDivider, vars } from '@/style';
 
 const zoom = keyframes({
   '0%': { transform: 'scale(0.8)' },

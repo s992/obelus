@@ -1,4 +1,5 @@
-import { LoadingSpinner } from '../LoadingSpinner';
+import { LoadingSpinner } from '@/components/LoadingSpinner';
+
 import { container } from './fullPageSpinner.css';
 
 export function FullPageSpinner() {

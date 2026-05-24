@@ -1,3 +1,4 @@
+import path from 'node:path';
 import formatjs from '@formatjs/unplugin/vite';
 import babel from '@rolldown/plugin-babel';
 import { devtools } from '@tanstack/devtools-vite';
@@ -30,6 +31,11 @@ export default defineConfig(() => {
           target: 'http://localhost:3000',
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
+      },
+    },
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
       },
     },
     envDir: '../..',

@@ -1,6 +1,6 @@
 import { globalStyle, style } from '@vanilla-extract/css';
 
-import { flex, typography, vars } from '../../style';
+import { flex, typography, vars } from '@/style';
 
 export const radioGroup = style([
   flex.container,

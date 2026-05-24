@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { sectionDivider, vars } from '../../style';
+import { sectionDivider, vars } from '@/style';
 
 export const popover = style({
   background: vars.color.surface,

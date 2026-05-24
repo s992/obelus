@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import z from 'zod';
 
-import { Button } from '../../components/Button';
-import { useForm } from '../../form';
+import { Button } from '@/components/Button';
+import { useForm } from '@/form';
 
 type FormValues = { currentPassword: string; newPassword: string; confirmPassword: string };
 

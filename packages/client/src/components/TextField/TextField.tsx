@@ -3,10 +3,11 @@ import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import { TextField as AriaTextField, Input, type TextFieldProps } from 'react-aria-components';
 
-import { useFieldContext } from '../../form';
-import { formRow } from '../../style';
-import { Label } from '../Label';
-import { ValidationErrorList } from '../ValidationErrorList';
+import { Label } from '@/components/Label';
+import { ValidationErrorList } from '@/components/ValidationErrorList';
+import { useFieldContext } from '@/form';
+import { formRow } from '@/style';
+
 import { input } from './textField.css';
 
 type Props = {

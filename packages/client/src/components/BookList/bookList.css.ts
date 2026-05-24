@@ -1,6 +1,6 @@
 import { style, styleVariants } from '@vanilla-extract/css';
 
-import { flex, typography, vars } from '../../style';
+import { flex, typography, vars } from '@/style';
 
 export const filterBar = style([
   flex.container,

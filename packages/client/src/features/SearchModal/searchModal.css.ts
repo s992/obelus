@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { mediaQuery } from '../../style';
+import { mediaQuery } from '@/style';
 
 export const modal = style({
   padding: 0,

@@ -8,12 +8,13 @@ import { useEffect, useState } from 'react';
 import { Button, Disclosure, DisclosurePanel, DropZone, FileTrigger } from 'react-aria-components';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { useTRPC } from '../../../client';
-import { FormattedAlert } from '../../../components/Alert';
-import { IconButton } from '../../../components/IconButton';
-import { Modal } from '../../../components/Modal';
-import { useFormatDate } from '../../../hooks/useFormatDate';
-import { flex, typography } from '../../../style';
+import { useTRPC } from '@/client';
+import { FormattedAlert } from '@/components/Alert';
+import { IconButton } from '@/components/IconButton';
+import { Modal } from '@/components/Modal';
+import { useFormatDate } from '@/hooks/useFormatDate';
+import { flex, typography } from '@/style';
+
 import { ImportProgress } from './ImportProgress';
 import {
   code,

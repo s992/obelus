@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl';
 
-import { Modal } from '../../components/Modal';
+import { Modal } from '@/components/Modal';
+
 import { BookSearch } from './BookSearch';
 import { modal } from './searchModal.css';
 

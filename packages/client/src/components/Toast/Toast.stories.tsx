@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { Button } from '../Button';
+import { Button } from '@/components/Button';
+
 import { toastQueue } from './queue';
 import { ToastRegion } from './ToastRegion';
 

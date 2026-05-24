@@ -1,6 +1,7 @@
 import { FormattedMessage } from 'react-intl';
 
-import { typography } from '../../style';
+import { typography } from '@/style';
+
 import {
   badUrl,
   card,

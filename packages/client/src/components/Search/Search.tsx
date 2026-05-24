@@ -4,7 +4,8 @@ import { type RefObject } from 'react';
 import { Input, TextField, type TextFieldProps } from 'react-aria-components';
 import { useIntl } from 'react-intl';
 
-import { IconButton } from '../IconButton';
+import { IconButton } from '@/components/IconButton';
+
 import { icon, input, wrapper } from './search.css';
 
 type Props = {

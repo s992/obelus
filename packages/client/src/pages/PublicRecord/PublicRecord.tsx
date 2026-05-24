@@ -4,12 +4,13 @@ import { type ReactNode, useMemo } from 'react';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'react-aria-components';
 import { FormattedMessage } from 'react-intl';
 
-import { useTRPC } from '../../client';
-import { AppHeader } from '../../components/AppHeader';
-import { FullPageSpinner } from '../../components/FullPageSpinner';
-import { NotFound } from '../../components/NotFound';
-import { useFormatDate } from '../../hooks/useFormatDate';
-import { typography } from '../../style';
+import { useTRPC } from '@/client';
+import { AppHeader } from '@/components/AppHeader';
+import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { NotFound } from '@/components/NotFound';
+import { useFormatDate } from '@/hooks/useFormatDate';
+import { typography } from '@/style';
+
 import { PublicBookList } from './PublicBookList';
 import {
   bio,

@@ -6,12 +6,13 @@ import { DialogTrigger, Heading, TextArea } from 'react-aria-components';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { useTRPC } from '../../client';
-import { Button } from '../../components/Button';
-import { Modal } from '../../components/Modal';
-import { showMutationError } from '../../components/Toast';
-import { useFormatLongDate } from '../../hooks/useFormatLongDate';
-import { judgment as judgmentCss, typography } from '../../style';
+import { useTRPC } from '@/client';
+import { Button } from '@/components/Button';
+import { Modal } from '@/components/Modal';
+import { showMutationError } from '@/components/Toast';
+import { useFormatLongDate } from '@/hooks/useFormatLongDate';
+import { judgment as judgmentCss, typography } from '@/style';
+
 import {
   addNoteButton,
   confirmModalButtons,

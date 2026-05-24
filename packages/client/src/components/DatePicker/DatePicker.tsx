@@ -13,12 +13,13 @@ import {
   Group,
 } from 'react-aria-components';
 
-import { useFieldContext } from '../../form';
-import { Calendar } from '../Calendar';
-import { IconButton } from '../IconButton';
-import { Label } from '../Label';
-import { Popover } from '../Popover';
-import { ValidationErrorList } from '../ValidationErrorList';
+import { Calendar } from '@/components/Calendar';
+import { IconButton } from '@/components/IconButton';
+import { Label } from '@/components/Label';
+import { Popover } from '@/components/Popover';
+import { ValidationErrorList } from '@/components/ValidationErrorList';
+import { useFieldContext } from '@/form';
+
 import { button, dateSegment, field as fieldCss, input } from './datePicker.css';
 
 type Props = {

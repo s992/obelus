@@ -9,16 +9,17 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useOnClickOutside } from 'usehooks-ts';
 
-import { AppHeader } from '../../components/AppHeader';
-import { Button } from '../../components/Button';
-import { IconButton } from '../../components/IconButton';
-import { Link } from '../../components/Link';
-import { ThemeToggle } from '../../components/ThemeToggle';
-import { ToastRegion } from '../../components/Toast';
-import { useAuthContext, useThemeContext } from '../../context';
-import { SearchModal } from '../../features/SearchModal';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
-import { mediaQuery } from '../../style';
+import { AppHeader } from '@/components/AppHeader';
+import { Button } from '@/components/Button';
+import { IconButton } from '@/components/IconButton';
+import { Link } from '@/components/Link';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { ToastRegion } from '@/components/Toast';
+import { useAuthContext, useThemeContext } from '@/context';
+import { SearchModal } from '@/features/SearchModal';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { mediaQuery } from '@/style';
+
 import { mobileButtons, mobileSearchButton, navDragTrigger, navSection, navToggle, searchButton } from './root.css';
 import { useSwipeToOpen } from './useSwipeToOpen';
 

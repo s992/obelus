@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { flex, mediaQuery, sectionDivider, typography, vars } from '../../style';
+import { flex, mediaQuery, sectionDivider, typography, vars } from '@/style';
 
 export const container = style({
   display: 'grid',

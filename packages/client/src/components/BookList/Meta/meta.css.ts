@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { typography, vars } from '../../../style';
+import { typography, vars } from '@/style';
 
 export const container = style([
   typography.uppercaseLabel,

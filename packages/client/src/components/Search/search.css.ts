@@ -1,6 +1,6 @@
 import { globalStyle, style } from '@vanilla-extract/css';
 
-import { flex, sectionDivider, typography, vars } from '../../style';
+import { flex, sectionDivider, typography, vars } from '@/style';
 
 export const wrapper = style([
   flex.container,

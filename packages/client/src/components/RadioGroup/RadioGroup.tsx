@@ -9,9 +9,10 @@ import {
   type RadioProps,
 } from 'react-aria-components';
 
-import { useFieldContext } from '../../form';
-import { typography } from '../../style';
-import { ValidationErrorList } from '../ValidationErrorList';
+import { ValidationErrorList } from '@/components/ValidationErrorList';
+import { useFieldContext } from '@/form';
+import { typography } from '@/style';
+
 import { radio, radioGroup, radioLabel } from './radioGroup.css';
 
 type Option = {

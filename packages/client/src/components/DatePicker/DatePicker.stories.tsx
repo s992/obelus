@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { FormDecorator } from '../_storybook/FormDecorator';
+import { FormDecorator } from '@/components/_storybook/FormDecorator';
+
 import { DatePicker } from './DatePicker';
 
 const meta = {

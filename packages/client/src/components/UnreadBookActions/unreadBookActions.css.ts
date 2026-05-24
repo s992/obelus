@@ -1,6 +1,6 @@
 import { style, styleVariants } from '@vanilla-extract/css';
 
-import { flex, mediaQuery, vars } from '../../style';
+import { flex, mediaQuery, vars } from '@/style';
 
 const baseContainer = style({ width: 'fit-content' });
 

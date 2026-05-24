@@ -1,7 +1,7 @@
 import { style } from '@vanilla-extract/css';
 
-import { button } from '../../components/Button/button.css';
-import { mediaQuery, sectionDivider, typography, vars } from '../../style';
+import { button } from '@/components/Button/button.css';
+import { mediaQuery, sectionDivider, typography, vars } from '@/style';
 
 export const tabContainer = style({
   width: '50%',

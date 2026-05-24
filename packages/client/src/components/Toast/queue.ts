@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { UNSTABLE_ToastQueue as ToastQueue } from 'react-aria-components';
 import { flushSync } from 'react-dom';
 
-import type { Props as AlertProps } from '../Alert';
+import type { Props as AlertProps } from '@/components/Alert';
 
 export type ToastContent = {
   title: ReactNode;

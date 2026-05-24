@@ -1,6 +1,7 @@
 import { style } from '@vanilla-extract/css';
 
-import { mediaQuery, sectionDivider, vars } from '../../style';
+import { mediaQuery, sectionDivider, vars } from '@/style';
+
 import { NAV_WIDTH, NAV_Z_INDEX, SWIPE_TRIGGER_WIDTH } from './constants';
 
 export const navDragTrigger = style({

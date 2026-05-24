@@ -1,6 +1,6 @@
 import { keyframes, style, styleVariants } from '@vanilla-extract/css';
 
-import { flex, sectionDivider, typography, vars } from '../../../../style';
+import { flex, sectionDivider, typography, vars } from '@/style';
 
 export const container = style([
   flex.column,

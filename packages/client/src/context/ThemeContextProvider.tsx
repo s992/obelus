@@ -1,8 +1,8 @@
 import { createContext, type ReactNode, useContext, useEffect } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 
-import type { Theme } from '../components/ThemeToggle';
-import { darkTheme, lightTheme } from '../style';
+import type { Theme } from '@/components/ThemeToggle';
+import { darkTheme, lightTheme } from '@/style';
 
 type ThemeContext = {
   theme: Theme;

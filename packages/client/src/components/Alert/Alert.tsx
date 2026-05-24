@@ -2,7 +2,8 @@ import clsx from 'clsx';
 import { AlertCircle, CircleCheck } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { vars } from '../../style';
+import { vars } from '@/style';
+
 import { alert } from './alert.css';
 
 export type Props = {

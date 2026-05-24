@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { flex, sectionDivider, vars } from '../../../style';
+import { flex, sectionDivider, vars } from '@/style';
 
 export const header = style([
   flex.column,

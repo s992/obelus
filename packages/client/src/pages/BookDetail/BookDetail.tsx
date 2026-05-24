@@ -3,15 +3,16 @@ import { Link, useParams } from '@tanstack/react-router';
 import dayjs from 'dayjs';
 import { FormattedMessage } from 'react-intl';
 
-import { useTRPC } from '../../client';
-import { BookCover } from '../../components/BookCover';
-import { FullPageSpinner } from '../../components/FullPageSpinner';
-import { LoadError } from '../../components/LoadError';
-import { StatusCell } from '../../features/StatusCell';
-import { useFormatLongDate } from '../../hooks/useFormatLongDate';
-import { useFormatPublishYear } from '../../hooks/useFormatPublishYear';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
-import { mediaQuery, typography } from '../../style';
+import { useTRPC } from '@/client';
+import { BookCover } from '@/components/BookCover';
+import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { LoadError } from '@/components/LoadError';
+import { StatusCell } from '@/features/StatusCell';
+import { useFormatLongDate } from '@/hooks/useFormatLongDate';
+import { useFormatPublishYear } from '@/hooks/useFormatPublishYear';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { mediaQuery, typography } from '@/style';
+
 import {
   actions,
   author,

@@ -3,11 +3,12 @@ import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import { useFormatDate } from '../../../hooks/useFormatDate';
-import { useFormatDateDistance } from '../../../hooks/useFormatDateDistance';
-import { useFormatPublishYear } from '../../../hooks/useFormatPublishYear';
-import { judgment } from '../../../style';
-import { separator } from '../bookList.css';
+import { separator } from '@/components/BookList/bookList.css';
+import { useFormatDate } from '@/hooks/useFormatDate';
+import { useFormatDateDistance } from '@/hooks/useFormatDateDistance';
+import { useFormatPublishYear } from '@/hooks/useFormatPublishYear';
+import { judgment } from '@/style';
+
 import { container, judgmentMeta } from './meta.css';
 
 type Props = {

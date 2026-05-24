@@ -2,10 +2,10 @@ import type { SortField, Status } from '@obelus/shared/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { FormattedMessage } from 'react-intl';
 
-import { useTRPC } from '../../../client';
-import { BookList } from '../../../components/BookList';
-import { FullPageSpinner } from '../../../components/FullPageSpinner';
-import { ListPageContextProvider } from '../../ListPage/context';
+import { useTRPC } from '@/client';
+import { BookList } from '@/components/BookList';
+import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { ListPageContextProvider } from '@/pages/ListPage/context';
 
 type Props = {
   userName: string;

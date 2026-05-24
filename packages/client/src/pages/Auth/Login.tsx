@@ -2,8 +2,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Navigate } from '@tanstack/react-router';
 import { FormattedMessage } from 'react-intl';
 
-import { useTRPC } from '../../client';
-import { useAuthContext } from '../../context';
+import { useTRPC } from '@/client';
+import { useAuthContext } from '@/context';
+
 import { AuthError } from './AuthError';
 import { AuthForm } from './AuthForm';
 import { formContainer } from './auth.css';
