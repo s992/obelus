@@ -101,6 +101,14 @@ export const listEntry = style([
 
 export const coverLink = style({
   textDecoration: 'none',
+  width: 'fit-content',
+  height: 'fit-content',
+  selectors: {
+    '&:focus': {
+      outline: `1px solid ${vars.color.accent}`,
+      outlineOffset: 2,
+    },
+  },
 });
 
 export const titleAndAuthor = style([
@@ -126,10 +134,12 @@ export const titleLink = style([
   title,
   {
     cursor: 'pointer',
-    ':hover': {
-      textDecoration: 'underline',
-      textDecorationColor: vars.color.ink3,
-      textUnderlineOffset: vars.space.s1,
+    selectors: {
+      '&:hover, &:focus': {
+        textDecoration: 'underline',
+        textDecorationColor: vars.color.ink3,
+        textUnderlineOffset: vars.space.s1,
+      },
     },
   },
 ]);

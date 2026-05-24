@@ -12,6 +12,12 @@ const baseButton = style([
     padding: `${vars.space.s2} ${vars.space.s4}`,
     transition: 'background-color .15s ease, border-color .15s ease',
     width: 'fit-content',
+    selectors: {
+      '&[data-focus-visible=true]': {
+        outline: `1px solid ${vars.color.accent}`,
+        outlineOffset: 2,
+      },
+    },
   },
 ]);
 
@@ -93,6 +99,10 @@ export const button = styleVariants({
           borderBottomColor: vars.color.ink3,
           cursor: 'not-allowed',
         },
+        '&[data-focus-visible=true]': {
+          borderBottomColor: vars.color.ink,
+          outline: 'none',
+        },
       },
     },
   ],
@@ -116,7 +126,7 @@ export const button = styleVariants({
         borderColor: vars.color.ink,
       },
       selectors: {
-        '&[data-selected=true]': {
+        '&[data-selected=true], &[data-focus-visible=true]': {
           color: vars.color.ink,
           borderColor: vars.color.ink,
         },

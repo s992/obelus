@@ -2,10 +2,20 @@ import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
 import clsx from 'clsx';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Calendar as AriaCalendar, CalendarCell, CalendarGrid, type CalendarProps } from 'react-aria-components';
+import { useFocusRing } from 'react-aria/useFocusRing';
 
 import { IconButton } from '@/components/IconButton';
 
-import { calendar, calendarGrid, currentMonthYear, header, headerButtonsContainer, month, year } from './calendar.css';
+import {
+  calendar,
+  calendarGrid,
+  currentMonthYear,
+  gridCell,
+  header,
+  headerButtonsContainer,
+  month,
+  year,
+} from './calendar.css';
 
 type Props = {} & CalendarProps<CalendarDate>;
 
@@ -33,10 +43,16 @@ export function Calendar({ className, ...props }: Props) {
             </div>
           </header>
           <CalendarGrid className={calendarGrid} weekdayStyle="short">
-            {(date) => <CalendarCell date={date} />}
+            {(date) => <Cell date={date} />}
           </CalendarGrid>
         </>
       )}
     </AriaCalendar>
   );
+}
+
+function Cell({ date }: { date: CalendarDate }) {
+  const { focusProps, isFocusVisible } = useFocusRing();
+
+  return <CalendarCell {...focusProps} date={date} data-focus-visible={isFocusVisible} className={gridCell} />;
 }

@@ -57,23 +57,30 @@ globalStyle(`${calendarGrid} th`, {
   textTransform: 'uppercase',
 });
 
-globalStyle(`${calendarGrid} td`, {
-  textAlign: 'center',
-  width: 35,
-  height: 32,
-  borderRadius: vars.radius.sm,
-  cursor: 'pointer',
-});
-
-globalStyle(`${calendarGrid} td[aria-disabled]`, {
-  visibility: 'hidden',
-});
-
-globalStyle(`${calendarGrid} td[aria-selected]`, {
-  background: vars.color.ink,
-  color: vars.color.bg,
-});
-
-globalStyle(`${calendarGrid} td:hover:not([aria-disabled]):not([aria-selected])`, {
-  background: vars.color.tint,
-});
+export const gridCell = style([
+  flex.center,
+  {
+    textAlign: 'center',
+    width: 35,
+    height: 32,
+    borderRadius: vars.radius.sm,
+    cursor: 'pointer',
+    selectors: {
+      '&[data-disabled]': {
+        visibility: 'hidden',
+      },
+      '&[data-selected]': {
+        background: vars.color.ink,
+        color: vars.color.bg,
+      },
+      '&:hover:not([data-disabled], [data-selected]), &[data-focus-visible=true]:not([data-disabled], [data-selected])':
+        {
+          background: vars.color.tint,
+        },
+      '&:where([data-focus-visible=true][data-selected]):not([data-disabled])': {
+        background: vars.color.tint,
+        color: vars.color.ink,
+      },
+    },
+  },
+]);

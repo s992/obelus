@@ -11,6 +11,12 @@ const baseButton = style({
   border: '1px solid transparent',
   borderRadius: vars.radius.sm,
   transition: 'background-color .15s ease, border-color .15s ease, color .15s ease',
+  selectors: {
+    '&[data-focus-visible=true]': {
+      outline: `1px solid ${vars.color.accent}`,
+      outlineOffset: 2,
+    },
+  },
 });
 
 export const button = styleVariants({

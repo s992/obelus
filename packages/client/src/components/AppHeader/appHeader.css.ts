@@ -20,8 +20,10 @@ export const brand = style([
     textDecoration: 'none',
     color: vars.color.ink3,
     transition: 'color .15s',
-    ':hover': {
-      color: vars.color.ink,
+    selectors: {
+      '&:hover, &:focus': {
+        color: vars.color.ink,
+      },
     },
   },
 ]);

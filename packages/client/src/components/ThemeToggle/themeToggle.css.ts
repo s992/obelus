@@ -7,6 +7,12 @@ export const toggle = style({
   alignItems: 'center',
   cursor: 'pointer',
   userSelect: 'none',
+  selectors: {
+    '&[data-focus-visible=true]': {
+      outline: `1px solid ${vars.color.accent}`,
+      outlineOffset: 2,
+    },
+  },
 });
 
 export const track = style({

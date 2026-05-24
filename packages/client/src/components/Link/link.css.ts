@@ -14,7 +14,7 @@ export const link = style([
         textDecorationColor: vars.color.ink3,
         textUnderlineOffset: vars.space.s1,
       },
-      '&.active:not(:active)': {
+      '&.active:not(:active), &:focus': {
         borderBottomColor: vars.color.ink,
       },
     },
