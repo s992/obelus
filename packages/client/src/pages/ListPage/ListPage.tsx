@@ -4,7 +4,6 @@ import { type ReactNode, useState } from 'react';
 
 import { useTRPC } from '@/client';
 import { BookList } from '@/components/BookList';
-import { FullPageSpinner } from '@/components/FullPageSpinner';
 
 import { ListPageContextProvider } from './context';
 
@@ -27,11 +26,6 @@ export function ListPage({ status, sortField, renderEmptyState }: Props) {
   );
   const books = data?.pages.flatMap((page) => page?.books).filter((book) => book !== undefined);
 
-  // TODO: this is janky when changing the filter
-  if (isLoading) {
-    return <FullPageSpinner />;
-  }
-
   return (
     <ListPageContextProvider value={{ queryKey: trpc.record.list.infiniteQueryKey(), hasNextPage, fetchNextPage }}>
       <BookList
@@ -41,6 +35,7 @@ export function ListPage({ status, sortField, renderEmptyState }: Props) {
         renderEmptyState={renderEmptyState}
         filter={judgmentFilter}
         onFilterChanged={setJudgmentFilter}
+        isLoading={isLoading}
       />
     </ListPageContextProvider>
   );

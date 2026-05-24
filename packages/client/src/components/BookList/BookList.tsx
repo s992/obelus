@@ -1,14 +1,15 @@
 import type { Book, Judgment, Status } from '@obelus/shared/types';
 import dayjs from 'dayjs';
 import get from 'lodash.get';
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useIntersectionObserver } from 'usehooks-ts';
 
 import { Button } from '@/components/Button';
 import { useListPageContext } from '@/pages/ListPage/context';
-import { typography } from '@/style';
+import { flex, typography } from '@/style';
 
+import { LoadingSpinner } from '../LoadingSpinner';
 import { chipDot, filterBar } from './bookList.css';
 import { BookListContextProvider } from './context';
 import { ListGroup } from './ListGroup';
@@ -22,9 +23,19 @@ type Props = {
   filter?: Judgment | null;
   onFilterChanged?: (filter: Judgment | null) => void;
   isPublic?: boolean;
+  isLoading?: boolean;
 };
 
-export function BookList({ variant, books, totalCount, renderEmptyState, filter, onFilterChanged, isPublic }: Props) {
+export function BookList({
+  variant,
+  books,
+  totalCount,
+  renderEmptyState,
+  filter,
+  onFilterChanged,
+  isPublic,
+  isLoading,
+}: Props) {
   const { hasNextPage, fetchNextPage } = useListPageContext();
   const headerI18n = useHeaderI18n();
   const grouped = groupBooks(variant, books);
@@ -44,7 +55,7 @@ export function BookList({ variant, books, totalCount, renderEmptyState, filter,
       <section>
         {!isPublic && (
           <ListHeader title={headerI18n[variant]} count={totalCount}>
-            {variant === 'finished' && onFilterChanged && dates.length > 0 && (
+            {variant === 'finished' && onFilterChanged && (
               <div className={filterBar}>
                 <Button variant="chip" isSelected={!filter} onPress={() => onFilterChanged(null)}>
                   <FormattedMessage defaultMessage="all" />
@@ -65,20 +76,50 @@ export function BookList({ variant, books, totalCount, renderEmptyState, filter,
             )}
           </ListHeader>
         )}
-        {dates.length ? (
-          dates.map((date, idx) => (
-            <ListGroup
-              key={date}
-              books={grouped[date] ?? []}
-              date={date}
-              ref={idx === dates.length - 1 ? intersectionRef : undefined}
-            />
-          ))
-        ) : (
-          <div className={typography.body}>{renderEmptyState()}</div>
-        )}
+        <Content
+          dates={dates}
+          groupedBooks={grouped}
+          isLoading={isLoading ?? false}
+          renderEmptyState={renderEmptyState}
+          intersectionRef={intersectionRef}
+        />
       </section>
     </BookListContextProvider>
+  );
+}
+
+type ContentProps = {
+  dates: string[];
+  groupedBooks: Record<string, Book[]>;
+  isLoading: boolean;
+  renderEmptyState: () => ReactNode;
+  intersectionRef: Ref<HTMLDivElement>;
+};
+
+function Content({ dates, groupedBooks, isLoading, renderEmptyState, intersectionRef }: ContentProps) {
+  if (isLoading) {
+    return (
+      <div className={flex.center}>
+        <LoadingSpinner size="large" />
+      </div>
+    );
+  }
+
+  if (!dates.length) {
+    return <div className={typography.body}>{renderEmptyState()}</div>;
+  }
+
+  return (
+    <>
+      {dates.map((date, idx) => (
+        <ListGroup
+          key={date}
+          books={groupedBooks[date] ?? []}
+          date={date}
+          ref={idx === dates.length - 1 ? intersectionRef : undefined}
+        />
+      ))}
+    </>
   );
 }
 
