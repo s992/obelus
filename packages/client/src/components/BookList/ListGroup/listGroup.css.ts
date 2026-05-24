@@ -124,7 +124,6 @@ export const title = style([
   {
     fontSize: vars.fontSize.title,
     color: vars.color.ink,
-    textDecoration: 'none',
     textWrap: 'pretty',
     width: 'fit-content',
   },
@@ -133,14 +132,7 @@ export const title = style([
 export const titleLink = style([
   title,
   {
-    cursor: 'pointer',
-    selectors: {
-      '&:hover, &:focus': {
-        textDecoration: 'underline',
-        textDecorationColor: vars.color.ink3,
-        textUnderlineOffset: vars.space.s1,
-      },
-    },
+    padding: 0,
   },
 ]);
 

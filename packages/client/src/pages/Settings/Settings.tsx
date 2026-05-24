@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link } from '@tanstack/react-router';
 import { Copy, CopyCheck, CopyX } from 'lucide-react';
 import { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -9,6 +8,7 @@ import { useTRPC } from '@/client';
 import { Button } from '@/components/Button';
 import { FullPageSpinner } from '@/components/FullPageSpinner';
 import { IconButton } from '@/components/IconButton';
+import { Link } from '@/components/Link';
 import { NotFound } from '@/components/NotFound';
 import { toastQueue } from '@/components/Toast';
 import { typography, vars } from '@/style';
@@ -102,11 +102,7 @@ export function Settings() {
             values={{
               isPublic: user.public,
               btn: (chunks) => (
-                <Button
-                  variant="underlined"
-                  className={privacyButton}
-                  onPress={() => updateUser({ public: !user.public })}
-                >
+                <Button variant="link" className={privacyButton} onPress={() => updateUser({ public: !user.public })}>
                   {chunks}
                 </Button>
               ),

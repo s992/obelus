@@ -1,10 +1,16 @@
-import { type LinkComponentProps, Link as RouterLink } from '@tanstack/react-router';
+import { createLink } from '@tanstack/react-router';
 import clsx from 'clsx';
+import { Link as AriaLink } from 'react-aria-components';
+import type { AriaLinkProps } from 'react-aria/useLink';
 
 import { link } from './link.css';
 
-type Props = {} & LinkComponentProps;
+type Props = {
+  className?: string;
+} & AriaLinkProps;
 
-export function Link({ className, ...rest }: Props) {
-  return <RouterLink {...rest} className={clsx(link, className)} />;
+function BaseLink({ className, ...rest }: Props) {
+  return <AriaLink className={clsx(link, className)} {...rest} />;
 }
+
+export const Link = createLink(BaseLink);

@@ -99,10 +99,10 @@ export const seriesLink = style({
   color: vars.color.ink3,
   letterSpacing: vars.letterSpacing.label,
   margin: 0,
-  ':focus': {
-    outline: `1px solid ${vars.color.accent}`,
-    outlineOffset: 2,
-  },
+  // ':focus': {
+  //   outline: `1px solid ${vars.color.accent}`,
+  //   outlineOffset: 2,
+  // },
 });
 
 export const description = style([

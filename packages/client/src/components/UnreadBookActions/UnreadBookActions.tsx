@@ -23,13 +23,13 @@ export function UnreadBookActions({ layout, onAction, isProcessing }: Props) {
         </div>
       ) : (
         <>
-          <Button className={button} variant="underlined" onPress={() => onAction('finished')}>
+          <Button className={button} variant="link" onPress={() => onAction('finished')}>
             <FormattedMessage defaultMessage="mark read" />
           </Button>
-          <Button className={button} variant="underlined" onPress={() => onAction('planned')}>
+          <Button className={button} variant="link" onPress={() => onAction('planned')}>
             <FormattedMessage defaultMessage="add to planned" />
           </Button>
-          <Button className={button} variant="underlined" onPress={() => onAction('reading')}>
+          <Button className={button} variant="link" onPress={() => onAction('reading')}>
             <FormattedMessage defaultMessage="start reading" />
           </Button>
         </>

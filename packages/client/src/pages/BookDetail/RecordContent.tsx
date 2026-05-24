@@ -95,7 +95,7 @@ export function RecordContent({ book, notes }: Props) {
           <h2 className={typography.uppercaseLabel}>
             <FormattedMessage defaultMessage="judgment" />
           </h2>
-          <Button variant="underlined" onPress={() => setIsRevising((current) => !current)}>
+          <Button variant="link" onPress={() => setIsRevising((current) => !current)}>
             <FormattedMessage defaultMessage="revise" />
           </Button>
         </div>

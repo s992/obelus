@@ -31,15 +31,15 @@ export function UntrackedQuickActions({ book }: Props) {
 
   return (
     <div className={container}>
-      <Button variant="underlined" isDisabled={isPending} onPress={makeRecord('reading')}>
+      <Button variant="link" isDisabled={isPending} onPress={makeRecord('reading')}>
         <FormattedMessage defaultMessage="start reading" />
       </Button>
       <span className={separator}>·</span>
-      <Button variant="underlined" isDisabled={isPending} onPress={makeRecord('finished')}>
+      <Button variant="link" isDisabled={isPending} onPress={makeRecord('finished')}>
         <FormattedMessage defaultMessage="already read" />
       </Button>
       <span className={separator}>·</span>
-      <Button variant="underlined" isDisabled={isPending} onPress={makeRecord('planned')}>
+      <Button variant="link" isDisabled={isPending} onPress={makeRecord('planned')}>
         <FormattedMessage defaultMessage="add to planned" />
       </Button>
     </div>

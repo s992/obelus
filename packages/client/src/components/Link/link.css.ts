@@ -4,18 +4,18 @@ import { button } from '@/components/Button/button.css';
 import { vars } from '@/style';
 
 export const link = style([
-  button.underlined,
+  button.link,
   {
-    textDecoration: 'none',
+    textDecoration: 'underline',
+    textDecorationColor: 'transparent',
+    textUnderlineOffset: vars.space.s2,
     width: 'fit-content',
     selectors: {
-      '&:hover:not(.active):not(:active)': {
-        textDecoration: 'underline',
-        textDecorationColor: vars.color.ink3,
-        textUnderlineOffset: vars.space.s1,
+      '&:hover:not(.active, :active), &[data-focus-visible=true]': {
+        textDecorationColor: vars.color.accent,
       },
-      '&.active:not(:active), &:focus': {
-        borderBottomColor: vars.color.ink,
+      '&.active:not(:active)': {
+        textDecorationColor: vars.color.ink,
       },
     },
   },

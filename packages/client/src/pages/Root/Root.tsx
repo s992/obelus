@@ -102,7 +102,7 @@ export function Root() {
                 <FormattedMessage defaultMessage="settings" />
               </Link>
               <Button
-                variant="underlined"
+                variant="link"
                 onPress={async () => {
                   await logout();
                   navigate({ to: '/auth/login' });

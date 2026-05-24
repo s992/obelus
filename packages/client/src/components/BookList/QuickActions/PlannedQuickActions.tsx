@@ -43,16 +43,16 @@ export function PlannedQuickActions({ book }: Props) {
 
   return (
     <div className={container}>
-      <Button variant="underlined" isDisabled={isPending} onPress={setStatus('reading')}>
+      <Button variant="link" isDisabled={isPending} onPress={setStatus('reading')}>
         <FormattedMessage defaultMessage="start reading" />
       </Button>
       <span className={separator}>·</span>
-      <Button variant="underlined" isDisabled={isPending} onPress={setStatus('finished')}>
+      <Button variant="link" isDisabled={isPending} onPress={setStatus('finished')}>
         <FormattedMessage defaultMessage="already read" />
       </Button>
       <span className={separator}>·</span>
       <Button
-        variant="underlined"
+        variant="link"
         className={removeButton}
         isDisabled={isPending}
         onPress={() => {

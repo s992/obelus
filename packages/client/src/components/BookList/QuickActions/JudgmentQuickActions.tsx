@@ -35,15 +35,15 @@ export function JudgmentQuickActions({ book }: Props) {
 
   return (
     <div className={container}>
-      <Button variant="underlined" isDisabled={isPending} onPress={setJudgment('accepted')}>
+      <Button variant="link" isDisabled={isPending} onPress={setJudgment('accepted')}>
         <FormattedMessage defaultMessage="accept" />
       </Button>
       <span className={separator}>·</span>
-      <Button variant="underlined" isDisabled={isPending} onPress={setJudgment('mixed')}>
+      <Button variant="link" isDisabled={isPending} onPress={setJudgment('mixed')}>
         <FormattedMessage defaultMessage="mixed" />
       </Button>
       <span className={separator}>·</span>
-      <Button variant="underlined" isDisabled={isPending} onPress={setJudgment('rejected')}>
+      <Button variant="link" isDisabled={isPending} onPress={setJudgment('rejected')}>
         <FormattedMessage defaultMessage="reject" />
       </Button>
     </div>

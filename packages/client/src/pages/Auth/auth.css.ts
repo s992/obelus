@@ -25,7 +25,7 @@ export const tabList = style({
 });
 
 export const tab = style([
-  button.underlined,
+  button.link,
   {
     textDecoration: 'none',
     selectors: {

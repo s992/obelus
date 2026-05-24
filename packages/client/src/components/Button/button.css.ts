@@ -77,7 +77,7 @@ export const button = styleVariants({
       },
     },
   ],
-  underlined: [
+  link: [
     baseButton,
     {
       padding: `${vars.space.s2} 0`,
@@ -85,23 +85,26 @@ export const button = styleVariants({
       borderRadius: 0,
       color: vars.color.ink3,
       cursor: 'pointer',
-      borderBottom: `1px solid transparent`,
+      borderBottom: 'none',
+      textDecoration: 'underline',
+      textDecorationColor: 'transparent',
+      textUnderlineOffset: vars.space.s2,
       ':hover': {
         color: vars.color.ink,
-      },
-      ':active': {
-        borderBottomColor: vars.color.ink,
+        textDecorationColor: vars.color.accent,
       },
       selectors: {
+        '&.active': {
+          textDecorationColor: vars.color.accent,
+        },
         '&[data-disabled=true]': {
           color: vars.color.ink3,
           backgroundColor: 'transparent',
-          borderBottomColor: vars.color.ink3,
           cursor: 'not-allowed',
         },
         '&[data-focus-visible=true]': {
-          borderBottomColor: vars.color.ink,
           outline: 'none',
+          textDecorationColor: vars.color.accent,
         },
       },
     },

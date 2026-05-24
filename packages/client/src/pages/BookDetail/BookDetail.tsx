@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { Link, useParams } from '@tanstack/react-router';
+import { useParams } from '@tanstack/react-router';
 import dayjs from 'dayjs';
 import { FormattedMessage } from 'react-intl';
 
 import { useTRPC } from '@/client';
 import { BookCover } from '@/components/BookCover';
 import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { Link } from '@/components/Link';
 import { LoadError } from '@/components/LoadError';
 import { StatusCell } from '@/features/StatusCell';
 import { useFormatLongDate } from '@/hooks/useFormatLongDate';

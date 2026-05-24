@@ -40,7 +40,6 @@ export const navSection = style({
 });
 
 export const searchButton = style({
-  transform: 'translateY(2px)', // better horizontal alignment
   '@media': {
     [mediaQuery.mobile]: {
       display: 'none',

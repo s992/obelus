@@ -28,7 +28,7 @@ export const Tertiary: Story = {
 };
 
 export const Underlined: Story = {
-  args: { variant: 'underlined' },
+  args: { variant: 'link' },
 };
 
 export const Chip: Story = {
