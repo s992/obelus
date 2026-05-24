@@ -16,6 +16,14 @@ export const Tertiary: Story = {
   args: { 'aria-label': 'close', children: <X /> },
 };
 
+export const Secondary: Story = {
+  args: { 'aria-label': 'close', children: <X />, variant: 'secondary' },
+};
+
+export const Small: Story = {
+  args: { 'aria-label': 'close', children: <X />, size: 'small' },
+};
+
 export const Disabled: Story = {
   args: { 'aria-label': 'close', children: <X />, isDisabled: true },
 };

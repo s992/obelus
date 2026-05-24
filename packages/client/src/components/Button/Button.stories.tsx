@@ -42,3 +42,7 @@ export const Disabled: Story = {
 export const Processing: Story = {
   args: { isProcessing: true },
 };
+
+export const ChipSelected: Story = {
+  args: { variant: 'chip', isSelected: true },
+};

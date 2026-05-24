@@ -33,6 +33,25 @@ export const Default: Story = {
   ),
 };
 
+export const Success: Story = {
+  render: () => (
+    <>
+      <Button
+        onPress={() =>
+          toastQueue.add({
+            variant: 'success',
+            title: 'Saved',
+            message: 'Your changes have been saved.',
+          })
+        }
+      >
+        Show toast
+      </Button>
+      <ToastRegion />
+    </>
+  ),
+};
+
 export const LongMessage: Story = {
   render: () => (
     <>

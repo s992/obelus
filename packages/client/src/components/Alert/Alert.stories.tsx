@@ -20,6 +20,10 @@ export const Error: Story = {
   args: { variant: 'error' },
 };
 
+export const Success: Story = {
+  args: { variant: 'success', children: 'Your changes have been saved.' },
+};
+
 export const FormattedAlertError: Story = {
   render: () => (
     <FormattedAlert
@@ -28,4 +32,8 @@ export const FormattedAlertError: Story = {
       message="Something went wrong while saving your changes. Please try again."
     />
   ),
+};
+
+export const FormattedAlertSuccess: Story = {
+  render: () => <FormattedAlert variant="success" title="Saved" message="Your changes have been saved successfully." />,
 };

@@ -27,7 +27,7 @@ export function Button({
       isDisabled={isDisabled || isProcessing}
       data-selected={isSelected}
     >
-      {isProcessing ? <LoadingSpinner size="med" /> : children}
+      {isProcessing ? <LoadingSpinner size="small" /> : children}
     </AriaButton>
   );
 }

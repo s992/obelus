@@ -13,6 +13,7 @@ const withBackground: Decorator = (Story) => (
 );
 
 const preview: Preview = {
+  tags: ['autodocs'],
   parameters: {
     backgrounds: { disable: true }, // kill the manual backgrounds panel
   },

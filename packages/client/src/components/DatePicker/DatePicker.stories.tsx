@@ -26,3 +26,16 @@ export const Default: Story = {
     </FormDecorator>
   ),
 };
+
+export const Empty: Story = {
+  args: { label: 'Start Date' },
+  render: (args) => (
+    <FormDecorator defaultValues={{ startDate: null }}>
+      {(form) => (
+        <form.AppForm>
+          <form.AppField name="startDate">{(field: any) => <field.DatePicker {...args} />}</form.AppField>
+        </form.AppForm>
+      )}
+    </FormDecorator>
+  ),
+};

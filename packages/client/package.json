@@ -46,6 +46,7 @@
     "@babel/core": "catalog:",
     "@formatjs/unplugin": "catalog:",
     "@rolldown/plugin-babel": "catalog:",
+    "@storybook/addon-docs": "catalog:",
     "@storybook/addon-themes": "catalog:",
     "@storybook/react-vite": "catalog:",
     "@tanstack/router-plugin": "catalog:",
