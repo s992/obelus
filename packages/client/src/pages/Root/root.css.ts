@@ -1,6 +1,22 @@
 import { style } from '@vanilla-extract/css';
 
 import { mediaQuery, sectionDivider, vars } from '../../style';
+import { NAV_WIDTH, NAV_Z_INDEX, SWIPE_TRIGGER_WIDTH } from './constants';
+
+export const navDragTrigger = style({
+  position: 'fixed',
+  top: 0,
+  right: 0,
+  width: SWIPE_TRIGGER_WIDTH,
+  height: '100%',
+  zIndex: NAV_Z_INDEX - 1,
+  touchAction: 'none',
+  '@media': {
+    [mediaQuery.mobileUp]: {
+      display: 'none',
+    },
+  },
+});
 
 export const navSection = style({
   display: 'flex',
@@ -16,15 +32,10 @@ export const navSection = style({
       padding: vars.space.s4,
       position: 'fixed',
       transition: 'translate 0.25s ease',
-      translate: '100% 0',
-      width: 180,
-      zIndex: 999,
+      width: NAV_WIDTH,
+      zIndex: NAV_Z_INDEX,
     },
   },
-});
-
-export const navSectionOpen = style({
-  translate: '0 0 !important',
 });
 
 export const searchButton = style({

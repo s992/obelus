@@ -3,7 +3,6 @@ import { FormDevtoolsPanel } from '@tanstack/react-form-devtools';
 import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools';
 import { Outlet, useNavigate, useRouter } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
-import clsx from 'clsx';
 import { Menu, Search } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -20,7 +19,8 @@ import { useAuthContext, useThemeContext } from '../../context';
 import { SearchModal } from '../../features/SearchModal';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { mediaQuery } from '../../style';
-import { mobileButtons, mobileSearchButton, navSection, navSectionOpen, navToggle, searchButton } from './root.css';
+import { mobileButtons, mobileSearchButton, navDragTrigger, navSection, navToggle, searchButton } from './root.css';
+import { useSwipeToOpen } from './useSwipeToOpen';
 
 export function Root() {
   const intl = useIntl();
@@ -32,6 +32,18 @@ export function Root() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const isDesktop = useMediaQuery(mediaQuery.mobileUp);
   const navRef = useRef<HTMLDivElement>(null!);
+  const bindSwipeOpen = useSwipeToOpen({
+    direction: 'open',
+    navRef,
+    onOpen: () => setIsNavOpen(true),
+    enabled: !isDesktop && !isNavOpen,
+  });
+  const bindSwipeClose = useSwipeToOpen({
+    direction: 'close',
+    navRef,
+    onClose: () => setIsNavOpen(false),
+    enabled: !isDesktop && isNavOpen,
+  });
 
   useHotkeys('mod+k', () => setIsSearchOpen((current) => !current), { preventDefault: true, enableOnFormTags: true });
   useHotkeys('Esc', () => setIsNavOpen(false));
@@ -62,8 +74,15 @@ export function Root() {
 
   return (
     <>
+      <div {...bindSwipeOpen()} className={navDragTrigger} />
       <AppHeader>
-        <nav id="nav-menu" className={clsx(navSection, { [navSectionOpen]: isNavOpen })} ref={navRef}>
+        <nav
+          id="nav-menu"
+          className={navSection}
+          ref={navRef}
+          {...(isNavOpen ? bindSwipeClose() : {})}
+          style={!isDesktop ? { translate: isNavOpen ? '0% 0' : '100% 0' } : undefined}
+        >
           {isAuthenticated && (
             <>
               <IconButton

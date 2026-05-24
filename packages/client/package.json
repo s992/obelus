@@ -26,6 +26,7 @@
     "@tanstack/react-router-devtools": "catalog:",
     "@trpc/client": "catalog:",
     "@trpc/tanstack-react-query": "catalog:",
+    "@use-gesture/react": "catalog:",
     "@vanilla-extract/css": "catalog:",
     "@vanilla-extract/css-utils": "catalog:",
     "clsx": "catalog:",
