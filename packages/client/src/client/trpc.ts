@@ -1,6 +1,7 @@
-import type { AppRouter } from '@obelus/api';
 import { createTRPCClient, httpBatchLink, httpSubscriptionLink, splitLink } from '@trpc/client';
 import { createTRPCContext } from '@trpc/tanstack-react-query';
+
+import type { AppRouter } from '@obelus/api';
 
 export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<AppRouter>();
 

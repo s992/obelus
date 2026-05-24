@@ -1,5 +1,5 @@
-import { createHash } from 'node:crypto';
 import { type DocumentNode, print } from 'graphql';
+import { createHash } from 'node:crypto';
 
 import { config } from '../config';
 import { logger } from '../log';

@@ -1,7 +1,8 @@
-import { ImportProgressSchema } from '@obelus/shared/schema';
-import type { ImportProgress, Judgment } from '@obelus/shared/types';
 import { Job, Worker } from 'bullmq';
 import z from 'zod';
+
+import { ImportProgressSchema } from '@obelus/shared/schema';
+import type { ImportProgress, Judgment } from '@obelus/shared/types';
 
 import { db } from '../db/db';
 import { client as gqlClient } from '../gql/client';

@@ -1,17 +1,12 @@
-query GetSeriesById($id:Int!) {
+query GetSeriesById($id: Int!) {
   book_series(
-    distinct_on: position,
-    order_by: [
-      {position: asc}
-    ],
+    distinct_on: position
+    order_by: [{ position: asc }]
     where: {
-      series_id: {_eq: $id},
-      book: {
-        canonical_id: {_is_null: true},
-        is_partial_book: {_eq: false}
-      },
-      compilation: {_eq: false}
-		}
+      series_id: { _eq: $id }
+      book: { canonical_id: { _is_null: true }, is_partial_book: { _eq: false } }
+      compilation: { _eq: false }
+    }
   ) {
     position
     series {

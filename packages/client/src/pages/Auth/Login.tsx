@@ -5,9 +5,9 @@ import { FormattedMessage } from 'react-intl';
 import { useTRPC } from '@/client';
 import { useAuthContext } from '@/context';
 
+import { formContainer } from './auth.css';
 import { AuthError } from './AuthError';
 import { AuthForm } from './AuthForm';
-import { formContainer } from './auth.css';
 
 export function Login() {
   const trpc = useTRPC();

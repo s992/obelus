@@ -1,6 +1,7 @@
+import z from 'zod';
+
 import { RecordSchema } from '@obelus/shared/schema';
 import type { Judgment, Maybe, SortField, Status } from '@obelus/shared/types';
-import z from 'zod';
 
 import { db } from '../db/db';
 import { client } from '../gql/client';

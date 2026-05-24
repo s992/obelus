@@ -1,4 +1,3 @@
-import type { Book } from '@obelus/shared/types';
 import type { ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
 
@@ -7,6 +6,7 @@ import { StatusCell } from '@/features/SearchModal/BookSearch/StatusCell';
 import { useFormatDate } from '@/hooks/useFormatDate';
 import { useFormatPublishYear } from '@/hooks/useFormatPublishYear';
 import { typography } from '@/style';
+import type { Book } from '@obelus/shared/types';
 
 import { coverContainer, metaList, metaRow, metaValue, title, titleAuthorStack } from './bookPreview.css';
 

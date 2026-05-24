@@ -1,12 +1,12 @@
-import type { Book } from '@obelus/shared/types';
 import type { Ref } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { useBookListContext } from '@/components/BookList/context';
 import { flex } from '@/style';
+import type { Book } from '@obelus/shared/types';
 
-import { ListGroupRow } from './ListGroupRow';
 import { group, gutter, gutterCount, gutterMonth, gutterYear } from './listGroup.css';
+import { ListGroupRow } from './ListGroupRow';
 
 type Props = {
   books: Book[];

@@ -34,68 +34,68 @@ helm uninstall obelus -n obelus
 
 ### Application
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `replicaCount` | Number of app replicas | `1` |
-| `image.repository` | Container image | `ghcr.io/s992/obelus` |
-| `image.tag` | Image tag | `latest` |
-| `image.pullPolicy` | Pull policy | `IfNotPresent` |
-| `imagePullSecrets` | Registry pull secrets | `[]` |
+| Parameter          | Description            | Default               |
+| ------------------ | ---------------------- | --------------------- |
+| `replicaCount`     | Number of app replicas | `1`                   |
+| `image.repository` | Container image        | `ghcr.io/s992/obelus` |
+| `image.tag`        | Image tag              | `latest`              |
+| `image.pullPolicy` | Pull policy            | `IfNotPresent`        |
+| `imagePullSecrets` | Registry pull secrets  | `[]`                  |
 
 ### Configuration
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `config.baseUrl` | Public URL for the application | `http://localhost` |
-| `config.apiPort` | Internal API port | `3000` |
-| `config.clientPort` | Internal client port | `80` |
-| `config.logLevel` | Log level (`debug`, `info`, `warn`, `error`) | `info` |
-| `config.redisUrl` | Redis URL override (auto-constructed if empty) | `""` |
+| Parameter           | Description                                    | Default            |
+| ------------------- | ---------------------------------------------- | ------------------ |
+| `config.baseUrl`    | Public URL for the application                 | `http://localhost` |
+| `config.apiPort`    | Internal API port                              | `3000`             |
+| `config.clientPort` | Internal client port                           | `80`               |
+| `config.logLevel`   | Log level (`debug`, `info`, `warn`, `error`)   | `info`             |
+| `config.redisUrl`   | Redis URL override (auto-constructed if empty) | `""`               |
 
 ### Secrets
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `secrets.existingSecret` | Use an existing Secret instead of creating one | `""` |
-| `secrets.authTokenSecret` | JWT signing secret | `""` |
-| `secrets.cookieSecret` | Cookie signing secret | `""` |
-| `secrets.hardcoverApiToken` | Hardcover API token | `""` |
-| `secrets.databaseUrl` | PostgreSQL URL override (auto-constructed if empty) | `""` |
+| Parameter                   | Description                                         | Default |
+| --------------------------- | --------------------------------------------------- | ------- |
+| `secrets.existingSecret`    | Use an existing Secret instead of creating one      | `""`    |
+| `secrets.authTokenSecret`   | JWT signing secret                                  | `""`    |
+| `secrets.cookieSecret`      | Cookie signing secret                               | `""`    |
+| `secrets.hardcoverApiToken` | Hardcover API token                                 | `""`    |
+| `secrets.databaseUrl`       | PostgreSQL URL override (auto-constructed if empty) | `""`    |
 
 When using `secrets.existingSecret`, the Secret must contain these keys: `auth-token-secret`, `cookie-secret`, `hardcover-api-token`, `database-url`.
 
 ### Migration
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `migration.enabled` | Run database migrations on startup | `true` |
+| Parameter           | Description                        | Default |
+| ------------------- | ---------------------------------- | ------- |
+| `migration.enabled` | Run database migrations on startup | `true`  |
 
 ### Service
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
+| Parameter      | Description  | Default     |
+| -------------- | ------------ | ----------- |
 | `service.type` | Service type | `ClusterIP` |
-| `service.port` | Service port | `80` |
+| `service.port` | Service port | `80`        |
 
 ### Ingress
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `ingress.enabled` | Enable ingress | `false` |
-| `ingress.className` | Ingress class name | `""` |
-| `ingress.annotations` | Ingress annotations | `{}` |
-| `ingress.hosts` | Ingress hosts and paths | `[{host: obelus.local, paths: [{path: /, pathType: Prefix}]}]` |
-| `ingress.tls` | TLS configuration | `[]` |
+| Parameter             | Description             | Default                                                        |
+| --------------------- | ----------------------- | -------------------------------------------------------------- |
+| `ingress.enabled`     | Enable ingress          | `false`                                                        |
+| `ingress.className`   | Ingress class name      | `""`                                                           |
+| `ingress.annotations` | Ingress annotations     | `{}`                                                           |
+| `ingress.hosts`       | Ingress hosts and paths | `[{host: obelus.local, paths: [{path: /, pathType: Prefix}]}]` |
+| `ingress.tls`         | TLS configuration       | `[]`                                                           |
 
 ### PostgreSQL (Bitnami subchart)
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `postgresql.enabled` | Deploy PostgreSQL | `true` |
-| `postgresql.auth.username` | Database user | `obelus` |
-| `postgresql.auth.password` | Database password | `obelus` |
-| `postgresql.auth.database` | Database name | `obelus` |
-| `postgresql.primary.persistence.size` | PVC size | `1Gi` |
+| Parameter                             | Description       | Default  |
+| ------------------------------------- | ----------------- | -------- |
+| `postgresql.enabled`                  | Deploy PostgreSQL | `true`   |
+| `postgresql.auth.username`            | Database user     | `obelus` |
+| `postgresql.auth.password`            | Database password | `obelus` |
+| `postgresql.auth.database`            | Database name     | `obelus` |
+| `postgresql.primary.persistence.size` | PVC size          | `1Gi`    |
 
 Set `postgresql.enabled: false` and provide `secrets.databaseUrl` to use an external PostgreSQL instance.
 
@@ -103,12 +103,12 @@ See the [Bitnami PostgreSQL chart](https://github.com/bitnami/charts/tree/main/b
 
 ### Redis (Bitnami subchart)
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `redis.enabled` | Deploy Redis | `true` |
-| `redis.architecture` | Redis architecture | `standalone` |
-| `redis.auth.enabled` | Enable Redis authentication | `false` |
-| `redis.master.persistence.size` | PVC size | `1Gi` |
+| Parameter                       | Description                 | Default      |
+| ------------------------------- | --------------------------- | ------------ |
+| `redis.enabled`                 | Deploy Redis                | `true`       |
+| `redis.architecture`            | Redis architecture          | `standalone` |
+| `redis.auth.enabled`            | Enable Redis authentication | `false`      |
+| `redis.master.persistence.size` | PVC size                    | `1Gi`        |
 
 Set `redis.enabled: false` and provide `config.redisUrl` to use an external Redis instance.
 
@@ -116,14 +116,14 @@ See the [Bitnami Redis chart](https://github.com/bitnami/charts/tree/main/bitnam
 
 ### Other
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `serviceAccount.create` | Create a service account | `true` |
-| `serviceAccount.name` | Service account name (generated if empty) | `""` |
-| `serviceAccount.annotations` | Service account annotations | `{}` |
-| `resources` | CPU/memory resource requests and limits | `{}` |
-| `livenessProbe` | Liveness probe configuration | HTTP GET `/api/livez` |
-| `readinessProbe` | Readiness probe configuration | HTTP GET `/api/readyz` |
+| Parameter                    | Description                               | Default                |
+| ---------------------------- | ----------------------------------------- | ---------------------- |
+| `serviceAccount.create`      | Create a service account                  | `true`                 |
+| `serviceAccount.name`        | Service account name (generated if empty) | `""`                   |
+| `serviceAccount.annotations` | Service account annotations               | `{}`                   |
+| `resources`                  | CPU/memory resource requests and limits   | `{}`                   |
+| `livenessProbe`              | Liveness probe configuration              | HTTP GET `/api/livez`  |
+| `readinessProbe`             | Readiness probe configuration             | HTTP GET `/api/readyz` |
 
 ## Using an External Database
 
@@ -132,7 +132,7 @@ postgresql:
   enabled: false
 
 secrets:
-  databaseUrl: "postgres://user:pass@your-db-host:5432/obelus"
+  databaseUrl: 'postgres://user:pass@your-db-host:5432/obelus'
 ```
 
 ## Using an External Redis
@@ -142,5 +142,5 @@ redis:
   enabled: false
 
 config:
-  redisUrl: "redis://your-redis-host:6379"
+  redisUrl: 'redis://your-redis-host:6379'
 ```

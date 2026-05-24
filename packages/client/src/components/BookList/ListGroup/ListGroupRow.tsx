@@ -1,4 +1,3 @@
-import type { Book, Status } from '@obelus/shared/types';
 import { Link } from '@tanstack/react-router';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
@@ -7,6 +6,7 @@ import { BookCover } from '@/components/BookCover';
 import { Meta } from '@/components/BookList/Meta';
 import { JudgmentQuickActions, PlannedQuickActions, UntrackedQuickActions } from '@/components/BookList/QuickActions';
 import { useAuthContext } from '@/context';
+import type { Book, Status } from '@obelus/shared/types';
 
 import {
   author,

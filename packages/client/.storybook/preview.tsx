@@ -3,6 +3,7 @@ import type { Decorator, Preview } from '@storybook/react-vite';
 import { IntlProvider } from 'react-intl';
 
 import { background, darkTheme, lightTheme } from '../src/style';
+
 import '../src/style/reset.css';
 
 const withBackground: Decorator = (Story) => (

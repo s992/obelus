@@ -1,5 +1,4 @@
 import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
-import type { Maybe } from '@obelus/shared/types';
 import { mergeProps } from '@react-aria/utils';
 import clsx from 'clsx';
 import { Calendar as CalendarIcon } from 'lucide-react';
@@ -19,6 +18,7 @@ import { Label } from '@/components/Label';
 import { Popover } from '@/components/Popover';
 import { ValidationErrorList } from '@/components/ValidationErrorList';
 import { useFieldContext } from '@/form';
+import type { Maybe } from '@obelus/shared/types';
 
 import { button, dateSegment, field as fieldCss, input } from './datePicker.css';
 

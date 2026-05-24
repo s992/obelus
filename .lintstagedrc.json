@@ -1,4 +1,4 @@
 {
-  "*": ["biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --assist-enabled=true"],
+  "*": ["oxfmt --no-error-on-unmatched-pattern"],
   "*.{ts,tsx,js,jsx,cjs,mjs}": ["oxlint --fix"]
 }

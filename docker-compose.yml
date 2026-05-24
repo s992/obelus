@@ -6,11 +6,11 @@ services:
       POSTGRES_PASSWORD: obelus
       POSTGRES_DB: obelus
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - pgdata:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U obelus"]
+      test: ['CMD-SHELL', 'pg_isready -U obelus']
       interval: 2s
       timeout: 5s
       retries: 10
@@ -18,9 +18,9 @@ services:
   redis:
     image: redis:8-alpine
     ports:
-      - "6379:6379"
+      - '6379:6379'
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 2s
       timeout: 5s
       retries: 10
@@ -29,7 +29,7 @@ services:
     build: .
     image: ghcr.io/s992/obelus:latest
     env_file: ${ENV_FILE:-.env}
-    entrypoint: ["node", "/app/api/dist/migrate.cjs"]
+    entrypoint: ['node', '/app/api/dist/migrate.cjs']
     depends_on:
       postgres:
         condition: service_healthy
@@ -38,10 +38,10 @@ services:
     build: .
     image: ghcr.io/s992/obelus:latest
     ports:
-      - "80:80"
+      - '80:80'
     env_file: ${ENV_FILE:-.env}
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/api/readyz || exit 1"]
+      test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1/api/readyz || exit 1']
       interval: 10s
       timeout: 5s
       retries: 3

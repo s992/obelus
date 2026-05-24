@@ -2,9 +2,9 @@
 
 obelus is a self-hosted private reading record (think goodreads but probably better in some ways and worse in others).
 
-|![List page view](https://raw.githubusercontent.com/s992/obelus/main/screenshots/list.png)|![Detail page view](https://raw.githubusercontent.com/s992/obelus/main/screenshots/detail.png)|
-|---------|-----------|
-|![Series view](https://raw.githubusercontent.com/s992/obelus/main/screenshots/series.png)|![Public profile](https://raw.githubusercontent.com/s992/obelus/main/screenshots/public.png)|
+| ![List page view](https://raw.githubusercontent.com/s992/obelus/main/screenshots/list.png) | ![Detail page view](https://raw.githubusercontent.com/s992/obelus/main/screenshots/detail.png) |
+| ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| ![Series view](https://raw.githubusercontent.com/s992/obelus/main/screenshots/series.png)  | ![Public profile](https://raw.githubusercontent.com/s992/obelus/main/screenshots/public.png)   |
 
 ## ai usage disclaimer
 
@@ -27,7 +27,7 @@ i'm not a big fan of robots writing code, so i only feel it's fair to call out w
 
 first, grab a [hardcover api token](https://docs.hardcover.app/api/getting-started/). you'll need this to grab book metadata. don't worry, we are responsible consumers of the API and cache heavily in redis.
 
-once you have your api token, grab the [`docker-compose.yml`](https://raw.githubusercontent.com/s992/obelus/main/docker-compose.yml) and create a `.env` file next to it. all enviornment variables are *required*:
+once you have your api token, grab the [`docker-compose.yml`](https://raw.githubusercontent.com/s992/obelus/main/docker-compose.yml) and create a `.env` file next to it. all enviornment variables are _required_:
 
 ```
 OBELUS_API_PORT=3000

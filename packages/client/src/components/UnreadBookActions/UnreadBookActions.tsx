@@ -1,10 +1,10 @@
-import type { Status } from '@obelus/shared/types';
 import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
 
 import { Button } from '@/components/Button';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { flex } from '@/style';
+import type { Status } from '@obelus/shared/types';
 
 import { button, container, responsive } from './unreadBookActions.css';
 

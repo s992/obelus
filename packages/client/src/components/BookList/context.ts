@@ -1,5 +1,6 @@
-import type { Status } from '@obelus/shared/types';
 import { createContext, useContext } from 'react';
+
+import type { Status } from '@obelus/shared/types';
 
 type BookListContext = {
   variant: Status;

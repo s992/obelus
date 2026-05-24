@@ -1,7 +1,7 @@
-import type { Maybe, RecordJson } from '@obelus/shared/types';
 import { FormattedMessage } from 'react-intl';
 
 import { judgment } from '@/style';
+import type { Maybe, RecordJson } from '@obelus/shared/types';
 
 export function StatusCell({ record }: { record: Maybe<RecordJson> }) {
   if (!record) {

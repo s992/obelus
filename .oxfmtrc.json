@@ -1,0 +1,36 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 120,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "insertFinalNewline": true,
+  "ignorePatterns": [
+    "**/storybook-static/**",
+    "**/routeTree.gen.ts",
+    "packages/api/src/gql/graphql.ts",
+    "charts/**/templates/*.yaml"
+  ],
+  "sortImports": {
+    "newlinesBetween": true,
+    "customGroups": [
+      {
+        "groupName": "@alias",
+        "elementNamePattern": ["@/**"]
+      },
+      {
+        "groupName": "@obelus",
+        "elementNamePattern": ["@obelus/**"]
+      }
+    ],
+    "groups": [
+      ["builtin", "external"],
+      ["@alias", "@obelus", "internal"],
+      ["index", "sibling", "parent"],
+      "import",
+      ["side_effect", "side_effect_style"]
+    ]
+  }
+}

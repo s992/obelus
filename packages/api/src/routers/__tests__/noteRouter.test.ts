@@ -1,5 +1,5 @@
-import { randomUUID } from 'node:crypto';
 import { initTRPC, TRPCError } from '@trpc/server';
+import { randomUUID } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('../../server', () => ({ checkRateLimit: vi.fn() }));

@@ -2,7 +2,7 @@ apiVersion: v2
 name: obelus
 description: A self-hosted book tracking application
 version: 0.1.0
-appVersion: "latest"
+appVersion: 'latest'
 type: application
 
 dependencies:

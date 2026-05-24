@@ -1,8 +1,8 @@
-import type { ImportProgress, Maybe } from '@obelus/shared/types';
 import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
 
 import { typography } from '@/style';
+import type { ImportProgress, Maybe } from '@obelus/shared/types';
 
 import {
   bar,

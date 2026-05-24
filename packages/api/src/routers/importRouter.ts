@@ -1,6 +1,7 @@
 import { on } from 'node:events';
-import { ImportFailureSchema, ImportProgressSchema } from '@obelus/shared/schema';
 import z from 'zod';
+
+import { ImportFailureSchema, ImportProgressSchema } from '@obelus/shared/schema';
 
 import { db } from '../db/db';
 import { getWorker } from '../queue/importWorker';

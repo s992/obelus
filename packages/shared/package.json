@@ -1,7 +1,7 @@
 {
   "name": "@obelus/shared",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
   "type": "module",
   "exports": {
     "./schema": "./src/schema/index.ts",

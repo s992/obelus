@@ -1,5 +1,5 @@
-import { randomUUID } from 'node:crypto';
 import { initTRPC } from '@trpc/server';
+import { randomUUID } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('../../server', () => ({ checkRateLimit: vi.fn() }));
@@ -15,8 +15,8 @@ vi.mock('../../bookRecord/listUserRecords', () => ({
 }));
 
 import { listUserRecords } from '../../bookRecord/listUserRecords';
-import type { GetUserPublicProfileRow } from '../../sqlc/user_sql';
 import { getUserPublicProfile } from '../../sqlc/user_sql';
+import type { GetUserPublicProfileRow } from '../../sqlc/user_sql';
 import type { Context } from '../../trpc/context';
 import { publicRecordRouter } from '../publicRecordRouter';
 

@@ -1,6 +1,7 @@
-import { NoteJsonSchema } from '@obelus/shared/schema';
 import { TRPCError } from '@trpc/server';
 import z from 'zod';
+
+import { NoteJsonSchema } from '@obelus/shared/schema';
 
 import { db } from '../db/db';
 import { createNote, listNotes } from '../sqlc/note_sql';

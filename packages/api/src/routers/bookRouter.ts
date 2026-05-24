@@ -1,6 +1,7 @@
-import { BookSchema, RecordSchema } from '@obelus/shared/schema';
 import { TRPCError } from '@trpc/server';
 import z from 'zod';
+
+import { BookSchema, RecordSchema } from '@obelus/shared/schema';
 
 import { formatBook } from '../bookRecord/collateRecordsAndBooks';
 import { db } from '../db/db';

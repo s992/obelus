@@ -1,4 +1,3 @@
-import type { Book, Maybe, NoteJson } from '@obelus/shared/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
@@ -12,6 +11,7 @@ import { Modal } from '@/components/Modal';
 import { showMutationError } from '@/components/Toast';
 import { useFormatLongDate } from '@/hooks/useFormatLongDate';
 import { judgment as judgmentCss, typography } from '@/style';
+import type { Book, Maybe, NoteJson } from '@obelus/shared/types';
 
 import {
   addNoteButton,

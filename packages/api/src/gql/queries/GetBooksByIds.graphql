@@ -1,9 +1,9 @@
 query GetBooksByIds($ids: [Int!]) {
   books(
     where: {
-      id: { _in: $ids },
-      canonical_id: { _is_null: true },
-      book_status_id: { _eq: 1 },
+      id: { _in: $ids }
+      canonical_id: { _is_null: true }
+      book_status_id: { _eq: 1 }
       is_partial_book: { _eq: false }
     }
   ) {

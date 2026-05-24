@@ -1,5 +1,6 @@
-import type { Book } from '@obelus/shared/types';
 import { useIntl } from 'react-intl';
+
+import type { Book } from '@obelus/shared/types';
 
 import { cover } from './bookCover.css';
 import { CoverPlaceholder } from './CoverPlaceholder';

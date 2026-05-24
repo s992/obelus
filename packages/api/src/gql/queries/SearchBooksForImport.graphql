@@ -1,9 +1,5 @@
 query SearchBooksForImport($query: String!) {
-  search(
-    query: $query
-    sort: "users_count:desc"
-    query_type: "book"
-  ) {
+  search(query: $query, sort: "users_count:desc", query_type: "book") {
     ids
     results
   }

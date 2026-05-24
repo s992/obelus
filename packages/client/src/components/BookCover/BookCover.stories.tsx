@@ -1,5 +1,6 @@
-import type { Book } from '@obelus/shared/types';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+
+import type { Book } from '@obelus/shared/types';
 
 import { BookCover } from './BookCover';
 

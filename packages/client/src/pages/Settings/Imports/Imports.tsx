@@ -1,4 +1,3 @@
-import type { Maybe } from '@obelus/shared/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSubscription } from '@trpc/tanstack-react-query';
 import clsx from 'clsx';
@@ -14,6 +13,7 @@ import { IconButton } from '@/components/IconButton';
 import { Modal } from '@/components/Modal';
 import { useFormatDate } from '@/hooks/useFormatDate';
 import { flex, typography } from '@/style';
+import type { Maybe } from '@obelus/shared/types';
 
 import { ImportProgress } from './ImportProgress';
 import {

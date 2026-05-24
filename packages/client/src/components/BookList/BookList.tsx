@@ -1,4 +1,3 @@
-import type { Book, Judgment, Status } from '@obelus/shared/types';
 import dayjs from 'dayjs';
 import get from 'lodash.get';
 import type { ReactNode, Ref } from 'react';
@@ -8,6 +7,7 @@ import { useIntersectionObserver } from 'usehooks-ts';
 import { Button } from '@/components/Button';
 import { useListPageContext } from '@/pages/ListPage/context';
 import { flex, typography } from '@/style';
+import type { Book, Judgment, Status } from '@obelus/shared/types';
 
 import { LoadingSpinner } from '../LoadingSpinner';
 import { chipDot, filterBar } from './bookList.css';

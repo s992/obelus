@@ -1,9 +1,9 @@
-import type { Judgment, SortField, Status } from '@obelus/shared/types';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { type ReactNode, useState } from 'react';
 
 import { useTRPC } from '@/client';
 import { BookList } from '@/components/BookList';
+import type { Judgment, SortField, Status } from '@obelus/shared/types';
 
 import { ListPageContextProvider } from './context';
 

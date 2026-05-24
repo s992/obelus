@@ -1,6 +1,7 @@
-import type { Maybe } from '@obelus/shared/types';
 import dayjs from 'dayjs';
 import { useIntl } from 'react-intl';
+
+import type { Maybe } from '@obelus/shared/types';
 
 export function useFormatDateDistance() {
   const intl = useIntl();

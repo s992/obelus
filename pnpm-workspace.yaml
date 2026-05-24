@@ -4,7 +4,6 @@ packages:
   - packages/shared
 catalog:
   '@babel/core': ^7.29.0
-  "@biomejs/biome": 2.4.13
   '@dotenvx/dotenvx': 1.65.0
   '@fastify/cookie': ^11.0.2
   '@fastify/helmet': ^13.0.2
@@ -12,8 +11,8 @@ catalog:
   '@fastify/multipart': ^10.0.0
   '@fastify/rate-limit': ^10.3.0
   '@formatjs/unplugin': ^1.1.10
-  "@graphql-codegen/cli": ^6.3.1
-  "@graphql-codegen/typescript": ^6.0.1
+  '@graphql-codegen/cli': ^6.3.1
+  '@graphql-codegen/typescript': ^6.0.1
   '@graphql-codegen/typescript-generic-sdk': ^5.0.1
   '@graphql-codegen/typescript-operations': ^6.0.1
   '@graphql-typed-document-node/core': ^3.2.0
@@ -34,11 +33,11 @@ catalog:
   '@trpc/client': ^11.17.0
   '@trpc/server': ^11.16.0
   '@trpc/tanstack-react-query': ^11.17.0
-  "@tsconfig/strictest": ^2.0.8
+  '@tsconfig/strictest': ^2.0.8
   '@types/babel__core': ^7.20.5
   '@types/lodash.get': ^4.4.9
   '@types/node': ^24.12.2
-  "@types/pg": ^8.20.0
+  '@types/pg': ^8.20.0
   '@types/react': ^19.2.14
   '@types/react-dom': ^19.2.3
   '@use-gesture/react': ^10.3.1
@@ -68,6 +67,7 @@ catalog:
   lint-staged: ^16.4.0
   lodash.get: ^4.4.2
   lucide-react: ^1.14.0
+  oxfmt: 0.51.0
   oxlint: 1.61.0
   pg: ^8.21.0
   pino: ^10.3.1

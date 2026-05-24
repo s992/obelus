@@ -1,6 +1,7 @@
+import type z from 'zod';
+
 import type { RecordSchema } from '@obelus/shared/schema';
 import type { Book, Maybe } from '@obelus/shared/types';
-import type z from 'zod';
 
 import type { GetBooksByIdsQuery } from '../gql/graphql';
 

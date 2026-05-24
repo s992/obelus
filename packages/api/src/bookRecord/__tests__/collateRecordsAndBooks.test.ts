@@ -1,7 +1,8 @@
 import { randomUUID } from 'node:crypto';
-import type { RecordSchema } from '@obelus/shared/schema';
 import { describe, expect, it } from 'vitest';
 import type z from 'zod';
+
+import type { RecordSchema } from '@obelus/shared/schema';
 
 import type { GetBooksByIdsQuery } from '../../gql/graphql';
 import { collateRecordsAndBooks, formatBook } from '../collateRecordsAndBooks';

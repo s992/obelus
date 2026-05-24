@@ -1,31 +1,26 @@
 {
   "name": "obelus",
   "version": "1.0.0",
-  "description": "",
   "private": true,
-  "engines": {
-    "node": ">=22"
-  },
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
   "scripts": {
     "dev": "pnpm -r --parallel dev",
     "test": "pnpm -r --parallel test",
     "build": "pnpm -r build",
     "checks": "pnpm typecheck && pnpm format:check && pnpm lint:check && pnpm knip",
     "typecheck": "pnpm -r --parallel typecheck",
-    "format:check": "biome check --assist-enabled=true",
-    "format:fix": "biome check --assist-enabled=true --write",
+    "format:check": "oxfmt --check",
+    "format:fix": "oxfmt",
     "lint:check": "oxlint",
     "lint:fix": "oxlint --fix",
     "clean": "pnpm -r exec rm -rf dist node_modules/.tmp .tsbuildinfo *.tsbuildinfo",
     "prepare": "husky",
     "knip": "dotenvx run -- knip"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.33.2",
   "devDependencies": {
-    "@biomejs/biome": "catalog:",
     "@dotenvx/dotenvx": "catalog:",
     "@tsconfig/strictest": "catalog:",
     "@types/node": "catalog:",
@@ -36,8 +31,13 @@
     "husky": "catalog:",
     "knip": "catalog:",
     "lint-staged": "catalog:",
+    "oxfmt": "catalog:",
     "oxlint": "catalog:",
     "ts-morph": "catalog:",
     "typescript": "catalog:"
-  }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.33.2"
 }

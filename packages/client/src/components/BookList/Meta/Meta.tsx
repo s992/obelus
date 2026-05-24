@@ -1,4 +1,3 @@
-import type { Book, Status } from '@obelus/shared/types';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -8,6 +7,7 @@ import { useFormatDate } from '@/hooks/useFormatDate';
 import { useFormatDateDistance } from '@/hooks/useFormatDateDistance';
 import { useFormatPublishYear } from '@/hooks/useFormatPublishYear';
 import { judgment } from '@/style';
+import type { Book, Status } from '@obelus/shared/types';
 
 import { container, judgmentMeta } from './meta.css';
 

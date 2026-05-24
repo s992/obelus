@@ -1,6 +1,7 @@
-import { UserSchema } from '@obelus/shared/schema';
 import { TRPCError } from '@trpc/server';
 import z from 'zod';
+
+import { UserSchema } from '@obelus/shared/schema';
 
 import { hashPassword, verifyPassword } from '../auth/auth';
 import { db } from '../db/db';
