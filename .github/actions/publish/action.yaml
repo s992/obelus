@@ -1,0 +1,42 @@
+name: publish
+description: build and push docker image to GHCR
+
+inputs:
+  registry:
+    description: container registry
+    required: true
+  image_name:
+    description: image name
+    required: true
+  github_token:
+    description: token for registry auth
+    required: true
+  github_actor:
+    description: actor for registry auth
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: log in to registry
+      uses: docker/login-action@v4
+      with:
+        registry: ${{ inputs.registry }}
+        username: ${{ inputs.github_actor }}
+        password: ${{ inputs.github_token }}
+
+    - name: extract metadata for docker
+      id: meta
+      uses: docker/metadata-action@v6
+      with:
+        images: ${{ inputs.registry }}/${{ inputs.image_name }}
+        tags: |
+          type=raw,value=latest,enable={{is_default_branch}}
+
+    - name: build and push
+      uses: docker/build-push-action@v7
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}

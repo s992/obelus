@@ -1,0 +1,36 @@
+name: checks
+description: run code checks
+
+runs:
+  using: composite
+  steps:
+    - name: setup pnpm
+      uses: pnpm/action-setup@v6
+
+    - name: setup node
+      uses: actions/setup-node@v6
+      with:
+        node-version-file: package.json
+        cache: pnpm
+
+    - name: install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
+
+    - name: knip
+      shell: bash
+      run: pnpm knip
+
+    - name: formatting check
+      shell: bash
+      run: pnpm format:check
+
+    - name: lint check
+      shell: bash
+      run: pnpm lint:check
+
+    - name: build
+      shell: bash
+      env:
+        NODE_ENV: production
+      run: pnpm build
