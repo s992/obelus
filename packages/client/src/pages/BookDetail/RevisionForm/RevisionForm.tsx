@@ -73,17 +73,14 @@ export function RevisionForm({ bookId, record }: Props) {
       )}
       <form.AppForm>
         <form.Form className={formContainer}>
-          <form.AppField
-            name="startedAt"
-            children={(field) => <field.DatePicker label={<FormattedMessage defaultMessage="started" />} />}
-          />
-          <form.AppField
-            name="finishedAt"
-            children={(field) => <field.DatePicker label={<FormattedMessage defaultMessage="finished" />} />}
-          />
-          <form.AppField
-            name="status"
-            children={(field) => (
+          <form.AppField name="startedAt">
+            {(field) => <field.DatePicker label={<FormattedMessage defaultMessage="started" />} />}
+          </form.AppField>
+          <form.AppField name="finishedAt">
+            {(field) => <field.DatePicker label={<FormattedMessage defaultMessage="finished" />} />}
+          </form.AppField>
+          <form.AppField name="status">
+            {(field) => (
               <field.RadioGroup
                 label={intl.formatMessage({ defaultMessage: 'status' })}
                 options={[
@@ -102,10 +99,9 @@ export function RevisionForm({ bookId, record }: Props) {
                 ]}
               />
             )}
-          />
-          <form.AppField
-            name="judgment"
-            children={(field) => (
+          </form.AppField>
+          <form.AppField name="judgment">
+            {(field) => (
               <field.RadioGroup
                 label={intl.formatMessage({ defaultMessage: 'judgment' })}
                 options={[
@@ -124,10 +120,9 @@ export function RevisionForm({ bookId, record }: Props) {
                 ]}
               />
             )}
-          />
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isDirty]}
-            children={([canSubmit, isDirty]) => (
+          </form.AppField>
+          <form.Subscribe selector={(state) => [state.canSubmit, state.isDirty]}>
+            {([canSubmit, isDirty]) => (
               <Button
                 className={submitButton}
                 variant="primary"
@@ -138,7 +133,7 @@ export function RevisionForm({ bookId, record }: Props) {
                 <FormattedMessage defaultMessage="Save" />
               </Button>
             )}
-          />
+          </form.Subscribe>
         </form.Form>
       </form.AppForm>
     </div>

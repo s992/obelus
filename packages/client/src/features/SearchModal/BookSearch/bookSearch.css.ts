@@ -35,6 +35,9 @@ export const preview = style([
 ]);
 
 export const row = style({
+  appearance: 'none',
+  width: '100%',
+  textAlign: 'left',
   position: 'relative',
   display: 'grid',
   gridTemplateColumns: '40px 1fr auto',
@@ -46,7 +49,7 @@ export const row = style({
   cursor: 'pointer',
   transition: 'background-color .15s',
   selectors: {
-    '&[aria-selected=true]': {
+    '&[data-selected=true], &:focus': {
       background: vars.color.tint,
     },
   },

@@ -58,12 +58,6 @@ export function Root() {
     return () => unsubscribe();
   }, [router]);
 
-  useEffect(() => {
-    if (isDesktop) {
-      setIsNavOpen(false);
-    }
-  }, [isDesktop]);
-
   useOnClickOutside(navRef, () => {
     setIsNavOpen(false);
   });
@@ -73,6 +67,8 @@ export function Root() {
     setIsNavOpen(false);
   };
 
+  const isNavActuallyOpen = !isDesktop && isNavOpen;
+
   return (
     <>
       <div {...bindSwipeOpen()} className={navDragTrigger} />
@@ -81,8 +77,8 @@ export function Root() {
           id="nav-menu"
           className={navSection}
           ref={navRef}
-          {...(isNavOpen ? bindSwipeClose() : {})}
-          style={!isDesktop ? { translate: isNavOpen ? '0% 0' : '100% 0' } : undefined}
+          {...(isNavActuallyOpen ? bindSwipeClose() : {})}
+          style={!isDesktop ? { translate: isNavActuallyOpen ? '0% 0' : '100% 0' } : undefined}
         >
           {isAuthenticated && (
             <>
@@ -133,7 +129,7 @@ export function Root() {
           </IconButton>
           <IconButton
             aria-label={intl.formatMessage({ defaultMessage: 'Toggle navigation' })}
-            aria-expanded={isNavOpen}
+            aria-expanded={isNavActuallyOpen}
             aria-controls="nav-menu"
             variant="tertiary"
             className={navToggle}

@@ -41,24 +41,19 @@ export function AuthForm({ isLoading, onSubmit, schema, submitLabel }: Props) {
   return (
     <form.AppForm>
       <form.Form>
-        <form.AppField
-          name="userName"
-          children={(field) => <field.TextField label={<FormattedMessage defaultMessage="user name" />} />}
-        />
-        <form.AppField
-          name="password"
-          children={(field) => (
-            <field.TextField label={<FormattedMessage defaultMessage="password" />} type="password" />
-          )}
-        />
-        <form.Subscribe
-          selector={(state) => [state.canSubmit, state.isDirty]}
-          children={([canSubmit, isDirty]) => (
+        <form.AppField name="userName">
+          {(field) => <field.TextField label={<FormattedMessage defaultMessage="user name" />} />}
+        </form.AppField>
+        <form.AppField name="password">
+          {(field) => <field.TextField label={<FormattedMessage defaultMessage="password" />} type="password" />}
+        </form.AppField>
+        <form.Subscribe selector={(state) => [state.canSubmit, state.isDirty]}>
+          {([canSubmit, isDirty]) => (
             <Button variant="primary" type="submit" isDisabled={!isDirty || !canSubmit} isProcessing={isLoading}>
               {submitLabel}
             </Button>
           )}
-        />
+        </form.Subscribe>
       </form.Form>
     </form.AppForm>
   );

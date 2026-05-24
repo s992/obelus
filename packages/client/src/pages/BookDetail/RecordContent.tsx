@@ -68,7 +68,6 @@ export function RecordContent({ book, notes }: Props) {
     }),
   );
 
-  const submitRef = useHotkeys('mod+enter', () => submitNote(), { enableOnFormTags: true });
   const formattedUpdateDate = formatLongDate(record?.updatedAt);
   const judgmentHighlight = record?.judgment ? judgmentCss[record.judgment] : undefined;
   const submitNote = () => {
@@ -79,9 +78,15 @@ export function RecordContent({ book, notes }: Props) {
     createNote({ content: noteContent, id: book.record.id });
   };
 
+  const submitRef = useHotkeys('mod+enter', () => submitNote(), { enableOnFormTags: true });
+
   if (!record) {
     return null;
   }
+
+  const noteLabel = intl.formatMessage({
+    defaultMessage: 'Add a note. It will not be edited; notes are appended below.',
+  });
 
   return (
     <div className={recordContainer}>
@@ -122,14 +127,15 @@ export function RecordContent({ book, notes }: Props) {
             />
           </span>
         </div>
+        {/* this is a false positive - the label is wrapping a form element. */}
+        {/* oxlint-disable-next-line jsx_a11y/label-has-associated-control */}
         <label className={noteTextAreaContainer}>
           <TextArea
             ref={submitRef}
             className={textArea}
             rows={3}
-            placeholder={intl.formatMessage({
-              defaultMessage: 'Add a note. It will not be edited; notes are appended below.',
-            })}
+            aria-label={noteLabel}
+            placeholder={noteLabel}
             value={noteContent}
             onChange={(e) => setNoteContent(e.target.value)}
             disabled={isCreatingNote}

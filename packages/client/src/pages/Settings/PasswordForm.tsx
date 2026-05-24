@@ -30,7 +30,7 @@ export function PasswordForm({ onSubmit, isLoading }: Props) {
           error: intl.formatMessage({ defaultMessage: 'passwords must match' }),
           path: ['confirmPassword'],
         }),
-    [],
+    [intl],
   );
   const form = useForm({
     defaultValues: { currentPassword: '', newPassword: '', confirmPassword: '' },
@@ -41,32 +41,26 @@ export function PasswordForm({ onSubmit, isLoading }: Props) {
   return (
     <form.AppForm>
       <form.Form>
-        <form.AppField
-          name="currentPassword"
-          children={(field) => (
+        <form.AppField name="currentPassword">
+          {(field) => (
             <field.TextField type="password" label={<FormattedMessage defaultMessage="Current Password" />} />
           )}
-        />
-        <form.AppField
-          name="newPassword"
-          children={(field) => (
-            <field.TextField type="password" label={<FormattedMessage defaultMessage="New Password" />} />
-          )}
-        />
-        <form.AppField
-          name="confirmPassword"
-          children={(field) => (
+        </form.AppField>
+        <form.AppField name="newPassword">
+          {(field) => <field.TextField type="password" label={<FormattedMessage defaultMessage="New Password" />} />}
+        </form.AppField>
+        <form.AppField name="confirmPassword">
+          {(field) => (
             <field.TextField type="password" label={<FormattedMessage defaultMessage="Confirm New Password" />} />
           )}
-        />
-        <form.Subscribe
-          selector={(state) => [state.canSubmit, state.isDirty]}
-          children={([canSubmit, isDirty]) => (
+        </form.AppField>
+        <form.Subscribe selector={(state) => [state.canSubmit, state.isDirty]}>
+          {([canSubmit, isDirty]) => (
             <Button variant="primary" type="submit" isDisabled={!isDirty || !canSubmit} isProcessing={isLoading}>
               <FormattedMessage defaultMessage="Submit" />
             </Button>
           )}
-        />
+        </form.Subscribe>
       </form.Form>
     </form.AppForm>
   );

@@ -24,10 +24,7 @@
     "@dotenvx/dotenvx": "catalog:",
     "@tsconfig/strictest": "catalog:",
     "@types/node": "catalog:",
-    "eslint-plugin-jsx-a11y": "catalog:",
-    "eslint-plugin-react": "catalog:",
     "eslint-plugin-react-hooks": "catalog:",
-    "eslint-plugin-react-refresh": "catalog:",
     "husky": "catalog:",
     "knip": "catalog:",
     "lint-staged": "catalog:",
@@ -39,5 +36,5 @@
   "engines": {
     "node": ">=22"
   },
-  "packageManager": "pnpm@10.33.2"
+  "packageManager": "pnpm@11.3.0"
 }

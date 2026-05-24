@@ -39,7 +39,7 @@ export function AuthContextProvider({ children }: Props) {
     }
 
     setIsAuthenticatedLS(!isLoggedOut);
-  }, [isLoading, isLoggedOut]);
+  }, [isLoading, isLoggedOut, setIsAuthenticatedLS]);
 
   return (
     <ctx.Provider

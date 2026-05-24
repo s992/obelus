@@ -52,6 +52,8 @@ export function useSwipeToOpen({ navRef, direction, onOpen, onClose, enabled }: 
       if (!last) {
         // disable css transitions while dragging
         if (!dragging.current) {
+          // this is a valid usage of mutability
+          // oxlint-disable-next-line react-hooks-js/immutability
           el.style.transition = 'none';
           dragging.current = true;
         }

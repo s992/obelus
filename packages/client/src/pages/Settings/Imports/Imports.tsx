@@ -85,7 +85,7 @@ export function Imports() {
     if (progress.status === 'complete') {
       queryClient.invalidateQueries({ queryKey: trpc.import.list.queryKey() });
     }
-  }, [progress]);
+  }, [progress, queryClient, trpc.import.list]);
 
   return (
     <div>

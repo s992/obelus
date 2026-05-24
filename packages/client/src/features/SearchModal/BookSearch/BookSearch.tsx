@@ -64,10 +64,6 @@ export function BookSearch() {
     routerNavigate({ to: '/book/$bookId', params: { bookId: id.toString() } });
   };
 
-  useEvent(inputRef, 'focusin', () => {
-    navigate(-1, -1);
-  });
-
   const navigate = (direction: number, indexOverride?: number) => {
     const navIndex = focusedIdx;
     let boundedOverride = indexOverride;
@@ -135,6 +131,10 @@ export function BookSearch() {
   useEventListener('mousemove', () => setModality('mouse'));
   useEventListener('keydown', () => setModality('keyboard'));
 
+  useEvent(inputRef, 'focusin', () => {
+    navigate(-1, -1);
+  });
+
   return (
     <div data-modality={modality}>
       <Search
@@ -143,6 +143,9 @@ export function BookSearch() {
         onChange={setQuery}
         ref={searchRef}
         inputRef={inputRef}
+        // as far as i understand it, autofocus in a modal is valid and not
+        // an actual accessibility concern.
+        // oxlint-disable-next-line jsx_a11y/no-autofocus
         autoFocus
       />
       {isLoading && (
@@ -157,13 +160,13 @@ export function BookSearch() {
               const isFocused = focusedIdx === idx;
 
               return (
-                <div
+                <button
                   key={book.id}
                   className={row}
                   ref={setRowRef(idx)}
                   onMouseEnter={() => setFocusedIdx(idx)}
-                  aria-selected={isFocused}
-                  aria-role="button"
+                  onFocus={() => setFocusedIdx(idx)}
+                  data-selected={isFocused}
                   onClick={() => goToBook(book.id)}
                 >
                   {isFocused && <div className={rowBar} />}
@@ -178,7 +181,7 @@ export function BookSearch() {
                   <div className={status}>
                     <StatusCell record={book.record} />
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>

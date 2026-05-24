@@ -52,10 +52,7 @@ catalog:
   csv-parse: ^6.2.1
   dayjs: ^1.11.20
   dotenv: ^17.4.2
-  eslint-plugin-jsx-a11y: ^6.10.2
-  eslint-plugin-react: ^7.37.5
   eslint-plugin-react-hooks: ^7.1.1
-  eslint-plugin-react-refresh: ^0.5.2
   fastify: ^5.8.5
   globals: ^17.5.0
   graphql: ^16.13.2
