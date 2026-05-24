@@ -51,3 +51,8 @@ globalStyle(`${radioLabel}[data-selected] ${radio}::after`, {
   borderRadius: '50%',
   background: vars.color.ink,
 });
+
+globalStyle(`${radioLabel}[data-focus-visible=true] ${radio}`, {
+  outline: `1px solid ${vars.color.accent}`,
+  outlineOffset: 2,
+});
