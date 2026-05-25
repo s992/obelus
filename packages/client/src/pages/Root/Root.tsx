@@ -20,7 +20,15 @@ import { SearchModal } from '@/features/SearchModal';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { mediaQuery } from '@/style';
 
-import { mobileButtons, mobileSearchButton, navDragTrigger, navSection, navToggle, searchButton } from './root.css';
+import {
+  loginLink,
+  mobileButtons,
+  mobileSearchButton,
+  navDragTrigger,
+  navSection,
+  navToggle,
+  searchButton,
+} from './root.css';
 import { useSwipeToOpen } from './useSwipeToOpen';
 
 export function Root() {
@@ -113,7 +121,7 @@ export function Root() {
             </>
           )}
           {!isAuthenticated && (
-            <Link to="/auth/login">
+            <Link to="/auth/login" className={loginLink}>
               <FormattedMessage defaultMessage="log in" />
             </Link>
           )}

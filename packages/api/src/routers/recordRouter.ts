@@ -25,17 +25,9 @@ export const recordRouter = router({
       }),
     )
     .query(async ({ input, ctx }) => {
-      if (!ctx.currentUser.id) {
-        return;
-      }
-
       return listUserRecords(ctx.currentUser.id, input.cursor, input.sortField, input.status, input.judgment);
     }),
   create: privateProcedure.input(RecordSchema.pick({ bookId: true, status: true })).mutation(async ({ input, ctx }) => {
-    if (!ctx.currentUser.id) {
-      return;
-    }
-
     const shouldDefaultStartedAt = input.status === 'reading' || input.status === 'finished';
 
     await createRecord(db, {
@@ -56,10 +48,6 @@ export const recordRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      if (!ctx.currentUser.id) {
-        return;
-      }
-
       const { id, ...params } = input;
 
       if (!id) {
@@ -79,10 +67,6 @@ export const recordRouter = router({
       });
     }),
   delete: privateProcedure.input(RecordSchema.pick({ id: true })).mutation(async ({ input, ctx }) => {
-    if (!ctx.currentUser.id) {
-      return;
-    }
-
     await deleteRecord(db, { id: input.id, userid: ctx.currentUser.id });
   }),
 });

@@ -5,6 +5,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import z from 'zod';
 
 import { useTRPC } from '@/client';
+import { FormattedAlert } from '@/components/Alert';
 import { useAuthContext } from '@/context';
 
 import { formContainer } from './auth.css';
@@ -26,6 +27,18 @@ export function Register() {
 
   if (isAuthenticated) {
     return <Navigate to="/" />;
+  }
+
+  if (register.isSuccess && register.data && register.data.status === 'pending_approval') {
+    return (
+      <FormattedAlert
+        variant="success"
+        title={<FormattedMessage defaultMessage="Registration successful." />}
+        message={
+          <FormattedMessage defaultMessage="Your Obelus administrator requires approval for new accounts, so they will need to approve your registration before you can use Obelus." />
+        }
+      />
+    );
   }
 
   return (

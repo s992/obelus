@@ -13,7 +13,25 @@ export const privateProcedure = publicProcedure.use(async ({ ctx, next }) => {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
 
-  return next({ ctx });
+  return next({
+    ctx: {
+      ...ctx,
+      currentUser: ctx.currentUser,
+    },
+  });
+});
+
+export const adminProcedure = privateProcedure.use(async ({ ctx, next }) => {
+  if (ctx.currentUser.role !== 'admin') {
+    throw new TRPCError({ code: 'FORBIDDEN' });
+  }
+
+  return next({
+    ctx: {
+      ...ctx,
+      currentUser: ctx.currentUser,
+    },
+  });
 });
 
 export const rateLimitedPublicProcedure = publicProcedure.use(async ({ ctx, next }) => {

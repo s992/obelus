@@ -4,6 +4,7 @@ export * from './env';
 export * from './importFailure';
 export * from './importProgress';
 export * from './note';
+export * from './obelusConfig';
 export * from './record';
 export * from './series';
 export * from './sortField';

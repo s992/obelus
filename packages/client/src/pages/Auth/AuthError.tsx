@@ -38,6 +38,38 @@ export function AuthError({ code, attemptedUserName }: Props) {
     );
   }
 
+  if (code === 'TOO_MANY_REQUESTS') {
+    return (
+      <FormattedAlert
+        variant="error"
+        title={<FormattedMessage defaultMessage="Rate limit exceeded." />}
+        message={<FormattedMessage defaultMessage="You've made too many attempts. Please try again later." />}
+      />
+    );
+  }
+
+  if (code === 'UNPROCESSABLE_CONTENT') {
+    return (
+      <FormattedAlert
+        variant="error"
+        title={<FormattedMessage defaultMessage="Failed to register." />}
+        message={
+          <FormattedMessage defaultMessage="Double check your invite link. You may need to reach out to your Obelus administrator for a new one." />
+        }
+      />
+    );
+  }
+
+  if (code === 'FORBIDDEN') {
+    return (
+      <FormattedAlert
+        variant="error"
+        title={<FormattedMessage defaultMessage="Registration closed." />}
+        message={<FormattedMessage defaultMessage="If this is unexpected, check with your Obelus administrator." />}
+      />
+    );
+  }
+
   return (
     <FormattedAlert
       variant="error"

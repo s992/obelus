@@ -64,12 +64,12 @@ server.get('/readyz', async (_req, res) => {
 
 server.post('/import', async (req, res) => {
   const ctx = await createContext({ req, res, info: {} as TRPCRequestInfo });
-  const userId = ctx.currentUser.id;
 
-  if (!userId) {
+  if (!ctx.currentUser.isAuthenticated) {
     return res.code(401).send();
   }
 
+  const userId = ctx.currentUser.id;
   const file = await req.file();
 
   if (!file) {

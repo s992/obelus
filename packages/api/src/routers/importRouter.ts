@@ -20,10 +20,6 @@ const outputSchema = z.array(
 
 export const importRouter = router({
   list: privateProcedure.query(async ({ ctx }) => {
-    if (!ctx.currentUser.id) {
-      return;
-    }
-
     const imports = await listGoodreadsImports(db, { userid: ctx.currentUser.id });
 
     return outputSchema.safeParse(imports).data ?? [];

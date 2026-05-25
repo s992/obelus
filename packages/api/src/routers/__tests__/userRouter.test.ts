@@ -1,4 +1,4 @@
-import { initTRPC, TRPCError } from '@trpc/server';
+import { TRPCError } from '@trpc/server';
 import { randomUUID } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -18,36 +18,20 @@ vi.mock('../../sqlc/user_sql', () => ({
 
 import { hashPassword, verifyPassword } from '../../auth/auth';
 import { getUserById, updateUser } from '../../sqlc/user_sql';
-import type { Context } from '../../trpc/context';
 import { userRouter } from '../userRouter';
+import { createCallerFactory, makeCallerHelpers } from './routerTestHelpers';
 
 const mockedHashPassword = vi.mocked(hashPassword);
 const mockedVerifyPassword = vi.mocked(verifyPassword);
 const mockedGetUserById = vi.mocked(getUserById);
 const mockedUpdateUser = vi.mocked(updateUser);
 
-const t = initTRPC.context<Context>().create();
-const createCaller = t.createCallerFactory(userRouter);
+const createCaller = createCallerFactory(userRouter);
+const { authedCaller, unauthenticatedCaller } = makeCallerHelpers(createCaller);
 
 const now = new Date('2025-06-01T12:00:00Z');
 
-function authedCaller(userId = randomUUID()) {
-  return createCaller({
-    req: {} as Context['req'],
-    res: {} as Context['res'],
-    currentUser: { isAuthenticated: true, id: userId },
-  });
-}
-
-function unauthenticatedCaller() {
-  return createCaller({
-    req: {} as Context['req'],
-    res: {} as Context['res'],
-    currentUser: { isAuthenticated: false, id: undefined },
-  });
-}
-
-function makeUser(id: string) {
+function makeUser(id: string, overrides?: { status?: string; role?: string }) {
   return {
     id,
     createdAt: now,
@@ -55,6 +39,9 @@ function makeUser(id: string) {
     userName: 'alice',
     passwordHash: 'hashed-old-password',
     public: false,
+    status: 'active',
+    role: 'member',
+    ...overrides,
   };
 }
 
@@ -67,12 +54,28 @@ describe('userRouter', () => {
 
       const result = await caller.me();
 
-      expect(result).toEqual({ id: userId, userName: 'alice', public: false });
+      expect(result).toEqual({ id: userId, userName: 'alice', public: false, role: 'member' });
     });
 
     it('returns null when user is not found in DB', async () => {
       const caller = authedCaller();
       mockedGetUserById.mockResolvedValue(null);
+
+      expect(await caller.me()).toBeNull();
+    });
+
+    it('returns null when user status is pending_approval', async () => {
+      const userId = randomUUID();
+      const caller = authedCaller(userId);
+      mockedGetUserById.mockResolvedValue(makeUser(userId, { status: 'pending_approval' }));
+
+      expect(await caller.me()).toBeNull();
+    });
+
+    it('returns null when user status is disabled', async () => {
+      const userId = randomUUID();
+      const caller = authedCaller(userId);
+      mockedGetUserById.mockResolvedValue(makeUser(userId, { status: 'disabled' }));
 
       expect(await caller.me()).toBeNull();
     });
@@ -103,6 +106,7 @@ describe('userRouter', () => {
       expect(mockedUpdateUser).toHaveBeenCalledWith(expect.anything(), {
         passwordhash: 'hashed-new-password',
         public: null,
+        status: null,
         userid: userId,
       });
     });
@@ -148,6 +152,7 @@ describe('userRouter', () => {
       expect(mockedUpdateUser).toHaveBeenCalledWith(expect.anything(), {
         public: true,
         passwordhash: null,
+        status: null,
         userid: userId,
       });
     });

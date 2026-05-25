@@ -13,7 +13,7 @@ export const publicRecordRouter = router({
     const user = await getUserPublicProfile(db, { username: input.userName });
     const exists = !!user;
     const isPublic = user?.public;
-    const isCurrentUser = user?.id === ctx.currentUser.id;
+    const isCurrentUser = ctx.currentUser.isAuthenticated && user?.id === ctx.currentUser.id;
 
     if (!exists || (!isPublic && !isCurrentUser)) {
       throw new TRPCError({ code: 'NOT_FOUND' });
@@ -32,8 +32,9 @@ export const publicRecordRouter = router({
     )
     .query(async ({ input, ctx }) => {
       const user = await getUserPublicProfile(db, { username: input.userName });
+      const isCurrentUser = ctx.currentUser.isAuthenticated && user?.id === ctx.currentUser.id;
 
-      if (!user || (!user.public && user.id !== ctx.currentUser.id)) {
+      if (!user || (!user.public && !isCurrentUser)) {
         throw new TRPCError({ code: 'NOT_FOUND' });
       }
 

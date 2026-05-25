@@ -4,8 +4,34 @@ interface Client {
   query: (config: QueryArrayConfig) => Promise<QueryArrayResult>;
 }
 
+export const hasUsersQuery = `-- name: HasUsers :one
+select exists(
+  select 1
+  from users
+  limit 1
+) as users_exist`;
+
+export interface HasUsersRow {
+  usersExist: string;
+}
+
+export async function hasUsers(client: Client): Promise<HasUsersRow | null> {
+  const result = await client.query({
+    text: hasUsersQuery,
+    values: [],
+    rowMode: 'array',
+  });
+  if (result.rows.length !== 1) {
+    return null;
+  }
+  const row = result.rows[0];
+  return {
+    usersExist: row?.[0],
+  };
+}
+
 export const getUserByIdQuery = `-- name: GetUserById :one
-select id, created_at, updated_at, user_name, password_hash, public
+select id, created_at, updated_at, user_name, password_hash, public, status, role
 from users
 where id = $1`;
 
@@ -20,6 +46,8 @@ export interface GetUserByIdRow {
   userName: string;
   passwordHash: string;
   public: boolean;
+  status: string;
+  role: string;
 }
 
 export async function getUserById(client: Client, args: GetUserByIdArgs): Promise<GetUserByIdRow | null> {
@@ -39,11 +67,13 @@ export async function getUserById(client: Client, args: GetUserByIdArgs): Promis
     userName: row?.[3],
     passwordHash: row?.[4],
     public: row?.[5],
+    status: row?.[6],
+    role: row?.[7],
   };
 }
 
 export const getUserByUserNameQuery = `-- name: GetUserByUserName :one
-select id, created_at, updated_at, user_name, password_hash, public
+select id, created_at, updated_at, user_name, password_hash, public, status, role
 from users
 where user_name = $1`;
 
@@ -58,6 +88,8 @@ export interface GetUserByUserNameRow {
   userName: string;
   passwordHash: string;
   public: boolean;
+  status: string;
+  role: string;
 }
 
 export async function getUserByUserName(
@@ -80,32 +112,41 @@ export async function getUserByUserName(
     userName: row?.[3],
     passwordHash: row?.[4],
     public: row?.[5],
+    status: row?.[6],
+    role: row?.[7],
   };
 }
 
 export const createUserQuery = `-- name: CreateUser :one
 insert into users (
   user_name,
-  password_hash
+  password_hash,
+  status,
+  role
 ) values (
   $1,
-  $2
+  $2,
+  $3,
+  $4
 )
-returning id`;
+returning id, status`;
 
 export interface CreateUserArgs {
   username: string;
   passwordhash: string;
+  registrationstatus: string;
+  role: string;
 }
 
 export interface CreateUserRow {
   id: string;
+  status: string;
 }
 
 export async function createUser(client: Client, args: CreateUserArgs): Promise<CreateUserRow | null> {
   const result = await client.query({
     text: createUserQuery,
-    values: [args.username, args.passwordhash],
+    values: [args.username, args.passwordhash, args.registrationstatus, args.role],
     rowMode: 'array',
   });
   if (result.rows.length !== 1) {
@@ -114,6 +155,7 @@ export async function createUser(client: Client, args: CreateUserArgs): Promise<
   const row = result.rows[0];
   return {
     id: row?.[0],
+    status: row?.[1],
   };
 }
 
@@ -121,19 +163,21 @@ export const updateUserQuery = `-- name: UpdateUser :exec
 update users
 set
   password_hash = coalesce($1, password_hash),
-  public = coalesce($2::boolean, public)
-where id = $3`;
+  public = coalesce($2::boolean, public),
+  status = coalesce($3, status)
+where id = $4`;
 
 export interface UpdateUserArgs {
   passwordhash: string | null;
   public: boolean | null;
+  status: string | null;
   userid: string;
 }
 
 export async function updateUser(client: Client, args: UpdateUserArgs): Promise<void> {
   await client.query({
     text: updateUserQuery,
-    values: [args.passwordhash, args.public, args.userid],
+    values: [args.passwordhash, args.public, args.status, args.userid],
     rowMode: 'array',
   });
 }
@@ -159,6 +203,7 @@ select
 from users u
 left join record r on r.user_id = u.id
 where u.user_name = $1
+and u.status = 'active'
 group by u.id, u.user_name, u.public`;
 
 export interface GetUserPublicProfileArgs {

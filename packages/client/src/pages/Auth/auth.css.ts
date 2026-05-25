@@ -1,7 +1,6 @@
 import { style } from '@vanilla-extract/css';
 
-import { button } from '@/components/Button/button.css';
-import { mediaQuery, sectionDivider, typography, vars } from '@/style';
+import { mediaQuery, typography, vars } from '@/style';
 
 export const tabContainer = style({
   width: '50%',
@@ -18,23 +17,9 @@ export const tabContent = style({
   padding: `${vars.space.s5} 0`,
 });
 
-export const tabList = style({
-  display: 'flex',
-  gap: vars.space.s4,
-  borderBottom: sectionDivider,
+export const tab = style({
+  textDecoration: 'none',
 });
-
-export const tab = style([
-  button.link,
-  {
-    textDecoration: 'none',
-    selectors: {
-      '&[data-selected=true]': {
-        borderBottom: `1px solid ${vars.color.ink2}`,
-      },
-    },
-  },
-]);
 
 export const formContainer = style({
   display: 'flex',

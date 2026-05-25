@@ -2,19 +2,45 @@ import { TRPCError } from '@trpc/server';
 import * as argon2 from 'argon2';
 import { DatabaseError } from 'pg';
 
-import { db } from '../db/db';
-import { logger } from '../log';
-import { createUser, getUserByUserName } from '../sqlc/user_sql';
+import type { UserStatus } from '@obelus/shared/types';
 
-export async function register(userName: string, password: string) {
+import { db } from '../db/db';
+import { tx } from '../db/tx';
+import { logger } from '../log';
+import { useInviteLink, type GetInviteLinkRow } from '../sqlc/invite_link_sql';
+import { createUser, getUserByUserName, hasUsers } from '../sqlc/user_sql';
+
+export async function register(
+  userName: string,
+  password: string,
+  status: UserStatus,
+  inviteLink: GetInviteLinkRow | null,
+) {
   const hashed = await hashPassword(password);
 
   try {
-    const user = await createUser(db, { username: userName, passwordhash: hashed });
+    return await tx(async (client) => {
+      const firstUserCheck = await hasUsers(db);
 
-    return user?.id;
+      // default the first user registered to "admin"
+      const role = firstUserCheck?.usersExist ? 'member' : 'admin';
+
+      const user = await createUser(client, {
+        username: userName,
+        passwordhash: hashed,
+        registrationstatus: status,
+        role,
+      });
+
+      if (inviteLink && user?.id) {
+        await useInviteLink(client, { token: inviteLink.token, userid: user.id });
+      }
+
+      return user;
+    });
   } catch (err) {
     logger.error(err);
+
     if (!(err instanceof DatabaseError)) {
       throw err;
     }
@@ -31,6 +57,10 @@ export async function login(userName: string, password: string) {
   const user = await getUserByUserName(db, { username: userName });
 
   if (!user) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+
+  if (user.status !== 'active') {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
 
