@@ -17,7 +17,7 @@ export const bookRouter = router({
       const searchResult = await client.SearchBooks({ query: input.query });
       const ids = (searchResult.search?.ids ?? []).filter((id) => id !== null);
 
-      if (!ids || !ctx.currentUser.id) {
+      if (!ids) {
         return [];
       }
 
@@ -36,10 +36,6 @@ export const bookRouter = router({
     .input(z.object({ id: z.number() }))
     .output(BookSchema.nullable())
     .query(async ({ input, ctx }) => {
-      if (!ctx.currentUser.id) {
-        return null;
-      }
-
       const { books } = await client.GetBooksByIds({ ids: [input.id] });
       const book = books[0];
 
@@ -66,10 +62,6 @@ export const bookRouter = router({
         .nullable(),
     )
     .query(async ({ input, ctx }) => {
-      if (!ctx.currentUser.id) {
-        return null;
-      }
-
       const { book_series: bookSeries } = await client.GetSeriesById({ id: input.id });
 
       if (!bookSeries.length) {
