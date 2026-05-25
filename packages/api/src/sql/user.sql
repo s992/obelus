@@ -1,3 +1,10 @@
+-- name: HasUsers :one
+select exists(
+  select 1
+  from users
+  limit 1
+) as users_exist;
+
 -- name: GetUserById :one
 select *
 from users
@@ -11,18 +18,23 @@ where user_name = sqlc.arg('userName');
 -- name: CreateUser :one
 insert into users (
   user_name,
-  password_hash
+  password_hash,
+  status,
+  role
 ) values (
   sqlc.arg('userName'),
-  sqlc.arg('passwordHash')
+  sqlc.arg('passwordHash'),
+  sqlc.arg('registrationStatus'),
+  sqlc.arg('role')
 )
-returning id;
+returning id, status;
 
 -- name: UpdateUser :exec
 update users
 set
   password_hash = coalesce(sqlc.narg('passwordHash'), password_hash),
-  public = coalesce(sqlc.narg('public')::boolean, public)
+  public = coalesce(sqlc.narg('public')::boolean, public),
+  status = coalesce(sqlc.narg('status'), status)
 where id = sqlc.arg('userId');
 
 -- name: GetUserPublicProfile :one
@@ -46,4 +58,5 @@ select
 from users u
 left join record r on r.user_id = u.id
 where u.user_name = sqlc.arg('userName')
+and u.status = 'active'
 group by u.id, u.user_name, u.public;

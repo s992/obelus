@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import { type ReactNode, useMemo } from 'react';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'react-aria-components';
 import { FormattedMessage } from 'react-intl';
 
 import { useTRPC } from '@/client';
 import { AppHeader } from '@/components/AppHeader';
 import { FullPageSpinner } from '@/components/FullPageSpinner';
 import { NotFound } from '@/components/NotFound';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@/components/Tabs';
 import { useFormatDate } from '@/hooks/useFormatDate';
 import { typography } from '@/style';
 
@@ -22,11 +22,9 @@ import {
   metaRow,
   metaValue,
   obelusLink,
-  tab,
   tabLabelCount,
   tabList,
   tabPanel,
-  tabs,
 } from './publicRecord.css';
 
 export function PublicRecord() {
@@ -92,9 +90,9 @@ export function PublicRecord() {
           />
         </div>
       </section>
-      <Tabs defaultSelectedKey="reading" className={tabs}>
+      <Tabs defaultSelectedKey="reading">
         <TabList className={tabList}>
-          <Tab id="reading" className={tab}>
+          <Tab id="reading">
             <FormattedMessage
               defaultMessage="reading <mute>· {count}</mute>"
               values={{
@@ -103,7 +101,7 @@ export function PublicRecord() {
               }}
             />
           </Tab>
-          <Tab id="finished" className={tab}>
+          <Tab id="finished">
             <FormattedMessage
               defaultMessage="read <mute>· {count}</mute>"
               values={{
@@ -112,7 +110,7 @@ export function PublicRecord() {
               }}
             />
           </Tab>
-          <Tab id="planned" className={tab}>
+          <Tab id="planned">
             <FormattedMessage
               defaultMessage="planned <mute>· {count}</mute>"
               values={{

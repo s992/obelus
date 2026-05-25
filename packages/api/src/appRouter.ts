@@ -1,6 +1,7 @@
 import {
   authRouter,
   bookRouter,
+  configRouter,
   importRouter,
   noteRouter,
   publicRecordRouter,
@@ -12,6 +13,7 @@ import { router } from './trpc/trpc';
 export const appRouter = router({
   auth: authRouter,
   book: bookRouter,
+  config: configRouter,
   import: importRouter,
   note: noteRouter,
   publicRecord: publicRecordRouter,

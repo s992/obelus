@@ -1,4 +1,3 @@
-import { initTRPC } from '@trpc/server';
 import { randomUUID } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -17,24 +16,16 @@ vi.mock('../../bookRecord/listUserRecords', () => ({
 import { listUserRecords } from '../../bookRecord/listUserRecords';
 import { getUserPublicProfile } from '../../sqlc/user_sql';
 import type { GetUserPublicProfileRow } from '../../sqlc/user_sql';
-import type { Context } from '../../trpc/context';
 import { publicRecordRouter } from '../publicRecordRouter';
+import { createCallerFactory, makeCallerHelpers } from './routerTestHelpers';
 
 const mockedGetUserPublicProfile = vi.mocked(getUserPublicProfile);
 const mockedListUserRecords = vi.mocked(listUserRecords);
 
-const t = initTRPC.context<Context>().create();
-const createCaller = t.createCallerFactory(publicRecordRouter);
-
 const now = new Date('2025-06-01T12:00:00Z');
 
-function caller(userId?: string) {
-  return createCaller({
-    req: {} as Context['req'],
-    res: {} as Context['res'],
-    currentUser: { isAuthenticated: !!userId, id: userId },
-  });
-}
+const createCaller = createCallerFactory(publicRecordRouter);
+const { authedCaller, unauthenticatedCaller } = makeCallerHelpers(createCaller);
 
 function makeProfile(overrides: Partial<GetUserPublicProfileRow> = {}) {
   return {
@@ -58,7 +49,7 @@ describe('publicRecordRouter', () => {
       const profile = makeProfile({ public: true });
       mockedGetUserPublicProfile.mockResolvedValue(profile);
 
-      const result = await caller().profile({ userName: 'alice' });
+      const result = await unauthenticatedCaller().profile({ userName: 'alice' });
 
       expect(result).toEqual(profile);
     });
@@ -68,7 +59,7 @@ describe('publicRecordRouter', () => {
       const profile = makeProfile({ id: userId, public: false });
       mockedGetUserPublicProfile.mockResolvedValue(profile);
 
-      const result = await caller(userId).profile({ userName: 'alice' });
+      const result = await authedCaller(userId).profile({ userName: 'alice' });
 
       expect(result).toEqual(profile);
     });
@@ -77,7 +68,9 @@ describe('publicRecordRouter', () => {
       const profile = makeProfile({ public: false });
       mockedGetUserPublicProfile.mockResolvedValue(profile);
 
-      await expect(caller('different-user').profile({ userName: 'alice' })).rejects.toMatchObject({
+      await expect(
+        authedCaller('aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa').profile({ userName: 'alice' }),
+      ).rejects.toMatchObject({
         code: 'NOT_FOUND',
       });
     });
@@ -85,13 +78,17 @@ describe('publicRecordRouter', () => {
     it('throws NOT_FOUND when user does not exist and viewer is anonymous', async () => {
       mockedGetUserPublicProfile.mockResolvedValue(null);
 
-      await expect(caller().profile({ userName: 'nobody' })).rejects.toMatchObject({ code: 'NOT_FOUND' });
+      await expect(unauthenticatedCaller().profile({ userName: 'nobody' })).rejects.toMatchObject({
+        code: 'NOT_FOUND',
+      });
     });
 
     it('throws NOT_FOUND when user does not exist and viewer is authenticated', async () => {
       mockedGetUserPublicProfile.mockResolvedValue(null);
 
-      await expect(caller('some-user').profile({ userName: 'nobody' })).rejects.toMatchObject({ code: 'NOT_FOUND' });
+      await expect(
+        authedCaller('aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa').profile({ userName: 'nobody' }),
+      ).rejects.toMatchObject({ code: 'NOT_FOUND' });
     });
   });
 
@@ -107,7 +104,7 @@ describe('publicRecordRouter', () => {
         totalCount: 0,
       });
 
-      await caller().records({
+      await unauthenticatedCaller().records({
         userName: 'alice',
         status: 'finished',
         sortField: 'last_activity',
@@ -127,7 +124,7 @@ describe('publicRecordRouter', () => {
         totalCount: 0,
       });
 
-      await caller(userId).records({
+      await authedCaller(userId).records({
         userName: 'alice',
         status: 'reading',
         sortField: 'started_at',
@@ -141,7 +138,7 @@ describe('publicRecordRouter', () => {
       mockedGetUserPublicProfile.mockResolvedValue(profile);
 
       await expect(
-        caller('other-user').records({
+        authedCaller('aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa').records({
           userName: 'alice',
           status: 'finished',
           sortField: 'last_activity',
@@ -153,7 +150,7 @@ describe('publicRecordRouter', () => {
       mockedGetUserPublicProfile.mockResolvedValue(null);
 
       await expect(
-        caller().records({
+        unauthenticatedCaller().records({
           userName: 'nobody',
           status: 'planned',
           sortField: 'last_activity',

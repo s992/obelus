@@ -73,3 +73,13 @@ export const navToggle = style({
     },
   },
 });
+
+// bypass regular .active styling because it looks
+// weird when it's the only link in the nav
+export const loginLink = style({
+  selectors: {
+    '&.active': {
+      textDecoration: 'none',
+    },
+  },
+});

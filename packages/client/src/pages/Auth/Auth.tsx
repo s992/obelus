@@ -1,8 +1,9 @@
 import { Outlet, useLinkProps, useLocation } from '@tanstack/react-router';
-import { Tab, TabList, TabPanels, Tabs } from 'react-aria-components';
 import { FormattedMessage } from 'react-intl';
 
-import { tab, tabContainer, tabContent, tabList } from './auth.css';
+import { Tab, TabList, TabPanels, Tabs } from '@/components/Tabs';
+
+import { tab, tabContainer, tabContent } from './auth.css';
 
 export function Auth() {
   const { href: loginHref } = useLinkProps({ to: '/auth/login' });
@@ -12,7 +13,7 @@ export function Auth() {
   return (
     <div className={tabContainer}>
       <Tabs selectedKey={location}>
-        <TabList className={tabList}>
+        <TabList>
           <Tab id={loginHref} href={loginHref} className={tab}>
             <FormattedMessage defaultMessage="sign in" />
           </Tab>

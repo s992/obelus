@@ -1,4 +1,4 @@
-import { initTRPC, TRPCError } from '@trpc/server';
+import { TRPCError } from '@trpc/server';
 import { randomUUID } from 'node:crypto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -18,32 +18,16 @@ vi.mock('../../bookRecord/listUserRecords', () => ({
 
 import { listUserRecords } from '../../bookRecord/listUserRecords';
 import { createRecord, deleteRecord, updateRecord } from '../../sqlc/record_sql';
-import type { Context } from '../../trpc/context';
 import { recordRouter } from '../recordRouter';
+import { createCallerFactory, makeCallerHelpers } from './routerTestHelpers';
 
 const mockedCreateRecord = vi.mocked(createRecord);
 const mockedUpdateRecord = vi.mocked(updateRecord);
 const mockedDeleteRecord = vi.mocked(deleteRecord);
 const mockedListUserRecords = vi.mocked(listUserRecords);
 
-const t = initTRPC.context<Context>().create();
-const createCaller = t.createCallerFactory(recordRouter);
-
-function authedCaller(userId = randomUUID()) {
-  return createCaller({
-    req: {} as Context['req'],
-    res: {} as Context['res'],
-    currentUser: { isAuthenticated: true, id: userId },
-  });
-}
-
-function unauthenticatedCaller() {
-  return createCaller({
-    req: {} as Context['req'],
-    res: {} as Context['res'],
-    currentUser: { isAuthenticated: false, id: undefined },
-  });
-}
+const createCaller = createCallerFactory(recordRouter);
+const { authedCaller, unauthenticatedCaller } = makeCallerHelpers(createCaller);
 
 describe('recordRouter', () => {
   beforeEach(() => {

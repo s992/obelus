@@ -1,4 +1,4 @@
-import { initTRPC, TRPCError } from '@trpc/server';
+import { TRPCError } from '@trpc/server';
 import { randomUUID } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -17,31 +17,15 @@ vi.mock('../../sqlc/record_sql', () => ({
 
 import { createNote, listNotes } from '../../sqlc/note_sql';
 import { getRecordById } from '../../sqlc/record_sql';
-import type { Context } from '../../trpc/context';
 import { noteRouter } from '../noteRouter';
+import { createCallerFactory, makeCallerHelpers } from './routerTestHelpers';
 
 const mockedCreateNote = vi.mocked(createNote);
 const mockedListNotes = vi.mocked(listNotes);
 const mockedGetRecordById = vi.mocked(getRecordById);
 
-const t = initTRPC.context<Context>().create();
-const createCaller = t.createCallerFactory(noteRouter);
-
-function authedCaller(userId = randomUUID()) {
-  return createCaller({
-    req: {} as Context['req'],
-    res: {} as Context['res'],
-    currentUser: { isAuthenticated: true, id: userId },
-  });
-}
-
-function unauthenticatedCaller() {
-  return createCaller({
-    req: {} as Context['req'],
-    res: {} as Context['res'],
-    currentUser: { isAuthenticated: false, id: undefined },
-  });
-}
+const createCaller = createCallerFactory(noteRouter);
+const { authedCaller, unauthenticatedCaller } = makeCallerHelpers(createCaller);
 
 describe('noteRouter', () => {
   describe('create', () => {

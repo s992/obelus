@@ -1,4 +1,4 @@
-import { initTRPC, TRPCError } from '@trpc/server';
+import { TRPCError } from '@trpc/server';
 import { randomUUID } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -22,8 +22,8 @@ vi.mock('../../sqlc/record_sql', () => ({
 import { client as gqlClient } from '../../gql/client';
 import type { GetBooksByIdsQuery, GetSeriesByIdQuery } from '../../gql/graphql';
 import { getRecordByBookId, listRecordsByBookIds } from '../../sqlc/record_sql';
-import type { Context } from '../../trpc/context';
 import { bookRouter } from '../bookRouter';
+import { createCallerFactory, makeCallerHelpers } from './routerTestHelpers';
 
 const mockedSearchBooks = vi.mocked(gqlClient.SearchBooks);
 const mockedGetBooksByIds = vi.mocked(gqlClient.GetBooksByIds);
@@ -31,24 +31,8 @@ const mockedGetSeriesById = vi.mocked(gqlClient.GetSeriesById);
 const mockedGetRecordByBookId = vi.mocked(getRecordByBookId);
 const mockedListRecordsByBookIds = vi.mocked(listRecordsByBookIds);
 
-const t = initTRPC.context<Context>().create();
-const createCaller = t.createCallerFactory(bookRouter);
-
-function authedCaller(userId = randomUUID()) {
-  return createCaller({
-    req: {} as Context['req'],
-    res: {} as Context['res'],
-    currentUser: { isAuthenticated: true, id: userId },
-  });
-}
-
-function unauthenticatedCaller() {
-  return createCaller({
-    req: {} as Context['req'],
-    res: {} as Context['res'],
-    currentUser: { isAuthenticated: false, id: undefined },
-  });
-}
+const createCaller = createCallerFactory(bookRouter);
+const { authedCaller, unauthenticatedCaller } = makeCallerHelpers(createCaller);
 
 type GqlBook = GetBooksByIdsQuery['books'][number];
 

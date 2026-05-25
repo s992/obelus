@@ -19,14 +19,27 @@ vi.mock('../../auth/auth', () => ({
   login: vi.fn(),
 }));
 
+vi.mock('../../sqlc/config_sql', () => ({
+  getConfig: vi.fn(),
+}));
+
+vi.mock('../../sqlc/invite_link_sql', () => ({
+  getInviteLink: vi.fn(),
+}));
+
 import { login, register } from '../../auth/auth';
 import { checkRateLimit } from '../../server';
+import { getConfig } from '../../sqlc/config_sql';
+import { getInviteLink } from '../../sqlc/invite_link_sql';
+import type { GetInviteLinkRow } from '../../sqlc/invite_link_sql';
 import type { Context } from '../../trpc/context';
 import { authRouter } from '../authRouter';
 
 const mockedRegister = vi.mocked(register);
 const mockedLogin = vi.mocked(login);
 const mockedCheckRateLimit = vi.mocked(checkRateLimit);
+const mockedGetConfig = vi.mocked(getConfig);
+const mockedGetInviteLink = vi.mocked(getInviteLink);
 
 const t = initTRPC.context<Context>().create();
 const createCaller = t.createCallerFactory(authRouter);
@@ -35,8 +48,21 @@ function makeCaller() {
   return createCaller({
     req: { server: { jwt: { sign: mockJwtSign } } } as unknown as Context['req'],
     res: { cookie: mockCookie, clearCookie: mockClearCookie } as unknown as Context['res'],
-    currentUser: { isAuthenticated: false, id: undefined },
+    currentUser: { isAuthenticated: false },
   });
+}
+
+function makeInviteLink(overrides?: Partial<GetInviteLinkRow>): GetInviteLinkRow {
+  return {
+    id: 'link-1',
+    createdAt: new Date('2025-01-01'),
+    createdBy: 'admin-id',
+    token: 'valid-token',
+    expiresAt: new Date(Date.now() + 86400000),
+    usedAt: null,
+    usedBy: null,
+    ...overrides,
+  };
 }
 
 describe('authRouter', () => {
@@ -45,33 +71,140 @@ describe('authRouter', () => {
       isAllowed: true,
       key: 'test',
     } as Awaited<ReturnType<typeof checkRateLimit>>);
+    mockedGetConfig.mockResolvedValue({
+      registrationStrategy: 'open',
+    } as Awaited<ReturnType<typeof getConfig>>);
   });
 
   describe('register', () => {
-    it('registers the user and sets a signed cookie', async () => {
-      const caller = makeCaller();
-      mockedRegister.mockResolvedValue('new-user-id');
-      mockJwtSign.mockReturnValue('jwt-token-value');
+    describe('open strategy', () => {
+      it('registers user as active and sets cookie', async () => {
+        const caller = makeCaller();
+        mockedRegister.mockResolvedValue({ id: 'new-user-id', status: 'active' });
+        mockJwtSign.mockReturnValue('jwt-token-value');
 
-      await caller.register({ userName: 'alice', password: 'securepassword' });
+        const result = await caller.register({ userName: 'alice', password: 'securepassword' });
 
-      expect(mockedRegister).toHaveBeenCalledWith('alice', 'securepassword');
-      expect(mockJwtSign).toHaveBeenCalledWith({ id: 'new-user-id' }, expect.objectContaining({ expiresIn: '30d' }));
-      expect(mockCookie).toHaveBeenCalledWith(
-        'token',
-        'jwt-token-value',
-        expect.objectContaining({
-          httpOnly: true,
-          signed: true,
-          secure: true,
-          domain: 'obelus.example.com',
-        }),
-      );
+        expect(mockedRegister).toHaveBeenCalledWith('alice', 'securepassword', 'active', null);
+        expect(mockJwtSign).toHaveBeenCalledWith({ id: 'new-user-id' }, expect.objectContaining({ expiresIn: '30d' }));
+        expect(mockCookie).toHaveBeenCalledWith(
+          'token',
+          'jwt-token-value',
+          expect.objectContaining({
+            httpOnly: true,
+            signed: true,
+            secure: true,
+            domain: 'obelus.example.com',
+          }),
+        );
+        expect(result).toEqual({ id: 'new-user-id', status: 'active' });
+      });
     });
 
-    it('throws INTERNAL_SERVER_ERROR when register returns no userId', async () => {
+    describe('closed strategy', () => {
+      it('throws FORBIDDEN and does not call register', async () => {
+        mockedGetConfig.mockResolvedValue({
+          registrationStrategy: 'closed',
+        } as Awaited<ReturnType<typeof getConfig>>);
+        const caller = makeCaller();
+
+        await expect(caller.register({ userName: 'alice', password: 'securepassword' })).rejects.toMatchObject({
+          code: 'FORBIDDEN',
+        });
+
+        expect(mockedRegister).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('invite_link strategy', () => {
+      beforeEach(() => {
+        mockedGetConfig.mockResolvedValue({
+          registrationStrategy: 'invite_link',
+        } as Awaited<ReturnType<typeof getConfig>>);
+      });
+
+      it('registers user with a valid invite token', async () => {
+        const caller = makeCaller();
+        const inviteLink = makeInviteLink();
+        mockedGetInviteLink.mockResolvedValue(inviteLink);
+        mockedRegister.mockResolvedValue({ id: 'new-id', status: 'active' });
+        mockJwtSign.mockReturnValue('jwt-token');
+
+        await caller.register({
+          userName: 'alice',
+          password: 'securepassword',
+          inviteToken: 'valid-token',
+        });
+
+        expect(mockedGetInviteLink).toHaveBeenCalledWith(expect.anything(), { token: 'valid-token' });
+        expect(mockedRegister).toHaveBeenCalledWith('alice', 'securepassword', 'active', inviteLink);
+        expect(mockCookie).toHaveBeenCalled();
+      });
+
+      it('throws UNPROCESSABLE_CONTENT when inviteToken is missing', async () => {
+        const caller = makeCaller();
+
+        await expect(caller.register({ userName: 'alice', password: 'securepassword' })).rejects.toMatchObject({
+          code: 'UNPROCESSABLE_CONTENT',
+        });
+
+        expect(mockedRegister).not.toHaveBeenCalled();
+      });
+
+      it('throws UNPROCESSABLE_CONTENT when invite link is not found', async () => {
+        const caller = makeCaller();
+        mockedGetInviteLink.mockResolvedValue(null);
+
+        await expect(
+          caller.register({ userName: 'alice', password: 'securepassword', inviteToken: 'bad-token' }),
+        ).rejects.toMatchObject({ code: 'UNPROCESSABLE_CONTENT' });
+
+        expect(mockedRegister).not.toHaveBeenCalled();
+      });
+
+      it('throws UNPROCESSABLE_CONTENT when invite link is already used', async () => {
+        const caller = makeCaller();
+        mockedGetInviteLink.mockResolvedValue(makeInviteLink({ usedAt: new Date('2025-06-01'), usedBy: 'someone' }));
+
+        await expect(
+          caller.register({ userName: 'alice', password: 'securepassword', inviteToken: 'used-token' }),
+        ).rejects.toMatchObject({ code: 'UNPROCESSABLE_CONTENT' });
+
+        expect(mockedRegister).not.toHaveBeenCalled();
+      });
+
+      it('throws UNPROCESSABLE_CONTENT when invite link is expired', async () => {
+        const caller = makeCaller();
+        mockedGetInviteLink.mockResolvedValue(makeInviteLink({ expiresAt: new Date('2020-01-01') }));
+
+        await expect(
+          caller.register({ userName: 'alice', password: 'securepassword', inviteToken: 'expired-token' }),
+        ).rejects.toMatchObject({ code: 'UNPROCESSABLE_CONTENT' });
+
+        expect(mockedRegister).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('requires_approval strategy', () => {
+      it('registers user as pending_approval and does not set cookie', async () => {
+        mockedGetConfig.mockResolvedValue({
+          registrationStrategy: 'requires_approval',
+        } as Awaited<ReturnType<typeof getConfig>>);
+        const caller = makeCaller();
+        mockedRegister.mockResolvedValue({ id: 'new-id', status: 'pending_approval' });
+
+        const result = await caller.register({ userName: 'alice', password: 'securepassword' });
+
+        expect(mockedRegister).toHaveBeenCalledWith('alice', 'securepassword', 'pending_approval', null);
+        expect(mockJwtSign).not.toHaveBeenCalled();
+        expect(mockCookie).not.toHaveBeenCalled();
+        expect(result).toEqual({ id: 'new-id', status: 'pending_approval' });
+      });
+    });
+
+    it('throws INTERNAL_SERVER_ERROR when register returns null', async () => {
       const caller = makeCaller();
-      mockedRegister.mockResolvedValue(undefined);
+      mockedRegister.mockResolvedValue(null);
 
       await expect(caller.register({ userName: 'alice', password: 'securepassword' })).rejects.toMatchObject({
         code: 'INTERNAL_SERVER_ERROR',
@@ -124,6 +257,8 @@ describe('authRouter', () => {
         userName: 'bob',
         passwordHash: 'hashed',
         public: false,
+        status: 'active',
+        role: 'member',
       };
       mockedLogin.mockResolvedValue(user);
       mockJwtSign.mockReturnValue('login-jwt');
@@ -133,6 +268,26 @@ describe('authRouter', () => {
       expect(mockedLogin).toHaveBeenCalledWith('bob', 'mypassword');
       expect(mockJwtSign).toHaveBeenCalledWith({ id: 'user-123' }, expect.objectContaining({ expiresIn: '30d' }));
       expect(mockCookie).toHaveBeenCalledWith('token', 'login-jwt', expect.any(Object));
+    });
+
+    it('throws FORBIDDEN when user status is not active', async () => {
+      const caller = makeCaller();
+      mockedLogin.mockResolvedValue({
+        id: 'user-123',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        userName: 'bob',
+        passwordHash: 'hashed',
+        public: false,
+        status: 'pending_approval',
+        role: 'member',
+      });
+
+      await expect(caller.login({ userName: 'bob', password: 'mypassword' })).rejects.toMatchObject({
+        code: 'FORBIDDEN',
+      });
+
+      expect(mockCookie).not.toHaveBeenCalled();
     });
 
     it('propagates UNAUTHORIZED from login service', async () => {

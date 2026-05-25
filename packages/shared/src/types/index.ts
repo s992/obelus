@@ -5,10 +5,13 @@ import type {
   ImportProgressSchema,
   NoteJsonSchema,
   NoteSchema,
+  ObelusConfigSchema,
   RecordJsonSchema,
   RecordSchema,
   SeriesSchema,
   SortFieldSchema,
+  UserRoleSchema,
+  UserStatusSchema,
 } from '../schema';
 
 export type Book = z.infer<typeof BookSchema>;
@@ -26,6 +29,12 @@ export type RecordJson = z.infer<typeof RecordJsonSchema>;
 export type SortField = z.infer<typeof SortFieldSchema>;
 
 export type ImportProgress = z.infer<typeof ImportProgressSchema>;
+
+export type UserStatus = z.infer<typeof UserStatusSchema>;
+
+export type UserRole = z.infer<typeof UserRoleSchema>;
+
+export type ObelusConfig = z.infer<typeof ObelusConfigSchema>;
 
 export type Status = 'planned' | 'finished' | 'reading';
 
