@@ -1,12 +1,13 @@
 import { TRPCError } from '@trpc/server';
 import z from 'zod';
 
-import { UserSchema } from '@obelus/shared/schema';
+import { ListUsersSchema, UserRoleSchema, UserSchema, UserStatusSchema } from '@obelus/shared/schema';
 
 import { hashPassword, verifyPassword } from '../auth/auth';
 import { db } from '../db/db';
 import { getUserById, updateUser } from '../sqlc/user_sql';
-import { privateProcedure, router } from '../trpc/trpc';
+import { adminProcedure, privateProcedure, router } from '../trpc/trpc';
+import { listUsers, PAGE_SIZE } from '../users/listUsers';
 
 export const userRouter = router({
   me: privateProcedure.query(async ({ ctx }) => {
@@ -39,9 +40,46 @@ export const userRouter = router({
       }
 
       const newPasswordHash = await hashPassword(input.newPassword);
-      await updateUser(db, { passwordhash: newPasswordHash, public: null, userid: ctx.currentUser.id, status: null });
+      await updateUser(db, {
+        passwordhash: newPasswordHash,
+        public: null,
+        userid: ctx.currentUser.id,
+        status: null,
+        role: null,
+      });
     }),
   update: privateProcedure.input(UserSchema.pick({ public: true })).mutation(async ({ ctx, input }) => {
-    await updateUser(db, { public: input.public, passwordhash: null, userid: ctx.currentUser.id, status: null });
+    await updateUser(db, {
+      public: input.public,
+      passwordhash: null,
+      userid: ctx.currentUser.id,
+      status: null,
+      role: null,
+    });
   }),
+  list: adminProcedure
+    .input(
+      z.object({
+        cursor: z.string().optional(),
+        status: UserStatusSchema.nullable(),
+        role: UserRoleSchema.nullable(),
+      }),
+    )
+    .output(ListUsersSchema)
+    .query(async ({ input }) => {
+      const result = await listUsers(input.cursor, input.status, input.role);
+
+      return ListUsersSchema.parse({ ...result, pageSize: PAGE_SIZE });
+    }),
+  adminUpdateUser: adminProcedure
+    .input(UserSchema.pick({ id: true, role: true, status: true }))
+    .mutation(async ({ input }) => {
+      await updateUser(db, {
+        passwordhash: null,
+        public: null,
+        role: input.role,
+        status: input.status,
+        userid: input.id,
+      });
+    }),
 });

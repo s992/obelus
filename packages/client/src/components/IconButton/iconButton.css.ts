@@ -25,10 +25,10 @@ export const button = styleVariants({
     {
       border: `1px solid ${vars.color.fieldRule}`,
       background: vars.color.surface,
-      ':hover': {
-        background: vars.color.tint,
-      },
       selectors: {
+        '&:hover:not([data-disabled=true])': {
+          background: vars.color.tint,
+        },
         '&[data-disabled=true]': {
           color: vars.color.ink3,
           backgroundColor: vars.color.surface,
@@ -44,9 +44,15 @@ export const button = styleVariants({
       borderColor: 'transparent',
       backgroundColor: 'transparent',
       color: vars.color.ink2,
-      ':hover': {
-        backgroundColor: vars.color.tint,
-        color: vars.color.ink,
+      selectors: {
+        '&:hover:not([data-disabled=true])': {
+          backgroundColor: vars.color.tint,
+          color: vars.color.ink,
+        },
+        '&[data-disabled=true]': {
+          color: vars.color.ink3,
+          cursor: 'not-allowed',
+        },
       },
     },
   ],

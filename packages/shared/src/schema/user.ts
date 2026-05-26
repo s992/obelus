@@ -22,3 +22,19 @@ export const UserJsonSchema = UserSchema.omit({
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
 });
+
+export const ListUsersSchema = z.object({
+  users: z.array(
+    z.object({
+      id: z.uuidv4(),
+      userName: z.string(),
+      createdAt: z.date(),
+      status: UserStatusSchema,
+      role: UserRoleSchema,
+    }),
+  ),
+  hasNextPage: z.boolean(),
+  nextPageToken: z.string().nullable(),
+  totalCount: z.number(),
+  pageSize: z.number(),
+});

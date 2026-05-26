@@ -164,20 +164,22 @@ update users
 set
   password_hash = coalesce($1, password_hash),
   public = coalesce($2::boolean, public),
-  status = coalesce($3, status)
-where id = $4`;
+  status = coalesce($3, status),
+  role = coalesce($4, role)
+where id = $5`;
 
 export interface UpdateUserArgs {
   passwordhash: string | null;
   public: boolean | null;
   status: string | null;
+  role: string | null;
   userid: string;
 }
 
 export async function updateUser(client: Client, args: UpdateUserArgs): Promise<void> {
   await client.query({
     text: updateUserQuery,
-    values: [args.passwordhash, args.public, args.status, args.userid],
+    values: [args.passwordhash, args.public, args.status, args.role, args.userid],
     rowMode: 'array',
   });
 }
@@ -248,4 +250,71 @@ export async function getUserPublicProfile(
     oldestRecord: row?.[8],
     lastUpdated: row?.[9],
   };
+}
+
+export const listUsersQuery = `-- name: ListUsers :many
+with filtered_users as (
+  select
+    id,
+    user_name,
+    created_at,
+    status,
+    role
+  from users
+  where (
+    $3::user_registration_status is null
+    or status = $3::user_registration_status
+  )
+  and (
+    $4::user_role is null
+    or role = $4::user_role
+  )
+)
+select
+  id,
+  user_name,
+  created_at,
+  status,
+  role,
+  (select count(*) from filtered_users) as total_count
+from filtered_users
+where (
+  $1::text is null
+  or user_name > $1::text
+)
+order by user_name asc
+limit $2::integer`;
+
+export interface ListUsersArgs {
+  cursor: string | null;
+  pagesize: number;
+  status: string | null;
+  role: string | null;
+}
+
+export interface ListUsersRow {
+  id: string;
+  userName: string;
+  createdAt: Date;
+  status: string;
+  role: string;
+  totalCount: string;
+}
+
+export async function listUsers(client: Client, args: ListUsersArgs): Promise<ListUsersRow[]> {
+  const result = await client.query({
+    text: listUsersQuery,
+    values: [args.cursor, args.pagesize, args.status, args.role],
+    rowMode: 'array',
+  });
+  return result.rows.map((row) => {
+    return {
+      id: row[0],
+      userName: row[1],
+      createdAt: row[2],
+      status: row[3],
+      role: row[4],
+      totalCount: row[5],
+    };
+  });
 }

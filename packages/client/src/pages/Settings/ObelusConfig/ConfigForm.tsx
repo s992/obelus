@@ -37,10 +37,10 @@ export function ConfigForm({ onSubmit, defaultValues, isLoading }: Props) {
           {(field) => (
             <field.Select label={<FormattedMessage defaultMessage="Registration Strategy" />}>
               <Select.Item id="open">{intl.formatMessage({ defaultMessage: 'open' })}</Select.Item>
-              {/*TODO: these are not useful without user management
               <Select.Item id="requires_approval">
                 {intl.formatMessage({ defaultMessage: 'requires approval' })}
               </Select.Item>
+              {/*TODO: this is not useful without invite link admin
               <Select.Item id="invite_link">{intl.formatMessage({ defaultMessage: 'invite link' })}</Select.Item>*/}
               <Select.Item id="closed">{intl.formatMessage({ defaultMessage: 'closed' })}</Select.Item>
             </field.Select>

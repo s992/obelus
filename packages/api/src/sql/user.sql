@@ -34,7 +34,8 @@ update users
 set
   password_hash = coalesce(sqlc.narg('passwordHash'), password_hash),
   public = coalesce(sqlc.narg('public')::boolean, public),
-  status = coalesce(sqlc.narg('status'), status)
+  status = coalesce(sqlc.narg('status'), status),
+  role = coalesce(sqlc.narg('role'), role)
 where id = sqlc.arg('userId');
 
 -- name: GetUserPublicProfile :one
@@ -60,3 +61,36 @@ left join record r on r.user_id = u.id
 where u.user_name = sqlc.arg('userName')
 and u.status = 'active'
 group by u.id, u.user_name, u.public;
+
+-- name: ListUsers :many
+with filtered_users as (
+  select
+    id,
+    user_name,
+    created_at,
+    status,
+    role
+  from users
+  where (
+    sqlc.narg('status')::user_registration_status is null
+    or status = sqlc.narg('status')::user_registration_status
+  )
+  and (
+    sqlc.narg('role')::user_role is null
+    or role = sqlc.narg('role')::user_role
+  )
+)
+select
+  id,
+  user_name,
+  created_at,
+  status,
+  role,
+  (select count(*) from filtered_users) as total_count
+from filtered_users
+where (
+  sqlc.narg('cursor')::text is null
+  or user_name > sqlc.narg('cursor')::text
+)
+order by user_name asc
+limit sqlc.arg('pageSize')::integer;

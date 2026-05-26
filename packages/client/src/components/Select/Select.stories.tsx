@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { FormDecorator } from '@/components/_storybook/FormDecorator';
-
 import { Select } from './';
 
 const meta = {
@@ -16,6 +14,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     label: 'sort order',
+    buttonValue: 'sort by',
     children: (
       <>
         <Select.Item>recently updated</Select.Item>
@@ -24,13 +23,4 @@ export const Default: Story = {
       </>
     ),
   },
-  render: (args) => (
-    <FormDecorator defaultValues={{ sortOrder: '' }}>
-      {(form) => (
-        <form.AppForm>
-          <form.AppField name="sortOrder">{(field: any) => <field.Select {...args} />}</form.AppField>
-        </form.AppForm>
-      )}
-    </FormDecorator>
-  ),
 };

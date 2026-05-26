@@ -9,6 +9,7 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@/components/Tabs';
 import { Imports } from './Imports';
 import { ObelusConfig } from './ObelusConfig';
 import { tabPanel } from './settings.css';
+import { Users } from './Users';
 import { UserSettings } from './UserSettings';
 
 export function Settings() {
@@ -34,10 +35,9 @@ export function Settings() {
         </Tab>
         {user.role === 'admin' && (
           <>
-            {/*TODO: user management
             <Tab id="users">
               <FormattedMessage defaultMessage="users" />
-            </Tab>*/}
+            </Tab>
             <Tab id="config">
               <FormattedMessage defaultMessage="obelus config" />
             </Tab>
@@ -51,9 +51,9 @@ export function Settings() {
         <TabPanel id="imports" className={tabPanel}>
           <Imports />
         </TabPanel>
-        {/*<TabPanel id="users" className={tabPanel}>
-          TODO: user management
-        </TabPanel>*/}
+        <TabPanel id="users" className={tabPanel}>
+          <Users />
+        </TabPanel>
         <TabPanel id="config" className={tabPanel}>
           <ObelusConfig />
         </TabPanel>
