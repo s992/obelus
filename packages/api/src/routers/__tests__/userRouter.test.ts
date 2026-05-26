@@ -107,6 +107,7 @@ describe('userRouter', () => {
         passwordhash: 'hashed-new-password',
         public: null,
         status: null,
+        role: null,
         userid: userId,
       });
     });
@@ -153,6 +154,7 @@ describe('userRouter', () => {
         public: true,
         passwordhash: null,
         status: null,
+        role: null,
         userid: userId,
       });
     });
