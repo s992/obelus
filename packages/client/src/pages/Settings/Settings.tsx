@@ -3,7 +3,7 @@ import { useLinkProps, useLocation } from '@tanstack/react-router';
 import { FormattedMessage } from 'react-intl';
 
 import { useTRPC } from '@/client';
-import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { FullContainerSpinner } from '@/components/FullContainerSpinner';
 import { NotFound } from '@/components/NotFound';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@/components/Tabs';
 
@@ -23,7 +23,7 @@ export function Settings() {
   const location = useLocation({ select: (loc) => loc.pathname });
 
   if (isLoading) {
-    return <FullPageSpinner />;
+    return <FullContainerSpinner />;
   }
 
   if (!user) {

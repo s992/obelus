@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTRPC } from '@/client';
-import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { FullContainerSpinner } from '@/components/FullContainerSpinner';
 import { toastQueue } from '@/components/Toast';
 import { typography } from '@/style';
 
@@ -48,7 +48,7 @@ export function ObelusConfig() {
       </h2>
       <div className={formContainer}>
         {isLoading || !config ? (
-          <FullPageSpinner />
+          <FullContainerSpinner />
         ) : (
           <ConfigForm defaultValues={config} onSubmit={({ value }) => updateConfig(value)} isLoading={isPending} />
         )}

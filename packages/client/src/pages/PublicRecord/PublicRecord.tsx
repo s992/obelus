@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { useTRPC } from '@/client';
 import { AppHeader } from '@/components/AppHeader';
-import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { FullContainerSpinner } from '@/components/FullContainerSpinner';
 import { NotFound } from '@/components/NotFound';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@/components/Tabs';
 import { useFormatDate } from '@/hooks/useFormatDate';
@@ -37,7 +37,7 @@ export function PublicRecord() {
   const today = useMemo(() => new Date().toISOString(), []);
 
   if (isLoading) {
-    return <FullPageSpinner />;
+    return <FullContainerSpinner />;
   }
 
   if (isError || !profile) {

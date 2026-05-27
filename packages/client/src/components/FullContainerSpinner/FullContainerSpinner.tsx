@@ -1,8 +1,8 @@
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 
-import { container } from './fullPageSpinner.css';
+import { container } from './fullContainerSpinner.css';
 
-export function FullPageSpinner() {
+export function FullContainerSpinner() {
   return (
     <div className={container}>
       <LoadingSpinner size="xlarge" />

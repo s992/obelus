@@ -6,7 +6,7 @@ import { useCopyToClipboard } from 'usehooks-ts';
 
 import { useTRPC } from '@/client';
 import { Button } from '@/components/Button';
-import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { FullContainerSpinner } from '@/components/FullContainerSpinner';
 import { IconButton } from '@/components/IconButton';
 import { Link } from '@/components/Link';
 import { NotFound } from '@/components/NotFound';
@@ -65,7 +65,7 @@ export function UserSettings() {
   };
 
   if (isLoading) {
-    return <FullPageSpinner />;
+    return <FullContainerSpinner />;
   }
 
   if (!user) {

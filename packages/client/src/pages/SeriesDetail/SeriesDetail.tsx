@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { useTRPC } from '@/client';
 import { ListGroupRow } from '@/components/BookList/ListGroup/ListGroupRow';
 import { ListHeader } from '@/components/BookList/ListHeader';
-import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { FullContainerSpinner } from '@/components/FullContainerSpinner';
 import { LoadError } from '@/components/LoadError';
 import { ListPageContextProvider } from '@/pages/ListPage/context';
 
@@ -21,7 +21,7 @@ export function SeriesDetail() {
   } = useQuery(trpc.book.seriesById.queryOptions({ id: parseInt(seriesId) }));
 
   if (isLoading) {
-    return <FullPageSpinner />;
+    return <FullContainerSpinner />;
   }
 
   if (isLoadError || !series) {

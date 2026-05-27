@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { useTRPC } from '@/client';
 import { BookList } from '@/components/BookList';
-import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { FullContainerSpinner } from '@/components/FullContainerSpinner';
 import { ListPageContextProvider } from '@/pages/ListPage/context';
 import type { SortField, Status } from '@obelus/shared/types';
 
@@ -26,7 +26,7 @@ export function PublicBookList({ userName, status, sortField }: Props) {
   const books = data?.pages.flatMap((page) => page?.books).filter((book) => book !== undefined);
 
   if (isLoading) {
-    return <FullPageSpinner />;
+    return <FullContainerSpinner />;
   }
 
   return (

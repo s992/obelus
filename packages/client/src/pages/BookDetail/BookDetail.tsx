@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { useTRPC } from '@/client';
 import { BookCover } from '@/components/BookCover';
-import { FullPageSpinner } from '@/components/FullPageSpinner';
+import { FullContainerSpinner } from '@/components/FullContainerSpinner';
 import { Link } from '@/components/Link';
 import { LoadError } from '@/components/LoadError';
 import { StatusCell } from '@/features/StatusCell';
@@ -42,7 +42,7 @@ export function BookDetail() {
   const formatLongDate = useFormatLongDate();
 
   if (isLoading) {
-    return <FullPageSpinner />;
+    return <FullContainerSpinner />;
   }
 
   if (isError || !book) {
