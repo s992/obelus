@@ -5,32 +5,19 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useTRPC } from '@/client';
 import { Button } from '@/components/Button';
 import { Pagination } from '@/components/Pagination';
-import { Select } from '@/components/Select';
 import { Table } from '@/components/Table';
 import { toastQueue } from '@/components/Toast';
-import { useFormatDate } from '@/hooks/useFormatDate';
 import { typography } from '@/style';
-import { UserRoleSchema, UserStatusSchema } from '@obelus/shared/schema';
 import type { UserStatus, UserRole } from '@obelus/shared/types';
 
 import { formSection } from '../settings.css';
-import {
-  actionContainer,
-  dateCell,
-  emptyStateCell,
-  filterBar,
-  filterGroup,
-  header,
-  nameCell,
-  roleCell,
-  statusCell,
-} from './users.css';
+import { UsersRow } from './UserRow';
+import { emptyStateCell, filterBar, filterGroup, header } from './users.css';
 
 export function Users() {
   const intl = useIntl();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
-  const formatDate = useFormatDate('MMM DD, YYYY, h:mm a');
   const [statusFilter, setStatusFilter] = useState<UserStatus | 'all'>('all');
   const [roleFilter, setRoleFilter] = useState<UserRole | 'all'>('all');
   const statusParam = statusFilter === 'all' ? null : statusFilter;
@@ -53,19 +40,16 @@ export function Users() {
           queryKey: trpc.user.list.infiniteQueryKey({ role: roleParam, status: statusParam }),
         });
       },
-      onError: () => {
+      onError: (err) => {
         toastQueue.add({
           variant: 'error',
           title: intl.formatMessage({ defaultMessage: 'Failed to update user' }),
-          message: intl.formatMessage({ defaultMessage: 'Please refresh the page and try again.' }),
+          message: err.message || intl.formatMessage({ defaultMessage: 'Please refresh the page and try again.' }),
         });
       },
     }),
   );
   const users = data?.pages.flatMap((page) => page.users).filter((user) => user !== undefined);
-
-  const roleLabel = intl.formatMessage({ defaultMessage: 'change role' });
-  const statusLabel = intl.formatMessage({ defaultMessage: 'change status' });
 
   return (
     <div className={formSection}>
@@ -144,67 +128,16 @@ export function Users() {
                 </Table.Row>
               )}
               {records.map((user) => (
-                <Table.Row key={user.id}>
-                  <Table.Cell className={nameCell}>{user.userName}</Table.Cell>
-                  <Table.Cell className={roleCell[user.role]}>
-                    <RoleI18n role={user.role} />
-                  </Table.Cell>
-                  <Table.Cell className={statusCell[user.status]}>
-                    <StatusI18n status={user.status} />
-                  </Table.Cell>
-                  <Table.Cell className={dateCell}>{formatDate(user.createdAt)}</Table.Cell>
-                  <Table.Cell>
-                    <div className={actionContainer}>
-                      <Select
-                        variant="muted"
-                        aria-label={roleLabel}
-                        buttonValue={roleLabel}
-                        defaultValue={user.role}
-                        onChange={(role) => {
-                          const parsed = UserRoleSchema.safeParse(role);
-
-                          if (!parsed.success) {
-                            return;
-                          }
-
-                          updateUser({ id: user.id, status: user.status, role: parsed.data });
-                        }}
-                      >
-                        <Select.Item id="admin">
-                          <FormattedMessage defaultMessage="admin" />
-                        </Select.Item>
-                        <Select.Item id="member">
-                          <FormattedMessage defaultMessage="member" />
-                        </Select.Item>
-                      </Select>
-                      <Select
-                        variant="muted"
-                        aria-label={statusLabel}
-                        buttonValue={statusLabel}
-                        defaultValue={user.status}
-                        onChange={(status) => {
-                          const parsed = UserStatusSchema.safeParse(status);
-
-                          if (!parsed.success) {
-                            return;
-                          }
-
-                          updateUser({ id: user.id, role: user.role, status: parsed.data });
-                        }}
-                      >
-                        <Select.Item id="active">
-                          <FormattedMessage defaultMessage="active" />
-                        </Select.Item>
-                        <Select.Item id="pending_approval">
-                          <FormattedMessage defaultMessage="pending" />
-                        </Select.Item>
-                        <Select.Item id="disabled">
-                          <FormattedMessage defaultMessage="disabled" />
-                        </Select.Item>
-                      </Select>
-                    </div>
-                  </Table.Cell>
-                </Table.Row>
+                <UsersRow
+                  key={user.id}
+                  user={user}
+                  onRoleChange={(role) => {
+                    updateUser({ id: user.id, role, status: user.status });
+                  }}
+                  onStatusChange={(status) => {
+                    updateUser({ id: user.id, role: user.role, status });
+                  }}
+                />
               ))}
             </Table.Body>
           </Table>
@@ -212,28 +145,4 @@ export function Users() {
       </Pagination>
     </div>
   );
-}
-
-function StatusI18n({ status }: { status: UserStatus }) {
-  switch (status) {
-    case 'active':
-      return <FormattedMessage defaultMessage="active" />;
-    case 'disabled':
-      return <FormattedMessage defaultMessage="disabled" />;
-    case 'pending_approval':
-      return <FormattedMessage defaultMessage="pending" />;
-    default:
-      return null;
-  }
-}
-
-function RoleI18n({ role }: { role: UserRole }) {
-  switch (role) {
-    case 'admin':
-      return <FormattedMessage defaultMessage="admin" />;
-    case 'member':
-      return <FormattedMessage defaultMessage="member" />;
-    default:
-      return null;
-  }
 }

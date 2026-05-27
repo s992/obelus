@@ -23,16 +23,20 @@ export const UserJsonSchema = UserSchema.omit({
   updatedAt: z.iso.datetime(),
 });
 
+export const ListUsersUserSchema = z.object({
+  id: z.uuidv4(),
+  userName: z.string(),
+  createdAt: z.date(),
+  status: UserStatusSchema,
+  role: UserRoleSchema,
+});
+
+export const ListUsersUserJsonSchema = ListUsersUserSchema.omit({ createdAt: true }).extend({
+  createdAt: z.iso.datetime(),
+});
+
 export const ListUsersSchema = z.object({
-  users: z.array(
-    z.object({
-      id: z.uuidv4(),
-      userName: z.string(),
-      createdAt: z.date(),
-      status: UserStatusSchema,
-      role: UserRoleSchema,
-    }),
-  ),
+  users: z.array(ListUsersUserSchema),
   hasNextPage: z.boolean(),
   nextPageToken: z.string().nullable(),
   totalCount: z.number(),
