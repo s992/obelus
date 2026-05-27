@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import { Tab, TabList, TabPanels, Tabs } from '@/components/Tabs';
 
-import { tab, tabContainer, tabContent } from './auth.css';
+import { tabContainer, tabContent } from './auth.css';
 
 export function Auth() {
   const { href: loginHref } = useLinkProps({ to: '/auth/login' });
@@ -14,10 +14,10 @@ export function Auth() {
     <div className={tabContainer}>
       <Tabs selectedKey={location}>
         <TabList>
-          <Tab id={loginHref} href={loginHref} className={tab}>
+          <Tab id={loginHref} href={loginHref}>
             <FormattedMessage defaultMessage="sign in" />
           </Tab>
-          <Tab id={registerHref} href={registerHref} className={tab}>
+          <Tab id={registerHref} href={registerHref}>
             <FormattedMessage defaultMessage="register" />
           </Tab>
         </TabList>

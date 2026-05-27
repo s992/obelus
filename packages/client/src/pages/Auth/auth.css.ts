@@ -17,10 +17,6 @@ export const tabContent = style({
   padding: `${vars.space.s5} 0`,
 });
 
-export const tab = style({
-  textDecoration: 'none',
-});
-
 export const formContainer = style({
   display: 'flex',
   flexDirection: 'column',

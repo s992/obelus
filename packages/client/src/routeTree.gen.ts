@@ -19,6 +19,9 @@ import { Route as LayoutAuthLoginRouteImport } from './routes/_layout/auth/login
 import { Route as LayoutAuthenticatedSettingsRouteImport } from './routes/_layout/_authenticated/settings'
 import { Route as LayoutAuthenticatedReadRouteImport } from './routes/_layout/_authenticated/read'
 import { Route as LayoutAuthenticatedPlannedRouteImport } from './routes/_layout/_authenticated/planned'
+import { Route as LayoutAuthenticatedSettingsUsersRouteImport } from './routes/_layout/_authenticated/settings/users'
+import { Route as LayoutAuthenticatedSettingsImportsRouteImport } from './routes/_layout/_authenticated/settings/imports'
+import { Route as LayoutAuthenticatedSettingsConfigRouteImport } from './routes/_layout/_authenticated/settings/config'
 import { Route as LayoutAuthenticatedSeriesSeriesIdRouteImport } from './routes/_layout/_authenticated/series/$seriesId'
 import { Route as LayoutAuthenticatedBookBookIdRouteImport } from './routes/_layout/_authenticated/book/$bookId'
 
@@ -73,6 +76,24 @@ const LayoutAuthenticatedPlannedRoute =
     path: '/planned',
     getParentRoute: () => LayoutAuthenticatedRoute,
   } as any)
+const LayoutAuthenticatedSettingsUsersRoute =
+  LayoutAuthenticatedSettingsUsersRouteImport.update({
+    id: '/users',
+    path: '/users',
+    getParentRoute: () => LayoutAuthenticatedSettingsRoute,
+  } as any)
+const LayoutAuthenticatedSettingsImportsRoute =
+  LayoutAuthenticatedSettingsImportsRouteImport.update({
+    id: '/imports',
+    path: '/imports',
+    getParentRoute: () => LayoutAuthenticatedSettingsRoute,
+  } as any)
+const LayoutAuthenticatedSettingsConfigRoute =
+  LayoutAuthenticatedSettingsConfigRouteImport.update({
+    id: '/config',
+    path: '/config',
+    getParentRoute: () => LayoutAuthenticatedSettingsRoute,
+  } as any)
 const LayoutAuthenticatedSeriesSeriesIdRoute =
   LayoutAuthenticatedSeriesSeriesIdRouteImport.update({
     id: '/series/$seriesId',
@@ -92,11 +113,14 @@ export interface FileRoutesByFullPath {
   '/u/$userName': typeof UUserNameRoute
   '/planned': typeof LayoutAuthenticatedPlannedRoute
   '/read': typeof LayoutAuthenticatedReadRoute
-  '/settings': typeof LayoutAuthenticatedSettingsRoute
+  '/settings': typeof LayoutAuthenticatedSettingsRouteWithChildren
   '/auth/login': typeof LayoutAuthLoginRoute
   '/auth/register': typeof LayoutAuthRegisterRoute
   '/book/$bookId': typeof LayoutAuthenticatedBookBookIdRoute
   '/series/$seriesId': typeof LayoutAuthenticatedSeriesSeriesIdRoute
+  '/settings/config': typeof LayoutAuthenticatedSettingsConfigRoute
+  '/settings/imports': typeof LayoutAuthenticatedSettingsImportsRoute
+  '/settings/users': typeof LayoutAuthenticatedSettingsUsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof LayoutAuthenticatedIndexRoute
@@ -104,11 +128,14 @@ export interface FileRoutesByTo {
   '/u/$userName': typeof UUserNameRoute
   '/planned': typeof LayoutAuthenticatedPlannedRoute
   '/read': typeof LayoutAuthenticatedReadRoute
-  '/settings': typeof LayoutAuthenticatedSettingsRoute
+  '/settings': typeof LayoutAuthenticatedSettingsRouteWithChildren
   '/auth/login': typeof LayoutAuthLoginRoute
   '/auth/register': typeof LayoutAuthRegisterRoute
   '/book/$bookId': typeof LayoutAuthenticatedBookBookIdRoute
   '/series/$seriesId': typeof LayoutAuthenticatedSeriesSeriesIdRoute
+  '/settings/config': typeof LayoutAuthenticatedSettingsConfigRoute
+  '/settings/imports': typeof LayoutAuthenticatedSettingsImportsRoute
+  '/settings/users': typeof LayoutAuthenticatedSettingsUsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -118,12 +145,15 @@ export interface FileRoutesById {
   '/u/$userName': typeof UUserNameRoute
   '/_layout/_authenticated/planned': typeof LayoutAuthenticatedPlannedRoute
   '/_layout/_authenticated/read': typeof LayoutAuthenticatedReadRoute
-  '/_layout/_authenticated/settings': typeof LayoutAuthenticatedSettingsRoute
+  '/_layout/_authenticated/settings': typeof LayoutAuthenticatedSettingsRouteWithChildren
   '/_layout/auth/login': typeof LayoutAuthLoginRoute
   '/_layout/auth/register': typeof LayoutAuthRegisterRoute
   '/_layout/_authenticated/': typeof LayoutAuthenticatedIndexRoute
   '/_layout/_authenticated/book/$bookId': typeof LayoutAuthenticatedBookBookIdRoute
   '/_layout/_authenticated/series/$seriesId': typeof LayoutAuthenticatedSeriesSeriesIdRoute
+  '/_layout/_authenticated/settings/config': typeof LayoutAuthenticatedSettingsConfigRoute
+  '/_layout/_authenticated/settings/imports': typeof LayoutAuthenticatedSettingsImportsRoute
+  '/_layout/_authenticated/settings/users': typeof LayoutAuthenticatedSettingsUsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -138,6 +168,9 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/book/$bookId'
     | '/series/$seriesId'
+    | '/settings/config'
+    | '/settings/imports'
+    | '/settings/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -150,6 +183,9 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/book/$bookId'
     | '/series/$seriesId'
+    | '/settings/config'
+    | '/settings/imports'
+    | '/settings/users'
   id:
     | '__root__'
     | '/_layout'
@@ -164,6 +200,9 @@ export interface FileRouteTypes {
     | '/_layout/_authenticated/'
     | '/_layout/_authenticated/book/$bookId'
     | '/_layout/_authenticated/series/$seriesId'
+    | '/_layout/_authenticated/settings/config'
+    | '/_layout/_authenticated/settings/imports'
+    | '/_layout/_authenticated/settings/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -243,6 +282,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAuthenticatedPlannedRouteImport
       parentRoute: typeof LayoutAuthenticatedRoute
     }
+    '/_layout/_authenticated/settings/users': {
+      id: '/_layout/_authenticated/settings/users'
+      path: '/users'
+      fullPath: '/settings/users'
+      preLoaderRoute: typeof LayoutAuthenticatedSettingsUsersRouteImport
+      parentRoute: typeof LayoutAuthenticatedSettingsRoute
+    }
+    '/_layout/_authenticated/settings/imports': {
+      id: '/_layout/_authenticated/settings/imports'
+      path: '/imports'
+      fullPath: '/settings/imports'
+      preLoaderRoute: typeof LayoutAuthenticatedSettingsImportsRouteImport
+      parentRoute: typeof LayoutAuthenticatedSettingsRoute
+    }
+    '/_layout/_authenticated/settings/config': {
+      id: '/_layout/_authenticated/settings/config'
+      path: '/config'
+      fullPath: '/settings/config'
+      preLoaderRoute: typeof LayoutAuthenticatedSettingsConfigRouteImport
+      parentRoute: typeof LayoutAuthenticatedSettingsRoute
+    }
     '/_layout/_authenticated/series/$seriesId': {
       id: '/_layout/_authenticated/series/$seriesId'
       path: '/series/$seriesId'
@@ -260,10 +320,31 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface LayoutAuthenticatedSettingsRouteChildren {
+  LayoutAuthenticatedSettingsConfigRoute: typeof LayoutAuthenticatedSettingsConfigRoute
+  LayoutAuthenticatedSettingsImportsRoute: typeof LayoutAuthenticatedSettingsImportsRoute
+  LayoutAuthenticatedSettingsUsersRoute: typeof LayoutAuthenticatedSettingsUsersRoute
+}
+
+const LayoutAuthenticatedSettingsRouteChildren: LayoutAuthenticatedSettingsRouteChildren =
+  {
+    LayoutAuthenticatedSettingsConfigRoute:
+      LayoutAuthenticatedSettingsConfigRoute,
+    LayoutAuthenticatedSettingsImportsRoute:
+      LayoutAuthenticatedSettingsImportsRoute,
+    LayoutAuthenticatedSettingsUsersRoute:
+      LayoutAuthenticatedSettingsUsersRoute,
+  }
+
+const LayoutAuthenticatedSettingsRouteWithChildren =
+  LayoutAuthenticatedSettingsRoute._addFileChildren(
+    LayoutAuthenticatedSettingsRouteChildren,
+  )
+
 interface LayoutAuthenticatedRouteChildren {
   LayoutAuthenticatedPlannedRoute: typeof LayoutAuthenticatedPlannedRoute
   LayoutAuthenticatedReadRoute: typeof LayoutAuthenticatedReadRoute
-  LayoutAuthenticatedSettingsRoute: typeof LayoutAuthenticatedSettingsRoute
+  LayoutAuthenticatedSettingsRoute: typeof LayoutAuthenticatedSettingsRouteWithChildren
   LayoutAuthenticatedIndexRoute: typeof LayoutAuthenticatedIndexRoute
   LayoutAuthenticatedBookBookIdRoute: typeof LayoutAuthenticatedBookBookIdRoute
   LayoutAuthenticatedSeriesSeriesIdRoute: typeof LayoutAuthenticatedSeriesSeriesIdRoute
@@ -272,7 +353,8 @@ interface LayoutAuthenticatedRouteChildren {
 const LayoutAuthenticatedRouteChildren: LayoutAuthenticatedRouteChildren = {
   LayoutAuthenticatedPlannedRoute: LayoutAuthenticatedPlannedRoute,
   LayoutAuthenticatedReadRoute: LayoutAuthenticatedReadRoute,
-  LayoutAuthenticatedSettingsRoute: LayoutAuthenticatedSettingsRoute,
+  LayoutAuthenticatedSettingsRoute:
+    LayoutAuthenticatedSettingsRouteWithChildren,
   LayoutAuthenticatedIndexRoute: LayoutAuthenticatedIndexRoute,
   LayoutAuthenticatedBookBookIdRoute: LayoutAuthenticatedBookBookIdRoute,
   LayoutAuthenticatedSeriesSeriesIdRoute:

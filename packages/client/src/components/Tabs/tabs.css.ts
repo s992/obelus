@@ -21,6 +21,7 @@ export const tab = style([
     padding: `${vars.space.s3} 0`,
     cursor: 'pointer',
     color: vars.color.ink3,
+    textDecoration: 'none',
     transition: 'color .15s, border-color .15s',
     selectors: {
       '&[data-selected=true]': {
