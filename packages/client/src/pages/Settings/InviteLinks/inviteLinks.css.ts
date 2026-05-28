@@ -44,8 +44,6 @@ export const statusCell = styleVariants({
   used: [baseStatusCell],
 });
 
-export const actionsColumn = style({ textAlign: 'right' });
-
 export const actionContainer = style([
   flex.container,
   {
@@ -55,3 +53,10 @@ export const actionContainer = style([
     gap: vars.space.s5,
   },
 ]);
+
+export const header = {
+  link: style({ width: '41%' }),
+  expiry: style({ width: '24%' }),
+  status: style({ width: '16%' }),
+  action: style({ textAlign: 'right' }),
+};

@@ -11,7 +11,7 @@ import type { InviteLinkStatus } from '@obelus/shared/types';
 
 import { filterGroup } from '../Users/users.css';
 import { InviteLinkRow } from './InviteLinkRow';
-import { actionsColumn, filterBar } from './inviteLinks.css';
+import { filterBar, header } from './inviteLinks.css';
 
 export function InviteLinks() {
   const intl = useIntl();
@@ -86,16 +86,16 @@ export function InviteLinks() {
             isLoading={isFetching || isInvalidatingLink}
           >
             <Table.Header>
-              <Table.Column isRowHeader>
+              <Table.Column isRowHeader className={header.link}>
                 <FormattedMessage defaultMessage="link" />
               </Table.Column>
-              <Table.Column>
+              <Table.Column className={header.expiry}>
                 <FormattedMessage defaultMessage="expires" />
               </Table.Column>
-              <Table.Column>
+              <Table.Column className={header.status}>
                 <FormattedMessage defaultMessage="status" />
               </Table.Column>
-              <Table.Column className={actionsColumn}>
+              <Table.Column className={header.action}>
                 <FormattedMessage defaultMessage="actions" />
               </Table.Column>
             </Table.Header>
