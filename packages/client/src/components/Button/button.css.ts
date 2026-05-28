@@ -6,6 +6,7 @@ import { typography } from '@/style/typography.css';
 const baseButton = style([
   typography.body,
   {
+    position: 'relative',
     display: 'flex',
     justifyContent: 'center',
     borderRadius: vars.radius.sm,
@@ -112,6 +113,7 @@ export const button = styleVariants({
   chip: [
     typography.uppercaseLabel,
     {
+      position: 'relative',
       display: 'inline-flex',
       alignItems: 'center',
       gap: vars.space.s2,
@@ -136,4 +138,8 @@ export const button = styleVariants({
       },
     },
   ],
+});
+
+export const hiddenChildren = style({
+  visibility: 'hidden',
 });

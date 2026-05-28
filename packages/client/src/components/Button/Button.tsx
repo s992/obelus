@@ -1,11 +1,12 @@
 import clsx from 'clsx';
+import type { ReactNode } from 'react';
 import { Button as AriaButton, type ButtonProps } from 'react-aria-components';
 
-import { LoadingSpinner } from '@/components/LoadingSpinner/LoadingSpinner';
-
-import { button } from './button.css';
+import { FullContainerSpinner } from '../FullContainerSpinner';
+import { button, hiddenChildren } from './button.css';
 
 type Props = {
+  children: ReactNode;
   variant?: keyof typeof button;
   isProcessing?: boolean;
   isSelected?: boolean;
@@ -27,7 +28,8 @@ export function Button({
       isDisabled={isDisabled || isProcessing}
       data-selected={isSelected}
     >
-      {isProcessing ? <LoadingSpinner size="small" /> : children}
+      <div className={isProcessing ? hiddenChildren : undefined}>{children}</div>
+      {isProcessing && <FullContainerSpinner />}
     </AriaButton>
   );
 }

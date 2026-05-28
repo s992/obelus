@@ -69,7 +69,7 @@ export function InviteLinks() {
             <FormattedMessage defaultMessage="invalidated" />
           </Button>
         </div>
-        <Button variant="secondary" onPress={() => createLink()}>
+        <Button variant="secondary" onPress={() => createLink()} isProcessing={isCreatingLink}>
           <FormattedMessage defaultMessage="Create invite link" />
         </Button>
       </div>
@@ -83,7 +83,7 @@ export function InviteLinks() {
         {(records) => (
           <Table
             aria-label={intl.formatMessage({ defaultMessage: 'List of invite links' })}
-            isLoading={isFetching || isCreatingLink || isInvalidatingLink}
+            isLoading={isFetching || isInvalidatingLink}
           >
             <Table.Header>
               <Table.Column isRowHeader>
