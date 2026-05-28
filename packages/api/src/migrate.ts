@@ -22,9 +22,11 @@ async function migrate() {
 
   for (const file of migrationFiles) {
     if (appliedSet.has(file)) {
+      console.log(`skipping migration (already applied): ${file}`);
       continue;
     }
 
+    console.log(`running migration: ${file}`);
     const sql = await readFile(join(baseDir, file), 'utf8');
 
     await db.query('begin;');
