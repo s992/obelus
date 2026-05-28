@@ -7,6 +7,7 @@ export const filterBar = style([
   {
     alignItems: 'center',
     gap: vars.space.s7,
+    paddingTop: vars.space.s2,
     marginBottom: vars.space.s5,
   },
 ]);
@@ -26,24 +27,32 @@ export const nameCell = style([
   },
 ]);
 
-const baseRoleCell = style([
-  typography.uppercaseLabel,
-  {
-    color: vars.color.ink2,
-  },
-]);
+const baseRoleCell = style({
+  color: vars.color.ink2,
+});
 
 export const roleCell = styleVariants({
   admin: [baseRoleCell, { color: vars.color.ink }],
   member: [baseRoleCell],
 });
 
-const baseStatusCell = style([baseRoleCell]);
+const baseStatusCell = style([baseRoleCell, typography.uppercaseLabel]);
 
 export const statusCell = styleVariants({
   active: [baseStatusCell, { color: vars.color.good }],
   pending_approval: [baseStatusCell, { color: vars.color.warn }],
   disabled: [baseStatusCell, { color: vars.color.bad }],
+});
+
+export const statusDot = style({
+  display: 'inline-block',
+  width: 6,
+  height: 6,
+  marginRight: vars.space.s2,
+  transform: 'translateY(-1px)',
+  verticalAlign: 'middle',
+  borderRadius: vars.radius.pill,
+  background: 'currentColor',
 });
 
 export const dateCell = style([
@@ -74,6 +83,6 @@ export const actionContainer = style([
     alignItems: 'center',
     justifyContent: 'flex-end',
     flexWrap: 'nowrap',
-    gap: vars.space.s4,
+    gap: vars.space.s5,
   },
 ]);

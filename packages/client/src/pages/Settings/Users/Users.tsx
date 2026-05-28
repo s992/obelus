@@ -10,7 +10,6 @@ import { toastQueue } from '@/components/Toast';
 import { typography } from '@/style';
 import type { UserStatus, UserRole } from '@obelus/shared/types';
 
-import { formSection } from '../settings.css';
 import { UsersRow } from './UserRow';
 import { emptyStateCell, filterBar, filterGroup, header } from './users.css';
 
@@ -52,7 +51,7 @@ export function Users() {
   const users = data?.pages.flatMap((page) => page.users).filter((user) => user !== undefined);
 
   return (
-    <div className={formSection}>
+    <div>
       <div className={filterBar}>
         <div className={filterGroup}>
           <span className={typography.uppercaseLabel}>

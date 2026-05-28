@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl';
 
 import type { Maybe } from '@obelus/shared/types';
 
-export function useFormatDate(format: string, parseFormat?: string) {
+export function useFormatDate(format: string, parseFormat?: string, lowercase: boolean = true) {
   const intl = useIntl();
   const placeholder = intl.formatMessage({ defaultMessage: 'N/A' });
 
@@ -14,6 +14,11 @@ export function useFormatDate(format: string, parseFormat?: string) {
 
     const parsed = dayjs(date, parseFormat);
 
-    return parsed.isValid() ? parsed.format(format).toLocaleLowerCase() : placeholder;
+    if (parsed.isValid()) {
+      const formatted = parsed.format(format);
+      return lowercase ? formatted.toLocaleLowerCase() : formatted;
+    }
+
+    return placeholder;
   };
 }

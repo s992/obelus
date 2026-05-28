@@ -7,7 +7,7 @@ import { useFormatDate } from '@/hooks/useFormatDate';
 import { UserRoleSchema, UserStatusSchema, ListUsersUserJsonSchema } from '@obelus/shared/schema';
 import type { UserStatus, UserRole } from '@obelus/shared/types';
 
-import { actionContainer, dateCell, nameCell, roleCell, statusCell } from './users.css';
+import { actionContainer, dateCell, nameCell, roleCell, statusCell, statusDot } from './users.css';
 
 type Props = {
   user: z.infer<typeof ListUsersUserJsonSchema>;
@@ -17,7 +17,7 @@ type Props = {
 
 export function UsersRow({ user, onRoleChange, onStatusChange }: Props) {
   const intl = useIntl();
-  const formatDate = useFormatDate('MMM DD, YYYY, h:mm a');
+  const formatDate = useFormatDate('MMM DD, YYYY, h:mm a', undefined, false);
   const roleLabel = intl.formatMessage({ defaultMessage: 'change role' });
   const statusLabel = intl.formatMessage({ defaultMessage: 'change status' });
 
@@ -28,6 +28,7 @@ export function UsersRow({ user, onRoleChange, onStatusChange }: Props) {
         <RoleI18n role={user.role} />
       </Table.Cell>
       <Table.Cell className={statusCell[user.status]}>
+        <span className={statusDot} />
         <StatusI18n status={user.status} />
       </Table.Cell>
       <Table.Cell className={dateCell}>{formatDate(user.createdAt)}</Table.Cell>

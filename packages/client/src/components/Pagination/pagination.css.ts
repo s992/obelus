@@ -9,6 +9,7 @@ export const container = style([
     alignItems: 'center',
     justifyContent: 'flex-end',
     gap: vars.space.s5,
+    paddingTop: vars.space.s4,
     color: vars.color.ink2,
     lineHeight: '16px',
   },
