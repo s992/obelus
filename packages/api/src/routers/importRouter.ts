@@ -1,7 +1,7 @@
 import { on } from 'node:events';
 import z from 'zod';
 
-import { ImportFailureSchema, ImportProgressSchema } from '@obelus/shared/schema';
+import { ImportProgressSchema, ImportRecordSchema } from '@obelus/shared/schema';
 
 import { db } from '../db/db';
 import { getWorker } from '../queue/importWorker';
@@ -9,14 +9,7 @@ import { importQueue } from '../queue/queue';
 import { listGoodreadsImports } from '../sqlc/goodreads_import_sql';
 import { privateProcedure, router } from '../trpc/trpc';
 
-const outputSchema = z.array(
-  z.object({
-    createdAt: z.date(),
-    completedAt: z.date().nullable().optional(),
-    successCount: z.number(),
-    failures: z.array(ImportFailureSchema),
-  }),
-);
+const outputSchema = z.array(ImportRecordSchema);
 
 export const importRouter = router({
   list: privateProcedure.query(async ({ ctx }) => {

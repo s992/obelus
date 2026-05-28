@@ -1,53 +1,33 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSubscription } from '@trpc/tanstack-react-query';
-import clsx from 'clsx';
-import dayjs from 'dayjs';
-import { CircleQuestionMark, Minus, Plus } from 'lucide-react';
+import { CircleQuestionMark } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Button as AriaButton, Disclosure, DisclosurePanel, DropZone, FileTrigger } from 'react-aria-components';
+import { Button as AriaButton, DropZone, FileTrigger } from 'react-aria-components';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTRPC } from '@/client';
 import { FormattedAlert } from '@/components/Alert';
-import { Button } from '@/components/Button';
 import { IconButton } from '@/components/IconButton';
-import { Modal } from '@/components/Modal';
-import { StatusDot } from '@/components/StatusDot';
-import { useFormatDate } from '@/hooks/useFormatDate';
-import { useImportFailureI18n } from '@/hooks/useI18n';
 import { flex, typography } from '@/style';
 import type { Maybe } from '@obelus/shared/types';
 
+import { HelpModal } from './HelpModal';
 import { ImportProgress } from './ImportProgress';
+import { ImportRecord } from './ImportRecord';
 import {
-  code,
-  disclosure,
-  disclosureButton,
-  disclosureButtonHover,
   dropZone,
   dropZoneButton,
-  failureList,
-  failureListItem,
-  failurePanel,
-  failureReason,
   importHistoryContainer,
   innerDropZone,
-  modalFooter,
-  sectionDate,
-  sectionExpandIcon,
   sectionHeader,
   sectionHeaderH3,
   sectionHeaderMeta,
-  sectionMetric,
-  sectionMetricContainer,
-  sectionRow,
 } from './imports.css';
 
 export function Imports() {
   const intl = useIntl();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
-  const failureI18n = useImportFailureI18n();
   const [expandedSections, setExpandedSections] = useState(new Map());
   const [uploadedFile, setUploadedFile] = useState<string | null>(null);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
@@ -74,8 +54,6 @@ export function Imports() {
     },
   });
   const { data: progress } = useSubscription(trpc.import.status.subscriptionOptions());
-  const formatDate = useFormatDate('D MMM YYYY');
-  const formatTime = useFormatDate('HH:mm');
   const successes = importRecords?.reduce((acc, record) => acc + record.successCount, 0);
   const failures = importRecords?.reduce((acc, record) => acc + record.failures.length, 0);
 
@@ -183,149 +161,20 @@ export function Imports() {
         </div>
         <div className={importHistoryContainer}>
           {importRecords?.map((record) => (
-            <Disclosure
+            <ImportRecord
               key={`${record.createdAt}-${record.completedAt}`}
-              className={disclosure}
+              record={record}
+              isExpanded={!!expandedSections.get(record.completedAt)}
               onExpandedChange={(expanded) => {
                 setExpandedSections((current) => {
                   return new Map(current).set(record.completedAt, expanded);
                 });
               }}
-            >
-              <AriaButton
-                slot={record.failures.length ? 'trigger' : undefined}
-                className={clsx(disclosureButton, { [disclosureButtonHover]: record.failures.length > 0 })}
-              >
-                <div className={sectionRow}>
-                  <span className={clsx(typography.label, sectionDate)}>{formatDate(record.createdAt)}</span>
-                  <span className={typography.label}>{formatTime(record.createdAt)}</span>
-                  <div className={sectionMetricContainer}>
-                    <span className={sectionMetric}>{record.successCount + record.failures.length}</span>
-                    <span className={typography.uppercaseLabel}>
-                      <FormattedMessage defaultMessage="Imported" />
-                    </span>
-                  </div>
-                  <div className={sectionMetricContainer}>
-                    <span className={sectionMetric}>{record.failures.length}</span>
-                    <span className={typography.uppercaseLabel}>
-                      <FormattedMessage defaultMessage="Failed" />
-                    </span>
-                  </div>
-                  <div className={sectionMetricContainer}>
-                    <span className={sectionMetric}>
-                      <Elapsed d1={record.createdAt} d2={record.completedAt ?? ''} />
-                    </span>
-                    <span className={typography.uppercaseLabel}>
-                      <FormattedMessage defaultMessage="Elapsed" />
-                    </span>
-                  </div>
-                </div>
-                {record.failures.length > 0 && (
-                  <div className={sectionExpandIcon}>
-                    {expandedSections.get(record.completedAt) ? <Minus /> : <Plus />}
-                  </div>
-                )}
-              </AriaButton>
-              <DisclosurePanel>
-                <div className={failurePanel}>
-                  <span className={typography.uppercaseLabel}>
-                    <FormattedMessage defaultMessage="Failed Books" />
-                  </span>
-                  <ul className={failureList}>
-                    {record.failures.map((failure) => (
-                      <li key={failure.id} className={failureListItem}>
-                        <span className={typography.body}>
-                          <FormattedMessage
-                            defaultMessage="{title} · {author}"
-                            values={{
-                              title: <span className={typography.title}>{failure.title}</span>,
-                              author: failure.author,
-                            }}
-                          />
-                        </span>
-                        <span className={failureReason}>
-                          <StatusDot variant={failure.reason === 'cannot_find' ? 'bad' : 'currentColor'} />
-                          {failureI18n(failure.reason)}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </DisclosurePanel>
-            </Disclosure>
+            />
           ))}
         </div>
       </div>
-      <Modal
-        isOpen={isHelpModalOpen}
-        onOpenChange={(open) => setIsHelpModalOpen(open)}
-        isDismissable
-        label={intl.formatMessage({ defaultMessage: 'CSV Formatting/Import Help' })}
-      >
-        <p className={typography.body}>
-          <FormattedMessage
-            defaultMessage="The CSV columns Obelus looks for are: <code>Book Id</code>, <code>Title</code>, <code>Author</code>, <code>ISBN</code>, <code>ISBN13</code>, <code>My Rating</code>, <code>Date Added</code>, <code>Date Read</code>, and <code>Exclusive Shelf</code>. The only ones that are strictly required are <code>Book Id</code> and <code>Title</code>, but you'll have more success if an ISBN is provided."
-            values={{
-              code: (chunks) => <code className={code}>{chunks}</code>,
-            }}
-          />
-        </p>
-        <p className={typography.body}>
-          <FormattedMessage
-            defaultMessage="Book statuses are presumed to be finished unless the book's <code>Exclusive Shelf</code> is <code>currently-reading</code> or <code>to-read</code>, which are mapped to reading and planned statuses, respectively."
-            values={{
-              code: (chunks) => <code className={code}>{chunks}</code>,
-            }}
-          />
-        </p>
-        <p className={typography.body}>
-          <FormattedMessage defaultMessage="Ratings are mapped to judgments like this:" />
-        </p>
-        <ul className={typography.body}>
-          <li>
-            <FormattedMessage defaultMessage="{rating}: accepted" values={{ rating: 5 }} />
-          </li>
-          <li>
-            <FormattedMessage defaultMessage="{rating}: accepted" values={{ rating: 4 }} />
-          </li>
-          <li>
-            <FormattedMessage defaultMessage="{rating}: mixed" values={{ rating: 3 }} />
-          </li>
-          <li>
-            <FormattedMessage defaultMessage="{rating}: rejected" values={{ rating: 2 }} />
-          </li>
-          <li>
-            <FormattedMessage defaultMessage="{rating}: rejected" values={{ rating: 1 }} />
-          </li>
-          <li>
-            <FormattedMessage defaultMessage="No rating: unjudged" values={{ rating: 1 }} />
-          </li>
-        </ul>
-        <div className={modalFooter}>
-          <Button slot="close">
-            <FormattedMessage defaultMessage="Close" />
-          </Button>
-        </div>
-      </Modal>
+      <HelpModal isOpen={isHelpModalOpen} onOpenChange={(open) => setIsHelpModalOpen(open)} />
     </div>
   );
-}
-
-function Elapsed({ d1, d2 }: { d1: string; d2: string }) {
-  const d1Parsed = dayjs(d1);
-  const d2Parsed = dayjs(d2);
-
-  if (!d1Parsed.isValid() || !d2Parsed.isValid()) {
-    return <FormattedMessage defaultMessage="N/A" />;
-  }
-
-  let diff = Math.abs(d1Parsed.diff(d2Parsed, 'second'));
-
-  if (diff < 60) {
-    return <FormattedMessage defaultMessage="{diff}sec" values={{ diff }} />;
-  }
-
-  diff = Math.abs(d1Parsed.diff(d2Parsed, 'minute'));
-
-  return <FormattedMessage defaultMessage="{diff}min" values={{ diff }} />;
 }

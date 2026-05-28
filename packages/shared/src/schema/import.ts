@@ -17,3 +17,15 @@ export const ImportFailureSchema = z.object({
   author: z.string(),
   reason: ImportFailureReasonSchema,
 });
+
+export const ImportRecordSchema = z.object({
+  createdAt: z.date(),
+  completedAt: z.date().nullable().optional(),
+  successCount: z.number(),
+  failures: z.array(ImportFailureSchema),
+});
+
+export const ImportRecordJsonSchema = ImportRecordSchema.omit({ createdAt: true, completedAt: true }).extend({
+  createdAt: z.iso.datetime(),
+  completedAt: z.iso.datetime().nullable().optional(),
+});
