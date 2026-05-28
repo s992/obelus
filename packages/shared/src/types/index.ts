@@ -13,6 +13,7 @@ import type {
   RecordSortFieldSchema,
   UserRoleSchema,
   UserStatusSchema,
+  ImportFailureReasonSchema,
 } from '../schema';
 
 export type Book = z.infer<typeof BookSchema>;
@@ -38,6 +39,8 @@ export type UserRole = z.infer<typeof UserRoleSchema>;
 export type ObelusConfig = z.infer<typeof ObelusConfigSchema>;
 
 export type InviteLinkStatus = z.infer<typeof InviteLinkStatusSchema>;
+
+export type ImportFailureReason = z.infer<typeof ImportFailureReasonSchema>;
 
 export type Status = 'planned' | 'finished' | 'reading';
 

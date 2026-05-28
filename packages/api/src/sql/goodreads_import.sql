@@ -11,11 +11,13 @@ insert into goodreads_import (
 insert into goodreads_import_failure (
   import_id,
   title,
-  author
+  author,
+  reason
 ) values (
   sqlc.arg('importId'),
   sqlc.arg('title'),
-  sqlc.arg('author')
+  sqlc.arg('author'),
+  sqlc.arg('reason')
 );
 
 -- name: GetGoodreadsImportIdByJobId :one

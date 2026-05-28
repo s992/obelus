@@ -23,6 +23,11 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
+DO $$ BEGIN
+  CREATE TYPE import_failure_reason AS ENUM('already_exists', 'cannot_find');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
 CREATE TABLE IF NOT EXISTS config (
   id BOOLEAN PRIMARY KEY DEFAULT true CHECK (id = TRUE),
   created_at TIMESTAMP DEFAULT NOW() NOT NULL,
@@ -76,7 +81,8 @@ CREATE TABLE IF NOT EXISTS goodreads_import_failure (
   id UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
   import_id UUID NOT NULL,
   title TEXT NOT NULL,
-  author TEXT NOT NULL
+  author TEXT NOT NULL,
+  reason import_failure_reason DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS migration (

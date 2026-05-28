@@ -106,9 +106,8 @@ export const sectionMetric = style([
 ]);
 
 export const disclosure = style({
-  marginBottom: vars.space.s4,
   paddingBottom: vars.space.s4,
-  borderBottom: `0.5px solid ${vars.color.rule}`,
+  borderBottom: sectionDivider,
 });
 
 export const disclosureButton = style([
@@ -155,5 +154,50 @@ export const code = style([
     padding: `0 ${vars.space.s2}`,
     background: vars.color.tint,
     borderRadius: vars.radius.sm,
+  },
+]);
+
+export const importHistoryContainer = style([
+  flex.column,
+  {
+    gap: vars.space.s4,
+  },
+]);
+
+export const failurePanel = style({
+  marginTop: vars.space.s4,
+  padding: `${vars.space.s5} ${vars.space.s5} 0 ${vars.space.s5}`,
+  borderTop: sectionDivider,
+});
+
+export const failureList = style({
+  listStyle: 'none',
+  margin: 0,
+  padding: 0,
+});
+
+export const failureListItem = style([
+  flex.container,
+  {
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    gap: vars.space.s3,
+    padding: `${vars.space.s3} 0`,
+    borderTop: sectionDivider,
+  },
+]);
+
+export const failureReason = style([
+  typography.uppercaseLabel,
+  {
+    whiteSpace: 'nowrap',
+    flexShrink: 0,
+  },
+]);
+
+export const modalFooter = style([
+  flex.container,
+  {
+    justifyContent: 'flex-end',
   },
 ]);

@@ -1,7 +1,7 @@
 import { Job, Worker } from 'bullmq';
 import z from 'zod';
 
-import { ImportProgressSchema } from '@obelus/shared/schema';
+import { ImportFailureReasonSchema, ImportProgressSchema } from '@obelus/shared/schema';
 import type { ImportProgress, Judgment } from '@obelus/shared/types';
 
 import { db } from '../db/db';
@@ -21,7 +21,8 @@ type JobArgs = {
   userId: string;
 };
 
-const schemaWithHardcoverId = z.object({ hardcoverId: z.number(), goodreads: CsvRowSchema });
+const FoundSchema = z.object({ hardcoverId: z.number(), goodreads: CsvRowSchema });
+const FailedSchema = CsvRowSchema.extend({ reason: ImportFailureReasonSchema });
 const ratingMap: Record<number, Judgment> = {
   1: 'rejected',
   2: 'rejected',
@@ -30,6 +31,9 @@ const ratingMap: Record<number, Judgment> = {
   5: 'accepted',
 };
 
+type Found = z.infer<typeof FoundSchema>;
+type Failed = z.infer<typeof FailedSchema>;
+
 const jobFn = async (job: Job<JobArgs>) => {
   if (!job.id) {
     throw new Error('job does not have an id');
@@ -37,8 +41,8 @@ const jobFn = async (job: Job<JobArgs>) => {
 
   const records = job.data.records;
   const total = records.length;
-  const found = new Map<number, z.infer<typeof schemaWithHardcoverId>>();
-  const failed = new Map<number, z.infer<typeof CsvRowSchema>>();
+  const found = new Map<number, Found>();
+  const failed = new Map<number, Failed>();
   const importInsert = await createGoodreadsImport(db, { jobid: job.id, userid: job.data.userId });
   const importId = importInsert?.id;
   let inserts: Promise<void>[] = [];
@@ -71,11 +75,11 @@ const jobFn = async (job: Job<JobArgs>) => {
     await updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
   };
 
-  const insertOnError = (book: z.infer<typeof schemaWithHardcoverId>) => async (err: Error) => {
+  const insertOnError = (book: Found) => async (err: Error) => {
     logger.error(err, 'failed to insert record');
     failedInsert++;
     pending--;
-    failed.set(book.goodreads.id, book.goodreads);
+    failed.set(book.goodreads.id, { ...book.goodreads, reason: 'already_exists' });
     await updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
   };
 
@@ -147,7 +151,7 @@ const jobFn = async (job: Job<JobArgs>) => {
 
       if (!id || !Object.keys(cover).length) {
         failedLookup++;
-        failed.set(candidate.id, candidate);
+        failed.set(candidate.id, { ...candidate, reason: 'cannot_find' });
         updateProgress({ total, failedInsert, failedLookup, pending, succeeded });
         continue;
       }
@@ -176,6 +180,7 @@ const jobFn = async (job: Job<JobArgs>) => {
       author: book.author ?? '',
       title: book.title ?? '',
       importid: importId,
+      reason: book.reason,
     });
   }
 

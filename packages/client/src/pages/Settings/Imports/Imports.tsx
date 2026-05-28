@@ -4,14 +4,17 @@ import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { CircleQuestionMark, Minus, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Button, Disclosure, DisclosurePanel, DropZone, FileTrigger } from 'react-aria-components';
+import { Button as AriaButton, Disclosure, DisclosurePanel, DropZone, FileTrigger } from 'react-aria-components';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { useTRPC } from '@/client';
 import { FormattedAlert } from '@/components/Alert';
+import { Button } from '@/components/Button';
 import { IconButton } from '@/components/IconButton';
 import { Modal } from '@/components/Modal';
+import { StatusDot } from '@/components/StatusDot';
 import { useFormatDate } from '@/hooks/useFormatDate';
+import { useImportFailureI18n } from '@/hooks/useI18n';
 import { flex, typography } from '@/style';
 import type { Maybe } from '@obelus/shared/types';
 
@@ -23,7 +26,13 @@ import {
   disclosureButtonHover,
   dropZone,
   dropZoneButton,
+  failureList,
+  failureListItem,
+  failurePanel,
+  failureReason,
+  importHistoryContainer,
   innerDropZone,
+  modalFooter,
   sectionDate,
   sectionExpandIcon,
   sectionHeader,
@@ -38,6 +47,7 @@ export function Imports() {
   const intl = useIntl();
   const queryClient = useQueryClient();
   const trpc = useTRPC();
+  const failureI18n = useImportFailureI18n();
   const [expandedSections, setExpandedSections] = useState(new Map());
   const [uploadedFile, setUploadedFile] = useState<string | null>(null);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
@@ -141,7 +151,7 @@ export function Imports() {
                 onFile(Array.from(files)[0]);
               }}
             >
-              <Button className={dropZoneButton}>
+              <AriaButton className={dropZoneButton}>
                 <span className={typography.display}>÷</span>
                 <span className={typography.title}>
                   <FormattedMessage defaultMessage="drop your goodreads_library_export.csv here" />
@@ -154,7 +164,7 @@ export function Imports() {
                     }}
                   />
                 </span>
-              </Button>
+              </AriaButton>
             </FileTrigger>
           </DropZone>
         )}
@@ -171,67 +181,80 @@ export function Imports() {
             />
           </span>
         </div>
-        {importRecords?.map((record) => (
-          <Disclosure
-            key={`${record.createdAt}-${record.completedAt}`}
-            className={disclosure}
-            onExpandedChange={(expanded) => {
-              setExpandedSections((current) => {
-                return new Map(current).set(record.completedAt, expanded);
-              });
-            }}
-          >
-            <Button
-              slot={record.failures.length ? 'trigger' : undefined}
-              className={clsx(disclosureButton, { [disclosureButtonHover]: record.failures.length > 0 })}
+        <div className={importHistoryContainer}>
+          {importRecords?.map((record) => (
+            <Disclosure
+              key={`${record.createdAt}-${record.completedAt}`}
+              className={disclosure}
+              onExpandedChange={(expanded) => {
+                setExpandedSections((current) => {
+                  return new Map(current).set(record.completedAt, expanded);
+                });
+              }}
             >
-              <div className={sectionRow}>
-                <span className={clsx(typography.label, sectionDate)}>{formatDate(record.createdAt)}</span>
-                <span className={typography.label}>{formatTime(record.createdAt)}</span>
-                <div className={sectionMetricContainer}>
-                  <span className={sectionMetric}>{record.successCount + record.failures.length}</span>
+              <AriaButton
+                slot={record.failures.length ? 'trigger' : undefined}
+                className={clsx(disclosureButton, { [disclosureButtonHover]: record.failures.length > 0 })}
+              >
+                <div className={sectionRow}>
+                  <span className={clsx(typography.label, sectionDate)}>{formatDate(record.createdAt)}</span>
+                  <span className={typography.label}>{formatTime(record.createdAt)}</span>
+                  <div className={sectionMetricContainer}>
+                    <span className={sectionMetric}>{record.successCount + record.failures.length}</span>
+                    <span className={typography.uppercaseLabel}>
+                      <FormattedMessage defaultMessage="Imported" />
+                    </span>
+                  </div>
+                  <div className={sectionMetricContainer}>
+                    <span className={sectionMetric}>{record.failures.length}</span>
+                    <span className={typography.uppercaseLabel}>
+                      <FormattedMessage defaultMessage="Failed" />
+                    </span>
+                  </div>
+                  <div className={sectionMetricContainer}>
+                    <span className={sectionMetric}>
+                      <Elapsed d1={record.createdAt} d2={record.completedAt ?? ''} />
+                    </span>
+                    <span className={typography.uppercaseLabel}>
+                      <FormattedMessage defaultMessage="Elapsed" />
+                    </span>
+                  </div>
+                </div>
+                {record.failures.length > 0 && (
+                  <div className={sectionExpandIcon}>
+                    {expandedSections.get(record.completedAt) ? <Minus /> : <Plus />}
+                  </div>
+                )}
+              </AriaButton>
+              <DisclosurePanel>
+                <div className={failurePanel}>
                   <span className={typography.uppercaseLabel}>
-                    <FormattedMessage defaultMessage="Imported" />
+                    <FormattedMessage defaultMessage="Failed Books" />
                   </span>
+                  <ul className={failureList}>
+                    {record.failures.map((failure) => (
+                      <li key={failure.id} className={failureListItem}>
+                        <span className={typography.body}>
+                          <FormattedMessage
+                            defaultMessage="{title} · {author}"
+                            values={{
+                              title: <span className={typography.title}>{failure.title}</span>,
+                              author: failure.author,
+                            }}
+                          />
+                        </span>
+                        <span className={failureReason}>
+                          <StatusDot variant={failure.reason === 'cannot_find' ? 'bad' : 'currentColor'} />
+                          {failureI18n(failure.reason)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className={sectionMetricContainer}>
-                  <span className={sectionMetric}>{record.failures.length}</span>
-                  <span className={typography.uppercaseLabel}>
-                    <FormattedMessage defaultMessage="Failed" />
-                  </span>
-                </div>
-                <div className={sectionMetricContainer}>
-                  <span className={sectionMetric}>
-                    <Elapsed d1={record.createdAt} d2={record.completedAt ?? ''} />
-                  </span>
-                  <span className={typography.uppercaseLabel}>
-                    <FormattedMessage defaultMessage="Elapsed" />
-                  </span>
-                </div>
-              </div>
-              {record.failures.length > 0 && (
-                <div className={sectionExpandIcon}>
-                  {expandedSections.get(record.completedAt) ? <Minus /> : <Plus />}
-                </div>
-              )}
-            </Button>
-            <DisclosurePanel>
-              <span className={typography.label}>
-                <FormattedMessage defaultMessage="Failed Books" />
-              </span>
-              <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                {record.failures.map((failure) => (
-                  <li key={failure.id} className={typography.body}>
-                    <FormattedMessage
-                      defaultMessage="{title} · {author}"
-                      values={{ title: failure.title, author: failure.author }}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </DisclosurePanel>
-          </Disclosure>
-        ))}
+              </DisclosurePanel>
+            </Disclosure>
+          ))}
+        </div>
       </div>
       <Modal
         isOpen={isHelpModalOpen}
@@ -278,6 +301,11 @@ export function Imports() {
             <FormattedMessage defaultMessage="No rating: unjudged" values={{ rating: 1 }} />
           </li>
         </ul>
+        <div className={modalFooter}>
+          <Button slot="close">
+            <FormattedMessage defaultMessage="Close" />
+          </Button>
+        </div>
       </Modal>
     </div>
   );

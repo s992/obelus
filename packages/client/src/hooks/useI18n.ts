@@ -1,6 +1,14 @@
 import { useIntl, type IntlShape } from 'react-intl';
 
-import type { InviteLinkStatus, Judgment, Maybe, Status, UserRole, UserStatus } from '@obelus/shared/types';
+import type {
+  ImportFailureReason,
+  InviteLinkStatus,
+  Judgment,
+  Maybe,
+  Status,
+  UserRole,
+  UserStatus,
+} from '@obelus/shared/types';
 
 export function useJudgmentI18n() {
   const intl = useIntl();
@@ -54,6 +62,16 @@ export function useInviteLinkStatusI18n() {
   };
 
   return (value: InviteLinkStatus) => mappingOrNull(intl, value, mapping);
+}
+
+export function useImportFailureI18n() {
+  const intl = useIntl();
+  const mapping: Record<ImportFailureReason, string> = {
+    already_exists: intl.formatMessage({ defaultMessage: 'already in library' }),
+    cannot_find: intl.formatMessage({ defaultMessage: 'not found' }),
+  };
+
+  return (value: ImportFailureReason) => mappingOrNull(intl, value, mapping);
 }
 
 function mappingOrNull<T extends string>(intl: IntlShape, value: Maybe<T>, mapping: Record<T, string>) {

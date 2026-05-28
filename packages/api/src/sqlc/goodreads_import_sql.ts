@@ -44,17 +44,20 @@ export const createGoodreadsImportFailureQuery = `-- name: CreateGoodreadsImport
 insert into goodreads_import_failure (
   import_id,
   title,
-  author
+  author,
+  reason
 ) values (
   $1,
   $2,
-  $3
+  $3,
+  $4
 )`;
 
 export interface CreateGoodreadsImportFailureArgs {
   importid: string;
   title: string;
   author: string;
+  reason: string | null;
 }
 
 export async function createGoodreadsImportFailure(
@@ -63,7 +66,7 @@ export async function createGoodreadsImportFailure(
 ): Promise<void> {
   await client.query({
     text: createGoodreadsImportFailureQuery,
-    values: [args.importid, args.title, args.author],
+    values: [args.importid, args.title, args.author, args.reason],
     rowMode: 'array',
   });
 }

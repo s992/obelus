@@ -9,8 +9,11 @@ export const ImportProgressSchema = z.object({
   succeeded: z.number(),
 });
 
+export const ImportFailureReasonSchema = z.enum(['already_exists', 'cannot_find']);
+
 export const ImportFailureSchema = z.object({
   id: z.string(),
   title: z.string(),
   author: z.string(),
+  reason: ImportFailureReasonSchema,
 });
