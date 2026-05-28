@@ -5,6 +5,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useTRPC } from '@/client';
 import { showMutationError } from '@/components/Toast';
 import { UnreadBookActions, type Props as UnreadBookActionsProps } from '@/components/UnreadBookActions';
+import { useJudgmentI18n, useRecordStatusI18n } from '@/hooks/useI18n';
 import { judgment as judgmentCss } from '@/style';
 import type { Judgment, Maybe, Status } from '@obelus/shared/types';
 
@@ -22,6 +23,8 @@ export function StatusCell({ bookId, seriesId, layout, status, judgment }: Props
   const intl = useIntl();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const statusI18n = useRecordStatusI18n();
+  const judgmentI18n = useJudgmentI18n();
   const { mutate: createRecord, isPending } = useMutation(
     trpc.record.create.mutationOptions({
       onSuccess: async () => {
@@ -53,7 +56,7 @@ export function StatusCell({ bookId, seriesId, layout, status, judgment }: Props
         <span className={responsiveLabel}>
           <FormattedMessage defaultMessage="status: " />
         </span>
-        {status}
+        {statusI18n(status)}
       </span>
     );
   }
@@ -63,7 +66,7 @@ export function StatusCell({ bookId, seriesId, layout, status, judgment }: Props
       <span className={responsiveLabel}>
         <FormattedMessage defaultMessage="judgment: " />
       </span>
-      {judgment}
+      {judgmentI18n(judgment)}
     </span>
   );
 }

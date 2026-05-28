@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Calendar as AriaCalendar, CalendarCell, CalendarGrid, type CalendarProps } from 'react-aria-components';
 import { useFocusRing } from 'react-aria/useFocusRing';
+import { useIntl } from 'react-intl';
 
 import { IconButton } from '@/components/IconButton';
 
@@ -20,6 +21,7 @@ import {
 type Props = {} & CalendarProps<CalendarDate>;
 
 export function Calendar({ className, ...props }: Props) {
+  const intl = useIntl();
   const tz = getLocalTimeZone();
 
   return (
@@ -34,10 +36,18 @@ export function Calendar({ className, ...props }: Props) {
               <span className={year}>{state.visibleRange.start.year}</span>
             </div>
             <div className={headerButtonsContainer}>
-              <IconButton slot="previous" aria-label="Previous month" variant="secondary">
+              <IconButton
+                slot="previous"
+                aria-label={intl.formatMessage({ defaultMessage: 'Previous month ' })}
+                variant="secondary"
+              >
                 <ChevronLeft />
               </IconButton>
-              <IconButton slot="next" aria-label="Next month" variant="secondary">
+              <IconButton
+                slot="next"
+                aria-label={intl.formatMessage({ defaultMessage: 'Next month' })}
+                variant="secondary"
+              >
                 <ChevronRight />
               </IconButton>
             </div>

@@ -4,6 +4,7 @@ import type z from 'zod';
 import { Select } from '@/components/Select';
 import { Table } from '@/components/Table';
 import { useFormatDate } from '@/hooks/useFormatDate';
+import { useUserRoleI18n, useUserStatusI18n } from '@/hooks/useI18n';
 import { UserRoleSchema, UserStatusSchema, ListUsersUserJsonSchema } from '@obelus/shared/schema';
 import type { UserStatus, UserRole } from '@obelus/shared/types';
 
@@ -17,6 +18,8 @@ type Props = {
 
 export function UsersRow({ user, onRoleChange, onStatusChange }: Props) {
   const intl = useIntl();
+  const roleI18n = useUserRoleI18n();
+  const statusI18n = useUserStatusI18n();
   const formatDate = useFormatDate('MMM DD, YYYY, h:mm a', undefined, false);
   const roleLabel = intl.formatMessage({ defaultMessage: 'change role' });
   const statusLabel = intl.formatMessage({ defaultMessage: 'change status' });
@@ -24,12 +27,10 @@ export function UsersRow({ user, onRoleChange, onStatusChange }: Props) {
   return (
     <Table.Row key={user.id}>
       <Table.Cell className={nameCell}>{user.userName}</Table.Cell>
-      <Table.Cell className={roleCell[user.role]}>
-        <RoleI18n role={user.role} />
-      </Table.Cell>
+      <Table.Cell className={roleCell[user.role]}>{roleI18n(user.role)}</Table.Cell>
       <Table.Cell className={statusCell[user.status]}>
         <span className={statusDot} />
-        <StatusI18n status={user.status} />
+        {statusI18n(user.status)}
       </Table.Cell>
       <Table.Cell className={dateCell}>{formatDate(user.createdAt)}</Table.Cell>
       <Table.Cell>
@@ -75,32 +76,4 @@ export function UsersRow({ user, onRoleChange, onStatusChange }: Props) {
       </Table.Cell>
     </Table.Row>
   );
-}
-
-function StatusI18n({ status }: { status: UserStatus }) {
-  const intl = useIntl();
-
-  switch (status) {
-    case 'active':
-      return intl.formatMessage({ defaultMessage: 'active' });
-    case 'disabled':
-      return intl.formatMessage({ defaultMessage: 'disabled' });
-    case 'pending_approval':
-      return intl.formatMessage({ defaultMessage: 'pending' });
-    default:
-      return null;
-  }
-}
-
-function RoleI18n({ role }: { role: UserRole }) {
-  const intl = useIntl();
-
-  switch (role) {
-    case 'admin':
-      return intl.formatMessage({ defaultMessage: 'admin' });
-    case 'member':
-      return intl.formatMessage({ defaultMessage: 'member' });
-    default:
-      return null;
-  }
 }

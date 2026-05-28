@@ -11,6 +11,7 @@ import {
   DateSegment,
   Group,
 } from 'react-aria-components';
+import { useIntl } from 'react-intl';
 
 import { Calendar } from '@/components/Calendar';
 import { IconButton } from '@/components/IconButton';
@@ -27,6 +28,7 @@ type Props = {
 } & DatePickerProps<CalendarDate>;
 
 export function DatePicker({ className, label, ...rest }: Props) {
+  const intl = useIntl();
   const tz = getLocalTimeZone();
   const field = useFieldContext<Date>();
   const value = dateToCalendarDate(field.state.value);
@@ -47,7 +49,11 @@ export function DatePicker({ className, label, ...rest }: Props) {
           <DateInput className={input}>
             {(segment) => <DateSegment className={dateSegment} segment={segment} />}
           </DateInput>
-          <IconButton className={button} variant="tertiary" aria-label="expand">
+          <IconButton
+            className={button}
+            variant="tertiary"
+            aria-label={intl.formatMessage({ defaultMessage: 'Expand' })}
+          >
             <CalendarIcon />
           </IconButton>
           {hasError && <ValidationErrorList errors={field.state.meta.errors.map((error) => error.message)} />}

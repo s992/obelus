@@ -6,6 +6,7 @@ import { separator } from '@/components/BookList/bookList.css';
 import { useFormatDate } from '@/hooks/useFormatDate';
 import { useFormatDateDistance } from '@/hooks/useFormatDateDistance';
 import { useFormatPublishYear } from '@/hooks/useFormatPublishYear';
+import { useJudgmentI18n } from '@/hooks/useI18n';
 import { judgment } from '@/style';
 import type { Book, Status } from '@obelus/shared/types';
 
@@ -20,6 +21,7 @@ export function Meta({ book, variant }: Props) {
   const formatYear = useFormatPublishYear();
   const formatDate = useFormatDate('MMM DD');
   const formatDistance = useFormatDateDistance();
+  const judgmentI18n = useJudgmentI18n();
   let content: ReactNode;
 
   switch (variant) {
@@ -31,7 +33,7 @@ export function Meta({ book, variant }: Props) {
             publishDate: formatYear(book.releaseDate),
             startDate: formatDate(book.record?.startedAt),
             finishedDate: formatDate(book.record?.finishedAt),
-            judgment: book.record?.judgment,
+            judgment: judgmentI18n(book.record?.judgment),
             sep: (chunks) => <span className={separator}>{chunks}</span>,
             highlight: (chunks) =>
               book.record?.judgment ? (

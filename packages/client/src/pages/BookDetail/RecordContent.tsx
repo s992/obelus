@@ -10,6 +10,7 @@ import { Button } from '@/components/Button';
 import { Modal } from '@/components/Modal';
 import { showMutationError } from '@/components/Toast';
 import { useFormatLongDate } from '@/hooks/useFormatLongDate';
+import { useJudgmentI18n, useRecordStatusI18n } from '@/hooks/useI18n';
 import { judgment as judgmentCss, typography } from '@/style';
 import type { Book, Maybe, NoteJson } from '@obelus/shared/types';
 
@@ -40,6 +41,8 @@ export function RecordContent({ book, notes }: Props) {
   const queryClient = useQueryClient();
   const trpc = useTRPC();
   const formatLongDate = useFormatLongDate();
+  const judgmentI18n = useJudgmentI18n();
+  const statusI18n = useRecordStatusI18n();
   const [noteContent, setNoteContent] = useState('');
   const [isRevising, setIsRevising] = useState(false);
   const invalidate = async () => {
@@ -88,6 +91,16 @@ export function RecordContent({ book, notes }: Props) {
     defaultMessage: 'Add a note. It will not be edited; notes are appended below.',
   });
 
+  let judgment: string;
+
+  if (record.judgment) {
+    judgment = judgmentI18n(record.judgment);
+  } else if (record.status) {
+    judgment = statusI18n(record.status);
+  } else {
+    judgment = intl.formatMessage({ defaultMessage: 'unjudged' });
+  }
+
   return (
     <div className={recordContainer}>
       <div>
@@ -104,7 +117,7 @@ export function RecordContent({ book, notes }: Props) {
             defaultMessage="<highlight>{judgment}</highlight> as of {updatedAt}"
             values={{
               highlight: (chunks) => <span className={judgmentHighlight}>{chunks}</span>,
-              judgment: record?.judgment ?? record?.status ?? <FormattedMessage defaultMessage="unjudged" />,
+              judgment,
               updatedAt: formattedUpdateDate,
             }}
           />

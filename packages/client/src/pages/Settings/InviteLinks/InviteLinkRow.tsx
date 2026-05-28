@@ -9,6 +9,7 @@ import { Button } from '@/components/Button';
 import { IconButton } from '@/components/IconButton';
 import { Table } from '@/components/Table';
 import { toastQueue } from '@/components/Toast';
+import { useInviteLinkStatusI18n } from '@/hooks/useI18n';
 import { flex, typography } from '@/style';
 import type { InviteLinkJsonSchema } from '@obelus/shared/schema';
 import type { InviteLinkStatus, Maybe } from '@obelus/shared/types';
@@ -24,6 +25,7 @@ type Props = {
 
 export function InviteLinkRow({ link, onInvalidate }: Props) {
   const intl = useIntl();
+  const statusI18n = useInviteLinkStatusI18n();
   const status = getLinkStatus(link.usedAt, link.usedBy);
   const [, copy] = useCopyToClipboard();
   const linkUrl = `${window.location.origin}/auth/register/${link.token}`;
@@ -32,7 +34,7 @@ export function InviteLinkRow({ link, onInvalidate }: Props) {
       variant: 'error',
       title: intl.formatMessage({ defaultMessage: 'Error' }),
       message: intl.formatMessage({
-        defaultMessage: 'Failed to copy invite link to clipboard. Check your browser persmissions and try again.',
+        defaultMessage: 'Failed to copy invite link to clipboard. Check your browser permissions and try again.',
       }),
     });
   };
@@ -82,7 +84,7 @@ export function InviteLinkRow({ link, onInvalidate }: Props) {
       </Table.Cell>
       <Table.Cell className={statusCell[status]}>
         <span className={statusDot} />
-        <StatusI18n status={status} />
+        {statusI18n(status)}
       </Table.Cell>
       <Table.Cell>
         <div className={actionContainer}>
@@ -133,17 +135,4 @@ function ExpiryCell({ expiry, usedBy, status }: { expiry: string; usedBy: Maybe<
       <span className={typography.uppercaseLabel}>{expirySubtext}</span>
     </div>
   );
-}
-
-function StatusI18n({ status }: { status: InviteLinkStatus }) {
-  switch (status) {
-    case 'active':
-      return <FormattedMessage defaultMessage="active" />;
-    case 'invalidated':
-      return <FormattedMessage defaultMessage="invalidated" />;
-    case 'used':
-      return <FormattedMessage defaultMessage="used" />;
-    default:
-      return <FormattedMessage defaultMessage="N/A" />;
-  }
 }
