@@ -119,7 +119,7 @@ export function Users() {
               </Table.Column>
             </Table.Header>
             <Table.Body>
-              {!records.length && (
+              {!records.length && !isFetching && (
                 <Table.Row>
                   <Table.Cell colSpan={5} className={emptyStateCell}>
                     <FormattedMessage defaultMessage="No users found matching your filters." />

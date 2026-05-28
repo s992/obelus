@@ -100,7 +100,7 @@ export function InviteLinks() {
               </Table.Column>
             </Table.Header>
             <Table.Body>
-              {!records.length && (
+              {!records.length && !isFetching && (
                 <Table.Row>
                   <Table.Cell colSpan={4}>
                     <FormattedMessage defaultMessage="No invite links found matching your filters." />

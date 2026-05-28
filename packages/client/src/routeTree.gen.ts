@@ -14,11 +14,11 @@ import { Route as UUserNameRouteImport } from './routes/u/$userName'
 import { Route as LayoutAuthRouteImport } from './routes/_layout/auth'
 import { Route as LayoutAuthenticatedRouteImport } from './routes/_layout/_authenticated'
 import { Route as LayoutAuthenticatedIndexRouteImport } from './routes/_layout/_authenticated/index'
-import { Route as LayoutAuthRegisterRouteImport } from './routes/_layout/auth/register'
 import { Route as LayoutAuthLoginRouteImport } from './routes/_layout/auth/login'
 import { Route as LayoutAuthenticatedSettingsRouteImport } from './routes/_layout/_authenticated/settings'
 import { Route as LayoutAuthenticatedReadRouteImport } from './routes/_layout/_authenticated/read'
 import { Route as LayoutAuthenticatedPlannedRouteImport } from './routes/_layout/_authenticated/planned'
+import { Route as LayoutAuthRegisterChar123TokenChar125RouteImport } from './routes/_layout/auth/register.{-$token}'
 import { Route as LayoutAuthenticatedSettingsUsersRouteImport } from './routes/_layout/_authenticated/settings/users'
 import { Route as LayoutAuthenticatedSettingsInviteLinksRouteImport } from './routes/_layout/_authenticated/settings/invite-links'
 import { Route as LayoutAuthenticatedSettingsImportsRouteImport } from './routes/_layout/_authenticated/settings/imports'
@@ -50,11 +50,6 @@ const LayoutAuthenticatedIndexRoute =
     path: '/',
     getParentRoute: () => LayoutAuthenticatedRoute,
   } as any)
-const LayoutAuthRegisterRoute = LayoutAuthRegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => LayoutAuthRoute,
-} as any)
 const LayoutAuthLoginRoute = LayoutAuthLoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -76,6 +71,12 @@ const LayoutAuthenticatedPlannedRoute =
     id: '/planned',
     path: '/planned',
     getParentRoute: () => LayoutAuthenticatedRoute,
+  } as any)
+const LayoutAuthRegisterChar123TokenChar125Route =
+  LayoutAuthRegisterChar123TokenChar125RouteImport.update({
+    id: '/register/{-$token}',
+    path: '/register/{-$token}',
+    getParentRoute: () => LayoutAuthRoute,
   } as any)
 const LayoutAuthenticatedSettingsUsersRoute =
   LayoutAuthenticatedSettingsUsersRouteImport.update({
@@ -122,13 +123,13 @@ export interface FileRoutesByFullPath {
   '/read': typeof LayoutAuthenticatedReadRoute
   '/settings': typeof LayoutAuthenticatedSettingsRouteWithChildren
   '/auth/login': typeof LayoutAuthLoginRoute
-  '/auth/register': typeof LayoutAuthRegisterRoute
   '/book/$bookId': typeof LayoutAuthenticatedBookBookIdRoute
   '/series/$seriesId': typeof LayoutAuthenticatedSeriesSeriesIdRoute
   '/settings/config': typeof LayoutAuthenticatedSettingsConfigRoute
   '/settings/imports': typeof LayoutAuthenticatedSettingsImportsRoute
   '/settings/invite-links': typeof LayoutAuthenticatedSettingsInviteLinksRoute
   '/settings/users': typeof LayoutAuthenticatedSettingsUsersRoute
+  '/auth/register/{-$token}': typeof LayoutAuthRegisterChar123TokenChar125Route
 }
 export interface FileRoutesByTo {
   '/': typeof LayoutAuthenticatedIndexRoute
@@ -138,13 +139,13 @@ export interface FileRoutesByTo {
   '/read': typeof LayoutAuthenticatedReadRoute
   '/settings': typeof LayoutAuthenticatedSettingsRouteWithChildren
   '/auth/login': typeof LayoutAuthLoginRoute
-  '/auth/register': typeof LayoutAuthRegisterRoute
   '/book/$bookId': typeof LayoutAuthenticatedBookBookIdRoute
   '/series/$seriesId': typeof LayoutAuthenticatedSeriesSeriesIdRoute
   '/settings/config': typeof LayoutAuthenticatedSettingsConfigRoute
   '/settings/imports': typeof LayoutAuthenticatedSettingsImportsRoute
   '/settings/invite-links': typeof LayoutAuthenticatedSettingsInviteLinksRoute
   '/settings/users': typeof LayoutAuthenticatedSettingsUsersRoute
+  '/auth/register/{-$token}': typeof LayoutAuthRegisterChar123TokenChar125Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -156,7 +157,6 @@ export interface FileRoutesById {
   '/_layout/_authenticated/read': typeof LayoutAuthenticatedReadRoute
   '/_layout/_authenticated/settings': typeof LayoutAuthenticatedSettingsRouteWithChildren
   '/_layout/auth/login': typeof LayoutAuthLoginRoute
-  '/_layout/auth/register': typeof LayoutAuthRegisterRoute
   '/_layout/_authenticated/': typeof LayoutAuthenticatedIndexRoute
   '/_layout/_authenticated/book/$bookId': typeof LayoutAuthenticatedBookBookIdRoute
   '/_layout/_authenticated/series/$seriesId': typeof LayoutAuthenticatedSeriesSeriesIdRoute
@@ -164,6 +164,7 @@ export interface FileRoutesById {
   '/_layout/_authenticated/settings/imports': typeof LayoutAuthenticatedSettingsImportsRoute
   '/_layout/_authenticated/settings/invite-links': typeof LayoutAuthenticatedSettingsInviteLinksRoute
   '/_layout/_authenticated/settings/users': typeof LayoutAuthenticatedSettingsUsersRoute
+  '/_layout/auth/register/{-$token}': typeof LayoutAuthRegisterChar123TokenChar125Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -175,13 +176,13 @@ export interface FileRouteTypes {
     | '/read'
     | '/settings'
     | '/auth/login'
-    | '/auth/register'
     | '/book/$bookId'
     | '/series/$seriesId'
     | '/settings/config'
     | '/settings/imports'
     | '/settings/invite-links'
     | '/settings/users'
+    | '/auth/register/{-$token}'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -191,13 +192,13 @@ export interface FileRouteTypes {
     | '/read'
     | '/settings'
     | '/auth/login'
-    | '/auth/register'
     | '/book/$bookId'
     | '/series/$seriesId'
     | '/settings/config'
     | '/settings/imports'
     | '/settings/invite-links'
     | '/settings/users'
+    | '/auth/register/{-$token}'
   id:
     | '__root__'
     | '/_layout'
@@ -208,7 +209,6 @@ export interface FileRouteTypes {
     | '/_layout/_authenticated/read'
     | '/_layout/_authenticated/settings'
     | '/_layout/auth/login'
-    | '/_layout/auth/register'
     | '/_layout/_authenticated/'
     | '/_layout/_authenticated/book/$bookId'
     | '/_layout/_authenticated/series/$seriesId'
@@ -216,6 +216,7 @@ export interface FileRouteTypes {
     | '/_layout/_authenticated/settings/imports'
     | '/_layout/_authenticated/settings/invite-links'
     | '/_layout/_authenticated/settings/users'
+    | '/_layout/auth/register/{-$token}'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -260,13 +261,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAuthenticatedIndexRouteImport
       parentRoute: typeof LayoutAuthenticatedRoute
     }
-    '/_layout/auth/register': {
-      id: '/_layout/auth/register'
-      path: '/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof LayoutAuthRegisterRouteImport
-      parentRoute: typeof LayoutAuthRoute
-    }
     '/_layout/auth/login': {
       id: '/_layout/auth/login'
       path: '/login'
@@ -294,6 +288,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/planned'
       preLoaderRoute: typeof LayoutAuthenticatedPlannedRouteImport
       parentRoute: typeof LayoutAuthenticatedRoute
+    }
+    '/_layout/auth/register/{-$token}': {
+      id: '/_layout/auth/register/{-$token}'
+      path: '/register/{-$token}'
+      fullPath: '/auth/register/{-$token}'
+      preLoaderRoute: typeof LayoutAuthRegisterChar123TokenChar125RouteImport
+      parentRoute: typeof LayoutAuthRoute
     }
     '/_layout/_authenticated/settings/users': {
       id: '/_layout/_authenticated/settings/users'
@@ -389,12 +390,13 @@ const LayoutAuthenticatedRouteWithChildren =
 
 interface LayoutAuthRouteChildren {
   LayoutAuthLoginRoute: typeof LayoutAuthLoginRoute
-  LayoutAuthRegisterRoute: typeof LayoutAuthRegisterRoute
+  LayoutAuthRegisterChar123TokenChar125Route: typeof LayoutAuthRegisterChar123TokenChar125Route
 }
 
 const LayoutAuthRouteChildren: LayoutAuthRouteChildren = {
   LayoutAuthLoginRoute: LayoutAuthLoginRoute,
-  LayoutAuthRegisterRoute: LayoutAuthRegisterRoute,
+  LayoutAuthRegisterChar123TokenChar125Route:
+    LayoutAuthRegisterChar123TokenChar125Route,
 }
 
 const LayoutAuthRouteWithChildren = LayoutAuthRoute._addFileChildren(

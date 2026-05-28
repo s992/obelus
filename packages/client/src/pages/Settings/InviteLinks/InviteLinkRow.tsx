@@ -26,7 +26,7 @@ export function InviteLinkRow({ link, onInvalidate }: Props) {
   const intl = useIntl();
   const status = getLinkStatus(link.usedAt, link.usedBy);
   const [, copy] = useCopyToClipboard();
-  const linkUrl = `${window.location.origin}/auth/register?token=${link.token}`;
+  const linkUrl = `${window.location.origin}/auth/register/${link.token}`;
   const queueCopyErrorToast = () => {
     toastQueue.add({
       variant: 'error',
@@ -65,7 +65,7 @@ export function InviteLinkRow({ link, onInvalidate }: Props) {
       <Table.Cell className={status === 'active' ? linkCss.default : linkCss.invalidated}>
         <div className={linkContainer}>
           <span>
-            <span>{window.location.host}/auth/register?token=</span>
+            <span>{window.location.host}/auth/register/</span>
             <span className={status === 'active' ? activeLinkToken : undefined}>{link.token}</span>
           </span>
           <IconButton

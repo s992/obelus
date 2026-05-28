@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Navigate } from '@tanstack/react-router';
+import { Navigate, useParams } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import z from 'zod';
@@ -13,6 +13,7 @@ import { AuthError } from './AuthError';
 import { AuthForm } from './AuthForm';
 
 export function Register() {
+  const { token } = useParams({ from: '/_layout/auth/register/{-$token}' });
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuthContext();
@@ -50,7 +51,7 @@ export function Register() {
         submitLabel={<FormattedMessage defaultMessage="Register" />}
         schema={schema}
         isLoading={register.isPending}
-        onSubmit={({ value }) => register.mutate(value)}
+        onSubmit={({ value }) => register.mutate({ ...value, inviteToken: token })}
       />
     </div>
   );

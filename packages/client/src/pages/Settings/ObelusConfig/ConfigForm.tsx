@@ -40,8 +40,7 @@ export function ConfigForm({ onSubmit, defaultValues, isLoading }: Props) {
               <Select.Item id="requires_approval">
                 {intl.formatMessage({ defaultMessage: 'requires approval' })}
               </Select.Item>
-              {/*TODO: this is not useful without invite link admin
-              <Select.Item id="invite_link">{intl.formatMessage({ defaultMessage: 'invite link' })}</Select.Item>*/}
+              <Select.Item id="invite_link">{intl.formatMessage({ defaultMessage: 'invite link' })}</Select.Item>
               <Select.Item id="closed">{intl.formatMessage({ defaultMessage: 'closed' })}</Select.Item>
             </field.Select>
           )}
