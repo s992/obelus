@@ -43,6 +43,14 @@ const body = style({
   color: vars.color.ink,
 });
 
+const monoBody = style({
+  fontSize: vars.fontSize.body,
+  lineHeight: vars.lineHeight.normal,
+  letterSpacing: vars.letterSpacing.display,
+  fontFamily: vars.font.mono,
+  color: vars.color.ink,
+});
+
 export const labelBase = {
   fontSize: vars.fontSize.label,
   lineHeight: vars.lineHeight.normal,
@@ -61,6 +69,7 @@ export const typography = {
   h2,
   title,
   body,
+  monoBody,
   label,
   uppercaseLabel,
 };

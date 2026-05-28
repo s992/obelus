@@ -3,6 +3,7 @@ export * from './enum';
 export * from './env';
 export * from './importFailure';
 export * from './importProgress';
+export * from './inviteLink';
 export * from './note';
 export * from './obelusConfig';
 export * from './record';

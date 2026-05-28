@@ -20,6 +20,7 @@ import { Route as LayoutAuthenticatedSettingsRouteImport } from './routes/_layou
 import { Route as LayoutAuthenticatedReadRouteImport } from './routes/_layout/_authenticated/read'
 import { Route as LayoutAuthenticatedPlannedRouteImport } from './routes/_layout/_authenticated/planned'
 import { Route as LayoutAuthenticatedSettingsUsersRouteImport } from './routes/_layout/_authenticated/settings/users'
+import { Route as LayoutAuthenticatedSettingsInviteLinksRouteImport } from './routes/_layout/_authenticated/settings/invite-links'
 import { Route as LayoutAuthenticatedSettingsImportsRouteImport } from './routes/_layout/_authenticated/settings/imports'
 import { Route as LayoutAuthenticatedSettingsConfigRouteImport } from './routes/_layout/_authenticated/settings/config'
 import { Route as LayoutAuthenticatedSeriesSeriesIdRouteImport } from './routes/_layout/_authenticated/series/$seriesId'
@@ -82,6 +83,12 @@ const LayoutAuthenticatedSettingsUsersRoute =
     path: '/users',
     getParentRoute: () => LayoutAuthenticatedSettingsRoute,
   } as any)
+const LayoutAuthenticatedSettingsInviteLinksRoute =
+  LayoutAuthenticatedSettingsInviteLinksRouteImport.update({
+    id: '/invite-links',
+    path: '/invite-links',
+    getParentRoute: () => LayoutAuthenticatedSettingsRoute,
+  } as any)
 const LayoutAuthenticatedSettingsImportsRoute =
   LayoutAuthenticatedSettingsImportsRouteImport.update({
     id: '/imports',
@@ -120,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/series/$seriesId': typeof LayoutAuthenticatedSeriesSeriesIdRoute
   '/settings/config': typeof LayoutAuthenticatedSettingsConfigRoute
   '/settings/imports': typeof LayoutAuthenticatedSettingsImportsRoute
+  '/settings/invite-links': typeof LayoutAuthenticatedSettingsInviteLinksRoute
   '/settings/users': typeof LayoutAuthenticatedSettingsUsersRoute
 }
 export interface FileRoutesByTo {
@@ -135,6 +143,7 @@ export interface FileRoutesByTo {
   '/series/$seriesId': typeof LayoutAuthenticatedSeriesSeriesIdRoute
   '/settings/config': typeof LayoutAuthenticatedSettingsConfigRoute
   '/settings/imports': typeof LayoutAuthenticatedSettingsImportsRoute
+  '/settings/invite-links': typeof LayoutAuthenticatedSettingsInviteLinksRoute
   '/settings/users': typeof LayoutAuthenticatedSettingsUsersRoute
 }
 export interface FileRoutesById {
@@ -153,6 +162,7 @@ export interface FileRoutesById {
   '/_layout/_authenticated/series/$seriesId': typeof LayoutAuthenticatedSeriesSeriesIdRoute
   '/_layout/_authenticated/settings/config': typeof LayoutAuthenticatedSettingsConfigRoute
   '/_layout/_authenticated/settings/imports': typeof LayoutAuthenticatedSettingsImportsRoute
+  '/_layout/_authenticated/settings/invite-links': typeof LayoutAuthenticatedSettingsInviteLinksRoute
   '/_layout/_authenticated/settings/users': typeof LayoutAuthenticatedSettingsUsersRoute
 }
 export interface FileRouteTypes {
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/series/$seriesId'
     | '/settings/config'
     | '/settings/imports'
+    | '/settings/invite-links'
     | '/settings/users'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -185,6 +196,7 @@ export interface FileRouteTypes {
     | '/series/$seriesId'
     | '/settings/config'
     | '/settings/imports'
+    | '/settings/invite-links'
     | '/settings/users'
   id:
     | '__root__'
@@ -202,6 +214,7 @@ export interface FileRouteTypes {
     | '/_layout/_authenticated/series/$seriesId'
     | '/_layout/_authenticated/settings/config'
     | '/_layout/_authenticated/settings/imports'
+    | '/_layout/_authenticated/settings/invite-links'
     | '/_layout/_authenticated/settings/users'
   fileRoutesById: FileRoutesById
 }
@@ -289,6 +302,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAuthenticatedSettingsUsersRouteImport
       parentRoute: typeof LayoutAuthenticatedSettingsRoute
     }
+    '/_layout/_authenticated/settings/invite-links': {
+      id: '/_layout/_authenticated/settings/invite-links'
+      path: '/invite-links'
+      fullPath: '/settings/invite-links'
+      preLoaderRoute: typeof LayoutAuthenticatedSettingsInviteLinksRouteImport
+      parentRoute: typeof LayoutAuthenticatedSettingsRoute
+    }
     '/_layout/_authenticated/settings/imports': {
       id: '/_layout/_authenticated/settings/imports'
       path: '/imports'
@@ -323,6 +343,7 @@ declare module '@tanstack/react-router' {
 interface LayoutAuthenticatedSettingsRouteChildren {
   LayoutAuthenticatedSettingsConfigRoute: typeof LayoutAuthenticatedSettingsConfigRoute
   LayoutAuthenticatedSettingsImportsRoute: typeof LayoutAuthenticatedSettingsImportsRoute
+  LayoutAuthenticatedSettingsInviteLinksRoute: typeof LayoutAuthenticatedSettingsInviteLinksRoute
   LayoutAuthenticatedSettingsUsersRoute: typeof LayoutAuthenticatedSettingsUsersRoute
 }
 
@@ -332,6 +353,8 @@ const LayoutAuthenticatedSettingsRouteChildren: LayoutAuthenticatedSettingsRoute
       LayoutAuthenticatedSettingsConfigRoute,
     LayoutAuthenticatedSettingsImportsRoute:
       LayoutAuthenticatedSettingsImportsRoute,
+    LayoutAuthenticatedSettingsInviteLinksRoute:
+      LayoutAuthenticatedSettingsInviteLinksRoute,
     LayoutAuthenticatedSettingsUsersRoute:
       LayoutAuthenticatedSettingsUsersRoute,
   }

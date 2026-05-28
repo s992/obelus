@@ -2,6 +2,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { IntlProvider } from 'react-intl';
@@ -15,6 +16,7 @@ import './style/reset.css';
 import './style/react-aria-modal.css';
 
 dayjs.extend(customParseFormat);
+dayjs.extend(relativeTime);
 
 const router = createRouter({ routeTree, context: { auth: undefined! }, defaultNotFoundComponent: NotFound });
 

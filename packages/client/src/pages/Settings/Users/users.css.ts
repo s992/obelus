@@ -56,7 +56,7 @@ export const statusDot = style({
 });
 
 export const dateCell = style([
-  typography.label,
+  typography.monoBody,
   {
     color: vars.color.ink2,
   },

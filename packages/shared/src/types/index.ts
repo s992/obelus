@@ -3,6 +3,7 @@ import { z } from 'zod';
 import type {
   BookSchema,
   ImportProgressSchema,
+  InviteLinkStatusSchema,
   NoteJsonSchema,
   NoteSchema,
   ObelusConfigSchema,
@@ -35,6 +36,8 @@ export type UserStatus = z.infer<typeof UserStatusSchema>;
 export type UserRole = z.infer<typeof UserRoleSchema>;
 
 export type ObelusConfig = z.infer<typeof ObelusConfigSchema>;
+
+export type InviteLinkStatus = z.infer<typeof InviteLinkStatusSchema>;
 
 export type Status = 'planned' | 'finished' | 'reading';
 
