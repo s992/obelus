@@ -4,8 +4,8 @@ import z from 'zod';
 import { InviteLinkStatusSchema, ListInviteLinksSchema } from '@obelus/shared/schema';
 
 import { db } from '../db/db';
-import { listInviteLinks, PAGE_SIZE } from '../inviteLink/listInviteLinks';
-import { createInviteLink, invalidateInviteLink } from '../sqlc/invite_link_sql';
+import { paginate } from '../pagination/paginate';
+import { createInviteLink, invalidateInviteLink, listInviteLinks } from '../sqlc/invite_link_sql';
 import { adminProcedure, router } from '../trpc/trpc';
 
 export const inviteLinkRouter = router({
@@ -18,9 +18,20 @@ export const inviteLinkRouter = router({
     )
     .output(ListInviteLinksSchema)
     .query(async ({ input }) => {
-      const result = await listInviteLinks(input.cursor, input.status);
+      const { records, ...rest } = await paginate({
+        queryFn: ({ cursor, pageSize }) =>
+          listInviteLinks(db, {
+            cursor: cursor ? new Date(cursor) : null,
+            status: input.status ?? null,
+            pagesize: pageSize,
+          }),
+        currentCursor: input.cursor,
+        getCount: (row) => parseInt(row.totalCount),
+        getNextCursor: (row) => row.expiresAt.toISOString(),
+        pageSize: 25,
+      });
 
-      return ListInviteLinksSchema.parse({ ...result, pageSize: PAGE_SIZE });
+      return ListInviteLinksSchema.parse({ links: records, ...rest });
     }),
   create: adminProcedure.mutation(async ({ ctx }) => {
     const token = Date.now().toString(36) + randomBytes(3).toString('base64url');

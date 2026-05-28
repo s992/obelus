@@ -5,9 +5,9 @@ import { ListUsersSchema, UserRoleSchema, UserSchema, UserStatusSchema } from '@
 
 import { hashPassword, verifyPassword } from '../auth/auth';
 import { db } from '../db/db';
-import { getUserById, updateUser } from '../sqlc/user_sql';
+import { paginate } from '../pagination/paginate';
+import { getUserById, listUsers, updateUser } from '../sqlc/user_sql';
 import { adminProcedure, privateProcedure, router } from '../trpc/trpc';
-import { listUsers, PAGE_SIZE } from '../users/listUsers';
 
 export const userRouter = router({
   me: privateProcedure.query(async ({ ctx }) => {
@@ -67,9 +67,21 @@ export const userRouter = router({
     )
     .output(ListUsersSchema)
     .query(async ({ input }) => {
-      const result = await listUsers(input.cursor, input.status, input.role);
+      const { records, ...rest } = await paginate({
+        queryFn: ({ cursor, pageSize }) =>
+          listUsers(db, {
+            cursor,
+            pagesize: pageSize,
+            role: input.role,
+            status: input.status,
+          }),
+        currentCursor: input.cursor,
+        getCount: (row) => parseInt(row.totalCount),
+        getNextCursor: (row) => row.userName,
+        pageSize: 25,
+      });
 
-      return ListUsersSchema.parse({ ...result, pageSize: PAGE_SIZE });
+      return ListUsersSchema.parse({ users: records, ...rest });
     }),
   adminUpdateUser: adminProcedure
     .input(UserSchema.pick({ id: true, role: true, status: true }))

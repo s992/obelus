@@ -102,6 +102,7 @@ describe('publicRecordRouter', () => {
         hasNextPage: false,
         nextPageToken: null,
         totalCount: 0,
+        pageSize: 25,
       });
 
       await unauthenticatedCaller().records({
@@ -122,6 +123,7 @@ describe('publicRecordRouter', () => {
         hasNextPage: false,
         nextPageToken: null,
         totalCount: 0,
+        pageSize: 25,
       });
 
       await authedCaller(userId).records({

@@ -159,6 +159,7 @@ describe('recordRouter', () => {
         hasNextPage: false,
         nextPageToken: null,
         totalCount: 0,
+        pageSize: 25,
       });
 
       await caller.list({
