@@ -18,7 +18,9 @@
     "lint:fix": "oxlint --fix",
     "clean": "pnpm -r exec rm -rf dist node_modules/.tmp .tsbuildinfo *.tsbuildinfo",
     "prepare": "husky",
-    "knip": "dotenvx run -- knip"
+    "knip": "dotenvx run -- knip",
+    "docker:up": "docker compose --env-file .env.docker up --build",
+    "docker:clean": "docker compose down -v"
   },
   "devDependencies": {
     "@dotenvx/dotenvx": "catalog:",
