@@ -6,7 +6,7 @@ import {
   RecordJsonSchema,
   RecordSchema,
   RecordStatusEnumSchema,
-  SortFieldSchema,
+  RecordSortFieldSchema,
 } from '@obelus/shared/schema';
 
 import { listUserRecords } from '../bookRecord/listUserRecords';
@@ -21,7 +21,7 @@ export const recordRouter = router({
         status: RecordStatusEnumSchema,
         judgment: JudgmentEnumSchema.nullable(),
         cursor: z.string().optional(),
-        sortField: SortFieldSchema,
+        sortField: RecordSortFieldSchema,
       }),
     )
     .query(async ({ input, ctx }) => {

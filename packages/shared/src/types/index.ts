@@ -10,7 +10,7 @@ import type {
   RecordJsonSchema,
   RecordSchema,
   SeriesSchema,
-  SortFieldSchema,
+  RecordSortFieldSchema,
   UserRoleSchema,
   UserStatusSchema,
 } from '../schema';
@@ -27,7 +27,7 @@ export type Record = z.infer<typeof RecordSchema>;
 
 export type RecordJson = z.infer<typeof RecordJsonSchema>;
 
-export type SortField = z.infer<typeof SortFieldSchema>;
+export type RecordSortField = z.infer<typeof RecordSortFieldSchema>;
 
 export type ImportProgress = z.infer<typeof ImportProgressSchema>;
 

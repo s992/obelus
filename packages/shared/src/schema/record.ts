@@ -1,6 +1,10 @@
 import z from 'zod';
 
-import { JudgmentEnumSchema, RecordStatusEnumSchema } from './enum';
+export const JudgmentEnumSchema = z.enum(['accepted', 'rejected', 'mixed']);
+
+export const RecordStatusEnumSchema = z.enum(['planned', 'reading', 'finished']);
+
+export const RecordSortFieldSchema = z.enum(['started_at', 'finished_at', 'last_activity']);
 
 export const RecordSchema = z.object({
   id: z.uuidv4(),

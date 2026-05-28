@@ -1,7 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import z from 'zod';
 
-import { RecordStatusEnumSchema, SortFieldSchema } from '@obelus/shared/schema';
+import { RecordStatusEnumSchema, RecordSortFieldSchema } from '@obelus/shared/schema';
 
 import { listUserRecords } from '../bookRecord/listUserRecords';
 import { db } from '../db/db';
@@ -27,7 +27,7 @@ export const publicRecordRouter = router({
         userName: z.string(),
         status: RecordStatusEnumSchema,
         cursor: z.string().optional(),
-        sortField: SortFieldSchema,
+        sortField: RecordSortFieldSchema,
       }),
     )
     .query(async ({ input, ctx }) => {

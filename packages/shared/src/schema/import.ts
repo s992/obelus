@@ -8,3 +8,9 @@ export const ImportProgressSchema = z.object({
   failedInsert: z.number(),
   succeeded: z.number(),
 });
+
+export const ImportFailureSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  author: z.string(),
+});

@@ -3,13 +3,13 @@ import { type ReactNode, useState } from 'react';
 
 import { useTRPC } from '@/client';
 import { BookList } from '@/components/BookList';
-import type { Judgment, SortField, Status } from '@obelus/shared/types';
+import type { Judgment, RecordSortField, Status } from '@obelus/shared/types';
 
 import { ListPageContextProvider } from './context';
 
 type Props = {
   status: Status;
-  sortField: SortField;
+  sortField: RecordSortField;
   renderEmptyState: () => ReactNode;
 };
 

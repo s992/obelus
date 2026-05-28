@@ -1,7 +1,7 @@
 import z from 'zod';
 
 import { RecordSchema } from '@obelus/shared/schema';
-import type { Judgment, Maybe, SortField, Status } from '@obelus/shared/types';
+import type { Judgment, Maybe, RecordSortField, Status } from '@obelus/shared/types';
 
 import { db } from '../db/db';
 import { client } from '../gql/client';
@@ -12,7 +12,7 @@ import { collateRecordsAndBooks } from './collateRecordsAndBooks';
 export async function listUserRecords(
   userId: string,
   cursor: Maybe<string>,
-  sortField: SortField,
+  sortField: RecordSortField,
   status: Status,
   judgment: Maybe<Judgment>,
 ) {

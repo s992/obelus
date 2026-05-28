@@ -5,12 +5,12 @@ import { useTRPC } from '@/client';
 import { BookList } from '@/components/BookList';
 import { FullContainerSpinner } from '@/components/FullContainerSpinner';
 import { ListPageContextProvider } from '@/pages/ListPage/context';
-import type { SortField, Status } from '@obelus/shared/types';
+import type { RecordSortField, Status } from '@obelus/shared/types';
 
 type Props = {
   userName: string;
   status: Status;
-  sortField: SortField;
+  sortField: RecordSortField;
 };
 
 export function PublicBookList({ userName, status, sortField }: Props) {

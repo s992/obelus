@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 const LOG_LEVELS = ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'] satisfies LevelWithSilent[];
 
-export const env = z.object({
+export const EnvSchema = z.object({
   OBELUS_API_PORT: z.coerce.number().default(3000),
   OBELUS_AUTH_TOKEN_SECRET: z.string().nonempty(),
   OBELUS_BASE_URL: z.string().nonempty(),
