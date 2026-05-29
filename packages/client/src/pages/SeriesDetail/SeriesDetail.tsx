@@ -29,7 +29,7 @@ export function SeriesDetail() {
   }
 
   return (
-    <>
+    <main>
       <ListHeader title={series.series.name} count={series.series.bookCount ?? 0} />
       <ListPageContextProvider
         value={{ fetchNextPage: () => {}, hasNextPage: false, queryKey: trpc.book.seriesById.queryKey() }}
@@ -41,6 +41,6 @@ export function SeriesDetail() {
           </div>
         ))}
       </ListPageContextProvider>
-    </>
+    </main>
   );
 }

@@ -14,7 +14,7 @@ export function Auth() {
   const location = useLocation({ select: (loc) => loc.pathname });
 
   return (
-    <div className={tabContainer}>
+    <main className={tabContainer}>
       <Tabs selectedKey={location}>
         <TabList>
           <Tab id={loginHref} href={loginHref}>
@@ -30,6 +30,6 @@ export function Auth() {
           </div>
         </TabPanels>
       </Tabs>
-    </div>
+    </main>
   );
 }

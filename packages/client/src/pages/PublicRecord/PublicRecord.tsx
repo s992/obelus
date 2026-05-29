@@ -90,48 +90,50 @@ export function PublicRecord() {
           />
         </div>
       </section>
-      <Tabs defaultSelectedKey="reading">
-        <TabList className={tabList}>
-          <Tab id="reading">
-            <FormattedMessage
-              defaultMessage="reading <mute>· {count}</mute>"
-              values={{
-                mute: (chunks) => <span className={tabLabelCount}>{chunks}</span>,
-                count: profile.readingCount,
-              }}
-            />
-          </Tab>
-          <Tab id="finished">
-            <FormattedMessage
-              defaultMessage="read <mute>· {count}</mute>"
-              values={{
-                mute: (chunks) => <span className={tabLabelCount}>{chunks}</span>,
-                count: profile.finishedCount,
-              }}
-            />
-          </Tab>
-          <Tab id="planned">
-            <FormattedMessage
-              defaultMessage="planned <mute>· {count}</mute>"
-              values={{
-                mute: (chunks) => <span className={tabLabelCount}>{chunks}</span>,
-                count: profile.plannedCount,
-              }}
-            />
-          </Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel id="reading" className={tabPanel}>
-            <PublicBookList userName={userName} status="reading" sortField="started_at" />
-          </TabPanel>
-          <TabPanel id="finished" className={tabPanel}>
-            <PublicBookList userName={userName} status="finished" sortField="finished_at" />
-          </TabPanel>
-          <TabPanel id="planned" className={tabPanel}>
-            <PublicBookList userName={userName} status="planned" sortField="last_activity" />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+      <main>
+        <Tabs defaultSelectedKey="reading">
+          <TabList className={tabList}>
+            <Tab id="reading">
+              <FormattedMessage
+                defaultMessage="reading <mute>· {count}</mute>"
+                values={{
+                  mute: (chunks) => <span className={tabLabelCount}>{chunks}</span>,
+                  count: profile.readingCount,
+                }}
+              />
+            </Tab>
+            <Tab id="finished">
+              <FormattedMessage
+                defaultMessage="read <mute>· {count}</mute>"
+                values={{
+                  mute: (chunks) => <span className={tabLabelCount}>{chunks}</span>,
+                  count: profile.finishedCount,
+                }}
+              />
+            </Tab>
+            <Tab id="planned">
+              <FormattedMessage
+                defaultMessage="planned <mute>· {count}</mute>"
+                values={{
+                  mute: (chunks) => <span className={tabLabelCount}>{chunks}</span>,
+                  count: profile.plannedCount,
+                }}
+              />
+            </Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel id="reading" className={tabPanel}>
+              <PublicBookList userName={userName} status="reading" sortField="started_at" />
+            </TabPanel>
+            <TabPanel id="finished" className={tabPanel}>
+              <PublicBookList userName={userName} status="finished" sortField="finished_at" />
+            </TabPanel>
+            <TabPanel id="planned" className={tabPanel}>
+              <PublicBookList userName={userName} status="planned" sortField="last_activity" />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </main>
       <footer className={footer}>
         <span>
           <FormattedMessage

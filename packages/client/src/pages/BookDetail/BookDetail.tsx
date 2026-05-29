@@ -54,7 +54,7 @@ export function BookDetail() {
     : notes?.[0]?.createdAt;
 
   return (
-    <div className={container}>
+    <main className={container}>
       <div className={sidebar}>
         <div className={coverWrapper}>
           <BookCover book={book} size={isMobile ? 'medium' : 'xlarge'} />
@@ -112,6 +112,6 @@ export function BookDetail() {
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }

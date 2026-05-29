@@ -28,7 +28,7 @@ export function NotFound() {
   const url = window.location.pathname;
 
   return (
-    <div className={container}>
+    <main className={container}>
       <div className={stage}>
         <section className={copy}>
           <div className={eyebrow}>
@@ -120,6 +120,6 @@ export function NotFound() {
           </div>
         </aside>
       </div>
-    </div>
+    </main>
   );
 }

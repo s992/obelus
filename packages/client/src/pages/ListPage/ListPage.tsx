@@ -27,16 +27,18 @@ export function ListPage({ status, sortField, renderEmptyState }: Props) {
   const books = data?.pages.flatMap((page) => page?.books).filter((book) => book !== undefined);
 
   return (
-    <ListPageContextProvider value={{ queryKey: trpc.record.list.infiniteQueryKey(), hasNextPage, fetchNextPage }}>
-      <BookList
-        books={books ?? []}
-        variant={status}
-        totalCount={data?.pages?.[0]?.totalCount ?? 0}
-        renderEmptyState={renderEmptyState}
-        filter={judgmentFilter}
-        onFilterChanged={setJudgmentFilter}
-        isLoading={isLoading}
-      />
-    </ListPageContextProvider>
+    <main>
+      <ListPageContextProvider value={{ queryKey: trpc.record.list.infiniteQueryKey(), hasNextPage, fetchNextPage }}>
+        <BookList
+          books={books ?? []}
+          variant={status}
+          totalCount={data?.pages?.[0]?.totalCount ?? 0}
+          renderEmptyState={renderEmptyState}
+          filter={judgmentFilter}
+          onFilterChanged={setJudgmentFilter}
+          isLoading={isLoading}
+        />
+      </ListPageContextProvider>
+    </main>
   );
 }

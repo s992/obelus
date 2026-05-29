@@ -33,45 +33,47 @@ export function Settings() {
   }
 
   return (
-    <Tabs selectedKey={location}>
-      <TabList>
-        <Tab id={settingsHref} href={settingsHref}>
-          <FormattedMessage defaultMessage="settings" />
-        </Tab>
-        <Tab id={importsHref} href={importsHref}>
-          <FormattedMessage defaultMessage="imports" />
-        </Tab>
-        {user.role === 'admin' && (
-          <>
-            <Tab id={usersHref} href={usersHref}>
-              <FormattedMessage defaultMessage="users" />
-            </Tab>
-            <Tab id={inviteLinksHref} href={inviteLinksHref}>
-              <FormattedMessage defaultMessage="invite links" />
-            </Tab>
-            <Tab id={configHref} href={configHref}>
-              <FormattedMessage defaultMessage="obelus config" />
-            </Tab>
-          </>
-        )}
-      </TabList>
-      <TabPanels>
-        <TabPanel id={settingsHref} className={tabPanel}>
-          <UserSettings />
-        </TabPanel>
-        <TabPanel id={importsHref} className={tabPanel}>
-          <Imports />
-        </TabPanel>
-        <TabPanel id={usersHref} className={tabPanel}>
-          <Users />
-        </TabPanel>
-        <TabPanel id={inviteLinksHref} className={tabPanel}>
-          <InviteLinks />
-        </TabPanel>
-        <TabPanel id={configHref} className={tabPanel}>
-          <ObelusConfig />
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+    <main>
+      <Tabs selectedKey={location}>
+        <TabList>
+          <Tab id={settingsHref} href={settingsHref}>
+            <FormattedMessage defaultMessage="settings" />
+          </Tab>
+          <Tab id={importsHref} href={importsHref}>
+            <FormattedMessage defaultMessage="imports" />
+          </Tab>
+          {user.role === 'admin' && (
+            <>
+              <Tab id={usersHref} href={usersHref}>
+                <FormattedMessage defaultMessage="users" />
+              </Tab>
+              <Tab id={inviteLinksHref} href={inviteLinksHref}>
+                <FormattedMessage defaultMessage="invite links" />
+              </Tab>
+              <Tab id={configHref} href={configHref}>
+                <FormattedMessage defaultMessage="obelus config" />
+              </Tab>
+            </>
+          )}
+        </TabList>
+        <TabPanels>
+          <TabPanel id={settingsHref} className={tabPanel}>
+            <UserSettings />
+          </TabPanel>
+          <TabPanel id={importsHref} className={tabPanel}>
+            <Imports />
+          </TabPanel>
+          <TabPanel id={usersHref} className={tabPanel}>
+            <Users />
+          </TabPanel>
+          <TabPanel id={inviteLinksHref} className={tabPanel}>
+            <InviteLinks />
+          </TabPanel>
+          <TabPanel id={configHref} className={tabPanel}>
+            <ObelusConfig />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </main>
   );
 }
