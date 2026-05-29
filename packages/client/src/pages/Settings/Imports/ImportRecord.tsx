@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import dayjs from 'dayjs';
 import { Minus, Plus } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { Button as AriaButton, Disclosure, DisclosurePanel } from 'react-aria-components';
 import { FormattedMessage } from 'react-intl';
 
@@ -38,10 +39,7 @@ export function ImportRecord({ record, isExpanded, onExpandedChange }: Props) {
 
   return (
     <Disclosure className={disclosure} onExpandedChange={onExpandedChange}>
-      <AriaButton
-        slot={record.failures.length ? 'trigger' : undefined}
-        className={clsx(disclosureButton, { [disclosureButtonHover]: record.failures.length > 0 })}
-      >
+      <Container hasFailures={record.failures.length > 0}>
         <div className={sectionRow}>
           <span className={clsx(typography.label, sectionDate)}>{formatDate(record.createdAt)}</span>
           <span className={typography.label}>{formatTime(record.createdAt)}</span>
@@ -67,7 +65,7 @@ export function ImportRecord({ record, isExpanded, onExpandedChange }: Props) {
           </div>
         </div>
         {record.failures.length > 0 && <div className={sectionExpandIcon}>{isExpanded ? <Minus /> : <Plus />}</div>}
-      </AriaButton>
+      </Container>
       <DisclosurePanel>
         <div className={failurePanel}>
           <span className={typography.uppercaseLabel}>
@@ -115,4 +113,16 @@ function Elapsed({ d1, d2 }: { d1: string; d2: string }) {
   diff = Math.abs(d1Parsed.diff(d2Parsed, 'minute'));
 
   return <FormattedMessage defaultMessage="{diff}min" values={{ diff }} />;
+}
+
+function Container({ hasFailures, children }: { hasFailures: boolean; children: ReactNode }) {
+  if (hasFailures) {
+    return (
+      <AriaButton slot="trigger" className={clsx(disclosureButton, disclosureButtonHover)}>
+        {children}
+      </AriaButton>
+    );
+  }
+
+  return <div className={disclosureButton}>{children}</div>;
 }

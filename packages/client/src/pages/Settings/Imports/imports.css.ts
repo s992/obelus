@@ -26,7 +26,7 @@ export const dropZoneButton = style([
   {
     cursor: 'pointer',
     selectors: {
-      '&:hover': {
+      '&:hover, &[data-focus-visible=true]': {
         background: vars.color.tint,
       },
     },
@@ -36,6 +36,10 @@ export const dropZoneButton = style([
 globalStyle(`${dropZone}[data-drop-target] ${dropZoneButton}`, {
   background: vars.color.tint,
   borderColor: vars.color.ink,
+});
+
+globalStyle(`${dropZone}[data-focus-visible=true] ${dropZoneButton}`, {
+  background: vars.color.tint,
 });
 
 export const sectionHeader = style([
@@ -121,9 +125,11 @@ export const disclosureButton = style([
 ]);
 
 export const disclosureButtonHover = style({
-  ':hover': {
-    background: vars.color.tint,
-    cursor: 'pointer',
+  selectors: {
+    '&:hover, &[data-focus-visible=true]': {
+      background: vars.color.tint,
+      cursor: 'pointer',
+    },
   },
 });
 
