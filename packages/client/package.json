@@ -39,6 +39,7 @@
     "react-dom": "catalog:",
     "react-hotkeys-hook": "catalog:",
     "react-intl": "catalog:",
+    "react-virtuoso": "catalog:",
     "usehooks-ts": "catalog:",
     "zod": "catalog:"
   },

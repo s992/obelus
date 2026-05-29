@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import get from 'lodash.get';
 import type { ReactNode, Ref } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Virtuoso } from 'react-virtuoso';
 import { useIntersectionObserver } from 'usehooks-ts';
 
 import { Button } from '@/components/Button';
@@ -110,16 +111,18 @@ function Content({ dates, groupedBooks, isLoading, renderEmptyState, intersectio
   }
 
   return (
-    <>
-      {dates.map((date, idx) => (
+    <Virtuoso
+      useWindowScroll
+      data={dates}
+      itemContent={(idx, date) => (
         <ListGroup
           key={date}
           books={groupedBooks[date] ?? []}
           date={date}
           ref={idx === dates.length - 1 ? intersectionRef : undefined}
         />
-      ))}
-    </>
+      )}
+    />
   );
 }
 
