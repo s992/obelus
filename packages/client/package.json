@@ -45,7 +45,6 @@
   },
   "devDependencies": {
     "@babel/core": "catalog:",
-    "@formatjs/unplugin": "catalog:",
     "@rolldown/plugin-babel": "catalog:",
     "@storybook/addon-docs": "catalog:",
     "@storybook/addon-themes": "catalog:",
@@ -58,6 +57,7 @@
     "@types/react-dom": "catalog:",
     "@vanilla-extract/vite-plugin": "catalog:",
     "@vitejs/plugin-react": "catalog:",
+    "babel-plugin-formatjs": "catalog:",
     "babel-plugin-react-compiler": "catalog:",
     "eslint-plugin-react-hooks": "catalog:",
     "globals": "catalog:",
