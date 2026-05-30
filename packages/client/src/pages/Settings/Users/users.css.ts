@@ -73,7 +73,7 @@ export const header = {
   userName: style({ width: '30%' }),
   role: style({ width: '13%' }),
   status: style({ width: '13%' }),
-  joined: style({ width: '17%' }),
+  joined: style({ width: '18%' }),
   action: style({ textAlign: 'right' }),
 };
 

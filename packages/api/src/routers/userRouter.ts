@@ -78,7 +78,7 @@ export const userRouter = router({
         currentCursor: input.cursor,
         getCount: (row) => parseInt(row.totalCount),
         getNextCursor: (row) => row.userName,
-        pageSize: 25,
+        pageSize: 20,
       });
 
       return ListUsersSchema.parse({ users: records, ...rest });

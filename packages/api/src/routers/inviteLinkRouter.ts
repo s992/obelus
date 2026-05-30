@@ -28,7 +28,7 @@ export const inviteLinkRouter = router({
         currentCursor: input.cursor,
         getCount: (row) => parseInt(row.totalCount),
         getNextCursor: (row) => row.expiresAt.toISOString(),
-        pageSize: 25,
+        pageSize: 15,
       });
 
       return ListInviteLinksSchema.parse({ links: records, ...rest });
