@@ -4,7 +4,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../../db/db', () => ({ db: {} }));
 vi.mock('../../db/tx', () => ({
-  tx: vi.fn((fn: (client: unknown) => unknown) => fn({})),
+  tx: vi.fn((fn: (client: unknown) => unknown) =>
+    fn({
+      query: vi.fn(),
+    }),
+  ),
 }));
 vi.mock('../../log', () => ({ logger: { error: vi.fn(), debug: vi.fn() } }));
 

@@ -20,7 +20,8 @@ export async function register(
 
   try {
     return await tx(async (client) => {
-      const firstUserCheck = await hasUsers(db);
+      await client.query('select pg_advisory_xact_lock(1)');
+      const firstUserCheck = await hasUsers(client);
 
       // default the first user registered to "admin"
       const role = firstUserCheck?.usersExist ? 'member' : 'admin';
