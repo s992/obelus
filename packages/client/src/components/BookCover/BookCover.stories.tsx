@@ -40,6 +40,10 @@ export const WithoutCover: Story = {
   args: { book: baseBook },
 };
 
+export const Small: Story = {
+  args: { size: 'small' },
+};
+
 export const Medium: Story = {
   args: { size: 'medium' },
 };

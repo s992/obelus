@@ -24,3 +24,34 @@ export const Default: Story = {
     ),
   },
 };
+
+export const Muted: Story = {
+  args: {
+    label: 'sort order',
+    buttonValue: 'sort by',
+    variant: 'muted',
+    children: (
+      <>
+        <Select.Item>recently updated</Select.Item>
+        <Select.Item>recently added</Select.Item>
+        <Select.Item>title</Select.Item>
+      </>
+    ),
+  },
+};
+
+export const WithError: Story = {
+  args: {
+    label: 'sort order',
+    buttonValue: 'sort by',
+    hasError: true,
+    errors: ['Selection is required'],
+    children: (
+      <>
+        <Select.Item>recently updated</Select.Item>
+        <Select.Item>recently added</Select.Item>
+        <Select.Item>title</Select.Item>
+      </>
+    ),
+  },
+};
