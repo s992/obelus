@@ -52,7 +52,7 @@ catalog:
   argon2: ^0.44.0
   babel-plugin-formatjs: ^11.3.10
   babel-plugin-react-compiler: ^1.0.0
-  bullmq: ^5.76.8
+  bullmq: ^5.77.6
   clsx: ^2.1.1
   csv-parse: ^6.2.1
   dayjs: ^1.11.20

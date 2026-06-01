@@ -142,8 +142,8 @@ catalogs:
       specifier: ^1.0.0
       version: 1.0.0
     bullmq:
-      specifier: ^5.76.8
-      version: 5.76.8
+      specifier: ^5.77.6
+      version: 5.77.6
     clsx:
       specifier: ^2.1.1
       version: 2.1.1
@@ -325,7 +325,7 @@ importers:
         version: 0.44.0
       bullmq:
         specifier: 'catalog:'
-        version: 5.76.8
+        version: 5.77.6
       csv-parse:
         specifier: 'catalog:'
         version: 6.2.1
@@ -3292,9 +3292,14 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
-  bullmq@5.76.8:
-    resolution: {integrity: sha512-v3WTwA8diFtsADaJ8eK2ozyi2CYK9rDZCeoKF+dIPF/MUL8HxAOa3H72Gmu1lC4yKlho6t1PwNr/QpDVqaNEZQ==}
+  bullmq@5.77.6:
+    resolution: {integrity: sha512-WCpSoCD4vWyRD+btOsFrO7iBGInrTgG155gTZCV8qY0Yex2KtsbVtFERx6V1WZ2xWl/5ZxnLar8Z8ufnS4f5jg==}
     engines: {node: '>=12.22.0'}
+    peerDependencies:
+      redis: '>=5.0.0'
+    peerDependenciesMeta:
+      redis:
+        optional: true
 
   bundle-name@4.1.0:
     resolution: {integrity: sha512-tjwM5exMg6BGRI+kNmTntNsvdZS1X8BFYS6tnJ2hdH0kVxM6/eVZ2xy+FqStSWvYmtfFMDLIxurorHwDKfDz5Q==}
@@ -8102,7 +8107,7 @@ snapshots:
       node-releases: 2.0.38
       update-browserslist-db: 1.2.3(browserslist@4.28.2)
 
-  bullmq@5.76.8:
+  bullmq@5.77.6:
     dependencies:
       cron-parser: 4.9.0
       ioredis: 5.10.1
