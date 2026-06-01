@@ -32,7 +32,7 @@ catalog:
   '@tanstack/react-query': ^5.100.9
   '@tanstack/react-query-devtools': ^5.100.9
   '@tanstack/react-router': ^1.169.2
-  '@tanstack/react-router-devtools': ^1.166.13
+  '@tanstack/react-router-devtools': ^1.167.0
   '@tanstack/router-plugin': ^1.167.34
   '@trpc/client': ^11.17.0
   '@trpc/server': ^11.16.0
