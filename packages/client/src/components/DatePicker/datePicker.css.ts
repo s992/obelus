@@ -50,3 +50,7 @@ export const dateSegment = style({
     },
   },
 });
+
+export const popover = style({
+  width: 'fit-content',
+});
