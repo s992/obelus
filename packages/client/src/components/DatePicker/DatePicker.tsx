@@ -21,7 +21,7 @@ import { ValidationErrorList } from '@/components/ValidationErrorList';
 import { useFieldContext } from '@/form';
 import type { Maybe } from '@obelus/shared/types';
 
-import { button, dateSegment, field as fieldCss, input } from './datePicker.css';
+import { button, dateSegment, field as fieldCss, input, popover } from './datePicker.css';
 
 type Props = {
   label: ReactNode;
@@ -59,7 +59,7 @@ export function DatePicker({ className, label, ...rest }: Props) {
           {hasError && <ValidationErrorList errors={field.state.meta.errors.map((error) => error.message)} />}
         </DateField>
       </Group>
-      <Popover>
+      <Popover placement="bottom end" className={popover}>
         <Calendar />
       </Popover>
     </AriaDatePicker>
