@@ -65,7 +65,7 @@ catalog:
   husky: ^9.1.7
   ioredis: ^5.10.1
   jiti: ^2.7.0
-  knip: ^6.12.2
+  knip: ^6.16.1
   lint-staged: ^16.4.0
   lodash.get: ^4.4.2
   lucide-react: ^1.14.0
