@@ -569,6 +569,10 @@ export type SeriesIdType = {
   series?: Maybe<Series>;
 };
 
+export type SeriesIdentifiersInput = {
+  goodreads?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
 export type SeriesInput = {
   name: Scalars['String']['input'];
 };
@@ -578,6 +582,7 @@ export type SeriesInputType = {
   curation_status?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['Int']['input']>;
+  identifiers?: InputMaybe<SeriesIdentifiersInput>;
   is_completed?: InputMaybe<Scalars['Boolean']['input']>;
   locked?: InputMaybe<Scalars['Boolean']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
@@ -651,6 +656,13 @@ export type TrendingBookType = {
   error?: Maybe<Scalars['String']['output']>;
   ids?: Maybe<Array<Maybe<Scalars['Int']['output']>>>;
 };
+
+export type TrendingDuration =
+  | 'all'
+  | 'month'
+  | 'one_year'
+  | 'three_month'
+  | 'week';
 
 export type UpdatePromptInput = {
   description: Scalars['String']['input'];
@@ -1035,16 +1047,6 @@ export type Activities_Variance_Order_By = {
   original_book_id?: InputMaybe<Order_By>;
   privacy_setting_id?: InputMaybe<Order_By>;
   user_id?: InputMaybe<Order_By>;
-};
-
-export type Activity_Feed_Args = {
-  feed_limit?: InputMaybe<Scalars['Int']['input']>;
-  feed_offset?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type Activity_Foryou_Feed_Args = {
-  feed_limit?: InputMaybe<Scalars['Int']['input']>;
-  feed_offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** columns and relationships of "authors" */
@@ -12174,10 +12176,6 @@ export type Query_Root = {
   activities: Array<Activities>;
   /** fetch data from the table: "activities" using primary key columns */
   activities_by_pk?: Maybe<Activities>;
-  /** execute function "activity_feed" which returns "activities" */
-  activity_feed: Array<Activities>;
-  /** execute function "activity_foryou_feed" which returns "activities" */
-  activity_foryou_feed: Array<Activities>;
   /** fetch data from the table: "authors" */
   authors: Array<Authors>;
   /** fetch data from the table: "authors" using primary key columns */
@@ -12218,7 +12216,7 @@ export type Query_Root = {
   books_aggregate: Books_Aggregate;
   /** fetch data from the table: "books" using primary key columns */
   books_by_pk?: Maybe<Books>;
-  /** books_trending */
+  /** books_trending (from/to are deprecated) */
   books_trending?: Maybe<TrendingBookType>;
   /** fetch data from the table: "characters" */
   characters: Array<Characters>;
@@ -12454,26 +12452,6 @@ export type Query_RootActivities_By_PkArgs = {
 };
 
 
-export type Query_RootActivity_FeedArgs = {
-  args: Activity_Feed_Args;
-  distinct_on?: InputMaybe<Array<Activities_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Activities_Order_By>>;
-  where?: InputMaybe<Activities_Bool_Exp>;
-};
-
-
-export type Query_RootActivity_Foryou_FeedArgs = {
-  args: Activity_Foryou_Feed_Args;
-  distinct_on?: InputMaybe<Array<Activities_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Activities_Order_By>>;
-  where?: InputMaybe<Activities_Bool_Exp>;
-};
-
-
 export type Query_RootAuthorsArgs = {
   distinct_on?: InputMaybe<Array<Authors_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12619,10 +12597,11 @@ export type Query_RootBooks_By_PkArgs = {
 
 
 export type Query_RootBooks_TrendingArgs = {
-  from: Scalars['date']['input'];
-  limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
-  to: Scalars['date']['input'];
+  duration?: InputMaybe<TrendingDuration>;
+  from?: InputMaybe<Scalars['date']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  to?: InputMaybe<Scalars['date']['input']>;
 };
 
 
@@ -14048,10 +14027,6 @@ export type Subscription_Root = {
   activities_by_pk?: Maybe<Activities>;
   /** fetch data from the table in a streaming manner: "activities" */
   activities_stream: Array<Activities>;
-  /** execute function "activity_feed" which returns "activities" */
-  activity_feed: Array<Activities>;
-  /** execute function "activity_foryou_feed" which returns "activities" */
-  activity_foryou_feed: Array<Activities>;
   /** fetch data from the table: "authors" */
   authors: Array<Authors>;
   /** fetch data from the table: "authors" using primary key columns */
@@ -14436,26 +14411,6 @@ export type Subscription_RootActivities_By_PkArgs = {
 export type Subscription_RootActivities_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Activities_Stream_Cursor_Input>>;
-  where?: InputMaybe<Activities_Bool_Exp>;
-};
-
-
-export type Subscription_RootActivity_FeedArgs = {
-  args: Activity_Feed_Args;
-  distinct_on?: InputMaybe<Array<Activities_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Activities_Order_By>>;
-  where?: InputMaybe<Activities_Bool_Exp>;
-};
-
-
-export type Subscription_RootActivity_Foryou_FeedArgs = {
-  args: Activity_Foryou_Feed_Args;
-  distinct_on?: InputMaybe<Array<Activities_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Activities_Order_By>>;
   where?: InputMaybe<Activities_Bool_Exp>;
 };
 
@@ -16745,6 +16700,7 @@ export type Update_User_Input = {
   birthdate?: InputMaybe<Scalars['date']['input']>;
   cover?: InputMaybe<Scalars['String']['input']>;
   current_password?: InputMaybe<Scalars['String']['input']>;
+  default_reading_format_id?: InputMaybe<Scalars['Int']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   link?: InputMaybe<Scalars['String']['input']>;
@@ -18991,6 +18947,7 @@ export type Users = {
   confirmed_at?: Maybe<Scalars['timestamp']['output']>;
   created_at: Scalars['timestamptz']['output'];
   current_sign_in_at?: Maybe<Scalars['timestamp']['output']>;
+  default_reading_format_id?: Maybe<Scalars['Int']['output']>;
   email?: Maybe<Scalars['String']['output']>;
   email_verified?: Maybe<Scalars['timestamptz']['output']>;
   flair?: Maybe<Scalars['String']['output']>;
@@ -19411,6 +19368,7 @@ export type Users_Avg_Order_By = {
   account_privacy_setting_id?: InputMaybe<Order_By>;
   activity_privacy_settings_id?: InputMaybe<Order_By>;
   books_count?: InputMaybe<Order_By>;
+  default_reading_format_id?: InputMaybe<Order_By>;
   followed_users_count?: InputMaybe<Order_By>;
   followers_count?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -19443,6 +19401,7 @@ export type Users_Bool_Exp = {
   confirmed_at?: InputMaybe<Timestamp_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   current_sign_in_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  default_reading_format_id?: InputMaybe<Int_Comparison_Exp>;
   email?: InputMaybe<String_Comparison_Exp>;
   email_verified?: InputMaybe<Timestamptz_Comparison_Exp>;
   flair?: InputMaybe<String_Comparison_Exp>;
@@ -19513,6 +19472,7 @@ export type Users_Max_Order_By = {
   confirmed_at?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   current_sign_in_at?: InputMaybe<Order_By>;
+  default_reading_format_id?: InputMaybe<Order_By>;
   email?: InputMaybe<Order_By>;
   email_verified?: InputMaybe<Order_By>;
   flair?: InputMaybe<Order_By>;
@@ -19556,6 +19516,7 @@ export type Users_Min_Order_By = {
   confirmed_at?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   current_sign_in_at?: InputMaybe<Order_By>;
+  default_reading_format_id?: InputMaybe<Order_By>;
   email?: InputMaybe<Order_By>;
   email_verified?: InputMaybe<Order_By>;
   flair?: InputMaybe<Order_By>;
@@ -19606,6 +19567,7 @@ export type Users_Order_By = {
   confirmed_at?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   current_sign_in_at?: InputMaybe<Order_By>;
+  default_reading_format_id?: InputMaybe<Order_By>;
   email?: InputMaybe<Order_By>;
   email_verified?: InputMaybe<Order_By>;
   flair?: InputMaybe<Order_By>;
@@ -19688,6 +19650,8 @@ export type Users_Select_Column =
   /** column name */
   | 'current_sign_in_at'
   /** column name */
+  | 'default_reading_format_id'
+  /** column name */
   | 'email'
   /** column name */
   | 'email_verified'
@@ -19758,6 +19722,7 @@ export type Users_Stddev_Order_By = {
   account_privacy_setting_id?: InputMaybe<Order_By>;
   activity_privacy_settings_id?: InputMaybe<Order_By>;
   books_count?: InputMaybe<Order_By>;
+  default_reading_format_id?: InputMaybe<Order_By>;
   followed_users_count?: InputMaybe<Order_By>;
   followers_count?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -19774,6 +19739,7 @@ export type Users_Stddev_Pop_Order_By = {
   account_privacy_setting_id?: InputMaybe<Order_By>;
   activity_privacy_settings_id?: InputMaybe<Order_By>;
   books_count?: InputMaybe<Order_By>;
+  default_reading_format_id?: InputMaybe<Order_By>;
   followed_users_count?: InputMaybe<Order_By>;
   followers_count?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -19790,6 +19756,7 @@ export type Users_Stddev_Samp_Order_By = {
   account_privacy_setting_id?: InputMaybe<Order_By>;
   activity_privacy_settings_id?: InputMaybe<Order_By>;
   books_count?: InputMaybe<Order_By>;
+  default_reading_format_id?: InputMaybe<Order_By>;
   followed_users_count?: InputMaybe<Order_By>;
   followers_count?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -19824,6 +19791,7 @@ export type Users_Stream_Cursor_Value_Input = {
   confirmed_at?: InputMaybe<Scalars['timestamp']['input']>;
   created_at?: InputMaybe<Scalars['timestamptz']['input']>;
   current_sign_in_at?: InputMaybe<Scalars['timestamp']['input']>;
+  default_reading_format_id?: InputMaybe<Scalars['Int']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   email_verified?: InputMaybe<Scalars['timestamptz']['input']>;
   flair?: InputMaybe<Scalars['String']['input']>;
@@ -19864,6 +19832,7 @@ export type Users_Sum_Order_By = {
   account_privacy_setting_id?: InputMaybe<Order_By>;
   activity_privacy_settings_id?: InputMaybe<Order_By>;
   books_count?: InputMaybe<Order_By>;
+  default_reading_format_id?: InputMaybe<Order_By>;
   followed_users_count?: InputMaybe<Order_By>;
   followers_count?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -19880,6 +19849,7 @@ export type Users_Var_Pop_Order_By = {
   account_privacy_setting_id?: InputMaybe<Order_By>;
   activity_privacy_settings_id?: InputMaybe<Order_By>;
   books_count?: InputMaybe<Order_By>;
+  default_reading_format_id?: InputMaybe<Order_By>;
   followed_users_count?: InputMaybe<Order_By>;
   followers_count?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -19896,6 +19866,7 @@ export type Users_Var_Samp_Order_By = {
   account_privacy_setting_id?: InputMaybe<Order_By>;
   activity_privacy_settings_id?: InputMaybe<Order_By>;
   books_count?: InputMaybe<Order_By>;
+  default_reading_format_id?: InputMaybe<Order_By>;
   followed_users_count?: InputMaybe<Order_By>;
   followers_count?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -19912,6 +19883,7 @@ export type Users_Variance_Order_By = {
   account_privacy_setting_id?: InputMaybe<Order_By>;
   activity_privacy_settings_id?: InputMaybe<Order_By>;
   books_count?: InputMaybe<Order_By>;
+  default_reading_format_id?: InputMaybe<Order_By>;
   followed_users_count?: InputMaybe<Order_By>;
   followers_count?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
