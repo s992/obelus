@@ -19894,6 +19894,8 @@ export type Users_Variance_Order_By = {
   status_id?: InputMaybe<Order_By>;
 };
 
+export type BookFragment = { id: number, title: string | null, subtitle: string | null, description: string | null, release_date: unknown, pages: number | null, image: { url: string | null, width: number | null, height: number | null } | null, featured_book_series: { position: unknown, series: { id: number, name: string, books_count: number } | null } | null, contributions: Array<{ contribution: string | null, author: { name: string } | null }> };
+
 export type FindBookIdsByIsbn10QueryVariables = Exact<{
   isbns?: Array<string> | string | null | undefined;
 }>;
@@ -19936,7 +19938,35 @@ export type SearchBooksForImportQueryVariables = Exact<{
 
 export type SearchBooksForImportQuery = { search: { ids: Array<number | null> | null, results: unknown } | null };
 
-
+export const BookFragmentDoc = gql`
+    fragment Book on books {
+  id
+  title
+  subtitle
+  description
+  release_date
+  image {
+    url
+    width
+    height
+  }
+  featured_book_series {
+    series {
+      id
+      name
+      books_count
+    }
+    position
+  }
+  pages
+  contributions {
+    contribution
+    author {
+      name
+    }
+  }
+}
+    `;
 export const FindBookIdsByIsbn10Document = gql`
     query FindBookIdsByISBN10($isbns: [String!]) {
   editions(where: {isbn_10: {_in: $isbns}}) {
@@ -19962,34 +19992,10 @@ export const GetBooksByIdsDocument = gql`
   books(
     where: {id: {_in: $ids}, canonical_id: {_is_null: true}, book_status_id: {_eq: 1}, is_partial_book: {_eq: false}}
   ) {
-    id
-    title
-    subtitle
-    description
-    release_date
-    image {
-      url
-      width
-      height
-    }
-    featured_book_series {
-      series {
-        id
-        name
-        books_count
-      }
-      position
-    }
-    pages
-    contributions {
-      contribution
-      author {
-        name
-      }
-    }
+    ...Book
   }
 }
-    `;
+    ${BookFragmentDoc}`;
 export const GetSeriesByIdDocument = gql`
     query GetSeriesById($id: Int!) {
   book_series(
@@ -20004,35 +20010,11 @@ export const GetSeriesByIdDocument = gql`
       books_count
     }
     book {
-      id
-      title
-      subtitle
-      description
-      release_date
-      image {
-        url
-        width
-        height
-      }
-      featured_book_series {
-        series {
-          id
-          name
-          books_count
-        }
-        position
-      }
-      pages
-      contributions {
-        contribution
-        author {
-          name
-        }
-      }
+      ...Book
     }
   }
 }
-    `;
+    ${BookFragmentDoc}`;
 export const SearchBooksDocument = gql`
     query SearchBooks($query: String!) {
   search(

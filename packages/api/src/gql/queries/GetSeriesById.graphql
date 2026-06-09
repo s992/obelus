@@ -15,31 +15,7 @@ query GetSeriesById($id: Int!) {
       books_count
     }
     book {
-      id
-      title
-      subtitle
-      description
-      release_date
-      image {
-        url
-        width
-        height
-      }
-      featured_book_series {
-        series {
-          id
-          name
-          books_count
-        }
-        position
-      }
-      pages
-      contributions {
-        contribution
-        author {
-          name
-        }
-      }
+      ...Book
     }
   }
 }
