@@ -1,7 +1,13 @@
 import { CalendarDate, getLocalTimeZone } from '@internationalized/date';
 import clsx from 'clsx';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Calendar as AriaCalendar, CalendarCell, CalendarGrid, type CalendarProps } from 'react-aria-components';
+import {
+  Calendar as AriaCalendar,
+  CalendarCell,
+  CalendarGrid,
+  type CalendarProps,
+  type DateValue,
+} from 'react-aria-components';
 import { useFocusRing } from 'react-aria/useFocusRing';
 import { useIntl } from 'react-intl';
 
@@ -18,7 +24,7 @@ import {
   year,
 } from './calendar.css';
 
-type Props = {} & CalendarProps<CalendarDate>;
+type Props = {} & CalendarProps<DateValue>;
 
 export function Calendar({ className, ...props }: Props) {
   const intl = useIntl();
