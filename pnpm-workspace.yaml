@@ -15,7 +15,7 @@ catalog:
   '@fastify/multipart': ^10.0.0
   '@fastify/rate-limit': ^10.3.0
   '@graphql-codegen/cli': ^7.1.2
-  '@graphql-codegen/typescript': ^6.0.1
+  '@graphql-codegen/typescript': ^6.0.2
   '@graphql-codegen/typescript-generic-sdk': ^5.0.1
   '@graphql-codegen/typescript-operations': ^6.0.1
   '@graphql-typed-document-node/core': ^3.2.0
